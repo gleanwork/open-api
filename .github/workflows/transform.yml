@@ -1,0 +1,24 @@
+name: Transform OpenAPI Specs
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Daily at midnight
+  workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: write  # Permission to write to the repository
+
+jobs:
+  transform:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Important for git history when committing
+        
+      - name: Transform OpenAPI specs
+        uses: ./
+        
+      # No need to explicitly configure Git or commit changes,
+      # as this is already handled in the action itself

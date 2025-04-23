@@ -1,0 +1,4 @@
+node_modules/
+.DS_Store
+# Ignore root-level YAML files as they're now in the generated directory
+/*.yaml 
