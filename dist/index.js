@@ -38290,10 +38290,6 @@ function transformYaml(yamlContent) {
   });
 }
 
-module.exports = {
-  transformYaml,
-  extractBasePath
-}; 
 ;// CONCATENATED MODULE: ./src/index.js
 
 

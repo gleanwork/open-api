@@ -67,8 +67,3 @@ export function transformYaml(yamlContent) {
     quotingType: '"' // Use double quotes for strings
   });
 }
-
-module.exports = {
-  transformYaml,
-  extractBasePath
-}; 
