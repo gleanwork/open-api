@@ -19,6 +19,8 @@ jobs:
         
       - name: Transform OpenAPI specs
         uses: ./
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
       # No need to explicitly configure Git or commit changes,
       # as this is already handled in the action itself

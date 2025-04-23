@@ -1,5 +1,5 @@
 import * as core from '@actions/core';
-import * as exec from '@actions/exec';
+import * as github from '@actions/github';
 import { HttpClient } from '@actions/http-client';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -18,45 +18,89 @@ const OUTPUT_FILES = [
 
 const OUTPUT_DIR = 'generated';
 
-async function configGit() {
-  try {
-    await exec.exec('git', ['config', '--local', 'user.email', 'action@github.com']);
-    await exec.exec('git', ['config', '--local', 'user.name', 'GitHub Action']);
-  } catch (error) {
-    core.setFailed(`Error configuring git: ${error.message}`);
-    throw error;
-  }
-}
-
-async function commitChanges(files) {
-  try {
-    for (const file of files) {
-      await exec.exec('git', ['add', file]);
-    }
-    
-    let hasChanges = false;
-    const exitCode = await exec.exec('git', ['diff', '--staged', '--quiet'], {
-      ignoreReturnCode: true
-    });
-    hasChanges = exitCode !== 0;
-    
-    if (hasChanges) {
-      await exec.exec('git', ['commit', '-m', 'Update OpenAPI specs']);
-      await exec.exec('git', ['push']);
-      core.info('Changes committed and pushed');
-    } else {
-      core.info('No changes to commit');
-    }
-  } catch (error) {
-    core.setFailed(`Error committing changes: ${error.message}`);
-    throw error;
-  }
-}
-
 async function ensureDirectoryExists(directory) {
   if (!fs.existsSync(directory)) {
     fs.mkdirSync(directory, { recursive: true });
     core.info(`Created directory: ${directory}`);
+  }
+}
+
+async function commitFiles(files, commitMessage = 'Update OpenAPI specs') {
+  try {
+    const token = process.env.GITHUB_TOKEN;
+    if (!token) {
+      throw new Error('GITHUB_TOKEN not found. Make sure to set permissions in workflow file.');
+    }
+
+    const octokit = github.getOctokit(token);
+    const context = github.context;
+    
+    // Get the current commit SHA to use as a base
+    const { data: refData } = await octokit.rest.git.getRef({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      ref: `heads/${context.ref.split('/').pop()}`
+    });
+    const currentSha = refData.object.sha;
+    
+    // Get the current commit to use as parent
+    const { data: commitData } = await octokit.rest.git.getCommit({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      commit_sha: currentSha
+    });
+    
+    // Create blobs for each file
+    const fileBlobs = await Promise.all(
+      files.map(async (file) => {
+        const content = fs.readFileSync(file, 'utf8');
+        const { data } = await octokit.rest.git.createBlob({
+          owner: context.repo.owner,
+          repo: context.repo.repo,
+          content,
+          encoding: 'utf-8'
+        });
+        
+        return {
+          path: file,
+          mode: '100644', // normal file
+          type: 'blob',
+          sha: data.sha
+        };
+      })
+    );
+    
+    // Create a new tree with the files
+    const { data: treeData } = await octokit.rest.git.createTree({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      base_tree: commitData.tree.sha,
+      tree: fileBlobs
+    });
+    
+    // Create a new commit
+    const { data: newCommitData } = await octokit.rest.git.createCommit({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      message: commitMessage,
+      tree: treeData.sha,
+      parents: [currentSha]
+    });
+    
+    // Update the reference
+    await octokit.rest.git.updateRef({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      ref: `heads/${context.ref.split('/').pop()}`,
+      sha: newCommitData.sha
+    });
+    
+    core.info(`Changes committed with SHA: ${newCommitData.sha}`);
+    return true;
+  } catch (error) {
+    core.error(`Error committing changes: ${error.message}`);
+    if (error.stack) core.debug(error.stack);
+    return false;
   }
 }
 
@@ -95,11 +139,13 @@ export async function run() {
       core.info(`Saved transformed YAML to ${outputFilePath}`);
     }
     
-    await configGit();
+    const commitSuccess = await commitFiles(outputFilePaths);
     
-    await commitChanges(outputFilePaths);
-    
-    core.info('OpenAPI specs transformation completed successfully');
+    if (commitSuccess) {
+      core.info('OpenAPI specs transformation completed and changes were committed');
+    } else {
+      core.warning('OpenAPI specs transformation completed but changes could not be committed');
+    }
   } catch (error) {
     core.setFailed(`Action failed: ${error.message}`);
   }
