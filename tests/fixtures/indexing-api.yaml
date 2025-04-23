@@ -1,0 +1,70 @@
+openapi: 3.0.0
+info:
+  version: 0.9.0
+  title: Glean Indexing API
+  contact:
+    email: support@glean.com
+  description: |
+    # Introduction
+    These are the public APIs for indexing content into the Glean system.
+  x-logo:
+    url: https://app.glean.com/images/glean-text2.svg
+servers:
+  - url: https://api.glean.com/indexing/v1
+    description: Production server
+paths:
+  /documents:
+    post:
+      tags:
+        - Indexing
+      summary: Index a document
+      description: Add or update a document in the index.
+      operationId: indexDocument
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Document'
+        required: true
+      responses:
+        '200':
+          description: OK
+  /documents/{id}:
+    delete:
+      tags:
+        - Indexing
+      summary: Delete a document
+      description: Remove a document from the index.
+      operationId: deleteDocument
+      parameters:
+        - name: id
+          in: path
+          description: Document ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+components:
+  schemas:
+    Document:
+      type: object
+      required:
+        - id
+        - title
+        - content
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the document
+        title:
+          type: string
+          description: Document title
+        content:
+          type: string
+          description: Document content
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Additional metadata about the document 

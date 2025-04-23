@@ -1,9 +1,9 @@
-const core = require('@actions/core');
-const exec = require('@actions/exec');
-const { HttpClient } = require('@actions/http-client');
-const fs = require('fs');
-const path = require('path');
-const transformer = require('./transformer');
+import * as core from '@actions/core';
+import * as exec from '@actions/exec';
+import { HttpClient } from '@actions/http-client';
+import * as fs from 'fs';
+import * as path from 'path';
+import { transformYaml } from './transformer.js';
 
 // URLs for the OpenAPI specification files
 const URLS = [
@@ -97,7 +97,7 @@ async function run() {
       const yamlContent = await downloadYaml(url);
       
       // Transform the YAML
-      const transformedYaml = transformer.transformYaml(yamlContent);
+      const transformedYaml = transformYaml(yamlContent);
       
       // Write the transformed YAML to file
       fs.writeFileSync(outputFilePath, transformedYaml, 'utf8');
@@ -118,12 +118,12 @@ async function run() {
 }
 
 // Run the action
-if (require.main === module) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   run();
 }
 
 // Export for testing
-module.exports = {
+export {
   run,
   downloadYaml
 }; 

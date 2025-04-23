@@ -1,12 +1,12 @@
-const yaml = require('js-yaml');
-const path = require('path');
+import yaml from 'js-yaml';
+import path from 'path';
 
 /**
  * Extracts the base path from a server URL
  * @param {string} url Server URL with variables
  * @returns {string} The base path
  */
-function extractBasePath(url) {
+export function extractBasePath(url) {
   // Replace any variable placeholders with dummy values for parsing
   const tempUrl = url.replace(/{([^}]+)}/g, 'domain');
   
@@ -27,7 +27,7 @@ function extractBasePath(url) {
  * @param {string} yamlContent The OpenAPI YAML content
  * @returns {string} Transformed YAML content
  */
-function transformYaml(yamlContent) {
+export function transformYaml(yamlContent) {
   // Parse the YAML content
   const spec = yaml.load(yamlContent);
   

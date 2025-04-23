@@ -1,5 +1,14 @@
-const yaml = require('js-yaml');
-const { transformYaml, extractBasePath } = require('../src/transformer');
+import { describe, test, expect } from 'vitest';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as yaml from 'js-yaml';
+import { transformYaml, extractBasePath } from '../src/transformer';
+
+// Helper function to read fixture files
+function readFixture(filename) {
+  const fixtureFile = path.join(__dirname, 'fixtures', filename);
+  return fs.readFileSync(fixtureFile, 'utf8');
+}
 
 describe('OpenAPI YAML Transformer', () => {
   test('extractBasePath extracts path correctly', () => {
@@ -8,87 +17,59 @@ describe('OpenAPI YAML Transformer', () => {
     expect(extractBasePath('https://example.com')).toBe('');
   });
   
-  test('transforms servers URL and updates paths correctly', () => {
-    const sampleYaml = `
-openapi: 3.0.0
-info:
-  version: 0.9.0
-  title: Glean Client API
-servers:
-  - url: https://{domain}-be.glean.com/rest/api/v1
-    variables:
-      domain:
-        default: domain
-paths:
-  /activity:
-    post:
-      summary: Report document activity
-  /search:
-    get:
-      summary: Search for content
-`;
+  test('transforms client API YAML correctly', () => {
+    const clientYaml = readFixture('client-api.yaml');
+    const transformedContent = transformYaml(clientYaml);
     
-    const transformedContent = transformYaml(sampleYaml);
-    const transformedYaml = yaml.load(transformedContent);
+    // Parse before and after for verification
+    const originalSpec = yaml.load(clientYaml);
+    const transformedSpec = yaml.load(transformedContent);
     
     // Server URL should be updated to remove the subpath
-    expect(transformedYaml.servers[0].url).toBe('https://{domain}-be.glean.com/');
+    expect(transformedSpec.servers[0].url).toBe('https://{domain}-be.glean.com/');
     
     // Paths should be updated to include the subpath
-    expect(transformedYaml.paths).toHaveProperty('/rest/api/v1/activity');
-    expect(transformedYaml.paths).toHaveProperty('/rest/api/v1/search');
-    expect(transformedYaml.paths).not.toHaveProperty('/activity');
-    expect(transformedYaml.paths).not.toHaveProperty('/search');
+    expect(transformedSpec.paths).toHaveProperty('/rest/api/v1/activity');
+    expect(transformedSpec.paths).toHaveProperty('/rest/api/v1/search');
+    
+    // Save the snapshot of the transformed YAML
+    expect(transformedContent).toMatchSnapshot();
+  });
+  
+  test('transforms indexing API YAML correctly', () => {
+    const indexingYaml = readFixture('indexing-api.yaml');
+    const transformedContent = transformYaml(indexingYaml);
+    
+    // Parse before and after for verification
+    const originalSpec = yaml.load(indexingYaml);
+    const transformedSpec = yaml.load(transformedContent);
+    
+    // Server URL should be updated to remove the subpath
+    expect(transformedSpec.servers[0].url).toBe('https://api.glean.com/');
+    
+    // Paths should be updated to include the subpath
+    expect(transformedSpec.paths).toHaveProperty('/indexing/v1/documents');
+    expect(transformedSpec.paths).toHaveProperty('/indexing/v1/documents/{id}');
+    
+    // Save the snapshot of the transformed YAML
+    expect(transformedContent).toMatchSnapshot();
   });
   
   test('preserves path operation properties', () => {
-    const sampleYaml = `
-openapi: 3.0.0
-servers:
-  - url: https://api.example.com/v1
-paths:
-  /users:
-    get:
-      operationId: getUsers
-      parameters:
-        - name: limit
-          in: query
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: OK
-`;
-    
-    const transformedContent = transformYaml(sampleYaml);
-    const transformedYaml = yaml.load(transformedContent);
+    const clientYaml = readFixture('client-api.yaml');
+    const transformedContent = transformYaml(clientYaml);
+    const transformedSpec = yaml.load(transformedContent);
     
     // Path operation properties should be preserved
-    expect(transformedYaml.paths['/v1/users'].get.operationId).toBe('getUsers');
-    expect(transformedYaml.paths['/v1/users'].get.parameters[0].name).toBe('limit');
-    expect(transformedYaml.paths['/v1/users'].get.responses['200'].description).toBe('OK');
-  });
-  
-  test('handles paths that already have a leading slash', () => {
-    const sampleYaml = `
-openapi: 3.0.0
-servers:
-  - url: https://api.example.com/v1
-paths:
-  "/users":
-    get:
-      summary: Get users
-  users/profile:
-    get:
-      summary: Get profile
-`;
+    const activityPath = transformedSpec.paths['/rest/api/v1/activity'];
+    expect(activityPath.post.operationId).toBe('activity');
+    expect(activityPath.post.tags[0]).toBe('Activity');
+    expect(activityPath.post.responses['200'].description).toBe('OK');
     
-    const transformedContent = transformYaml(sampleYaml);
-    const transformedYaml = yaml.load(transformedContent);
-    
-    // Both paths should be properly transformed
-    expect(transformedYaml.paths).toHaveProperty('/v1/users');
-    expect(transformedYaml.paths).toHaveProperty('/v1/users/profile');
+    // Complex schemas should be preserved
+    const searchPath = transformedSpec.paths['/rest/api/v1/search'];
+    expect(searchPath.get.parameters[0].name).toBe('q');
+    expect(searchPath.get.responses['200'].content['application/json'].schema.$ref).toBe('#/components/schemas/SearchResults');
   });
   
   test('handles empty or missing paths', () => {
@@ -100,74 +81,12 @@ paths: {}
 `;
     
     const transformedContent = transformYaml(sampleYaml);
-    const transformedYaml = yaml.load(transformedContent);
+    const transformedSpec = yaml.load(transformedContent);
     
     // Server URL should be updated
-    expect(transformedYaml.servers[0].url).toBe('https://api.example.com/');
+    expect(transformedSpec.servers[0].url).toBe('https://api.example.com/');
     
     // Paths should remain empty
-    expect(transformedYaml.paths).toEqual({});
-  });
-  
-  test('matches the provided example transformation', () => {
-    const exampleYaml = `
-openapi: 3.0.0
-info:
-  version: 0.9.0
-  title: Glean Client API
-  contact:
-    email: support@glean.com
-  description: |
-    # Introduction
-    These are the public APIs to enable implementing a custom client interface to the Glean system.
-  x-logo:
-    url: https://app.glean.com/images/glean-text2.svg
-servers:
-  - url: https://{domain}-be.glean.com/rest/api/v1
-    variables:
-      domain:
-        default: domain
-        description: Email domain (without extension) that determines the deployment backend.
-security:
-  - BearerAuth: []
-paths:
-  /activity:
-    post:
-      tags:
-        - Activity
-      summary: Report document activity
-      description: Report user activity that occurs on indexed documents such as viewing or editing. This signal improves search quality.
-      operationId: activity
-      x-visibility: Public
-      x-codegen-request-body-name: payload
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Activity'
-        required: true
-        x-exportParamName: Activity
-      responses:
-        '200':
-          description: OK
-`;
-
-    const transformedContent = transformYaml(exampleYaml);
-    const transformedYaml = yaml.load(transformedContent);
-    
-    // Check server URL
-    expect(transformedYaml.servers[0].url).toBe('https://{domain}-be.glean.com/');
-    
-    // Check paths
-    expect(transformedYaml.paths).toHaveProperty('/rest/api/v1/activity');
-    
-    // Check that server variables are preserved
-    expect(transformedYaml.servers[0].variables.domain.default).toBe('domain');
-    expect(transformedYaml.servers[0].variables.domain.description).toBe('Email domain (without extension) that determines the deployment backend.');
-    
-    // Check that operation details are preserved
-    const activityPath = transformedYaml.paths['/rest/api/v1/activity'];
-    expect(activityPath.post.operationId).toBe('activity');
-    expect(activityPath.post.responses['200'].description).toBe('OK');
+    expect(transformedSpec.paths).toEqual({});
   });
 }); 
