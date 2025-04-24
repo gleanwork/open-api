@@ -6,7 +6,7 @@ The GitHub Action that transforms OpenAPI YAML specification files by:
 
 1. Downloading files from specified URLs
 2. Moving the server URL subpath to each individual API path
-3. Writing the transformed files to the `generated/` directory
+3. Writing the transformed files to the `generated_specs/` directory
 
 ## Transformation Process
 
@@ -17,10 +17,10 @@ This action performs the following transformations:
 
 ## Output
 
-Transformed files are saved to the `generated/` directory:
+Transformed files are saved to the `generated_specs/` directory:
 
-- `generated/client_rest.yaml`
-- `generated/indexing.yaml`
+- `generated_specs/client_rest.yaml`
+- `generated_specs/indexing.yaml`
 
 ## Usage
 

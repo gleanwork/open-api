@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   version: 0.9.0
-  title: Glean Indexing API
+  title: Glean API
   contact:
     email: support@glean.com
   description: |
@@ -13,6 +13,7 @@ info:
     with a 6-month sunset period for anything that requires developers to adopt the new versions.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
+  x-speakeasy-name: "Glean API"
 servers:
   - url: https://{domain}-be.glean.com
     variables:

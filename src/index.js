@@ -16,7 +16,7 @@ const OUTPUT_FILES = [
   'indexing.yaml' // Indexing API
 ];
 
-const OUTPUT_DIR = 'generated';
+const OUTPUT_DIR = 'generated_specs';
 
 async function ensureDirectoryExists(directory) {
   if (!fs.existsSync(directory)) {
