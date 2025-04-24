@@ -3,7 +3,7 @@ import * as github from '@actions/github';
 import { HttpClient } from '@actions/http-client';
 import * as fs from 'fs';
 import * as path from 'path';
-import { transformYaml } from './transformer.js';
+import { transform } from './transformer.js';
 
 // URLs for the OpenAPI specification files
 const URLS = [
@@ -132,7 +132,7 @@ export async function run() {
       
       const yamlContent = await downloadYaml(url);
       
-      const transformedYaml = transformYaml(yamlContent);
+      const transformedYaml = transform(yamlContent);
       
       fs.writeFileSync(outputFilePath, transformedYaml, 'utf8');
       

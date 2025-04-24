@@ -1,0 +1,13 @@
+workflowVersion: 1.0.0
+speakeasyVersion: latest
+sources:
+    glean-client-and-indexing-specs:
+        inputs:
+            - location: generated/client_rest.yaml
+            - location: generated/indexing.yaml
+        overlays:
+            - location: overlays/speakeasy-modifications-overlay-1.yaml
+        output: overlayed_specs/glean-merged-spec.yaml
+        registry:
+            location: registry.speakeasyapi.dev/glean-el2/sdk/glean-client-and-indexing-specs
+targets: {}

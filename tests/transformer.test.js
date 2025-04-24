@@ -2,7 +2,7 @@ import { describe, test, expect } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
-import { transformYaml, extractBasePath } from '../src/transformer';
+import { transform, extractBasePath } from '../src/transformer';
 
 // Helper function to read fixture files
 function readFixture(filename) {
@@ -19,14 +19,14 @@ describe('OpenAPI YAML Transformer', () => {
   
   test('transforms client API YAML correctly', () => {
     const clientYaml = readFixture('client_rest.yaml');
-    const transformedContent = transformYaml(clientYaml);
+    const transformedContent = transform(clientYaml);
     
     expect(transformedContent).toMatchSnapshot();
   });
   
   test('transforms indexing API YAML correctly', () => {
     const indexingYaml = readFixture('indexing.yaml');
-    const transformedContent = transformYaml(indexingYaml);
+    const transformedContent = transform(indexingYaml);
     
     expect(transformedContent).toMatchSnapshot();
   });
@@ -39,7 +39,7 @@ servers:
 paths: {}
 `;
     
-    const transformedContent = transformYaml(sampleYaml);
+    const transformedContent = transform(sampleYaml);
     const transformedSpec = yaml.load(transformedContent);
     
     expect(transformedSpec.servers[0].url).toBe('https://api.example.com');

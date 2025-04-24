@@ -1,0 +1,24 @@
+speakeasyVersion: 1.538.0
+sources:
+    glean-client-and-indexing-specs:
+        sourceNamespace: glean-client-and-indexing-specs
+        sourceRevisionDigest: sha256:5c9bc4dbb3ef7e2c9bdbeaabbcafe77e2b01fa48ad8d971f4b6081d27d079c22
+        sourceBlobDigest: sha256:caa5ffc81b230bfbba8f7861b0eac961f47c18be02a5cf1d4f7bd51bc734c419
+        tags:
+            - latest
+            - 0.9.0
+targets: {}
+workflow:
+    workflowVersion: 1.0.0
+    speakeasyVersion: latest
+    sources:
+        glean-client-and-indexing-specs:
+            inputs:
+                - location: specs/glean.openapi.yaml
+                - location: specs/glean-index-spec.yaml
+            overlays:
+                - location: overlays/speakeasy-modifications-overlay-1.yaml
+            output: overlayed_specs/glean-merged-spec.yaml
+            registry:
+                location: registry.speakeasyapi.dev/glean-el2/sdk/glean-client-and-indexing-specs
+    targets: {}
