@@ -2,7 +2,7 @@ import { describe, test, expect } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
-import { transformYaml, extractBasePath } from '../src/transformer.js';
+import { transform, extractBasePath } from '../src/transformer.js';
 
 function readFixture(filename) {
   const fixtureFile = path.join(__dirname, 'fixtures', filename);
@@ -18,7 +18,7 @@ describe('OpenAPI YAML Transformer', () => {
   
   test('transforms client API YAML correctly', () => {
     const clientYaml = readFixture('client_rest.yaml');
-    const transformedContent = transformYaml(clientYaml);
+    const transformedContent = transform(clientYaml);
     
     const originalSpec = yaml.load(clientYaml);
     const transformedSpec = yaml.load(transformedContent);
@@ -50,7 +50,7 @@ describe('OpenAPI YAML Transformer', () => {
   
   test('transforms indexing API YAML correctly', () => {
     const indexingYaml = readFixture('indexing.yaml');
-    const transformedContent = transformYaml(indexingYaml);
+    const transformedContent = transform(indexingYaml);
     
     const originalSpec = yaml.load(indexingYaml);
     const transformedSpec = yaml.load(transformedContent);
@@ -82,7 +82,7 @@ describe('OpenAPI YAML Transformer', () => {
   
   test('preserves path operation properties', () => {
     const clientYaml = readFixture('client_rest.yaml');
-    const transformedContent = transformYaml(clientYaml);
+    const transformedContent = transform(clientYaml);
     const originalSpec = yaml.load(clientYaml);
     const transformedSpec = yaml.load(transformedContent);
     
@@ -130,7 +130,7 @@ servers:
 paths: {}
 `;
     
-    const transformedContent = transformYaml(sampleYaml);
+    const transformedContent = transform(sampleYaml);
     const transformedSpec = yaml.load(transformedContent);
     
     expect(transformedSpec.servers[0].url).toBe('https://api.example.com');
