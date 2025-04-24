@@ -1,7 +1,7 @@
 workflowVersion: 1.0.0
 speakeasyVersion: latest
 sources:
-    glean-client-and-indexing-specs:
+    glean-api-specs:
         inputs:
             - location: generated/client_rest.yaml
             - location: generated/indexing.yaml
