@@ -21,27 +21,29 @@ export function extractBasePath(url) {
 
 /**
  * Transforms OpenAPI YAML by adjusting server URLs and paths
- * @param {string} yamlContent The OpenAPI YAML content
+ * @param {string} content The OpenAPI YAML content
  * @returns {string} Transformed YAML content
  */
-export function transformYaml(yamlContent) {
-  const spec = yaml.load(yamlContent);
+export function transform(content) {
+  const spec = yaml.load(content);
   
   if (!spec.servers || spec.servers.length === 0) {
     console.warn('No servers found in the OpenAPI spec');
-    return yamlContent;
+    return content;
   }
   
   const firstServer = spec.servers[0];
+
   if (!firstServer.url) {
     console.warn('Server URL is missing');
-    return yamlContent;
+    return content;
   }
   
   const basePath = extractBasePath(firstServer.url);
+  
   if (!basePath) {
     console.warn('No base path found in server URL');
-    return yamlContent;
+    return content;
   }
   
   for (const server of spec.servers) {
