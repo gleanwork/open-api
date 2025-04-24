@@ -38243,27 +38243,29 @@ function extractBasePath(url) {
 
 /**
  * Transforms OpenAPI YAML by adjusting server URLs and paths
- * @param {string} yamlContent The OpenAPI YAML content
+ * @param {string} content The OpenAPI YAML content
  * @returns {string} Transformed YAML content
  */
-function transformYaml(yamlContent) {
-  const spec = js_yaml.load(yamlContent);
+function transform(content) {
+  const spec = js_yaml.load(content);
   
   if (!spec.servers || spec.servers.length === 0) {
     console.warn('No servers found in the OpenAPI spec');
-    return yamlContent;
+    return content;
   }
   
   const firstServer = spec.servers[0];
+
   if (!firstServer.url) {
     console.warn('Server URL is missing');
-    return yamlContent;
+    return content;
   }
   
   const basePath = extractBasePath(firstServer.url);
+  
   if (!basePath) {
     console.warn('No base path found in server URL');
-    return yamlContent;
+    return content;
   }
   
   for (const server of spec.servers) {
@@ -38425,7 +38427,7 @@ async function run() {
       
       const yamlContent = await downloadYaml(url);
       
-      const transformedYaml = transformYaml(yamlContent);
+      const transformedYaml = transform(yamlContent);
       
       external_fs_.writeFileSync(outputFilePath, transformedYaml, 'utf8');
       
