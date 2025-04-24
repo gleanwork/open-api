@@ -40,7 +40,7 @@ actions:
       type: method-name
   - target: $["paths"]["/api/index/v1/bulkindexemployees"]["post"]
     update:
-      x-speakeasy-group: index.people
+      x-speakeasy-group: indexing.people
       x-speakeasy-name-override: bulkIndexEmployees
     x-speakeasy-metadata:
       after: sdk.people.bulkIndexEmployees()
@@ -100,7 +100,7 @@ actions:
       type: method-name
   - target: $["paths"]["/api/index/v1/checkdocumentaccess"]["post"]
     update:
-      x-speakeasy-group: index.troubleshooting
+      x-speakeasy-group: indexing.troubleshooting
       x-speakeasy-name-override: checkAccess
     x-speakeasy-metadata:
       after: sdk.troubleshooting.checkAccess()
@@ -121,7 +121,7 @@ actions:
   - target: $["paths"]["/api/index/v1/deleteemployee"]["post"]
     update:
       x-speakeasy-name-override: delete
-      x-speakeasy-group: index.people
+      x-speakeasy-group: indexing.people
     x-speakeasy-metadata:
       after: sdk.people.delete()
       before: sdk.People.post_/api/index/v1/deleteemployee()
@@ -141,7 +141,7 @@ actions:
   - target: $["paths"]["/api/index/v1/getdocumentcount"]["post"]
     update:
       x-speakeasy-name-override: getDocumentCount
-      x-speakeasy-group: index.troubleshooting
+      x-speakeasy-group: indexing.troubleshooting
     x-speakeasy-metadata:
       after: sdk.troubleshooting.getDocumentCount()
       before: sdk.Troubleshooting.post_/api/index/v1/getdocumentcount()
@@ -211,7 +211,7 @@ actions:
   - target: $["paths"]["/api/index/v1/rotatetoken"]["post"]
     update:
       x-speakeasy-name-override: rotateToken
-      x-speakeasy-group: index.authentication
+      x-speakeasy-group: indexing.authentication
     x-speakeasy-metadata:
       after: sdk.authentication.rotateToken()
       before: sdk.Authentication.post_/api/index/v1/rotatetoken()
@@ -261,7 +261,7 @@ actions:
   - target: $["paths"]["/api/index/v1/indexemployeelist"]["post"]
     update:
       x-speakeasy-name-override: bulkIndex
-      x-speakeasy-group: index.people
+      x-speakeasy-group: indexing.people
     x-speakeasy-metadata:
       after: sdk.people.bulkIndex()
       before: sdk.People.post_/api/index/v1/indexemployeelist()
@@ -271,7 +271,7 @@ actions:
   - target: $["paths"]["/api/index/v1/bulkindexshortcuts"]["post"]
     update:
       x-speakeasy-name-override: bulkIndex
-      x-speakeasy-group: index.shortcuts
+      x-speakeasy-group: indexing.shortcuts
     x-speakeasy-metadata:
       after: sdk.shortcuts.bulkIndex()
       before: sdk.Shortcuts.post_/api/index/v1/bulkindexshortcuts()
@@ -321,7 +321,7 @@ actions:
   - target: $["paths"]["/api/index/v1/indexemployee"]["post"]
     update:
       x-speakeasy-name-override: index
-      x-speakeasy-group: index.people
+      x-speakeasy-group: indexing.people
     x-speakeasy-metadata:
       after: sdk.people.index()
       before: sdk.People.post_/api/index/v1/indexemployee()
@@ -411,7 +411,7 @@ actions:
   - target: $["paths"]["/api/index/v1/deletedocument"]["post"]
     update:
       x-speakeasy-name-override: delete
-      x-speakeasy-group: index.documents
+      x-speakeasy-group: indexing.documents
     x-speakeasy-metadata:
       after: sdk.documents.delete()
       before: sdk.Documents.post_/api/index/v1/deletedocument()
@@ -441,7 +441,7 @@ actions:
   - target: $["paths"]["/api/index/v1/bulkindexgroups"]["post"]
     update:
       x-speakeasy-name-override: bulkIndexGroups
-      x-speakeasy-group: index.permissions
+      x-speakeasy-group: indexing.permissions
     x-speakeasy-metadata:
       after: sdk.permissions.bulkIndexGroups()
       before: sdk.Permissions.post_/api/index/v1/bulkindexgroups()
@@ -491,7 +491,7 @@ actions:
   - target: $["paths"]["/api/index/v1/debug/{datasource}/documents"]["post"]
     update:
       x-speakeasy-name-override: postDocumentsDebug
-      x-speakeasy-group: index.troubleshooting
+      x-speakeasy-group: indexing.troubleshooting
     x-speakeasy-metadata:
       after: sdk.troubleshooting.postDocumentsDebug()
       before: sdk.Troubleshooting.post_/api/index/v1/debug/{datasource}/documents()
@@ -531,7 +531,7 @@ actions:
   - target: $["paths"]["/api/index/v1/getdocumentstatus"]["post"]
     update:
       x-speakeasy-name-override: getStatus
-      x-speakeasy-group: index.troubleshooting
+      x-speakeasy-group: indexing.troubleshooting
     x-speakeasy-metadata:
       after: sdk.troubleshooting.getStatus()
       before: sdk.Troubleshooting.post_/api/index/v1/getdocumentstatus()
@@ -561,7 +561,7 @@ actions:
   - target: $["paths"]["/api/index/v1/getusercount"]["post"]
     update:
       x-speakeasy-name-override: getUserCount
-      x-speakeasy-group: index.troubleshooting
+      x-speakeasy-group: indexing.troubleshooting
     x-speakeasy-metadata:
       after: sdk.troubleshooting.getUserCount()
       before: sdk.Troubleshooting.post_/api/index/v1/getusercount()
@@ -591,7 +591,7 @@ actions:
   - target: $["paths"]["/api/index/v1/bulkindexdocuments"]["post"]
     update:
       x-speakeasy-name-override: bulkIndex
-      x-speakeasy-group: index.documents
+      x-speakeasy-group: indexing.documents
     x-speakeasy-metadata:
       after: sdk.documents.bulkIndex()
       before: sdk.Documents.post_/api/index/v1/bulkindexdocuments()
@@ -601,7 +601,7 @@ actions:
   - target: $["paths"]["/api/index/v1/bulkindexmemberships"]["post"]
     update:
       x-speakeasy-name-override: bulkIndexMemberships
-      x-speakeasy-group: index.permissions
+      x-speakeasy-group: indexing.permissions
     x-speakeasy-metadata:
       after: sdk.permissions.bulkIndexMemberships()
       before: sdk.Permissions.post_/api/index/v1/bulkindexmemberships()
@@ -681,7 +681,7 @@ actions:
   - target: $["paths"]["/api/index/v1/betausers"]["post"]
     update:
       x-speakeasy-name-override: authorizeBetaUsers
-      x-speakeasy-group: index.permissions
+      x-speakeasy-group: indexing.permissions
     x-speakeasy-metadata:
       after: sdk.permissions.authorizeBetaUsers()
       before: sdk.Permissions.post_/api/index/v1/betausers()
@@ -701,7 +701,7 @@ actions:
   - target: $["paths"]["/api/index/v1/debug/{datasource}/status"]["post"]
     update:
       x-speakeasy-name-override: getDatasourceStatus
-      x-speakeasy-group: index.troubleshooting
+      x-speakeasy-group: indexing.troubleshooting
     x-speakeasy-metadata:
       after: sdk.troubleshooting.getDatasourceStatus()
       before: sdk.Troubleshooting.post_/api/index/v1/debug/{datasource}/status()
@@ -721,7 +721,7 @@ actions:
   - target: $["paths"]["/api/index/v1/indexteam"]["post"]
     update:
       x-speakeasy-name-override: indexTeam
-      x-speakeasy-group: index.people
+      x-speakeasy-group: indexing.people
     x-speakeasy-metadata:
       after: sdk.people.indexTeam()
       before: sdk.People.post_/api/index/v1/indexteam()
@@ -791,7 +791,7 @@ actions:
   - target: $["paths"]["/api/index/v1/debug/{datasource}/document"]["post"]
     update:
       x-speakeasy-name-override: postDocumentDebug
-      x-speakeasy-group: index.troubleshooting
+      x-speakeasy-group: indexing.troubleshooting
     x-speakeasy-metadata:
       after: sdk.troubleshooting.postDocumentDebug()
       before: sdk.Troubleshooting.post_/api/index/v1/debug/{datasource}/document()
@@ -801,7 +801,7 @@ actions:
   - target: $["paths"]["/api/index/v1/processallemployeesandteams"]["post"]
     update:
       x-speakeasy-name-override: processAllEmployeesAndTeams
-      x-speakeasy-group: index.people
+      x-speakeasy-group: indexing.people
     x-speakeasy-metadata:
       after: sdk.people.processAllEmployeesAndTeams()
       before: sdk.People.post_/api/index/v1/processallemployeesandteams()
@@ -821,7 +821,7 @@ actions:
   - target: $["paths"]["/api/index/v1/indexgroup"]["post"]
     update:
       x-speakeasy-name-override: indexGroup
-      x-speakeasy-group: index.permissions
+      x-speakeasy-group: indexing.permissions
     x-speakeasy-metadata:
       after: sdk.permissions.indexGroup()
       before: sdk.Permissions.post_/api/index/v1/indexgroup()
@@ -861,7 +861,7 @@ actions:
   - target: $["paths"]["/api/index/v1/processalldocuments"]["post"]
     update:
       x-speakeasy-name-override: processAll
-      x-speakeasy-group: index.documents
+      x-speakeasy-group: indexing.documents
     x-speakeasy-metadata:
       after: sdk.documents.processAll()
       before: sdk.Documents.post_/api/index/v1/processalldocuments()
@@ -891,7 +891,7 @@ actions:
   - target: $["paths"]["/api/index/v1/indexuser"]["post"]
     update:
       x-speakeasy-name-override: indexUser
-      x-speakeasy-group: index.permissions
+      x-speakeasy-group: indexing.permissions
     x-speakeasy-metadata:
       after: sdk.permissions.indexUser()
       before: sdk.Permissions.post_/api/index/v1/indexuser()
@@ -921,7 +921,7 @@ actions:
   - target: $["paths"]["/api/index/v1/indexmembership"]["post"]
     update:
       x-speakeasy-name-override: indexMembership
-      x-speakeasy-group: index.permissions
+      x-speakeasy-group: indexing.permissions
     x-speakeasy-metadata:
       after: sdk.permissions.indexMembership()
       before: sdk.Permissions.post_/api/index/v1/indexmembership()
@@ -971,7 +971,7 @@ actions:
   - target: $["paths"]["/api/index/v1/indexdocument"]["post"]
     update:
       x-speakeasy-name-override: addOrUpdate
-      x-speakeasy-group: index.documents
+      x-speakeasy-group: indexing.documents
     x-speakeasy-metadata:
       after: sdk.documents.addOrUpdate()
       before: sdk.Documents.post_/api/index/v1/indexdocument()
@@ -981,7 +981,7 @@ actions:
   - target: $["paths"]["/api/index/v1/deletegroup"]["post"]
     update:
       x-speakeasy-name-override: deleteGroup
-      x-speakeasy-group: index.permissions
+      x-speakeasy-group: indexing.permissions
     x-speakeasy-metadata:
       after: sdk.permissions.deleteGroup()
       before: sdk.Permissions.post_/api/index/v1/deletegroup()
@@ -1031,7 +1031,7 @@ actions:
   - target: $["paths"]["/api/index/v1/deleteuser"]["post"]
     update:
       x-speakeasy-name-override: deleteUser
-      x-speakeasy-group: index.permissions
+      x-speakeasy-group: indexing.permissions
     x-speakeasy-metadata:
       after: sdk.permissions.deleteUser()
       before: sdk.Permissions.post_/api/index/v1/deleteuser()
@@ -1051,7 +1051,7 @@ actions:
   - target: $["paths"]["/api/index/v1/getdatasourceconfig"]["post"]
     update:
       x-speakeasy-name-override: getConfig
-      x-speakeasy-group: index.datasources
+      x-speakeasy-group: indexing.datasources
     x-speakeasy-metadata:
       after: sdk.datasources.getConfig()
       before: sdk.Datasources.post_/api/index/v1/getdatasourceconfig()
@@ -1081,7 +1081,7 @@ actions:
   - target: $["paths"]["/api/index/v1/deleteteam"]["post"]
     update:
       x-speakeasy-name-override: deleteTeam
-      x-speakeasy-group: index.people
+      x-speakeasy-group: indexing.people
     x-speakeasy-metadata:
       after: sdk.people.deleteTeam()
       before: sdk.People.post_/api/index/v1/deleteteam()
@@ -1161,7 +1161,7 @@ actions:
   - target: $["paths"]["/api/index/v1/deletemembership"]["post"]
     update:
       x-speakeasy-name-override: deleteMembership
-      x-speakeasy-group: index.permissions
+      x-speakeasy-group: indexing.permissions
     x-speakeasy-metadata:
       after: sdk.permissions.deleteMembership()
       before: sdk.Permissions.post_/api/index/v1/deletemembership()
@@ -1211,7 +1211,7 @@ actions:
   - target: $["paths"]["/api/index/v1/adddatasource"]["post"]
     update:
       x-speakeasy-name-override: add
-      x-speakeasy-group: index.datasources
+      x-speakeasy-group: indexing.datasources
     x-speakeasy-metadata:
       after: sdk.datasources.add()
       before: sdk.Datasources.post_/api/index/v1/adddatasource()
@@ -1221,7 +1221,7 @@ actions:
   - target: $["paths"]["/api/index/v1/debug/{datasource}/user"]["post"]
     update:
       x-speakeasy-name-override: debugUser
-      x-speakeasy-group: index.troubleshooting
+      x-speakeasy-group: indexing.troubleshooting
     x-speakeasy-metadata:
       after: sdk.troubleshooting.debugUser()
       before: sdk.Troubleshooting.post_/api/index/v1/debug/{datasource}/user()
@@ -1231,7 +1231,7 @@ actions:
   - target: $["paths"]["/api/index/v1/indexdocuments"]["post"]
     update:
       x-speakeasy-name-override: index
-      x-speakeasy-group: index.documents
+      x-speakeasy-group: indexing.documents
     x-speakeasy-metadata:
       after: sdk.documents.index()
       before: sdk.Documents.post_/api/index/v1/indexdocuments()
@@ -1261,7 +1261,7 @@ actions:
   - target: $["paths"]["/api/index/v1/updatepermissions"]["post"]
     update:
       x-speakeasy-name-override: updatePermissions
-      x-speakeasy-group: index.permissions
+      x-speakeasy-group: indexing.permissions
     x-speakeasy-metadata:
       after: sdk.documents.updatePermissions()
       before: sdk.Documents.post_/api/index/v1/updatepermissions()
@@ -1271,7 +1271,7 @@ actions:
   - target: $["paths"]["/api/index/v1/processallmemberships"]["post"]
     update:
       x-speakeasy-name-override: processMemberships
-      x-speakeasy-group: index.permissions
+      x-speakeasy-group: indexing.permissions
     x-speakeasy-metadata:
       after: sdk.permissions.processMemberships()
       before: sdk.Permissions.post_/api/index/v1/processallmemberships()
@@ -1281,7 +1281,7 @@ actions:
   - target: $["paths"]["/api/index/v1/bulkindexteams"]["post"]
     update:
       x-speakeasy-name-override: bulkIndexTeams
-      x-speakeasy-group: index.people
+      x-speakeasy-group: indexing.people
     x-speakeasy-metadata:
       after: sdk.people.bulkIndexTeams()
       before: sdk.People.post_/api/index/v1/bulkindexteams()
@@ -1301,7 +1301,7 @@ actions:
   - target: $["paths"]["/api/index/v1/bulkindexusers"]["post"]
     update:
       x-speakeasy-name-override: bulkIndexUsers
-      x-speakeasy-group: index.permissions
+      x-speakeasy-group: indexing.permissions
     x-speakeasy-metadata:
       after: sdk.permissions.bulkIndexUsers()
       before: sdk.Permissions.post_/api/index/v1/bulkindexusers()
