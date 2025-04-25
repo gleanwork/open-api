@@ -18,7 +18,8 @@ sources:
             - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-typescript-code-samples
             - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-python-code-samples
             - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-java-code-samples
-            - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-go-code-samples
+            # Removing Go until the bug fix since there aren't yet any code snippets
+            # - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-go-code-samples Removing Go until the bug fix since there aren't yet any code snippets
         output: glean-client-combined-spec.yaml
         registry:
             location: registry.speakeasyapi.dev/glean-el2/sdk/glean-client-combined-spec
@@ -29,7 +30,8 @@ sources:
             - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-typescript-code-samples
             - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-python-code-samples
             - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-java-code-samples
-            - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-go-code-samples
+           # Removing Go until the bug fix since there aren't yet any code snippets
+           # - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-go-code-samples
         output: glean-index-combined-spec.yaml
         registry:
             location: registry.speakeasyapi.dev/glean-el2/sdk/glean-index-combined-spec
