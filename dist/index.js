@@ -34352,7 +34352,7 @@ var __webpack_exports__ = {};
 
 // EXPORTS
 __nccwpck_require__.d(__webpack_exports__, {
-  G: () => (/* binding */ downloadYaml),
+  a: () => (/* binding */ readYamlFromFile),
   e: () => (/* binding */ run)
 });
 
@@ -34360,8 +34360,6 @@ __nccwpck_require__.d(__webpack_exports__, {
 var core = __nccwpck_require__(7484);
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(3228);
-// EXTERNAL MODULE: ./node_modules/@actions/http-client/lib/index.js
-var lib = __nccwpck_require__(4844);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __nccwpck_require__(9896);
 // EXTERNAL MODULE: external "path"
@@ -38299,19 +38297,13 @@ function transform(content) {
 
 
 
-
-// URLs for the OpenAPI specification files
-const URLS = [
-  'https://api.redoc.ly/registry/assets/glean/Glean%20Client%20API/v1/public/client_rest.yaml?branch=main', // Client API
-  'https://api.redoc.ly/registry/assets/glean/Glean%20Indexing%20API/v1/public/indexing.yaml?branch=main' // Indexing API
-];
-
-const OUTPUT_FILES = [
-  'client_rest.yaml', // Client API
-  'indexing.yaml' // Indexing API
-];
-
+const SOURCE_DIR = 'source_specs';
 const OUTPUT_DIR = 'generated_specs';
+
+const SPEC_FILES = [
+  'client_rest.yaml',
+  'indexing.yaml'
+];
 
 async function ensureDirectoryExists(directory) {
   if (!external_fs_.existsSync(directory)) {
@@ -38399,14 +38391,11 @@ async function commitFiles(files, commitMessage = 'Update OpenAPI specs') {
   }
 }
 
-async function downloadYaml(url) {
+async function readYamlFromFile(filePath) {
   try {
-    const http = new lib.HttpClient('openapi-preprocessor');
-    const response = await http.get(url);
-    const body = await response.readBody();
-    return body;
+    return external_fs_.readFileSync(filePath, 'utf8');
   } catch (error) {
-    core.setFailed(`Error downloading from ${url}: ${error.message}`);
+    core.setFailed(`Error reading file ${filePath}: ${error.message}`);
     throw error;
   }
 }
@@ -38417,15 +38406,14 @@ async function run() {
     
     const outputFilePaths = [];
     
-    for (let i = 0; i < URLS.length; i++) {
-      const url = URLS[i];
-      const outputFileName = OUTPUT_FILES[i];
-      const outputFilePath = external_path_.join(OUTPUT_DIR, outputFileName);
+    for (const specFile of SPEC_FILES) {
+      const sourceFilePath = external_path_.join(SOURCE_DIR, specFile);
+      const outputFilePath = external_path_.join(OUTPUT_DIR, specFile);
       outputFilePaths.push(outputFilePath);
       
-      core.info(`Processing ${url}`);
+      core.info(`Processing ${sourceFilePath}`);
       
-      const yamlContent = await downloadYaml(url);
+      const yamlContent = await readYamlFromFile(sourceFilePath);
       
       const transformedYaml = transform(yamlContent);
       
@@ -38450,8 +38438,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   run();
 }
 
-var __webpack_exports__downloadYaml = __webpack_exports__.G;
+var __webpack_exports__readYamlFromFile = __webpack_exports__.a;
 var __webpack_exports__run = __webpack_exports__.e;
-export { __webpack_exports__downloadYaml as downloadYaml, __webpack_exports__run as run };
+export { __webpack_exports__readYamlFromFile as readYamlFromFile, __webpack_exports__run as run };
 
 //# sourceMappingURL=index.js.map
