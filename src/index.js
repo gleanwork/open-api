@@ -1,22 +1,16 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { HttpClient } from '@actions/http-client';
 import * as fs from 'fs';
 import * as path from 'path';
 import { transform } from './transformer.js';
 
-// URLs for the OpenAPI specification files
-const URLS = [
-  'https://api.redoc.ly/registry/assets/glean/Glean%20Client%20API/v1/public/client_rest.yaml?branch=main', // Client API
-  'https://api.redoc.ly/registry/assets/glean/Glean%20Indexing%20API/v1/public/indexing.yaml?branch=main' // Indexing API
-];
-
-const OUTPUT_FILES = [
-  'client_rest.yaml', // Client API
-  'indexing.yaml' // Indexing API
-];
-
+const SOURCE_DIR = 'source_specs';
 const OUTPUT_DIR = 'generated_specs';
+
+const SPEC_FILES = [
+  'client_rest.yaml',
+  'indexing.yaml'
+];
 
 async function ensureDirectoryExists(directory) {
   if (!fs.existsSync(directory)) {
@@ -104,14 +98,11 @@ async function commitFiles(files, commitMessage = 'Update OpenAPI specs') {
   }
 }
 
-export async function downloadYaml(url) {
+export async function readYamlFromFile(filePath) {
   try {
-    const http = new HttpClient('openapi-preprocessor');
-    const response = await http.get(url);
-    const body = await response.readBody();
-    return body;
+    return fs.readFileSync(filePath, 'utf8');
   } catch (error) {
-    core.setFailed(`Error downloading from ${url}: ${error.message}`);
+    core.setFailed(`Error reading file ${filePath}: ${error.message}`);
     throw error;
   }
 }
@@ -122,15 +113,14 @@ export async function run() {
     
     const outputFilePaths = [];
     
-    for (let i = 0; i < URLS.length; i++) {
-      const url = URLS[i];
-      const outputFileName = OUTPUT_FILES[i];
-      const outputFilePath = path.join(OUTPUT_DIR, outputFileName);
+    for (const specFile of SPEC_FILES) {
+      const sourceFilePath = path.join(SOURCE_DIR, specFile);
+      const outputFilePath = path.join(OUTPUT_DIR, specFile);
       outputFilePaths.push(outputFilePath);
       
-      core.info(`Processing ${url}`);
+      core.info(`Processing ${sourceFilePath}`);
       
-      const yamlContent = await downloadYaml(url);
+      const yamlContent = await readYamlFromFile(sourceFilePath);
       
       const transformedYaml = transform(yamlContent);
       

@@ -2,12 +2,11 @@ name: Transform OpenAPI Specs
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Daily at midnight
-  workflow_dispatch:  # Allow manual trigger
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 permissions:
-  contents: write  # Permission to write to the repository
-
+  contents: write
 jobs:
   transform:
     runs-on: ubuntu-latest
@@ -15,12 +14,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Important for git history when committing
+          fetch-depth: 0
         
+      # No need to explicitly configure Git or commit changes,
+      # as this is already handled in the action itself
       - name: Transform OpenAPI specs
         uses: ./
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
-      # No need to explicitly configure Git or commit changes,
-      # as this is already handled in the action itself
