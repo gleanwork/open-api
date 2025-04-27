@@ -16,9 +16,7 @@ jobs:
         with:
           fetch-depth: 0
         
-      # No need to explicitly configure Git or commit changes,
-      # as this is already handled in the action itself
-      - name: Transform OpenAPI specs
+      - name: Transform OpenAPI spec paths
         uses: ./
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -26,13 +24,13 @@ jobs:
       - name: Install Speakeasy CLI
         run: brew install speakeasy-api/homebrew-tap/speakeasy
       
-      - name: Run Speakeasy
+      - name: Generate updated OpenAPI specs
         run: speakeasy run -s all
         env:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
       
-      - name: Commit Speakeasy changes
+      - name: Commit all changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "Update Speakeasy generated files"
-          file_pattern: ".speakeasy/* merged_code_samples_specs/* overlayed_specs/*"
+          commit_message: "Update OpenAPI specs and Speakeasy generated files"
+          file_pattern: "generated_specs/* .speakeasy/* merged_code_samples_specs/* overlayed_specs/*"
