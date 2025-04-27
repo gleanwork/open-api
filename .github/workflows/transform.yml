@@ -15,7 +15,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-        
+          
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          
       - name: Transform OpenAPI spec paths
         uses: ./
         env:
@@ -29,8 +34,30 @@ jobs:
         env:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
       
-      - name: Commit all changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "Update OpenAPI specs and Speakeasy generated files"
-          file_pattern: "generated_specs/* .speakeasy/* merged_code_samples_specs/* overlayed_specs/*"
+      - name: Commit and push changes with rebase
+        run: |
+          # Stage changes
+          git add generated_specs/* .speakeasy/* merged_code_samples_specs/* overlayed_specs/*
+          
+          # Only commit if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          
+          # Create commit
+          git commit -m "Update OpenAPI specs and Speakeasy generated files"
+          
+          # Get the current branch name
+          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+          
+          # Fetch latest changes from remote
+          git fetch origin $BRANCH_NAME
+          
+          # Rebase our changes on top of the latest changes from remote
+          git rebase origin/$BRANCH_NAME
+          
+          # Push the changes
+          git push origin $BRANCH_NAME
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
