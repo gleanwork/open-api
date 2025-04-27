@@ -68,7 +68,7 @@ paths:
             });
 
             async function run() {
-              await glean.indexing.documents.index({
+              await glean.indexing.documents.addOrUpdate({
                 document: {
                   datasource: "<value>",
                 },
@@ -161,12 +161,9 @@ paths:
             });
 
             async function run() {
-              await glean.indexing.documents.addOrUpdate({
+              await glean.indexing.documents.index({
                 datasource: "<value>",
                 documents: [
-                  {
-                    datasource: "<value>",
-                  },
                   {
                     datasource: "<value>",
                   },
@@ -333,9 +330,8 @@ paths:
             }
   /api/index/v1/updatepermissions:
     post:
-      x-beta: true
       summary: Update document permissions
-      description: Updates the permissions for a given document without modifying document content. **This endpoint is not yet generally available. Please contact Glean support to enable this feature.**
+      description: Updates the permissions for a given document without modifying document content.
       tags:
         - Documents
       requestBody:
@@ -367,7 +363,7 @@ paths:
             });
 
             async function run() {
-              await glean.indexing.documents.updatePermissions({
+              await glean.indexing.permissions.updatePermissions({
                 datasource: "<value>",
                 permissions: {},
               });
@@ -951,10 +947,13 @@ paths:
             });
 
             async function run() {
-              await glean.indexing.permissions.bulkIndex({
+              await glean.indexing.permissions.bulkIndexGroups({
                 uploadId: "<id>",
                 datasource: "<value>",
                 groups: [
+                  {
+                    name: "<value>",
+                  },
                   {
                     name: "<value>",
                   },
@@ -1058,7 +1057,7 @@ paths:
             });
 
             async function run() {
-              await glean.indexing.permissions.addMemberships({
+              await glean.indexing.permissions.indexMembership({
                 datasource: "<value>",
                 membership: {
                   groupName: "<value>",
@@ -1253,7 +1252,7 @@ paths:
             });
 
             async function run() {
-              await glean.indexing.permissions.processAllMemberships();
+              await glean.indexing.permissions.processMemberships();
 
 
             }
@@ -1606,7 +1605,7 @@ paths:
             });
 
             async function run() {
-              const result = await glean.indexing.troubleshooting.getStatus({
+              const result = await glean.indexing.troubleshooting.getDatasourceStatus({
                 datasource: "<value>",
               });
 
@@ -1703,7 +1702,7 @@ paths:
             });
 
             async function run() {
-              const result = await glean.indexing.troubleshooting.documentDebug({
+              const result = await glean.indexing.troubleshooting.postDocumentDebug({
                 datasource: "<value>",
                 debugDocumentRequest: {
                   objectType: "Article",
@@ -1768,7 +1767,7 @@ paths:
       summary: |
         Beta: Get information of a batch of documents
       description: |
-        Gives various information that would help in debugging related to a batch of documents. Currently in beta, might undergo breaking changes without prior notice. **This endpoint is not yet generally available. Please contact Glean support to enable this feature.**
+        Gives various information that would help in debugging related to a batch of documents. Currently in beta, might undergo breaking changes without prior notice.
 
         Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/docs/indexing_api/indexing_api_troubleshooting/) for more information.
       tags:
@@ -1809,10 +1808,14 @@ paths:
             });
 
             async function run() {
-              const result = await glean.client.troubleshooting.getDocumentDebugInfo({
+              const result = await glean.indexing.troubleshooting.postDocumentsDebug({
                 datasource: "<value>",
                 debugDocumentsRequest: {
                   debugDocuments: [
+                    {
+                      objectType: "Article",
+                      docId: "art123",
+                    },
                     {
                       objectType: "Article",
                       docId: "art123",
@@ -2218,9 +2221,12 @@ paths:
             });
 
             async function run() {
-              await glean.indexing.permissions.allowBetaUsers({
+              await glean.indexing.permissions.authorizeBetaUsers({
                 datasource: "<value>",
-                emails: [],
+                emails: [
+                  "Margaret94@gmail.com",
+                  "Jerel_Wilkinson39@yahoo.com",
+                ],
               });
 
 
@@ -2308,7 +2314,7 @@ paths:
             });
 
             async function run() {
-              await glean.indexing.datasources.addOrUpdate({
+              await glean.indexing.datasources.add({
                 name: "<value>",
                 urlRegex: "https://example-company.datasource.com/.*",
                 quicklinks: [
@@ -2737,24 +2743,9 @@ paths:
             });
 
             async function run() {
-              await glean.indexing.people.bulkIndex({
+              await glean.indexing.people.bulkIndexEmployees({
                 uploadId: "<id>",
-                employees: [
-                  {
-                    email: "Kiera_Bashirian18@yahoo.com",
-                    department: "<value>",
-                    datasourceProfiles: [
-                      {
-                        datasource: "github",
-                        handle: "<value>",
-                      },
-                      {
-                        datasource: "github",
-                        handle: "<value>",
-                      },
-                    ],
-                  },
-                ],
+                employees: [],
               });
 
 
@@ -2856,7 +2847,7 @@ paths:
             });
 
             async function run() {
-              await glean.indexing.people.processAll();
+              await glean.indexing.people.processAllEmployeesAndTeams();
 
 
             }
@@ -2932,7 +2923,7 @@ paths:
             });
 
             async function run() {
-              await glean.indexing.people.deleteEmployee({
+              await glean.indexing.people.delete({
                 employeeEmail: "<value>",
               });
 
@@ -3183,7 +3174,7 @@ paths:
             });
 
             async function run() {
-              await glean.indexing.permissions.deleteTeam({
+              await glean.indexing.people.deleteTeam({
                 id: "<id>",
               });
 
@@ -3462,7 +3453,7 @@ paths:
             });
 
             async function run() {
-              await glean.indexing.shortcuts.upload({
+              await glean.client.shortcuts.upload({
                 uploadId: "<id>",
                 shortcuts: [
                   {

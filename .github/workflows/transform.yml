@@ -9,7 +9,7 @@ permissions:
   contents: write
 jobs:
   transform:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     
     steps:
       - uses: actions/checkout@v4
@@ -22,4 +22,15 @@ jobs:
         uses: ./
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
+      
+      - name: Install Speakeasy CLI
+        run: brew install speakeasy-api/homebrew-tap/speakeasy
+      
+      - name: Run Speakeasy
+        run: speakeasy run -s all
+      
+      - name: Commit Speakeasy changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Update Speakeasy generated files"
+          file_pattern: ".speakeasy/* merged_code_samples_specs/* overlayed_specs/*"
