@@ -9222,7 +9222,7 @@ paths:
                 insightsRequest: {
                   categories: [
                     "CONTENT",
-                    "CONTENT",
+                    "COLLECTIONS",
                   ],
                 },
               });
