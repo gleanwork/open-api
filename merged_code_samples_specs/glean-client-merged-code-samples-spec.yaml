@@ -111,16 +111,16 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
-            from glean_api_client.utils import parse_datetime
+            from glean import Glean, models
+            from glean.utils import parse_datetime
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.activity.report(events=[
+                g_client.client.activity.report(events=[
                     {
                         "action": models.ActivityEventAction.HISTORICAL_VIEW,
                         "timestamp": parse_datetime("2000-01-23T04:56:07.000Z"),
@@ -259,15 +259,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.activities.report_activity(feedback1={
+                g_client.client.activities.report_activity(feedback1={
                     "tracking_tokens": [
                         "trackingTokens",
                     ],
@@ -385,16 +385,16 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
-            from glean_api_client.utils import parse_datetime
+            from glean import Glean, models
+            from glean.utils import parse_datetime
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.announcements.create(start_time=parse_datetime("2024-06-17T07:14:55.338Z"), end_time=parse_datetime("2024-11-30T17:06:07.804Z"), title="<value>", body={
+                res = g_client.client.announcements.create(start_time=parse_datetime("2024-06-17T07:14:55.338Z"), end_time=parse_datetime("2024-11-30T17:06:07.804Z"), title="<value>", body={
                     "text": "From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
                     "structured_list": [],
                 }, audience_filters=[
@@ -541,15 +541,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.announcements.create_draft(body={
+                res = g_client.client.announcements.create_draft(body={
                     "text": "From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
                     "structured_list": [],
                 }, audience_filters=[
@@ -669,15 +669,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.announcements.delete(id=545907)
+                g_client.client.announcements.delete(id=545907)
 
                 # Use the SDK ...
         - lang: java
@@ -760,15 +760,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.announcements.delete_draft(id=171443)
+                g_client.client.announcements.delete_draft(id=171443)
 
                 # Use the SDK ...
         - lang: java
@@ -856,15 +856,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.announcements.get(id=700347)
+                res = g_client.client.announcements.get(id=700347)
 
                 # Handle response
                 print(res)
@@ -955,15 +955,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.announcements.get_draft(id=476509)
+                res = g_client.client.announcements.get_draft(id=476509)
 
                 # Handle response
                 print(res)
@@ -1052,15 +1052,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.announcements.list()
+                res = g_client.client.announcements.list()
 
                 # Handle response
                 print(res)
@@ -1150,15 +1150,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.announcements.preview(text="From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.")
+                res = g_client.client.announcements.preview(text="From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.")
 
                 # Handle response
                 print(res)
@@ -1361,15 +1361,15 @@ paths:
           label: Python (SDK)
           source: |-
             from datetime import date
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.announcements.preview_draft(draft=models.UgcDraft(
+                res = g_client.client.announcements.preview_draft(draft=models.UgcDraft(
                     announcement=models.AnnouncementMutableProperties(
                         body=models.StructuredText(
                             text="From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
@@ -1668,15 +1668,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.announcements.publish(id=876134)
+                g_client.client.announcements.publish(id=876134)
 
                 # Use the SDK ...
         - lang: java
@@ -1764,15 +1764,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.announcements.unpublish(id=195182)
+                res = g_client.client.announcements.unpublish(id=195182)
 
                 # Handle response
                 print(res)
@@ -1885,16 +1885,16 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
-            from glean_api_client.utils import parse_datetime
+            from glean import Glean, models
+            from glean.utils import parse_datetime
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.announcements.update(start_time=parse_datetime("2025-07-28T19:04:48.565Z"), end_time=parse_datetime("2024-10-16T10:52:42.015Z"), title="<value>", id=761625, body={
+                res = g_client.client.announcements.update(start_time=parse_datetime("2025-07-28T19:04:48.565Z"), end_time=parse_datetime("2024-10-16T10:52:42.015Z"), title="<value>", id=761625, body={
                     "text": "From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
                     "structured_list": [],
                 }, audience_filters=[
@@ -2043,15 +2043,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.announcements.update_draft(draft_id=758103, body={
+                res = g_client.client.announcements.update_draft(draft_id=758103, body={
                     "text": "From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
                     "structured_list": [],
                 }, audience_filters=[
@@ -2270,15 +2270,15 @@ paths:
           label: Python (SDK)
           source: |-
             from datetime import date
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.answers.create(data={
+                res = g_client.client.answers.create(data={
                     "question": "Why is the sky blue?",
                     "body_text": "From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
                     "audience_filters": [
@@ -2542,15 +2542,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.answers.delete(id=3, doc_id="ANSWERS_answer_3")
+                g_client.client.answers.delete(id=3, doc_id="ANSWERS_answer_3")
 
                 # Use the SDK ...
         - lang: java
@@ -2720,15 +2720,15 @@ paths:
           label: Python (SDK)
           source: |-
             from datetime import date
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.answers.edit(id=3, doc_id="ANSWERS_answer_3", question="Why is the sky blue?", body_text="From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.", audience_filters=[
+                res = g_client.client.answers.edit(id=3, doc_id="ANSWERS_answer_3", question="Why is the sky blue?", body_text="From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.", audience_filters=[
                     {
                         "field_name": "type",
                         "values": [
@@ -3061,15 +3061,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.answers.get(id=3, doc_id="ANSWERS_answer_3")
+                res = g_client.client.answers.get(id=3, doc_id="ANSWERS_answer_3")
 
                 # Handle response
                 print(res)
@@ -3159,15 +3159,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.answers.list()
+                res = g_client.client.answers.list()
 
                 # Handle response
                 print(res)
@@ -3257,15 +3257,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.answers.preview(text="From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.")
+                res = g_client.client.answers.preview(text="From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.")
 
                 # Handle response
                 print(res)
@@ -3468,15 +3468,15 @@ paths:
           label: Python (SDK)
           source: |-
             from datetime import date
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.answers.preview_draft(draft=models.UgcDraft(
+                res = g_client.client.answers.preview_draft(draft=models.UgcDraft(
                     announcement=models.AnnouncementMutableProperties(
                         body=models.StructuredText(
                             text="From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
@@ -3782,15 +3782,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.answers.update_likes(answer_id=3, action=models.UpdateAnswerLikesRequestAction.LIKE, answer_doc_id="ANSWERS_answer_3")
+                res = g_client.client.answers.update_likes(answer_id=3, action=models.UpdateAnswerLikesRequestAction.LIKE, answer_doc_id="ANSWERS_answer_3")
 
                 # Handle response
                 print(res)
@@ -4038,15 +4038,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.authentication.create_anonymous_token()
+                res = g_client.client.authentication.create_anonymous_token()
 
                 # Handle response
                 print(res)
@@ -4120,15 +4120,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.authentication.create_token()
+                res = g_client.client.authentication.create_token()
 
                 # Handle response
                 print(res)
@@ -4224,15 +4224,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.calendar.get_events(ids=[], auth_tokens=[
+                res = g_client.client.calendar.get_events(ids=[], auth_tokens=[
                     {
                         "access_token": "123abc",
                         "datasource": "gmail",
@@ -4525,16 +4525,16 @@ paths:
           label: Python (SDK)
           source: |-
             from datetime import date
-            from glean_api_client import Glean, models
-            from glean_api_client.utils import parse_datetime
+            from glean import Glean, models
+            from glean.utils import parse_datetime
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.chat.ask(ask_request=models.AskRequest(
+                res = g_client.client.chat.ask(ask_request=models.AskRequest(
                     search_request=models.SearchRequest(
                         tracking_token="trackingToken",
                         source_document=models.Document(
@@ -5075,15 +5075,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.chat.start(messages=[
+                res = g_client.client.chat.start(messages=[
                     {
                         "fragments": [
                             models.ChatMessageFragment(
@@ -5173,15 +5173,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.chat.delete_all()
+                g_client.client.chat.delete_all()
 
                 # Use the SDK ...
         - lang: java
@@ -5265,15 +5265,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.chat.delete(ids=[
+                g_client.client.chat.delete(ids=[
                     "<value>",
                     "<value>",
                 ])
@@ -5369,15 +5369,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.chat.get(id="<id>")
+                res = g_client.client.chat.get(id="<id>")
 
                 # Handle response
                 print(res)
@@ -5457,15 +5457,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.chat.list()
+                res = g_client.client.chat.list()
 
                 # Handle response
                 print(res)
@@ -5552,15 +5552,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.chat.get_application(id="<id>")
+                res = g_client.client.chat.get_application(id="<id>")
 
                 # Handle response
                 print(res)
@@ -5652,15 +5652,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.chat.upload_files(files=[])
+                res = g_client.client.chat.upload_files(files=[])
 
                 # Handle response
                 print(res)
@@ -5756,15 +5756,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.chat.get_files(file_ids=[
+                res = g_client.client.chat.get_files(file_ids=[
                     "<value>",
                     "<value>",
                 ])
@@ -5858,15 +5858,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.chat.delete_files(file_ids=[
+                g_client.client.chat.delete_files(file_ids=[
                     "<value>",
                 ])
 
@@ -5958,15 +5958,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.agents.runagent()
+                res = g_client.agents.runagent()
 
                 # Handle response
                 print(res)
@@ -6052,15 +6052,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.agents.listagents()
+                res = g_client.agents.listagents()
 
                 # Handle response
                 print(res)
@@ -6147,15 +6147,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.agents.getagentinputs()
+                res = g_client.agents.getagentinputs()
 
                 # Handle response
                 print(res)
@@ -6245,15 +6245,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.collections.add_items(collection_id=6460.15)
+                res = g_client.client.collections.add_items(collection_id=6460.15)
 
                 # Handle response
                 print(res)
@@ -6426,15 +6426,15 @@ paths:
           label: Python (SDK)
           source: |-
             from datetime import date
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.collections.create(name="<value>", added_roles=[
+                res = g_client.client.collections.create(name="<value>", added_roles=[
                     models.UserRoleSpecification(
                         person=models.Person(
                             name="George Clooney",
@@ -6713,15 +6713,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.collections.delete(ids=[
+                g_client.client.collections.delete(ids=[
                     698486,
                     386564,
                 ])
@@ -6819,15 +6819,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.collections.delete_item(collection_id=1357.59, item_id="<id>")
+                res = g_client.client.collections.delete_item(collection_id=1357.59, item_id="<id>")
 
                 # Handle response
                 print(res)
@@ -6999,15 +6999,15 @@ paths:
           label: Python (SDK)
           source: |-
             from datetime import date
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.collections.update(name="<value>", id=720396, added_roles=[
+                res = g_client.client.collections.update(name="<value>", id=720396, added_roles=[
                     models.UserRoleSpecification(
                         person=models.Person(
                             name="George Clooney",
@@ -7278,15 +7278,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.collections.edit_item(collection_id=795203, item_id="<id>")
+                res = g_client.client.collections.edit_item(collection_id=795203, item_id="<id>")
 
                 # Handle response
                 print(res)
@@ -7376,15 +7376,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.collections.edit()
+                res = g_client.client.collections.edit()
 
                 # Handle response
                 print(res)
@@ -7474,15 +7474,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.collections.get(id=700347)
+                res = g_client.client.collections.get(id=700347)
 
                 # Handle response
                 print(res)
@@ -7571,15 +7571,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.collections.list()
+                res = g_client.client.collections.list()
 
                 # Handle response
                 print(res)
@@ -7672,15 +7672,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.collections.move_item(collection_id=451684, item_id="<id>")
+                res = g_client.client.collections.move_item(collection_id=451684, item_id="<id>")
 
                 # Handle response
                 print(res)
@@ -7770,15 +7770,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.collections.pin()
+                res = g_client.client.collections.pin()
 
                 # Handle response
                 print(res)
@@ -7890,15 +7890,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.displayable_lists.create(items=[
+                res = g_client.client.displayable_lists.create(items=[
                     {
                         "config": {
                             "audience_filters": [
@@ -8027,15 +8027,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.displayable_lists.delete(ids=[
+                g_client.client.displayable_lists.delete(ids=[
                     698486,
                     386564,
                 ])
@@ -8133,15 +8133,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.displayable_lists.get(ids=[
+                res = g_client.client.displayable_lists.get(ids=[
                     558834,
                     544221,
                 ])
@@ -8298,15 +8298,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.displayable_lists.update(items=[
+                res = g_client.client.displayable_lists.update(items=[
                     {
                         "config": {
                             "audience_filters": [
@@ -8507,15 +8507,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.documents.get_permissions()
+                res = g_client.client.documents.get_permissions()
 
                 # Handle response
                 print(res)
@@ -8601,15 +8601,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.documents.get()
+                res = g_client.client.documents.get()
 
                 # Handle response
                 print(res)
@@ -8731,15 +8731,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.documents.get_by_facets(get_documents_by_facets_request={
+                res = g_client.client.documents.get_by_facets(get_documents_by_facets_request={
                     "filter_sets": [
                         {
                             "filters": [
@@ -8892,15 +8892,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.documents.get_analytics()
+                res = g_client.client.documents.get_analytics()
 
                 # Handle response
                 print(res)
@@ -9006,15 +9006,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.images.get()
+                res = g_client.client.images.get()
 
                 # Handle response
                 print(res)
@@ -9130,15 +9130,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.images.upload(request_body=open("example.file", "rb"))
+                res = g_client.client.images.upload(request_body=open("example.file", "rb"))
 
                 # Handle response
                 print(res)
@@ -9235,15 +9235,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.insights.get(categories=[
+                res = g_client.client.insights.get(categories=[
                     models.InsightsRequestCategory.CONTENT,
                     models.InsightsRequestCategory.COLLECTIONS,
                 ])
@@ -9342,15 +9342,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.messages.get(id_type=models.IDType.CONVERSATION_ID, id="<id>")
+                res = g_client.client.messages.get(id_type=models.IDType.CONVERSATION_ID, id="<id>")
 
                 # Handle response
                 print(res)
@@ -9457,15 +9457,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.pins.edit(audience_filters=[
+                res = g_client.client.pins.edit(audience_filters=[
                     {
                         "field_name": "type",
                         "values": [
@@ -9581,15 +9581,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.pins.get()
+                res = g_client.client.pins.get()
 
                 # Handle response
                 print(res)
@@ -9677,15 +9677,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.pins.list(request_body={})
+                res = g_client.client.pins.list(request_body={})
 
                 # Handle response
                 print(res)
@@ -9789,15 +9789,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.pins.create(audience_filters=[
+                res = g_client.client.pins.create(audience_filters=[
                     {
                         "field_name": "type",
                         "values": [
@@ -9910,15 +9910,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.pins.remove()
+                g_client.client.pins.remove()
 
                 # Use the SDK ...
         - lang: java
@@ -10204,16 +10204,16 @@ paths:
           label: Python (SDK)
           source: |-
             from datetime import date
-            from glean_api_client import Glean, models
-            from glean_api_client.utils import parse_datetime
+            from glean import Glean, models
+            from glean.utils import parse_datetime
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.search.admin(search_request=models.SearchRequest(
+                res = g_client.client.search.admin(search_request=models.SearchRequest(
                     tracking_token="trackingToken",
                     source_document=models.Document(
                         metadata=models.DocumentMetadata(
@@ -10682,15 +10682,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.search.autocomplete(tracking_token="trackingToken", query="San Fra", datasource="GDRIVE", result_size=10, auth_tokens=[
+                res = g_client.client.search.autocomplete(tracking_token="trackingToken", query="San Fra", datasource="GDRIVE", result_size=10, auth_tokens=[
                     {
                         "access_token": "123abc",
                         "datasource": "gmail",
@@ -10804,15 +10804,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.search.get_feed(timeout_millis=5000)
+                res = g_client.client.search.get_feed(timeout_millis=5000)
 
                 # Handle response
                 print(res)
@@ -10900,15 +10900,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.search.suggest_people(categories=[
+                res = g_client.client.search.suggest_people(categories=[
                     models.PeopleSuggestionCategory.INVITE_NONUSERS,
                     models.PeopleSuggestionCategory.INVITE_NONUSERS,
                 ])
@@ -11002,15 +11002,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.search.suggest_people_admin(categories=[
+                res = g_client.client.search.suggest_people_admin(categories=[
                     models.PeopleSuggestionCategory.INVITE_NONUSERS,
                 ])
 
@@ -11245,16 +11245,16 @@ paths:
           label: Python (SDK)
           source: |-
             from datetime import date
-            from glean_api_client import Glean, models
-            from glean_api_client.utils import parse_datetime
+            from glean import Glean, models
+            from glean.utils import parse_datetime
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.search.recommendations(recommendations_request=models.RecommendationsRequest(
+                res = g_client.client.search.recommendations(recommendations_request=models.RecommendationsRequest(
                     source_document=models.Document(
                         metadata=models.DocumentMetadata(
                             datasource="datasource",
@@ -11800,16 +11800,16 @@ paths:
           label: Python (SDK)
           source: |-
             from datetime import date
-            from glean_api_client import Glean, models
-            from glean_api_client.utils import parse_datetime
+            from glean import Glean, models
+            from glean.utils import parse_datetime
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.search.execute(search_request=models.SearchRequest(
+                res = g_client.client.search.execute(search_request=models.SearchRequest(
                     tracking_token="trackingToken",
                     source_document=models.Document(
                         metadata=models.DocumentMetadata(
@@ -12257,15 +12257,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.entities.list(filter_=[
+                res = g_client.client.entities.list(filter_=[
                     {
                         "field_name": "type",
                         "values": [
@@ -12387,15 +12387,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.entities.read_people(obfuscated_ids=[
+                res = g_client.client.entities.read_people(obfuscated_ids=[
                     "abc123",
                     "abc456",
                 ])
@@ -12494,15 +12494,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.entities.get_teams(ids=[
+                res = g_client.client.entities.get_teams(ids=[
                     "abc123",
                 ])
 
@@ -12659,15 +12659,15 @@ paths:
           label: Python (SDK)
           source: |-
             from datetime import date
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.shortcuts.create(data={
+                res = g_client.client.shortcuts.create(data={
                     "added_roles": [
                         models.UserRoleSpecification(
                             person=models.Person(
@@ -12871,15 +12871,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.shortcuts.delete(id=545907)
+                g_client.client.shortcuts.delete(id=545907)
 
                 # Use the SDK ...
         - lang: java
@@ -12967,15 +12967,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.shortcuts.get(get_shortcut_request={
+                res = g_client.client.shortcuts.get(get_shortcut_request={
                     "alias": "<value>",
                 })
 
@@ -13069,15 +13069,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.shortcuts.get_similar(alias="<value>")
+                res = g_client.client.shortcuts.get_similar(alias="<value>")
 
                 # Handle response
                 print(res)
@@ -13183,15 +13183,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.shortcuts.list(page_size=10, filters=[
+                res = g_client.client.shortcuts.list(page_size=10, filters=[
                     {
                         "field_name": "type",
                         "values": [
@@ -13374,15 +13374,15 @@ paths:
           label: Python (SDK)
           source: |-
             from datetime import date
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.shortcuts.preview(added_roles=[
+                res = g_client.client.shortcuts.preview(added_roles=[
                     models.UserRoleSpecification(
                         person=models.Person(
                             name="George Clooney",
@@ -13694,15 +13694,15 @@ paths:
           label: Python (SDK)
           source: |-
             from datetime import date
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.shortcuts.update(id=857478, added_roles=[
+                res = g_client.client.shortcuts.update(id=857478, added_roles=[
                     models.UserRoleSpecification(
                         person=models.Person(
                             name="George Clooney",
@@ -13954,15 +13954,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.summarize.generate(document_specs=[
+                res = g_client.client.summarize.generate(document_specs=[
                     {},
                     {},
                 ])
@@ -14054,15 +14054,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.user.add_credential()
+                g_client.client.user.add_credential()
 
                 # Use the SDK ...
         - lang: java
@@ -14147,15 +14147,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.user.delete_query_history()
+                res = g_client.client.user.delete_query_history()
 
                 # Handle response
                 print(res)
@@ -14262,15 +14262,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean, models
+            from glean import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.user.invite(recipients=[
+                g_client.client.user.invite(recipients=[
                     models.Person(
                         name="George Clooney",
                         obfuscated_id="abc123",
@@ -14392,15 +14392,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.user.get_public_config()
+                res = g_client.client.user.get_public_config()
 
                 # Handle response
                 print(res)
@@ -14480,15 +14480,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.user.remove_credential()
+                g_client.client.user.remove_credential()
 
                 # Use the SDK ...
         - lang: java
@@ -14722,16 +14722,16 @@ paths:
           label: Python (SDK)
           source: |-
             from datetime import date
-            from glean_api_client import Glean, models
-            from glean_api_client.utils import parse_datetime
+            from glean import Glean, models
+            from glean.utils import parse_datetime
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                glean.client.user.send_support_email(email_template=models.CommunicationTemplate.ONBOARDING_TIPS, recipients=[
+                g_client.client.user.send_support_email(email_template=models.CommunicationTemplate.ONBOARDING_TIPS, recipients=[
                     models.Person(
                         name="George Clooney",
                         obfuscated_id="abc123",
@@ -15111,15 +15111,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.verification.add_reminder(document_id="<id>")
+                res = g_client.client.verification.add_reminder(document_id="<id>")
 
                 # Handle response
                 print(res)
@@ -15204,15 +15204,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.verification.list()
+                res = g_client.client.verification.list()
 
                 # Handle response
                 print(res)
@@ -15301,15 +15301,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean_api_client import Glean
+            from glean import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as glean:
+            ) as g_client:
 
-                res = glean.client.verification.verify(document_id="<id>")
+                res = g_client.client.verification.verify(document_id="<id>")
 
                 # Handle response
                 print(res)
@@ -22343,6 +22343,18 @@ components:
           $ref: "#/components/schemas/AgentMigrationStatus"
         appsMigrationStatus:
           $ref: "#/components/schemas/AgentMigrationStatus"
+    TriggersClientConfig:
+      description: Configuration settings for triggers.
+      type: object
+      properties:
+        contentChange:
+          description: Configuration of content change trigger.
+          properties:
+            enabledDatasources:
+              description: List of datasources enabled for content change triggers.
+              type: array
+              items:
+                type: string
     AssistantConfig:
       description: Configuration settings specific to Assistant features
       type: object
@@ -22413,6 +22425,8 @@ components:
         promptDeprecationTimestamp:
           type: integer
           description: The prompt deprecation time shown on the prompt library warning.
+        triggers:
+          $ref: "#/components/schemas/TriggersClientConfig"
     ToolsConfig:
       deprecated: true
       description: Configuration settings related to Tools.
