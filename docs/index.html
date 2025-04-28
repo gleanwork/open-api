@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Glean OpenAPI Specs</title>
+  <style>
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      max-width: 800px; 
+      margin: 0 auto; 
+      padding: 2rem; 
+    }
+    h1 { 
+      border-bottom: 1px solid #eaecef; 
+      padding-bottom: 0.3em; 
+    }
+    ul { 
+      padding-left: 2em; 
+    }
+    li { 
+      margin: 0.5em 0; 
+    }
+    a { 
+      color: #0366d6; 
+      text-decoration: none; 
+    }
+    a:hover { 
+      text-decoration: underline; 
+    }
+  </style>
+</head>
+<body>
+  <h1>Glean OpenAPI Specifications</h1>
+  <h2>Source Specs</h2>
+  <ul id="source-specs"></ul>
+  <h2>Merged Code Samples Specs</h2>
+  <ul id="merged-specs"></ul>
+  
+  <script>
+    function listSpecs() {
+      const sourceFiles = ['client_rest.yaml', 'indexing.yaml'];
+      const mergedFiles = ['glean-client-merged-code-samples-spec.yaml', 'glean-index-merged-code-samples-spec.yaml'];
+      
+      const sourceList = document.getElementById('source-specs');
+      sourceFiles.forEach(file => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = `specs/source/${file}`;
+        a.textContent = file;
+        li.appendChild(a);
+        sourceList.appendChild(li);
+      });
+      
+      const mergedList = document.getElementById('merged-specs');
+      mergedFiles.forEach(file => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = `specs/merged/${file}`;
+        a.textContent = file;
+        li.appendChild(a);
+        mergedList.appendChild(li);
+      });
+    }
+    
+    listSpecs();
+  </script>
+</body>
+</html> 
