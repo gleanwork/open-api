@@ -1338,3 +1338,6 @@ actions:
     update:
       x-speakeasy-name-override: reportActivity
       x-speakeasy-group: client.activities
+  - target: $["components"]["schemas"]["ErrorInfo"]
+    update:
+      x-speakeasy-name-override: GleanDataError
