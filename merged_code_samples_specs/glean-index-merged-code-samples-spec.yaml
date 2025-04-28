@@ -81,15 +81,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean, models
+            from glean_api_client import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.documents.add_or_update(document=models.DocumentDefinition(
+                glean.indexing.documents.add_or_update(document=models.DocumentDefinition(
                     datasource="<value>",
                 ))
 
@@ -177,15 +177,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean, models
+            from glean_api_client import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.documents.index(datasource="<value>", documents=[
+                glean.indexing.documents.index(datasource="<value>", documents=[
                     models.DocumentDefinition(
                         datasource="<value>",
                     ),
@@ -277,15 +277,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean, models
+            from glean_api_client import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.documents.bulk_index(upload_id="<id>", datasource="<value>", documents=[
+                glean.indexing.documents.bulk_index(upload_id="<id>", datasource="<value>", documents=[
                     models.DocumentDefinition(
                         datasource="<value>",
                     ),
@@ -375,15 +375,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.permissions.update_permissions(datasource="<value>", permissions={})
+                glean.indexing.permissions.update_permissions(datasource="<value>", permissions={})
 
                 # Use the SDK ...
         - lang: java
@@ -470,15 +470,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.documents.process_all()
+                glean.indexing.documents.process_all()
 
                 # Use the SDK ...
         - lang: java
@@ -555,15 +555,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.documents.delete(datasource="<value>", object_type="<value>", id="<id>")
+                glean.indexing.documents.delete(datasource="<value>", object_type="<value>", id="<id>")
 
                 # Use the SDK ...
         - lang: java
@@ -645,15 +645,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.permissions.index_user(datasource="<value>", user={
+                glean.indexing.permissions.index_user(datasource="<value>", user={
                     "email": "Elroy38@gmail.com",
                     "name": "<value>",
                 })
@@ -752,15 +752,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.permissions.bulk_index_users(upload_id="<id>", datasource="<value>", users=[
+                glean.indexing.permissions.bulk_index_users(upload_id="<id>", datasource="<value>", users=[
                     {
                         "email": "Nola85@hotmail.com",
                         "name": "<value>",
@@ -868,15 +868,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.permissions.index_group(datasource="<value>", group={
+                glean.indexing.permissions.index_group(datasource="<value>", group={
                     "name": "<value>",
                 })
 
@@ -967,15 +967,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.permissions.bulk_index_groups(upload_id="<id>", datasource="<value>", groups=[
+                glean.indexing.permissions.bulk_index_groups(upload_id="<id>", datasource="<value>", groups=[
                     {
                         "name": "<value>",
                     },
@@ -1071,15 +1071,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.permissions.index_membership(datasource="<value>", membership={
+                glean.indexing.permissions.index_membership(datasource="<value>", membership={
                     "group_name": "<value>",
                 })
 
@@ -1167,15 +1167,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.permissions.bulk_index_memberships(upload_id="<id>", datasource="<value>", memberships=[
+                glean.indexing.permissions.bulk_index_memberships(upload_id="<id>", datasource="<value>", memberships=[
                     {},
                     {},
                     {},
@@ -1261,15 +1261,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.permissions.process_memberships()
+                glean.indexing.permissions.process_memberships()
 
                 # Use the SDK ...
         - lang: java
@@ -1345,15 +1345,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.permissions.delete_user(datasource="<value>", email="Estrella.Robel56@gmail.com")
+                glean.indexing.permissions.delete_user(datasource="<value>", email="Estrella.Robel56@gmail.com")
 
                 # Use the SDK ...
         - lang: java
@@ -1431,15 +1431,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.permissions.delete_group(datasource="<value>", group_name="<value>")
+                glean.indexing.permissions.delete_group(datasource="<value>", group_name="<value>")
 
                 # Use the SDK ...
         - lang: java
@@ -1519,15 +1519,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.permissions.delete_membership(datasource="<value>", membership={
+                glean.indexing.permissions.delete_membership(datasource="<value>", membership={
                     "group_name": "<value>",
                 })
 
@@ -1617,15 +1617,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.indexing.troubleshooting.get_datasource_status(datasource="<value>")
+                res = glean.indexing.troubleshooting.get_datasource_status(datasource="<value>")
 
                 # Handle response
                 print(res)
@@ -1718,15 +1718,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.indexing.troubleshooting.post_document_debug(datasource="<value>", object_type="Article", doc_id="art123")
+                res = glean.indexing.troubleshooting.post_document_debug(datasource="<value>", object_type="Article", doc_id="art123")
 
                 # Handle response
                 print(res)
@@ -1832,15 +1832,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.indexing.troubleshooting.post_documents_debug(datasource="<value>", debug_documents=[
+                res = glean.indexing.troubleshooting.post_documents_debug(datasource="<value>", debug_documents=[
                     {
                         "object_type": "Article",
                         "doc_id": "art123",
@@ -1955,15 +1955,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.indexing.troubleshooting.debug_user(datasource="<value>", email="u1@foo.com")
+                res = glean.indexing.troubleshooting.debug_user(datasource="<value>", email="u1@foo.com")
 
                 # Handle response
                 print(res)
@@ -2052,15 +2052,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.indexing.troubleshooting.check_access(datasource="<value>", object_type="<value>", doc_id="<id>", user_email="<value>")
+                res = glean.indexing.troubleshooting.check_access(datasource="<value>", object_type="<value>", doc_id="<id>", user_email="<value>")
 
                 # Handle response
                 print(res)
@@ -2236,15 +2236,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.permissions.authorize_beta_users(datasource="<value>", emails=[
+                glean.indexing.permissions.authorize_beta_users(datasource="<value>", emails=[
                     "Margaret94@gmail.com",
                     "Jerel_Wilkinson39@yahoo.com",
                 ])
@@ -2344,15 +2344,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean, models
+            from glean_api_client import Glean, models
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.datasources.add(name="<value>", url_regex="https://example-company.datasource.com/.*", quicklinks=[
+                glean.indexing.datasources.add(name="<value>", url_regex="https://example-company.datasource.com/.*", quicklinks=[
                     {
                         "icon_config": {
                             "color": "#343CED",
@@ -2469,15 +2469,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.indexing.datasources.get_config(datasource="<value>")
+                res = glean.indexing.datasources.get_config(datasource="<value>")
 
                 # Handle response
                 print(res)
@@ -2550,15 +2550,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.indexing.authentication.rotate_token()
+                res = glean.indexing.authentication.rotate_token()
 
                 # Handle response
                 print(res)
@@ -2644,15 +2644,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.people.index(employee={
+                glean.indexing.people.index(employee={
                     "email": "Santos.Turcotte@yahoo.com",
                     "department": "<value>",
                     "datasource_profiles": [
@@ -2755,15 +2755,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.people.bulk_index_employees(upload_id="<id>", employees=[])
+                glean.indexing.people.bulk_index_employees(upload_id="<id>", employees=[])
 
                 # Use the SDK ...
         - lang: java
@@ -2856,15 +2856,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.people.process_all_employees_and_teams()
+                glean.indexing.people.process_all_employees_and_teams()
 
                 # Use the SDK ...
         - lang: java
@@ -2934,15 +2934,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.people.delete(employee_email="<value>")
+                glean.indexing.people.delete(employee_email="<value>")
 
                 # Use the SDK ...
         - lang: java
@@ -3046,15 +3046,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.people.index_team(team={
+                glean.indexing.people.index_team(team={
                     "id": "<id>",
                     "name": "<value>",
                     "datasource_profiles": [
@@ -3185,15 +3185,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.people.delete_team(id="<id>")
+                glean.indexing.people.delete_team(id="<id>")
 
                 # Use the SDK ...
         - lang: java
@@ -3270,15 +3270,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.people.bulk_index_teams(upload_id="<id>", teams=[])
+                glean.indexing.people.bulk_index_teams(upload_id="<id>", teams=[])
 
                 # Use the SDK ...
         - lang: java
@@ -3364,15 +3364,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.indexing.shortcuts.bulk_index(upload_id="<id>", shortcuts=[
+                glean.indexing.shortcuts.bulk_index(upload_id="<id>", shortcuts=[
                     {
                         "input_alias": "<value>",
                         "destination_url": "https://only-juggernaut.com/",
@@ -3471,15 +3471,15 @@ paths:
         - lang: python
           label: Python (SDK)
           source: |-
-            from glean import Glean
+            from glean_api_client import Glean
             import os
 
 
             with Glean(
                 bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.client.shortcuts.upload(upload_id="<id>", shortcuts=[
+                glean.client.shortcuts.upload(upload_id="<id>", shortcuts=[
                     {
                         "input_alias": "<value>",
                         "destination_url": "https://needy-harp.name",
