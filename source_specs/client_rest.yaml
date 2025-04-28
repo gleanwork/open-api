@@ -10433,6 +10433,18 @@ components:
           $ref: '#/components/schemas/AgentMigrationStatus'
         appsMigrationStatus:
           $ref: '#/components/schemas/AgentMigrationStatus'
+    TriggersClientConfig:
+      description: Configuration settings for triggers.
+      type: object
+      properties:
+        contentChange:
+          description: Configuration of content change trigger.
+          properties:
+            enabledDatasources:
+              description: List of datasources enabled for content change triggers.
+              type: array
+              items:
+                type: string
     AssistantConfig:
       description: Configuration settings specific to Assistant features
       type: object
@@ -10503,6 +10515,8 @@ components:
         promptDeprecationTimestamp:
           type: integer
           description: The prompt deprecation time shown on the prompt library warning.
+        triggers:
+          $ref: '#/components/schemas/TriggersClientConfig'
     ToolsConfig:
       deprecated: true
       description: Configuration settings related to Tools.
