@@ -1,0 +1,104 @@
+name: Deploy Specs to GitHub Pages
+
+on:
+  workflow_run:
+    workflows: ["Transform OpenAPI Specs"]
+    types:
+      - completed
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Create site directory
+        run: |
+          mkdir -p _site
+          cp -R source_specs/ _site/source-specs/
+          cp -R merged_code_samples_specs/ _site/merged-code-samples-specs/
+          
+          # Create simple index.html to navigate specs
+          cat > _site/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Glean OpenAPI Specs</title>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 2rem; }
+              h1 { border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+              ul { padding-left: 2em; }
+              li { margin: 0.5em 0; }
+              a { color: #0366d6; text-decoration: none; }
+              a:hover { text-decoration: underline; }
+            </style>
+          </head>
+          <body>
+            <h1>Glean OpenAPI Specifications</h1>
+            <h2>Source Specs</h2>
+            <ul id="source-specs"></ul>
+            <h2>Merged Code Samples Specs</h2>
+            <ul id="merged-specs"></ul>
+            
+            <script>
+              // Simple function to list YAML files
+              function listSpecs() {
+                const sourceFiles = ['client_rest.yaml', 'indexing.yaml'];
+                const mergedFiles = ['glean-client-merged-code-samples-spec.yaml', 'glean-index-merged-code-samples-spec.yaml'];
+                
+                const sourceList = document.getElementById('source-specs');
+                sourceFiles.forEach(file => {
+                  const li = document.createElement('li');
+                  const a = document.createElement('a');
+                  a.href = `source-specs/${file}`;
+                  a.textContent = file;
+                  li.appendChild(a);
+                  sourceList.appendChild(li);
+                });
+                
+                const mergedList = document.getElementById('merged-specs');
+                mergedFiles.forEach(file => {
+                  const li = document.createElement('li');
+                  const a = document.createElement('a');
+                  a.href = `merged-code-samples-specs/${file}`;
+                  a.textContent = file;
+                  li.appendChild(a);
+                  mergedList.appendChild(li);
+                });
+              }
+              
+              listSpecs();
+            </script>
+          </body>
+          </html>
+          EOF
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 
