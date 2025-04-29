@@ -14,43 +14,17 @@ jobs:
         with:
           fetch-depth: 0
           
-      - name: Configure Git
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
-      
-      - name: Install Speakeasy CLI
-        run: brew install speakeasy-api/homebrew-tap/speakeasy
+      - name: Setup Speakeasy CLI
+        uses: ./.github/actions/speakeasy-setup
       
       - name: Generate code samples
         run: speakeasy run -s glean-client-merged-code-samples-spec glean-index-merged-code-samples-spec
         env:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
       
-      - name: Commit and push changes with rebase
-        run: |
-          # Stage changes
-          git add merged_code_samples_specs/* .speakeasy/*
-          
-          # Only commit if there are changes
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-            exit 0
-          fi
-          
-          # Create commit
-          git commit -m "Update code samples"
-          
-          # Get the current branch name
-          BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-          
-          # Fetch latest changes from remote
-          git fetch origin $BRANCH_NAME
-          
-          # Rebase our changes on top of the latest changes from remote
-          git rebase origin/$BRANCH_NAME
-          
-          # Push the changes
-          git push origin $BRANCH_NAME
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      - name: Commit changes
+        uses: ./.github/actions/git-commit
+        with:
+          commit_message: "Update code samples"
+          file_patterns: "merged_code_samples_specs/* .speakeasy/*"
+          github_token: ${{ secrets.GITHUB_TOKEN }} 

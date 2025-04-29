@@ -1,0 +1,51 @@
+name: 'Git Commit and Push'
+description: 'Configure Git, commit and push changes with rebase'
+
+inputs:
+  commit_message:
+    description: 'Commit message'
+    required: true
+  file_patterns:
+    description: 'File patterns to add, space separated'
+    required: true
+  github_token:
+    description: 'GitHub token'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Configure Git
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+      shell: bash
+    
+    - name: Commit and push changes with rebase
+      run: |
+        # Stage changes
+        git add ${{ inputs.file_patterns }}
+        
+        # Only commit if there are changes
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+          exit 0
+        fi
+        
+        # Create commit
+        git commit -m "${{ inputs.commit_message }}"
+        
+        # Get the current branch name
+        BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
+        
+        # Fetch latest changes from remote
+        git fetch origin $BRANCH_NAME
+        
+        # Rebase our changes on top of the latest changes from remote
+        git rebase origin/$BRANCH_NAME
+        
+        # Push the changes
+        git push origin $BRANCH_NAME
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }} 

@@ -1,0 +1,9 @@
+name: 'Setup Speakeasy CLI'
+description: 'Install Speakeasy CLI via Homebrew'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Speakeasy CLI
+      run: brew install speakeasy-api/homebrew-tap/speakeasy
+      shell: bash 
