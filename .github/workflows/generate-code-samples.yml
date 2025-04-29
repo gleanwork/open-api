@@ -1,0 +1,30 @@
+name: Generate Code Samples
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+jobs:
+  generate-samples:
+    runs-on: macos-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup Speakeasy CLI
+        uses: ./.github/actions/speakeasy-setup
+      
+      - name: Generate code samples
+        run: speakeasy run -s glean-client-merged-code-samples-spec glean-index-merged-code-samples-spec
+        env:
+          SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
+      
+      - name: Commit changes
+        uses: ./.github/actions/git-commit
+        with:
+          commit_message: "Update code samples"
+          file_patterns: "merged_code_samples_specs/* .speakeasy/*"
+          github_token: ${{ secrets.GITHUB_TOKEN }} 

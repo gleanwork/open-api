@@ -2,7 +2,7 @@ name: Deploy Specs to GitHub Pages
 
 on:
   workflow_run:
-    workflows: ["Transform OpenAPI Specs"]
+    workflows: ["Generate Code Samples"]
     types:
       - completed
     branches:
