@@ -6,4 +6,4 @@ runs:
   steps:
     - name: Install Speakeasy CLI
       run: brew install speakeasy-api/homebrew-tap/speakeasy
-      shell: bash 
+      shell: bash

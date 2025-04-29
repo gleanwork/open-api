@@ -8,4 +8,4 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Install Speakeasy CLI
-        run: brew install speakeasy-api/homebrew-tap/speakeasy 
+        run: brew install speakeasy-api/homebrew-tap/speakeasy

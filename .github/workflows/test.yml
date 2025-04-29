@@ -32,4 +32,4 @@ jobs:
           if [ ! -f "dist/index.js" ]; then
             echo "Build failed: dist/index.js not found"
             exit 1
-          fi 
+          fi
