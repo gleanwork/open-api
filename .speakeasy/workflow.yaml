@@ -15,8 +15,9 @@ sources:
         inputs:
             - location: generated_specs/client_rest.yaml
         overlays:
-            - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-typescript-code-samples
             - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-python-code-samples
+            - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-typescript-code-samples
+            - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-go-code-samples
             - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-java-code-samples
         output: merged_code_samples_specs/glean-client-merged-code-samples-spec.yaml
         registry:
@@ -25,9 +26,10 @@ sources:
         inputs:
             - location: generated_specs/indexing.yaml
         overlays:
-            - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-typescript-code-samples
             - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-python-code-samples
+            - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-typescript-code-samples
             - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-java-code-samples
+            - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-go-code-samples
         output: merged_code_samples_specs/glean-index-merged-code-samples-spec.yaml
         registry:
             location: registry.speakeasyapi.dev/glean-el2/sdk/glean-index-merged-code-samples-spec
