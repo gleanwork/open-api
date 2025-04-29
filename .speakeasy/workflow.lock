@@ -2,7 +2,7 @@ speakeasyVersion: 1.540.1
 sources:
     glean-api-specs:
         sourceNamespace: glean-api-specs
-        sourceRevisionDigest: sha256:d1dacbb5ece2df2603ae6c8d45e59bd67b6a5241f12c751ec9b6526c85393ca9
+        sourceRevisionDigest: sha256:33b8b6d8447549ad225d8eb93b6629385a696b9836c5c86f40e75f2dc9ae92e0
         sourceBlobDigest: sha256:02dae61341a702b82c050ed3828f22d5a82de8e9f2fa6a99ddab6ad0dfe4a38a
         tags:
             - latest
@@ -24,8 +24,8 @@ sources:
             - 0.9.0
     glean-client-merged-code-samples-spec:
         sourceNamespace: glean-client-merged-code-samples-spec
-        sourceRevisionDigest: sha256:a9fb23a1a5e8cc16a5d021df111476714fcec1d2cc9642006558f98f113e07b0
-        sourceBlobDigest: sha256:a86bf7092b89808223e874b3df63236be785b749cae4fc4ae6b1c51abd040bf3
+        sourceRevisionDigest: sha256:6240189e7f860e06348b9ba8cf3ba080e37a0343ccc6410b7e2c4bd03bd6458d
+        sourceBlobDigest: sha256:2bb29bcef06f14956c698783b538419f93451c887e67f35e660a7c7d18514808
         tags:
             - latest
             - main
@@ -39,8 +39,8 @@ sources:
             - 0.9.0
     glean-index-merged-code-samples-spec:
         sourceNamespace: glean-index-merged-code-samples-spec
-        sourceRevisionDigest: sha256:0f5d9698cf27b98488536d66e8cc8f4f5b85b589fb172d10b9b05b841c3fa3c6
-        sourceBlobDigest: sha256:c16f09aee3f75b61da8f1d51fe795ec1a2f99cb762bb2c93ebf97a17df84ee5c
+        sourceRevisionDigest: sha256:49a2f375fe0f33bd646a9337692bc59d7c71b5e86fd5686a017f8d83ed8f7194
+        sourceBlobDigest: sha256:06b0cf7a350123c96238cadf289166b70e565e2e32651e4f5d428cfe12206b00
         tags:
             - latest
             - main
@@ -64,8 +64,9 @@ workflow:
             inputs:
                 - location: generated_specs/client_rest.yaml
             overlays:
-                - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-typescript-code-samples
                 - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-python-code-samples
+                - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-typescript-code-samples
+                - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-go-code-samples
                 - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-java-code-samples
             output: merged_code_samples_specs/glean-client-merged-code-samples-spec.yaml
             registry:
@@ -74,9 +75,10 @@ workflow:
             inputs:
                 - location: generated_specs/indexing.yaml
             overlays:
-                - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-typescript-code-samples
                 - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-python-code-samples
+                - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-typescript-code-samples
                 - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-java-code-samples
+                - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-go-code-samples
             output: merged_code_samples_specs/glean-index-merged-code-samples-spec.yaml
             registry:
                 location: registry.speakeasyapi.dev/glean-el2/sdk/glean-index-merged-code-samples-spec
