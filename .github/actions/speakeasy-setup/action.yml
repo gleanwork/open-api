@@ -5,5 +5,5 @@ runs:
   using: 'composite'
   steps:
     - name: Install Speakeasy CLI
-      run: brew install speakeasy-api/homebrew-tap/speakeasy
+      run: curl -fsSL https://go.speakeasy.com/cli-install.sh | sh
       shell: bash
