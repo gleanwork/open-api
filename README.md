@@ -1,6 +1,6 @@
 # OpenAPI Preprocessor
 
-Preprocesses our OpenAPI specs to prepare them for geneation via Speakeasy (our API client library generator).
+Preprocesses our OpenAPI specs to prepare them for generation via Speakeasy (our API client library generator).
 
 ## Spec Directories
 
