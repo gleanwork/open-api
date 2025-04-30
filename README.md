@@ -46,6 +46,62 @@ The `overlayed_specs` directory contains merged OpenAPI specifications that comb
 
 These merged specs are used for generating consistent client libraries across multiple APIs and provide a single source of documentation.
 
+## Overview Diagram
+
+```mermaid
+graph LR
+    %% Nodes
+    subgraph Directories
+        source_specs["source_specs"]
+        generated_specs["generated_specs"]
+        overlayed_specs["overlayed_specs"]
+        merged_code_samples_specs["merged_code_samples_specs"]
+    end
+
+    subgraph Workflows
+        transform_yml["transform.yml"]
+        generate_code_samples_yml["generate-code-samples.yml"]
+        deploy_pages_yml["deploy-pages.yml"]
+    end
+
+    subgraph External / Manual
+        api_client_python["api-client-python"]
+        api_client_typescript["api-client-typescript"]
+        api_client_go["api-client-go"]
+        api_client_java["api-client-java"]
+        speakeasy_registry["Speakeasy Registry"]
+        glean_developer_docs["glean-developer-docs (GitHub Pages)"]
+    end
+
+    %% Flow
+    source_specs --> transform_yml --> generated_specs
+    generated_specs --> overlays((Overlays)) --> overlayed_specs
+
+    overlayed_specs --> api_client_python
+    overlayed_specs --> api_client_typescript
+    overlayed_specs --> api_client_go
+    overlayed_specs --> api_client_java
+
+    api_client_python -->|"speakeasy run"| speakeasy_registry
+    api_client_typescript -->|"speakeasy run"| speakeasy_registry
+    api_client_go -->|"speakeasy run"| speakeasy_registry
+    api_client_java -->|"speakeasy run"| speakeasy_registry
+
+    speakeasy_registry --> generate_code_samples_yml --> merged_code_samples_specs
+    merged_code_samples_specs --> deploy_pages_yml --> glean_developer_docs
+
+    %% Styling
+    classDef dir fill:#FAFCFF,stroke:#0057FF,stroke-width:1px,color:#0057FF;
+    classDef wf fill:#EDF3FF,stroke:#0057FF,stroke-width:2px,color:#0057FF;
+    classDef ext fill:#F5FFE8,stroke:#D9FF1F,stroke-width:1px,color:#222;
+    classDef reg fill:#FFFFFF,stroke:#7649FF,stroke-width:1px,color:#7649FF,font-style:italic;
+
+    class source_specs,generated_specs,overlayed_specs,merged_code_samples_specs dir;
+    class transform_yml,generate_code_samples_yml,deploy_pages_yml wf;
+    class api_client_python,api_client_typescript,api_client_go,api_client_java,glean_developer_docs,overlays ext;
+    class speakeasy_registry reg;
+```
+
 ## Workflows
 
 This repository uses several GitHub Actions workflows to process the OpenAPI specifications:
