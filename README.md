@@ -64,7 +64,7 @@ graph LR
         deploy_pages_yml["deploy-pages.yml"]
     end
 
-    subgraph External / Manual
+    subgraph External
         api_client_python["api-client-python"]
         api_client_typescript["api-client-typescript"]
         api_client_go["api-client-go"]
@@ -95,11 +95,13 @@ graph LR
     classDef wf fill:#EDF3FF,stroke:#0057FF,stroke-width:2px,color:#0057FF;
     classDef ext fill:#F5FFE8,stroke:#D9FF1F,stroke-width:1px,color:#222;
     classDef reg fill:#FFFFFF,stroke:#7649FF,stroke-width:1px,color:#7649FF,font-style:italic;
+    classDef section fill:#f5f5f5,stroke:#cccccc,color:#333333;
 
     class source_specs,generated_specs,overlayed_specs,merged_code_samples_specs dir;
     class transform_yml,generate_code_samples_yml,deploy_pages_yml wf;
     class api_client_python,api_client_typescript,api_client_go,api_client_java,glean_developer_docs,overlays ext;
     class speakeasy_registry reg;
+    class Directories,Workflows,External section;
 ```
 
 ## Workflows
