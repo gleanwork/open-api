@@ -1,0 +1,16 @@
+overlay: 1.0.0
+x-speakeasy-jsonpath: rfc9535
+info:
+  title: Remove auth headers
+  version: 0.1.2
+
+actions:
+  - target: "$..parameters[?(@['$ref']=='#/components/parameters/xGleanActAsHeader')]"
+    remove: true
+  - target: "$..parameters[?(@['$ref']=='#/components/parameters/xGleanAuthTypeHeader')]"
+    remove: true
+
+  - target: "$.components.parameters.xGleanActAsHeader"
+    remove: true
+  - target: "$.components.parameters.xGleanAuthTypeHeader"
+    remove: true

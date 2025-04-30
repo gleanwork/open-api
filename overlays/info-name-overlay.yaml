@@ -5,10 +5,11 @@ info:
   version: 0.0.1
   x-speakeasy-metadata:
     type: speakeasy-modifications
+
 actions:
   - target: $["info"]
     update:
       title: "Glean API"
       x-speakeasy-name: "Glean API"
     x-speakeasy-metadata:
-      type: info-modification 
+      type: info-modification
