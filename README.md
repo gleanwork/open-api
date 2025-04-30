@@ -49,59 +49,63 @@ These merged specs are used for generating consistent client libraries across mu
 ## Overview Diagram
 
 ```mermaid
-graph LR
-    %% Nodes
-    subgraph Directories
-        source_specs["source_specs"]
-        generated_specs["generated_specs"]
-        overlayed_specs["overlayed_specs"]
-        merged_code_samples_specs["merged_code_samples_specs"]
+flowchart TD
+    %% Main directory nodes
+    source_specs["source_specs"]:::dir
+    generated_specs["generated_specs"]:::dir
+    overlayed_specs["overlayed_specs"]:::dir
+    merged_code_samples_specs["merged_code_samples_specs"]:::dir
+
+    %% Workflow nodes
+    transform_yml["transform.yml"]:::wf
+    generate_code_samples_yml["generate-code-samples.yml"]:::wf
+    deploy_pages_yml["deploy-pages.yml"]:::wf
+
+    %% External resources
+    overlays((Overlays)):::ext
+    speakeasy_registry["Speakeasy Registry"]:::reg
+    glean_developer_docs["glean-developer-docs<br>(GitHub Pages)"]:::ext
+
+    %% External repos - arranged in a 2x2 grid for clarity
+    api_python["api-client-python"]:::ext
+    api_typescript["api-client-typescript"]:::ext  
+    api_go["api-client-go"]:::ext
+    api_java["api-client-java"]:::ext
+
+    %% STAGE 1: Transform source specs
+    subgraph Stage1[STAGE 1: Source Transformation]
+        source_specs --> transform_yml --> generated_specs
+        generated_specs --> overlays --> overlayed_specs
     end
 
-    subgraph Workflows
-        transform_yml["transform.yml"]
-        generate_code_samples_yml["generate-code-samples.yml"]
-        deploy_pages_yml["deploy-pages.yml"]
+    %% STAGE 2: External repos process specs
+    subgraph Stage2[STAGE 2: Client SDKs]
+        overlayed_specs --> api_clients
+        
+        subgraph api_clients[API Client Repos]
+            api_python & api_typescript & api_go & api_java
+        end
+        
+        %% All API clients upload samples to registry
+        api_python & api_typescript & api_go & api_java -->|speakeasy run| speakeasy_registry
     end
 
-    subgraph External
-        api_client_python["api-client-python"]
-        api_client_typescript["api-client-typescript"]
-        api_client_go["api-client-go"]
-        api_client_java["api-client-java"]
-        speakeasy_registry["Speakeasy Registry"]
-        glean_developer_docs["glean-developer-docs (GitHub Pages)"]
+    %% STAGE 3: Generate code samples and deploy
+    subgraph Stage3[STAGE 3: Publish]
+        speakeasy_registry --> generate_code_samples_yml --> merged_code_samples_specs
+        merged_code_samples_specs --> deploy_pages_yml --> glean_developer_docs
     end
 
-    %% Flow
-    source_specs --> transform_yml --> generated_specs
-    generated_specs --> overlays((Overlays)) --> overlayed_specs
-
-    overlayed_specs --> api_client_python
-    overlayed_specs --> api_client_typescript
-    overlayed_specs --> api_client_go
-    overlayed_specs --> api_client_java
-
-    api_client_python -->|"speakeasy run"| speakeasy_registry
-    api_client_typescript -->|"speakeasy run"| speakeasy_registry
-    api_client_go -->|"speakeasy run"| speakeasy_registry
-    api_client_java -->|"speakeasy run"| speakeasy_registry
-
-    speakeasy_registry --> generate_code_samples_yml --> merged_code_samples_specs
-    merged_code_samples_specs --> deploy_pages_yml --> glean_developer_docs
-
-    %% Styling
+    %% Styling definitions
     classDef dir fill:#FAFCFF,stroke:#0057FF,stroke-width:1px,color:#0057FF;
     classDef wf fill:#EDF3FF,stroke:#0057FF,stroke-width:2px,color:#0057FF;
     classDef ext fill:#F5FFE8,stroke:#D9FF1F,stroke-width:1px,color:#222;
     classDef reg fill:#FFFFFF,stroke:#7649FF,stroke-width:1px,color:#7649FF,font-style:italic;
     classDef section fill:#f5f5f5,stroke:#cccccc,color:#333333;
 
-    class source_specs,generated_specs,overlayed_specs,merged_code_samples_specs dir;
-    class transform_yml,generate_code_samples_yml,deploy_pages_yml wf;
-    class api_client_python,api_client_typescript,api_client_go,api_client_java,glean_developer_docs,overlays ext;
-    class speakeasy_registry reg;
-    class Directories,Workflows,External section;
+    %% Style the stages
+    classDef stage fill:#f5f5f5,stroke:#cccccc,color:#333333,stroke-dasharray: 5 5;
+    class Stage1,Stage2,Stage3 stage;
 ```
 
 ## Workflows
