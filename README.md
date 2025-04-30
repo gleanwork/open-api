@@ -100,7 +100,7 @@ flowchart TD
     classDef dir fill:#FAFCFF,stroke:#0057FF,stroke-width:1px,color:#0057FF;
     classDef wf fill:#EDF3FF,stroke:#0057FF,stroke-width:2px,color:#0057FF;
     classDef ext fill:#F5FFE8,stroke:#D9FF1F,stroke-width:1px,color:#222;
-    classDef reg fill:#FFFFFF,stroke:#7649FF,stroke-width:1px,color:#7649FF,font-style:italic;
+    classDef reg fill:#000000,stroke:#FFD700,stroke-width:1px,color:#FFD700,font-style:italic;
     classDef section fill:#f5f5f5,stroke:#cccccc,color:#333333;
 
     %% Style the stages
