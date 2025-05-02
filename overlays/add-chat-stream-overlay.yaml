@@ -1118,9 +1118,11 @@ actions:
                 stream:
                     type: boolean
                     description: If set, response lines will be streamed one-by-one as they become available. Each will be a ChatResponse, formatted as JSON, and separated by a new line. If false, the entire response will be returned at once. Note that if this is set and the model being used does not support streaming, the model's response will not be streamed, but other messages from the endpoint still will be.
-                    default: !!null true
+                    default: true
     - target: $["components"]["schemas"]["ChatRequestStream"]["properties"]["stream"]
       update:
         default:
     - target: $["components"]["schemas"]["ChatRequestStream"]["properties"]["stream"]["default"]
       update: True
+    - target: $["paths"]["/chat#stream"]["post"]["operationId"]
+      update: chatstream

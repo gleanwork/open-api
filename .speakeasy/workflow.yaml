@@ -8,8 +8,8 @@ sources:
         overlays:
             - location: overlays/speakeasy-modifications-overlay.yaml
             - location: overlays/info-name-overlay.yaml
-            - location: overlays/strip-headers-overlay.yaml
             - location: overlays/add-chat-stream-overlay.yaml
+            - location: overlays/strip-headers-overlay.yaml
         output: overlayed_specs/glean-merged-spec.yaml
         registry:
             location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs
