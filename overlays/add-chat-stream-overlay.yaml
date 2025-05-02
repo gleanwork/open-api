@@ -1,0 +1,52 @@
+overlay: 1.0.0
+x-speakeasy-jsonpath: rfc9535
+info:
+  title: Speakeasy Streaming Chat Modifier
+  version: 0.0.1
+  x-speakeasy-metadata:
+    type: speakeasy-modifications
+
+x-speakeasy-overlays:
+  # 1 ─ Fix the original /chat response to return JSON, not plain text
+  - x-speakeasy-jsonpath: "$.paths['/chat'].post.responses['200'].content"
+    x-speakeasy-transform: replace
+    value:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/ChatResponse"
+
+  # 2 ─ Add a new /chat#streamed endpoint that streams (text/plain) responses
+  - x-speakeasy-jsonpath: "$.paths"
+    x-speakeasy-transform: add
+    value:
+      /chat#streamed:
+        post:
+          summary: >
+            Create a chat completion from a prompt. The response is streamed.
+          operationId: chatStreamed
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/ChatRequest"
+          responses:
+            "200":
+              description: Chat completion created
+              content:
+                text/plain:
+                  schema:
+                    $ref: "#/components/schemas/ChatResponseStream"
+
+  # 3 ─ Duplicate ChatResponse as ChatResponseStream (stream default = true)
+  - x-speakeasy-jsonpath: "$.components.schemas"
+    x-speakeasy-transform: add
+    value:
+      ChatResponseStream:
+        allOf:
+          - $ref: "#/components/schemas/ChatResponse"
+        properties:
+          stream:
+            type: boolean
+            default: true
+
