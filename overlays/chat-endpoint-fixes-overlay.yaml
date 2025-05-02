@@ -10,7 +10,7 @@ actions:
     update:
       application/json:
         schema:
-          $ref: '#/components/schemas/ChatResponse'
+          $ref: "#/components/schemas/ChatResponse"
         examples:
           defaultExample:
             value:
