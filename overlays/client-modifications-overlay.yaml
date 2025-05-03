@@ -84,10 +84,10 @@ actions:
 
   - target: $["paths"]["/rest/api/v1/editanswer"]["post"]
     update:
-      x-speakeasy-name-override: edit
+      x-speakeasy-name-override: update
       x-speakeasy-group: client.answers
     x-speakeasy-metadata:
-      after: sdk.answers.edit()
+      after: sdk.answers.update()
       before: sdk.Answers.editanswer()
       created_at: 1743113936039
       reviewed_at: 1743114533812
@@ -184,10 +184,10 @@ actions:
 
   - target: $["paths"]["/rest/api/v1/deletechatfiles"]["post"]
     update:
-      x-speakeasy-name-override: deleteFiles
-      x-speakeasy-group: client.chat
+      x-speakeasy-name-override: delete
+      x-speakeasy-group: client.chat.files
     x-speakeasy-metadata:
-      after: sdk.chat.deleteFiles()
+      after: sdk.chat.files.delete()
       before: sdk.Chat.deletechatfiles()
       created_at: 1743113936039
       reviewed_at: 1743114533812
@@ -196,10 +196,10 @@ actions:
 
   - target: $["paths"]["/rest/api/v1/uploadchatfiles"]["post"]
     update:
-      x-speakeasy-name-override: uploadFiles
-      x-speakeasy-group: client.chat
+      x-speakeasy-name-override: upload
+      x-speakeasy-group: client.chat.files
     x-speakeasy-metadata:
-      after: sdk.chat.uploadFiles()
+      after: sdk.chat.files.upload()
       before: sdk.Chat.uploadchatfiles()
       created_at: 1743113936039
       reviewed_at: 1743114533812
@@ -269,10 +269,10 @@ actions:
   # Collections
   - target: $["paths"]["/rest/api/v1/deletecollectionitem"]["post"]
     update:
-      x-speakeasy-name-override: deleteItem
-      x-speakeasy-group: client.collections
+      x-speakeasy-name-override: delete
+      x-speakeasy-group: client.collections.item
     x-speakeasy-metadata:
-      after: sdk.collections.deleteItem()
+      after: sdk.collections.item.delete()
       before: sdk.Collections.deletecollectionitem()
       created_at: 1743113936038
       reviewed_at: 1743114533812
@@ -293,10 +293,10 @@ actions:
 
   - target: $["paths"]["/rest/api/v1/editcollectionitem"]["post"]
     update:
-      x-speakeasy-name-override: editItem
-      x-speakeasy-group: client.collections
+      x-speakeasy-name-override: update
+      x-speakeasy-group: client.collections.item
     x-speakeasy-metadata:
-      after: sdk.collections.editItem()
+      after: sdk.collections.item.update()
       before: sdk.Collections.editcollectionitem()
       created_at: 1743113936039
       reviewed_at: 1743114533812
@@ -478,10 +478,10 @@ actions:
 
   - target: $["paths"]["/rest/api/v1/editpin"]["post"]
     update:
-      x-speakeasy-name-override: edit
+      x-speakeasy-name-override: update
       x-speakeasy-group: client.pins
     x-speakeasy-metadata:
-      after: sdk.pins.edit()
+      after: sdk.pins.update()
       before: sdk.Pins.editpin()
       created_at: 1743113936039
       reviewed_at: 1743114533812
@@ -533,10 +533,10 @@ actions:
 
   - target: $["paths"]["/rest/api/v1/adminsearch"]["post"]
     update:
-      x-speakeasy-name-override: admin
-      x-speakeasy-group: client.search
+      x-speakeasy-name-override: query
+      x-speakeasy-group: client.search.admin
     x-speakeasy-metadata:
-      after: sdk.search.admin()
+      after: sdk.search.admin.query()
       before: sdk.Search.adminsearch()
       created_at: 1743113936039
       reviewed_at: 1743114533812
