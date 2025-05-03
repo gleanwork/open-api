@@ -3007,7 +3007,7 @@ paths:
           description: Conflict
       x-speakeasy-name-override: upload
       x-speakeasy-group: client.shortcuts
-  '/rest/api/v1/chat#stream':
+  /rest/api/v1/chat#stream:
     post:
       tags:
         - Chat
