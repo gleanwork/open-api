@@ -3142,6 +3142,9 @@ paths:
           description: Request Timeout
         '429':
           description: Too Many Requests
+      x-speakeasy-group: client.chat
+      x-speakeasy-name-override: startStream
+      x-speakeasy-usage-example: true
 components:
   securitySchemes:
     BearerAuth:
