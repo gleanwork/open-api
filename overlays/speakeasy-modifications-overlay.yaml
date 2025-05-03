@@ -39,6 +39,17 @@ actions:
       created_at: 1743113936038
       reviewed_at: 1743114533812
       type: method-name
+  - target: $["paths"]["/rest/api/v1/chat#stream"]["post"]
+    update:
+      x-speakeasy-group: client.chat
+      x-speakeasy-name-override: startStream
+      x-speakeasy-usage-example: true
+    x-speakeasy-metadata:
+      after: sdk.chat.startStream()
+      before: sdk.Chat.chat()
+      created_at: 1743113936038
+      reviewed_at: 1743114533812
+      type: method-name
   - target: $["paths"]["/api/index/v1/bulkindexemployees"]["post"]
     update:
       x-speakeasy-group: indexing.people
