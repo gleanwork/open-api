@@ -280,7 +280,7 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: edit
+      x-speakeasy-name-override: update
       x-speakeasy-group: client.answers
   /rest/api/v1/getanswer:
     post:
@@ -689,8 +689,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: uploadFiles
-      x-speakeasy-group: client.chat
+      x-speakeasy-name-override: upload
+      x-speakeasy-group: client.chat.files
   /rest/api/v1/getchatfiles:
     post:
       tags:
@@ -752,8 +752,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: deleteFiles
-      x-speakeasy-group: client.chat
+      x-speakeasy-name-override: delete
+      x-speakeasy-group: client.chat.files
   /rest/api/v1/runagent:
     post:
       tags:
@@ -997,8 +997,8 @@ paths:
           description: Failed to save deletion
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: deleteItem
-      x-speakeasy-group: client.collections
+      x-speakeasy-name-override: delete
+      x-speakeasy-group: client.collections.item
   /rest/api/v1/editcollection:
     post:
       tags:
@@ -1069,8 +1069,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: editItem
-      x-speakeasy-group: client.collections
+      x-speakeasy-name-override: update
+      x-speakeasy-group: client.collections.item
   /rest/api/v1/getcollection:
     post:
       tags:
@@ -1335,7 +1335,7 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: edit
+      x-speakeasy-name-override: update
       x-speakeasy-group: client.pins
   /rest/api/v1/getpin:
     post:
@@ -1509,8 +1509,8 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: admin
-      x-speakeasy-group: client.search
+      x-speakeasy-name-override: query
+      x-speakeasy-group: client.search.admin
   /rest/api/v1/autocomplete:
     post:
       tags:
