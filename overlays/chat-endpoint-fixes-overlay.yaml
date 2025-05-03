@@ -159,7 +159,7 @@ actions:
             default: true
   - target: $.paths
     update:
-      '/rest/api/v1/chat#stream':
+      /rest/api/v1/chat#stream:
         post:
           tags:
             - Chat
