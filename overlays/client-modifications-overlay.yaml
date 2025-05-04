@@ -662,3 +662,7 @@ actions:
       created_at: 1743113936039
       reviewed_at: 1743114533812
       type: method-name
+
+  - target: $["components"]["schemas"]["ErrorInfo"]
+    update:
+      x-speakeasy-name-override: GleanDataError
