@@ -7788,6 +7788,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ErrorMessage"
+      x-speakeasy-name-override: GleanDataError
     ResultsResponse:
       properties:
         trackingToken:
