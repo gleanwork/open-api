@@ -270,20 +270,20 @@ actions:
 
   - target: $["paths"]["/rest/api/v1/recommendations"]["post"]
     update:
-      x-speakeasy-name-override: recommendations
       x-speakeasy-group: client.search
+      x-speakeasy-name-override: recommendations
 
 
   - target: $["paths"]["/rest/api/v1/adminsearch"]["post"]
     update:
-      x-speakeasy-name-override: query
-      x-speakeasy-group: client.admin.search
+      x-speakeasy-group: client.search
+      x-speakeasy-name-override: queryAsAdmin
 
 
   - target: $["paths"]["/rest/api/v1/search"]["post"]
     update:
-      x-speakeasy-name-override: query
       x-speakeasy-group: client.search
+      x-speakeasy-name-override: query
 
   - target: $["paths"]["/rest/api/v1/search/autocomplete"]["post"]
     update:
@@ -293,20 +293,20 @@ actions:
   # Shortcuts
   - target: $["paths"]["/rest/api/v1/listshortcuts"]["post"]
     update:
-      x-speakeasy-name-override: list
       x-speakeasy-group: client.shortcuts
+      x-speakeasy-name-override: list
 
 
   - target: $["paths"]["/rest/api/v1/getshortcut"]["post"]
     update:
-      x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.shortcuts
+      x-speakeasy-name-override: retrieve
 
 
   - target: $["paths"]["/rest/api/v1/updateshortcut"]["post"]
     update:
-      x-speakeasy-name-override: update
       x-speakeasy-group: client.shortcuts
+      x-speakeasy-name-override: update
 
 
   - target: $["paths"]["/rest/api/v1/createshortcut"]["post"]
