@@ -285,7 +285,7 @@ actions:
       x-speakeasy-group: client.search
       x-speakeasy-name-override: query
 
-  - target: $["paths"]["/rest/api/v1/search/autocomplete"]["post"]
+  - target: $["paths"]["/rest/api/v1/autocomplete"]["post"]
     update:
       x-speakeasy-group: client.search
       x-speakeasy-name-override: autocomplete
