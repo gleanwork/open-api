@@ -170,4 +170,4 @@ paths: {}
     expect(transformedSpec.components.schemas).toHaveProperty('IndexingShortcut');
     expect(transformedSpec.components.schemas.OtherSchema.properties.shortcutRef.$ref).toBe('#/components/schemas/IndexingShortcut');
   });
-}); 
+});
