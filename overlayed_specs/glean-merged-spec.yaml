@@ -2833,29 +2833,7 @@ paths:
           description: Conflict
       x-speakeasy-name-override: bulkIndex
       x-speakeasy-group: indexing.people
-  /api/index/v1/indexemployeelist:
-    post:
-      summary: Bulk index employees
-      description: Bulk upload details of all the employees. This deletes all employees uploaded in the prior batch. SOON TO BE DEPRECATED in favor of /bulkindexemployees.
-      deprecated: true
-      tags:
-        - People
-      requestBody:
-        content:
-          application/json; charset=UTF-8:
-            schema:
-              $ref: "#/components/schemas/IndexEmployeeListRequest"
-        required: true
-        x-exportParamName: IndexEmployeeListRequest
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: Bad Request
-        "401":
-          description: Not Authorized
-        "409":
-          description: Conflict
+  /api/index/v1/indexemployeelist: {}
   /api/index/v1/processallemployeesandteams:
     post:
       summary: Schedules the processing of uploaded employees and teams
