@@ -3,22 +3,13 @@ x-speakeasy-jsonpath: rfc9535
 info:
   title: Speakeasy Modifications
   version: 0.0.5
-  x-speakeasy-metadata:
-    after: ""
-    before: ""
-    type: speakeasy-modifications
+
 actions:
   # Authentication
   - target: $["paths"]["/api/index/v1/rotatetoken"]["post"]
     update:
       x-speakeasy-name-override: rotateToken
       x-speakeasy-group: indexing.authentication
-    x-speakeasy-metadata:
-      after: sdk.authentication.rotateToken()
-      before: sdk.Authentication.post_/api/index/v1/rotatetoken()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   # Datasources
@@ -26,24 +17,12 @@ actions:
     update:
       x-speakeasy-name-override: retrieveConfig
       x-speakeasy-group: indexing.datasources
-    x-speakeasy-metadata:
-      after: sdk.datasources.retrieveConfig()
-      before: sdk.Datasources.post_/api/index/v1/getdatasourceconfig()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/adddatasource"]["post"]
     update:
       x-speakeasy-name-override: add
       x-speakeasy-group: indexing.datasources
-    x-speakeasy-metadata:
-      after: sdk.datasources.add()
-      before: sdk.Datasources.post_/api/index/v1/adddatasource()
-      created_at: 1743113936039
-      reviewed_at: 1743114533813
-      type: method-name
 
 
   # Documents
@@ -51,60 +30,30 @@ actions:
     update:
       x-speakeasy-name-override: delete
       x-speakeasy-group: indexing.documents
-    x-speakeasy-metadata:
-      after: sdk.documents.delete()
-      before: sdk.Documents.post_/api/index/v1/deletedocument()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/bulkindexdocuments"]["post"]
     update:
       x-speakeasy-name-override: bulkIndex
       x-speakeasy-group: indexing.documents
-    x-speakeasy-metadata:
-      after: sdk.documents.bulkIndex()
-      before: sdk.Documents.post_/api/index/v1/bulkindexdocuments()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/processalldocuments"]["post"]
     update:
       x-speakeasy-name-override: processAll
       x-speakeasy-group: indexing.documents
-    x-speakeasy-metadata:
-      after: sdk.documents.processAll()
-      before: sdk.Documents.post_/api/index/v1/processalldocuments()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/indexdocument"]["post"]
     update:
       x-speakeasy-name-override: addOrUpdate
       x-speakeasy-group: indexing.documents
-    x-speakeasy-metadata:
-      after: sdk.documents.addOrUpdate()
-      before: sdk.Documents.post_/api/index/v1/indexdocument()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/indexdocuments"]["post"]
     update:
       x-speakeasy-name-override: index
       x-speakeasy-group: indexing.documents
-    x-speakeasy-metadata:
-      after: sdk.documents.index()
-      before: sdk.Documents.post_/api/index/v1/indexdocuments()
-      created_at: 1743113936039
-      reviewed_at: 1743114533813
-      type: method-name
 
 
   # People
@@ -112,84 +61,42 @@ actions:
     update:
       x-speakeasy-name-override: bulkIndexTeams
       x-speakeasy-group: indexing.people
-    x-speakeasy-metadata:
-      after: sdk.people.bulkIndexTeams()
-      before: sdk.People.post_/api/index/v1/bulkindexteams()
-      created_at: 1743113936039
-      reviewed_at: 1743114533813
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/indexemployeelist"]["post"]
     update:
       x-speakeasy-name-override: bulkIndex
       x-speakeasy-group: indexing.people
-    x-speakeasy-metadata:
-      after: sdk.people.bulkIndex()
-      before: sdk.People.post_/api/index/v1/indexemployeelist()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/indexemployee"]["post"]
     update:
       x-speakeasy-name-override: index
       x-speakeasy-group: indexing.people
-    x-speakeasy-metadata:
-      after: sdk.people.index()
-      before: sdk.People.post_/api/index/v1/indexemployee()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/deleteemployee"]["post"]
     update:
       x-speakeasy-name-override: delete
       x-speakeasy-group: indexing.people
-    x-speakeasy-metadata:
-      after: sdk.people.delete()
-      before: sdk.People.post_/api/index/v1/deleteemployee()
-      created_at: 1743113936038
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/indexteam"]["post"]
     update:
       x-speakeasy-name-override: indexTeam
       x-speakeasy-group: indexing.people
-    x-speakeasy-metadata:
-      after: sdk.people.indexTeam()
-      before: sdk.People.post_/api/index/v1/indexteam()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/processallemployeesandteams"]["post"]
     update:
       x-speakeasy-name-override: processAllEmployeesAndTeams
       x-speakeasy-group: indexing.people
-    x-speakeasy-metadata:
-      after: sdk.people.processAllEmployeesAndTeams()
-      before: sdk.People.post_/api/index/v1/processallemployeesandteams()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/deleteteam"]["post"]
     update:
       x-speakeasy-name-override: deleteTeam
       x-speakeasy-group: indexing.people
-    x-speakeasy-metadata:
-      after: sdk.people.deleteTeam()
-      before: sdk.People.post_/api/index/v1/deleteteam()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   # Permissions
@@ -197,144 +104,72 @@ actions:
     update:
       x-speakeasy-name-override: processMemberships
       x-speakeasy-group: indexing.permissions
-    x-speakeasy-metadata:
-      after: sdk.permissions.processMemberships()
-      before: sdk.Permissions.post_/api/index/v1/processallmemberships()
-      created_at: 1743113936039
-      reviewed_at: 1743114533813
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/bulkindexusers"]["post"]
     update:
       x-speakeasy-name-override: bulkIndexUsers
       x-speakeasy-group: indexing.permissions
-    x-speakeasy-metadata:
-      after: sdk.permissions.bulkIndexUsers()
-      before: sdk.Permissions.post_/api/index/v1/bulkindexusers()
-      created_at: 1743113936039
-      reviewed_at: 1743114533813
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/updatepermissions"]["post"]
     update:
       x-speakeasy-name-override: updatePermissions
       x-speakeasy-group: indexing.permissions
-    x-speakeasy-metadata:
-      after: sdk.documents.updatePermissions()
-      before: sdk.Documents.post_/api/index/v1/updatepermissions()
-      created_at: 1743113936039
-      reviewed_at: 1743114533813
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/bulkindexgroups"]["post"]
     update:
       x-speakeasy-name-override: bulkIndexGroups
       x-speakeasy-group: indexing.permissions
-    x-speakeasy-metadata:
-      after: sdk.permissions.bulkIndexGroups()
-      before: sdk.Permissions.post_/api/index/v1/bulkindexgroups()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/bulkindexmemberships"]["post"]
     update:
       x-speakeasy-name-override: bulkIndexMemberships
       x-speakeasy-group: indexing.permissions
-    x-speakeasy-metadata:
-      after: sdk.permissions.bulkIndexMemberships()
-      before: sdk.Permissions.post_/api/index/v1/bulkindexmemberships()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/betausers"]["post"]
     update:
       x-speakeasy-name-override: authorizeBetaUsers
       x-speakeasy-group: indexing.permissions
-    x-speakeasy-metadata:
-      after: sdk.permissions.authorizeBetaUsers()
-      before: sdk.Permissions.post_/api/index/v1/betausers()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/indexgroup"]["post"]
     update:
       x-speakeasy-name-override: indexGroup
       x-speakeasy-group: indexing.permissions
-    x-speakeasy-metadata:
-      after: sdk.permissions.indexGroup()
-      before: sdk.Permissions.post_/api/index/v1/indexgroup()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/indexuser"]["post"]
     update:
       x-speakeasy-name-override: indexUser
       x-speakeasy-group: indexing.permissions
-    x-speakeasy-metadata:
-      after: sdk.permissions.indexUser()
-      before: sdk.Permissions.post_/api/index/v1/indexuser()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/indexmembership"]["post"]
     update:
       x-speakeasy-name-override: indexMembership
       x-speakeasy-group: indexing.permissions
-    x-speakeasy-metadata:
-      after: sdk.permissions.indexMembership()
-      before: sdk.Permissions.post_/api/index/v1/indexmembership()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/deletegroup"]["post"]
     update:
       x-speakeasy-name-override: deleteGroup
       x-speakeasy-group: indexing.permissions
-    x-speakeasy-metadata:
-      after: sdk.permissions.deleteGroup()
-      before: sdk.Permissions.post_/api/index/v1/deletegroup()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/deleteuser"]["post"]
     update:
       x-speakeasy-name-override: deleteUser
       x-speakeasy-group: indexing.permissions
-    x-speakeasy-metadata:
-      after: sdk.permissions.deleteUser()
-      before: sdk.Permissions.post_/api/index/v1/deleteuser()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/deletemembership"]["post"]
     update:
       x-speakeasy-name-override: deleteMembership
       x-speakeasy-group: indexing.permissions
-    x-speakeasy-metadata:
-      after: sdk.permissions.deleteMembership()
-      before: sdk.Permissions.post_/api/index/v1/deletemembership()
-      created_at: 1743113936039
-      reviewed_at: 1743114533813
-      type: method-name
 
 
   # Shortcuts
@@ -342,24 +177,12 @@ actions:
     update:
       x-speakeasy-name-override: bulkIndex
       x-speakeasy-group: indexing.shortcuts
-    x-speakeasy-metadata:
-      after: sdk.shortcuts.bulkIndex()
-      before: sdk.Shortcuts.post_/api/index/v1/bulkindexshortcuts()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/uploadshortcuts"]["post"]
     update:
       x-speakeasy-name-override: upload
       x-speakeasy-group: indexing.shortcuts
-    x-speakeasy-metadata:
-      after: sdk.shortcuts.upload()
-      before: sdk.Shortcuts.post_/api/index/v1/uploadshortcuts()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   # Troubleshooting
@@ -367,93 +190,45 @@ actions:
     update:
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: checkAccess
-    x-speakeasy-metadata:
-      after: sdk.documents.checkAccess()
-      before: sdk.Troubleshooting.post_/api/index/v1/checkdocumentaccess()
-      created_at: 1743113936038
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/getdocumentcount"]["post"]
     update:
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: count
-    x-speakeasy-metadata:
-      after: sdk.documents.count()
-      before: sdk.Troubleshooting.post_/api/index/v1/getdocumentcount()
-      created_at: 1743113936038
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/debug/{datasource}/documents"]["post"]
     update:
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: debugMany
-    x-speakeasy-metadata:
-      after: sdk.documents.debug()
-      before: sdk.Troubleshooting.post_/api/index/v1/debug/{datasource}/documents()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/getdocumentstatus"]["post"]
     update:
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: status
-    x-speakeasy-metadata:
-      after: sdk.troubleshooting.documents.status()
-      before: sdk.Troubleshooting.post_/api/index/v1/getdocumentstatus()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/getusercount"]["post"]
     update:
       x-speakeasy-name-override: count
       x-speakeasy-group: indexing.people
-    x-speakeasy-metadata:
-      after: sdk.people.count()
-      before: sdk.Troubleshooting.post_/api/index/v1/getusercount()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/debug/{datasource}/status"]["post"]
     update:
       x-speakeasy-name-override: status
       x-speakeasy-group: indexing.datasource
-    x-speakeasy-metadata:
-      after: sdk.datasource.status()
-      before: sdk.Troubleshooting.post_/api/index/v1/debug/{datasource}/status()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/debug/{datasource}/document"]["post"]
     update:
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: debug
-    x-speakeasy-metadata:
-      after: sdk.documents.debug()
-      before: sdk.Troubleshooting.post_/api/index/v1/debug/{datasource}/document()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/api/index/v1/debug/{datasource}/user"]["post"]
     update:
       x-speakeasy-name-override: debug
       x-speakeasy-group: indexing.people
-    x-speakeasy-metadata:
-      after: sdk.people.debug()
-      before: sdk.Troubleshooting.post_/api/index/v1/debug/{datasource}/user()
-      created_at: 1743113936039
-      reviewed_at: 1743114533813
-      type: method-name
