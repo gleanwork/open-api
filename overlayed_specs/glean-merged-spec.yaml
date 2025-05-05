@@ -655,8 +655,8 @@ paths:
           description: Not Authorized
         "403":
           description: Forbidden
-      x-speakeasy-name-override: retrieve
-      x-speakeasy-group: client.chat.application
+      x-speakeasy-name-override: retrieveApplication
+      x-speakeasy-group: client.chat
   /rest/api/v1/uploadchatfiles:
     post:
       tags:
@@ -689,8 +689,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: upload
-      x-speakeasy-group: client.chat.files
+      x-speakeasy-name-override: uploadFiles
+      x-speakeasy-group: client.chat
   /rest/api/v1/getchatfiles:
     post:
       tags:
@@ -723,8 +723,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: retrieve
-      x-speakeasy-group: client.chat.files
+      x-speakeasy-name-override: retrieveFiles
+      x-speakeasy-group: client.chat
   /rest/api/v1/deletechatfiles:
     post:
       tags:
@@ -752,8 +752,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: delete
-      x-speakeasy-group: client.chat.files
+      x-speakeasy-name-override: deleteFiles
+      x-speakeasy-group: client.chat
   /rest/api/v1/runagent:
     post:
       tags:
@@ -787,7 +787,7 @@ paths:
           description: Request Timeout
         "429":
           description: Too Many Requests
-      x-speakeasy-group: client.agent
+      x-speakeasy-group: client.agents
       x-speakeasy-name-override: run
   /rest/api/v1/listagents:
     post:
@@ -855,7 +855,7 @@ paths:
           description: Request Timeout
         "429":
           description: Too Many Requests
-      x-speakeasy-group: client.agent
+      x-speakeasy-group: client.agents
       x-speakeasy-name-override: retrieveInputs
   /rest/api/v1/addcollectionitems:
     post:
@@ -997,8 +997,8 @@ paths:
           description: Failed to save deletion
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: delete
-      x-speakeasy-group: client.collections.item
+      x-speakeasy-name-override: deleteItem
+      x-speakeasy-group: client.collections
   /rest/api/v1/editcollection:
     post:
       tags:
@@ -1069,8 +1069,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: update
-      x-speakeasy-group: client.collections.item
+      x-speakeasy-name-override: updateItem
+      x-speakeasy-group: client.collections
   /rest/api/v1/getcollection:
     post:
       tags:
@@ -1170,8 +1170,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: retrieve
-      x-speakeasy-group: client.documents.permissions
+      x-speakeasy-name-override: retrievePermissions
+      x-speakeasy-group: client.documents
   /rest/api/v1/getdocuments:
     post:
       tags:
@@ -1510,7 +1510,7 @@ paths:
         "429":
           description: Too Many Requests
       x-speakeasy-name-override: query
-      x-speakeasy-group: client.search.admin
+      x-speakeasy-group: client.admin.search
   /rest/api/v1/autocomplete:
     post:
       tags:
@@ -1758,6 +1758,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: create
+      x-speakeasy-group: client.shortcuts
   /rest/api/v1/deleteshortcut:
     post:
       tags:
@@ -1917,8 +1919,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: generate
-      x-speakeasy-group: client.summarize
+      x-speakeasy-name-override: summarize
+      x-speakeasy-group: client.documents
   /rest/api/v1/addverificationreminder:
     post:
       tags:
@@ -2018,6 +2020,8 @@ paths:
           description: Document does not exist, does not support verification or user cannot access document
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: verify
+      x-speakeasy-group: client.verification
   /api/index/v1/indexdocument:
     post:
       summary: Index document
@@ -2446,7 +2450,7 @@ paths:
         "401":
           description: Not Authorized
       x-speakeasy-name-override: status
-      x-speakeasy-group: indexing.troubleshooting.datasource
+      x-speakeasy-group: indexing.datasource
   /api/index/v1/debug/{datasource}/document:
     post:
       x-beta: true
@@ -2483,8 +2487,8 @@ paths:
           description: Bad Request
         "401":
           description: Not Authorized
+      x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: debug
-      x-speakeasy-group: indexing.troubleshooting.datasource.document
   /api/index/v1/debug/{datasource}/documents:
     post:
       x-beta: true
@@ -2521,8 +2525,8 @@ paths:
           description: Bad Request
         "401":
           description: Not Authorized
-      x-speakeasy-name-override: debug
-      x-speakeasy-group: indexing.troubleshooting.datasource.documents
+      x-speakeasy-group: indexing.documents
+      x-speakeasy-name-override: debugMany
   /api/index/v1/debug/{datasource}/user:
     post:
       x-beta: true
@@ -2560,7 +2564,7 @@ paths:
         "401":
           description: Not Authorized
       x-speakeasy-name-override: debug
-      x-speakeasy-group: indexing.troubleshooting.datasource.user
+      x-speakeasy-group: indexing.people
   /api/index/v1/checkdocumentaccess:
     post:
       summary: Check document access
@@ -2590,7 +2594,7 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
-      x-speakeasy-group: indexing.troubleshooting
+      x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: checkAccess
   /api/index/v1/getdocumentstatus:
     post:
@@ -2622,8 +2626,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: status
-      x-speakeasy-group: indexing.troubleshooting.documents
   /api/index/v1/getdocumentcount:
     post:
       deprecated: true
@@ -2654,8 +2658,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: count
-      x-speakeasy-group: indexing.troubleshooting.documents
   /api/index/v1/getusercount:
     post:
       deprecated: true
@@ -2687,7 +2691,7 @@ paths:
         "409":
           description: Conflict
       x-speakeasy-name-override: count
-      x-speakeasy-group: indexing.troubleshooting.users
+      x-speakeasy-group: indexing.people
   /api/index/v1/betausers:
     post:
       summary: Beta users
@@ -2760,8 +2764,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
-      x-speakeasy-name-override: retrieve
-      x-speakeasy-group: indexing.datasources.config
+      x-speakeasy-name-override: retrieveConfig
+      x-speakeasy-group: indexing.datasources
   /api/index/v1/rotatetoken:
     post:
       summary: Rotate token
@@ -3013,7 +3017,7 @@ paths:
         "409":
           description: Conflict
       x-speakeasy-name-override: upload
-      x-speakeasy-group: client.shortcuts
+      x-speakeasy-group: indexing.shortcuts
   /rest/api/v1/chat#stream:
     post:
       tags:
