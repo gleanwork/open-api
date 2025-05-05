@@ -1,6 +1,6 @@
 node_modules/
 .DS_Store
 
-**/.speakeasy/temp
-**/.speakeasy/reports
-**/.speakeasy/logs
+.speakeasy/temp
+.speakeasy/reports
+.speakeasy/logs
