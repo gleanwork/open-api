@@ -1,14 +1,21 @@
 workflowVersion: 1.0.0
 speakeasyVersion: latest
 sources:
+    indexing-spec:
+        inputs:
+        - location: generated_specs/indexing.yaml
+        overlays:
+        - location: overlays/indexing-shortcut-rename.yaml
+        output: overlayed_specs/indexing-spec.yaml
     glean-api-specs:
         inputs:
             - location: generated_specs/client_rest.yaml
-            - location: generated_specs/indexing.yaml
+            - location: overlayed_specs/indexing-spec.yaml
         overlays:
             - location: overlays/chat-endpoint-fixes-overlay.yaml
             - location: overlays/info-name-overlay.yaml
             - location: overlays/strip-headers-overlay.yaml
+            - location: overlays/indexing-shortcut-rename.yaml
             - location: overlays/client-modifications-overlay.yaml
             - location: overlays/indexing-modifications-overlay.yaml
             - location: overlays/agent-modifications-overlay.yaml

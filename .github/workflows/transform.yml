@@ -29,6 +29,11 @@ jobs:
       - name: Setup Speakeasy CLI
         uses: ./.github/actions/speakeasy-setup
       
+      - name: Generate Indexing spec (rename Shortcut to IndexingShortcut)
+        run: speakeasy run -s indexing-spec
+        env:
+          SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
+      
       - name: Generate OpenAPI specs
         run: speakeasy run -s glean-api-specs
         env:

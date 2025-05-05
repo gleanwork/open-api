@@ -8,10 +8,6 @@ info:
     before: ""
     type: speakeasy-modifications
 actions:
-  # ===============================================
-  # Client
-  # ===============================================
-
   # Activity
   - target: $["paths"]["/rest/api/v1/activity"]["post"]
     update:
@@ -515,10 +511,10 @@ actions:
   # Search
   - target: $["paths"]["/rest/api/v1/feed"]["post"]
     update:
-      x-speakeasy-name-override: retrieve
-      x-speakeasy-group: client.search.feed
+      x-speakeasy-name-override: retrieveFeed
+      x-speakeasy-group: client.search
     x-speakeasy-metadata:
-      after: sdk.search.feed.retrieve()
+      after: sdk.search.retrieveFeed()
       before: sdk.Search.feed()
       created_at: 1743113936038
       reviewed_at: 1743114533812
