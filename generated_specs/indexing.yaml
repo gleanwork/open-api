@@ -2090,7 +2090,7 @@ components:
               description: Batch of shortcuts information
               type: array
               items:
-                $ref: "#/components/schemas/Shortcut"
+                $ref: "#/components/schemas/IndexingShortcut"
           required:
             - shortcuts
     DebugDatasourceStatusResponse:
@@ -2736,21 +2736,6 @@ components:
           type: string
           format: url
           description: The URL using which the user can access the edit page of the shortcut.
-    Shortcut:
-      allOf:
-        - $ref: "#/components/schemas/ShortcutProperties"
-        - type: object
-          required:
-            - destinationUrl
-            - createdBy
-            - inputAlias
-      properties:
-        unlisted:
-          type: boolean
-          description: Whether this shortcut is unlisted or not. Unlisted shortcuts are visible to author and admins only.
-        urlTemplate:
-          type: string
-          description: For variable shortcuts, contains the URL template; note, `destinationUrl` contains default URL.
     SharedDatasourceConfig:
       description: Structure describing shared config properties of the datasource (including multi-instance support)
       allOf:
@@ -2766,3 +2751,18 @@ components:
             instanceDescription:
               type: string
               description: A human readable string identifying this instance as compared to its peers, e.g. "github.com/askscio" or "github.askscio.com"
+    IndexingShortcut:
+      allOf:
+        - $ref: "#/components/schemas/ShortcutProperties"
+        - type: object
+          required:
+            - destinationUrl
+            - createdBy
+            - inputAlias
+      properties:
+        unlisted:
+          type: boolean
+          description: Whether this shortcut is unlisted or not. Unlisted shortcuts are visible to author and admins only.
+        urlTemplate:
+          type: string
+          description: For variable shortcuts, contains the URL template; note, `destinationUrl` contains default URL.

@@ -787,7 +787,7 @@ paths:
           description: Request Timeout
         "429":
           description: Too Many Requests
-      x-speakeasy-group: client.agents.agent
+      x-speakeasy-group: client.agent
       x-speakeasy-name-override: run
   /rest/api/v1/listagents:
     post:
@@ -855,8 +855,8 @@ paths:
           description: Request Timeout
         "429":
           description: Too Many Requests
-      x-speakeasy-group: client.agents.agent.inputs
-      x-speakeasy-name-override: retrieve
+      x-speakeasy-group: client.agent
+      x-speakeasy-name-override: retrieveInputs
   /rest/api/v1/addcollectionitems:
     post:
       tags:
@@ -1575,8 +1575,8 @@ paths:
           description: Request Timeout
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: retrieve
-      x-speakeasy-group: client.search.feed
+      x-speakeasy-name-override: retrieveFeed
+      x-speakeasy-group: client.search
   /rest/api/v1/recommendations:
     post:
       tags:
@@ -4718,19 +4718,25 @@ components:
           description: The URL using which the user can access the edit page of the shortcut.
     Shortcut:
       allOf:
-        - $ref: "#/components/schemas/ShortcutProperties"
+        - $ref: "#/components/schemas/UserGeneratedContentId"
+        - $ref: "#/components/schemas/ShortcutMutableProperties"
+        - $ref: "#/components/schemas/PermissionedObject"
+        - $ref: "#/components/schemas/ShortcutMetadata"
         - type: object
           required:
-            - destinationUrl
-            - createdBy
             - inputAlias
-      properties:
-        unlisted:
-          type: boolean
-          description: Whether this shortcut is unlisted or not. Unlisted shortcuts are visible to author and admins only.
-        urlTemplate:
-          type: string
-          description: For variable shortcuts, contains the URL template; note, `destinationUrl` contains default URL.
+          properties:
+            alias:
+              type: string
+              description: canonical link text following go/ prefix where hyphen/underscore is removed.
+            title:
+              type: string
+              description: Title for the Go Link
+            roles:
+              type: array
+              description: A list of user roles for the Go Link.
+              items:
+                $ref: "#/components/schemas/UserRoleSpecification"
     Collection:
       allOf:
         - $ref: "#/components/schemas/CollectionMutableProperties"
@@ -10424,7 +10430,7 @@ components:
               description: Batch of shortcuts information
               type: array
               items:
-                $ref: "#/components/schemas/Shortcut"
+                $ref: "#/components/schemas/IndexingShortcut"
           required:
             - shortcuts
     DebugDatasourceStatusResponse:
@@ -10982,6 +10988,21 @@ components:
             instanceDescription:
               type: string
               description: A human readable string identifying this instance as compared to its peers, e.g. "github.com/askscio" or "github.askscio.com"
+    IndexingShortcut:
+      allOf:
+        - $ref: "#/components/schemas/ShortcutProperties"
+        - type: object
+          required:
+            - destinationUrl
+            - createdBy
+            - inputAlias
+      properties:
+        unlisted:
+          type: boolean
+          description: Whether this shortcut is unlisted or not. Unlisted shortcuts are visible to author and admins only.
+        urlTemplate:
+          type: string
+          description: For variable shortcuts, contains the URL template; note, `destinationUrl` contains default URL.
     ChatRequestStream:
       required:
         - messages
