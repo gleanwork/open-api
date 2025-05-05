@@ -8,10 +8,6 @@ info:
     before: ""
     type: speakeasy-modifications
 actions:
-  # ===============================================
-  # Indexing
-  # ===============================================
-
   # Authentication
   - target: $["paths"]["/api/index/v1/rotatetoken"]["post"]
     update:

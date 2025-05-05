@@ -2,7 +2,7 @@ import { describe, test, expect } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
-import { transform, extractBasePath } from '../src/transformer.js';
+import { transform, extractBasePath, transformShortcutComponent } from '../src/transformer.js';
 
 function readFixture(filename) {
   const fixtureFile = path.join(__dirname, 'fixtures', filename);
@@ -18,7 +18,7 @@ describe('OpenAPI YAML Transformer', () => {
   
   test('transforms client API YAML correctly', () => {
     const clientYaml = readFixture('client_rest.yaml');
-    const transformedContent = transform(clientYaml);
+    const transformedContent = transform(clientYaml, 'client_rest.yaml');
     
     const originalSpec = yaml.load(clientYaml);
     const transformedSpec = yaml.load(transformedContent);
@@ -50,7 +50,7 @@ describe('OpenAPI YAML Transformer', () => {
   
   test('transforms indexing API YAML correctly', () => {
     const indexingYaml = readFixture('indexing.yaml');
-    const transformedContent = transform(indexingYaml);
+    const transformedContent = transform(indexingYaml, 'indexing.yaml');
     
     const originalSpec = yaml.load(indexingYaml);
     const transformedSpec = yaml.load(transformedContent);
@@ -78,11 +78,17 @@ describe('OpenAPI YAML Transformer', () => {
     for (const path of transformedPaths) {
       expect(path.startsWith(originalBasePath)).toBe(true);
     }
+    
+    // If there's a Shortcut component in the test fixture, it should be renamed to IndexingShortcut
+    if (originalSpec.components && originalSpec.components.schemas && originalSpec.components.schemas.Shortcut) {
+      expect(transformedSpec.components.schemas).not.toHaveProperty('Shortcut');
+      expect(transformedSpec.components.schemas).toHaveProperty('IndexingShortcut');
+    }
   });
   
   test('preserves path operation properties', () => {
     const clientYaml = readFixture('client_rest.yaml');
-    const transformedContent = transform(clientYaml);
+    const transformedContent = transform(clientYaml, 'client_rest.yaml');
     const originalSpec = yaml.load(clientYaml);
     const transformedSpec = yaml.load(transformedContent);
     
@@ -130,11 +136,38 @@ servers:
 paths: {}
 `;
     
-    const transformedContent = transform(sampleYaml);
+    const transformedContent = transform(sampleYaml, 'sample.yaml');
     const transformedSpec = yaml.load(transformedContent);
     
     expect(transformedSpec.servers[0].url).toBe('https://api.example.com');
     
     expect(transformedSpec.paths).toEqual({});
   });
-}); 
+  
+  test('transformShortcutComponent renames Shortcut to IndexingShortcut', () => {
+    const testSpec = {
+      components: {
+        schemas: {
+          Shortcut: {
+            type: 'object',
+            properties: {
+              testProperty: { type: 'string' }
+            }
+          },
+          OtherSchema: {
+            type: 'object',
+            properties: {
+              shortcutRef: { $ref: '#/components/schemas/Shortcut' }
+            }
+          }
+        }
+      }
+    };
+    
+    const transformedSpec = transformShortcutComponent(testSpec);
+    
+    expect(transformedSpec.components.schemas).not.toHaveProperty('Shortcut');
+    expect(transformedSpec.components.schemas).toHaveProperty('IndexingShortcut');
+    expect(transformedSpec.components.schemas.OtherSchema.properties.shortcutRef.$ref).toBe('#/components/schemas/IndexingShortcut');
+  });
+});
