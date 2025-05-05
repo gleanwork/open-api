@@ -1,7 +1,8 @@
 overlay: 1.0.0
+x-speakeasy-jsonpath: rfc9535
 info:
   title: Rename Indexing Shortcut component to avoid clash with client Shortcut
-x-speakeasy-jsonpath: rfc9535
+  version: 0.0.5
 
 actions:
   # 1. Duplicate the existing component under the new name

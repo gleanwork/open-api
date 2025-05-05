@@ -1,12 +1,6 @@
 workflowVersion: 1.0.0
 speakeasyVersion: latest
 sources:
-    indexing-spec:
-        inputs:
-        - location: generated_specs/indexing.yaml
-        overlays:
-        - location: overlays/indexing-shortcut-rename.yaml
-        output: overlayed_specs/indexing-spec.yaml
     glean-api-specs:
         inputs:
             - location: generated_specs/client_rest.yaml
@@ -44,4 +38,10 @@ sources:
         output: merged_code_samples_specs/glean-index-merged-code-samples-spec.yaml
         registry:
             location: registry.speakeasyapi.dev/glean-el2/sdk/glean-index-merged-code-samples-spec
+    indexing-spec:
+        inputs:
+            - location: generated_specs/indexing.yaml
+        overlays:
+            - location: overlays/indexing-shortcut-rename.yaml
+        output: overlayed_specs/indexing-spec.yaml
 targets: {}

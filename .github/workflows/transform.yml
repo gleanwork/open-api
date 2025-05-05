@@ -30,7 +30,7 @@ jobs:
         uses: ./.github/actions/speakeasy-setup
       
       - name: Generate Indexing spec (rename Shortcut to IndexingShortcut)
-        run: speakeasy run -s indexing-spec
+        run: speakeasy run -s indexing-spec --skip-upload-spec
         env:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
       
