@@ -24,10 +24,10 @@ actions:
   # Datasources
   - target: $["paths"]["/api/index/v1/getdatasourceconfig"]["post"]
     update:
-      x-speakeasy-name-override: retrieve
-      x-speakeasy-group: indexing.datasources.config
+      x-speakeasy-name-override: retrieveConfig
+      x-speakeasy-group: indexing.datasources
     x-speakeasy-metadata:
-      after: sdk.datasources.config.retrieve()
+      after: sdk.datasources.retrieveConfig()
       before: sdk.Datasources.post_/api/index/v1/getdatasourceconfig()
       created_at: 1743113936039
       reviewed_at: 1743114533812
@@ -350,13 +350,25 @@ actions:
       type: method-name
 
 
+  - target: $["paths"]["/api/index/v1/uploadshortcuts"]["post"]
+    update:
+      x-speakeasy-name-override: upload
+      x-speakeasy-group: indexing.shortcuts
+    x-speakeasy-metadata:
+      after: sdk.shortcuts.upload()
+      before: sdk.Shortcuts.post_/api/index/v1/uploadshortcuts()
+      created_at: 1743113936039
+      reviewed_at: 1743114533812
+      type: method-name
+
+
   # Troubleshooting
   - target: $["paths"]["/api/index/v1/checkdocumentaccess"]["post"]
     update:
-      x-speakeasy-group: indexing.troubleshooting
+      x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: checkAccess
     x-speakeasy-metadata:
-      after: sdk.troubleshooting.checkAccess()
+      after: sdk.documents.checkAccess()
       before: sdk.Troubleshooting.post_/api/index/v1/checkdocumentaccess()
       created_at: 1743113936038
       reviewed_at: 1743114533812
@@ -365,10 +377,10 @@ actions:
 
   - target: $["paths"]["/api/index/v1/getdocumentcount"]["post"]
     update:
+      x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: count
-      x-speakeasy-group: indexing.troubleshooting.documents
     x-speakeasy-metadata:
-      after: sdk.troubleshooting.documents.count()
+      after: sdk.documents.count()
       before: sdk.Troubleshooting.post_/api/index/v1/getdocumentcount()
       created_at: 1743113936038
       reviewed_at: 1743114533812
@@ -377,10 +389,10 @@ actions:
 
   - target: $["paths"]["/api/index/v1/debug/{datasource}/documents"]["post"]
     update:
-      x-speakeasy-name-override: debug
-      x-speakeasy-group: indexing.troubleshooting.datasource.documents
+      x-speakeasy-group: indexing.documents
+      x-speakeasy-name-override: debugMany
     x-speakeasy-metadata:
-      after: sdk.troubleshooting.datasource.documents.debug()
+      after: sdk.documents.debug()
       before: sdk.Troubleshooting.post_/api/index/v1/debug/{datasource}/documents()
       created_at: 1743113936039
       reviewed_at: 1743114533812
@@ -389,8 +401,8 @@ actions:
 
   - target: $["paths"]["/api/index/v1/getdocumentstatus"]["post"]
     update:
+      x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: status
-      x-speakeasy-group: indexing.troubleshooting.documents
     x-speakeasy-metadata:
       after: sdk.troubleshooting.documents.status()
       before: sdk.Troubleshooting.post_/api/index/v1/getdocumentstatus()
@@ -402,9 +414,9 @@ actions:
   - target: $["paths"]["/api/index/v1/getusercount"]["post"]
     update:
       x-speakeasy-name-override: count
-      x-speakeasy-group: indexing.troubleshooting.users
+      x-speakeasy-group: indexing.people
     x-speakeasy-metadata:
-      after: sdk.troubleshooting.users.count()
+      after: sdk.people.count()
       before: sdk.Troubleshooting.post_/api/index/v1/getusercount()
       created_at: 1743113936039
       reviewed_at: 1743114533812
@@ -414,9 +426,9 @@ actions:
   - target: $["paths"]["/api/index/v1/debug/{datasource}/status"]["post"]
     update:
       x-speakeasy-name-override: status
-      x-speakeasy-group: indexing.troubleshooting.datasource
+      x-speakeasy-group: indexing.datasource
     x-speakeasy-metadata:
-      after: sdk.troubleshooting.datasource.status()
+      after: sdk.datasource.status()
       before: sdk.Troubleshooting.post_/api/index/v1/debug/{datasource}/status()
       created_at: 1743113936039
       reviewed_at: 1743114533812
@@ -425,10 +437,10 @@ actions:
 
   - target: $["paths"]["/api/index/v1/debug/{datasource}/document"]["post"]
     update:
+      x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: debug
-      x-speakeasy-group: indexing.troubleshooting.datasource.document
     x-speakeasy-metadata:
-      after: sdk.troubleshooting.datasource.document.debug()
+      after: sdk.documents.debug()
       before: sdk.Troubleshooting.post_/api/index/v1/debug/{datasource}/document()
       created_at: 1743113936039
       reviewed_at: 1743114533812
@@ -438,9 +450,9 @@ actions:
   - target: $["paths"]["/api/index/v1/debug/{datasource}/user"]["post"]
     update:
       x-speakeasy-name-override: debug
-      x-speakeasy-group: indexing.troubleshooting.datasource.user
+      x-speakeasy-group: indexing.people
     x-speakeasy-metadata:
-      after: sdk.troubleshooting.datasource.user.debug()
+      after: sdk.people.debug()
       before: sdk.Troubleshooting.post_/api/index/v1/debug/{datasource}/user()
       created_at: 1743113936039
       reviewed_at: 1743114533813

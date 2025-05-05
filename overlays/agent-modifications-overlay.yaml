@@ -3,40 +3,18 @@ x-speakeasy-jsonpath: rfc9535
 info:
   title: Speakeasy Modifications
   version: 0.0.5
-  x-speakeasy-metadata:
-    after: ""
-    before: ""
-    type: speakeasy-modifications
 actions:
   - target: $["paths"]["/rest/api/v1/runagent"]["post"]
     update:
-      x-speakeasy-group: client.agent
+      x-speakeasy-group: client.agents
       x-speakeasy-name-override: run
-    x-speakeasy-metadata:
-      type: method-name
-      before: sdk.agents.runagent()
-      after: sdk.agent.run()
-      created_at: 1746289796032
-      reviewed_at: 1746289796032
 
   - target: $["paths"]["/rest/api/v1/getagentinputs"]["post"]
     update:
-      x-speakeasy-group: client.agent
+      x-speakeasy-group: client.agents
       x-speakeasy-name-override: retrieveInputs
-    x-speakeasy-metadata:
-      type: method-name
-      before: sdk.agents.getagentinputs()
-      after: sdk.agent.retrieveInputs()
-      created_at: 1746289796032
-      reviewed_at: 1746289796032
 
   - target: $["paths"]["/rest/api/v1/listagents"]["post"]
     update:
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: list
-    x-speakeasy-metadata:
-      type: method-name
-      before: sdk.agents.listagents()
-      after: sdk.agents.list()
-      created_at: 1746289796032
-      reviewed_at: 1746289796032
