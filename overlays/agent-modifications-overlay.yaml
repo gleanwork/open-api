@@ -3,6 +3,7 @@ x-speakeasy-jsonpath: rfc9535
 info:
   title: Speakeasy Modifications
   version: 0.0.5
+
 actions:
   - target: $["paths"]["/rest/api/v1/runagent"]["post"]
     update:

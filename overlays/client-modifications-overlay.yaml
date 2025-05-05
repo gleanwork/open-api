@@ -3,66 +3,35 @@ x-speakeasy-jsonpath: rfc9535
 info:
   title: Speakeasy Modifications
   version: 0.0.5
-  x-speakeasy-metadata:
-    after: ""
-    before: ""
-    type: speakeasy-modifications
+
 actions:
   # Activity
   - target: $["paths"]["/rest/api/v1/activity"]["post"]
     update:
       x-speakeasy-name-override: report
       x-speakeasy-group: client.activity
-    x-speakeasy-metadata:
-      after: sdk.activity.report()
-      before: sdk.Activity.activity()
-      created_at: 1743113936038
-      reviewed_at: 1743114533812
-      type: method-name
 
   - target: $["paths"]["/rest/api/v1/feedback"]["post"]
     update:
       x-speakeasy-group: client.activity
-    x-speakeasy-metadata:
-      created_at: 1743113936038
-      reviewed_at: 1743114533812
-      type: method-name
 
   # Announcements
   - target: $["paths"]["/rest/api/v1/deleteannouncement"]["post"]
     update:
       x-speakeasy-name-override: delete
       x-speakeasy-group: client.announcements
-    x-speakeasy-metadata:
-      after: sdk.announcements.delete()
-      before: sdk.Announcements.deleteannouncement()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/createannouncement"]["post"]
     update:
       x-speakeasy-name-override: create
       x-speakeasy-group: client.announcements
-    x-speakeasy-metadata:
-      after: sdk.announcements.create()
-      before: sdk.Announcements.createannouncement()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/updateannouncement"]["post"]
     update:
       x-speakeasy-name-override: update
       x-speakeasy-group: client.announcements
-    x-speakeasy-metadata:
-      after: sdk.announcements.update()
-      before: sdk.Announcements.updateannouncement()
-      created_at: 1743113936039
-      reviewed_at: 1743114533813
-      type: method-name
 
 
   # Answers
@@ -70,60 +39,30 @@ actions:
     update:
       x-speakeasy-name-override: create
       x-speakeasy-group: client.answers
-    x-speakeasy-metadata:
-      after: sdk.answers.create()
-      before: sdk.Answers.createanswer()
-      created_at: 1743113936038
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/editanswer"]["post"]
     update:
       x-speakeasy-name-override: update
       x-speakeasy-group: client.answers
-    x-speakeasy-metadata:
-      after: sdk.answers.update()
-      before: sdk.Answers.editanswer()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/listanswers"]["post"]
     update:
       x-speakeasy-name-override: list
       x-speakeasy-group: client.answers
-    x-speakeasy-metadata:
-      after: sdk.answers.list()
-      before: sdk.Answers.listanswers()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/getanswer"]["post"]
     update:
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.answers
-    x-speakeasy-metadata:
-      after: sdk.answers.retrieve()
-      before: sdk.Answers.getanswer()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/deleteanswer"]["post"]
     update:
       x-speakeasy-name-override: delete
       x-speakeasy-group: client.answers
-    x-speakeasy-metadata:
-      after: sdk.answers.delete()
-      before: sdk.Answers.deleteanswer()
-      created_at: 1743113936039
-      reviewed_at: 1743114533813
-      type: method-name
 
 
   # Authentication
@@ -131,12 +70,6 @@ actions:
     update:
       x-speakeasy-name-override: createToken
       x-speakeasy-group: client.authentication
-    x-speakeasy-metadata:
-      after: sdk.authentication.createToken()
-      before: sdk.Authentication.createauthtoken()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   # Chat
@@ -145,12 +78,6 @@ actions:
       x-speakeasy-group: client.chat
       x-speakeasy-name-override: create
       x-speakeasy-usage-example: true
-    x-speakeasy-metadata:
-      after: sdk.chat.create()
-      before: sdk.Chat.chat()
-      created_at: 1743113936038
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/chat#stream"]["post"]
@@ -158,108 +85,54 @@ actions:
       x-speakeasy-group: client.chat
       x-speakeasy-name-override: createStream
       x-speakeasy-usage-example: true
-    x-speakeasy-metadata:
-      after: sdk.chat.createStream()
-      before: sdk.Chat.chat()
-      created_at: 1743113936038
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/getchat"]["post"]
     update:
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.chat
-    x-speakeasy-metadata:
-      after: sdk.chat.retrieve()
-      before: sdk.Chat.getchat()
-      created_at: 1743113936038
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/deletechatfiles"]["post"]
     update:
       x-speakeasy-name-override: deleteFiles
       x-speakeasy-group: client.chat
-    x-speakeasy-metadata:
-      after: sdk.chat.deleteFiles()
-      before: sdk.Chat.deletechatfiles()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/uploadchatfiles"]["post"]
     update:
       x-speakeasy-name-override: uploadFiles
       x-speakeasy-group: client.chat
-    x-speakeasy-metadata:
-      after: sdk.chat.uploadFiles()
-      before: sdk.Chat.uploadchatfiles()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/deleteallchats"]["post"]
     update:
       x-speakeasy-name-override: deleteAll
       x-speakeasy-group: client.chat
-    x-speakeasy-metadata:
-      after: sdk.chat.deleteAll()
-      before: sdk.Chat.deleteallchats()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/getchatfiles"]["post"]
     update:
       x-speakeasy-name-override: retrieveFiles
       x-speakeasy-group: client.chat
-    x-speakeasy-metadata:
-      after: sdk.chat.retrieveFiles()
-      before: sdk.Chat.getchatfiles()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/deletechats"]["post"]
     update:
       x-speakeasy-name-override: delete
       x-speakeasy-group: client.chat
-    x-speakeasy-metadata:
-      after: sdk.chat.delete()
-      before: sdk.Chat.deletechats()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/getchatapplication"]["post"]
     update:
       x-speakeasy-name-override: retrieveApplication
       x-speakeasy-group: client.chat
-    x-speakeasy-metadata:
-      after: sdk.chat.retrieveApplication()
-      before: sdk.Chat.getchatapplication()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/listchats"]["post"]
     update:
       x-speakeasy-name-override: list
       x-speakeasy-group: client.chat
-    x-speakeasy-metadata:
-      after: sdk.chat.list()
-      before: sdk.Chat.listchats()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   # Collections
@@ -267,96 +140,48 @@ actions:
     update:
       x-speakeasy-name-override: deleteItem
       x-speakeasy-group: client.collections
-    x-speakeasy-metadata:
-      after: sdk.collections.deleteItem()
-      before: sdk.Collections.deletecollectionitem()
-      created_at: 1743113936038
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/createcollection"]["post"]
     update:
       x-speakeasy-group: client.collections
       x-speakeasy-name-override: create
-    x-speakeasy-metadata:
-      after: sdk.collections.create()
-      before: sdk.Collections.createcollection()
-      created_at: 1743113936038
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/editcollectionitem"]["post"]
     update:
       x-speakeasy-name-override: updateItem
       x-speakeasy-group: client.collections
-    x-speakeasy-metadata:
-      after: sdk.collections.updateItem()
-      before: sdk.Collections.editcollectionitem()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/getcollection"]["post"]
     update:
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.collections
-    x-speakeasy-metadata:
-      after: sdk.collections.retrieve()
-      before: sdk.Collections.getcollection()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/listcollections"]["post"]
     update:
       x-speakeasy-name-override: list
       x-speakeasy-group: client.collections
-    x-speakeasy-metadata:
-      after: sdk.collections.list()
-      before: sdk.Collections.listcollections()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/addcollectionitems"]["post"]
     update:
       x-speakeasy-name-override: addItems
       x-speakeasy-group: client.collections
-    x-speakeasy-metadata:
-      after: sdk.collections.addItems()
-      before: sdk.Collections.addcollectionitems()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/editcollection"]["post"]
     update:
       x-speakeasy-name-override: update
       x-speakeasy-group: client.collections
-    x-speakeasy-metadata:
-      after: sdk.collections.update()
-      before: sdk.Collections.editcollection()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/deletecollection"]["post"]
     update:
       x-speakeasy-name-override: delete
       x-speakeasy-group: client.collections
-    x-speakeasy-metadata:
-      after: sdk.collections.delete()
-      before: sdk.Collections.deletecollection()
-      created_at: 1743113936039
-      reviewed_at: 1743114533813
-      type: method-name
 
 
   # Documents
@@ -364,36 +189,18 @@ actions:
     update:
       x-speakeasy-name-override: retrievePermissions
       x-speakeasy-group: client.documents
-    x-speakeasy-metadata:
-      after: sdk.documents.retrievePermissions()
-      before: sdk.Documents.getdocpermissions()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/getdocumentsbyfacets"]["post"]
     update:
       x-speakeasy-name-override: retrieveByFacets
       x-speakeasy-group: client.documents
-    x-speakeasy-metadata:
-      after: sdk.documents.retrieveByFacets()
-      before: sdk.Documents.getdocumentsbyfacets()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/getdocuments"]["post"]
     update:
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.documents
-    x-speakeasy-metadata:
-      after: sdk.documents.retrieve()
-      before: sdk.Documents.getdocuments()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   # Entities
@@ -401,24 +208,12 @@ actions:
     update:
       x-speakeasy-group: client.entities
       x-speakeasy-name-override: list
-    x-speakeasy-metadata:
-      after: sdk.entities.list()
-      before: sdk.Entities.listentities()
-      created_at: 1743113936038
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/people"]["post"]
     update:
       x-speakeasy-name-override: readPeople
       x-speakeasy-group: client.entities
-    x-speakeasy-metadata:
-      after: sdk.entities.readPeople()
-      before: sdk.Entities.people()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   # Insights
@@ -426,12 +221,6 @@ actions:
     update:
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.insights
-    x-speakeasy-metadata:
-      after: sdk.insights.retrieve()
-      before: sdk.Insights.insights()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   # Messages
@@ -439,12 +228,6 @@ actions:
     update:
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.messages
-    x-speakeasy-metadata:
-      after: sdk.messages.retrieve()
-      before: sdk.Messages.messages()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   # Pins
@@ -452,60 +235,30 @@ actions:
     update:
       x-speakeasy-name-override: list
       x-speakeasy-group: client.pins
-    x-speakeasy-metadata:
-      after: sdk.pins.list()
-      before: sdk.Pins.listpins()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/pin"]["post"]
     update:
       x-speakeasy-name-override: create
       x-speakeasy-group: client.pins
-    x-speakeasy-metadata:
-      after: sdk.pins.create()
-      before: sdk.Pins.pin()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/editpin"]["post"]
     update:
       x-speakeasy-name-override: update
       x-speakeasy-group: client.pins
-    x-speakeasy-metadata:
-      after: sdk.pins.update()
-      before: sdk.Pins.editpin()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/getpin"]["post"]
     update:
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.pins
-    x-speakeasy-metadata:
-      after: sdk.pins.retrieve()
-      before: sdk.Pins.getpin()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/unpin"]["post"]
     update:
       x-speakeasy-name-override: remove
       x-speakeasy-group: client.pins
-    x-speakeasy-metadata:
-      after: sdk.pins.remove()
-      before: sdk.Pins.unpin()
-      created_at: 1743113936039
-      reviewed_at: 1743114533813
-      type: method-name
 
 
   # Search
@@ -513,12 +266,6 @@ actions:
     update:
       x-speakeasy-name-override: retrieveFeed
       x-speakeasy-group: client.search
-    x-speakeasy-metadata:
-      after: sdk.search.retrieveFeed()
-      before: sdk.Search.feed()
-      created_at: 1743113936038
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/recommendations"]["post"]
@@ -531,95 +278,47 @@ actions:
     update:
       x-speakeasy-name-override: query
       x-speakeasy-group: client.admin.search
-    x-speakeasy-metadata:
-      after: sdk.admin.search.query()
-      before: sdk.Admin.search()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/search"]["post"]
     update:
       x-speakeasy-name-override: query
       x-speakeasy-group: client.search
-    x-speakeasy-metadata:
-      after: sdk.search.query()
-      before: sdk.Search.search()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
   - target: $["paths"]["/rest/api/v1/search/autocomplete"]["post"]
     update:
       x-speakeasy-group: client.search
       x-speakeasy-name-override: autocomplete
-    x-speakeasy-metadata:
-      type: method-name
-      before: sdk.search.search.autocomplete()
-      after: sdk.search.autocomplete.retrieve()
-      created_at: 1746289796032
-      reviewed_at: 1746289796032
 
   # Shortcuts
   - target: $["paths"]["/rest/api/v1/listshortcuts"]["post"]
     update:
       x-speakeasy-name-override: list
       x-speakeasy-group: client.shortcuts
-    x-speakeasy-metadata:
-      after: sdk.shortcuts.list()
-      before: sdk.Shortcuts.listshortcuts()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/getshortcut"]["post"]
     update:
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.shortcuts
-    x-speakeasy-metadata:
-      after: sdk.shortcuts.retrieve()
-      before: sdk.Shortcuts.getshortcut()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/updateshortcut"]["post"]
     update:
       x-speakeasy-name-override: update
       x-speakeasy-group: client.shortcuts
-    x-speakeasy-metadata:
-      after: sdk.shortcuts.update()
-      before: sdk.Shortcuts.updateshortcut()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/createshortcut"]["post"]
     update:
       x-speakeasy-name-override: create
       x-speakeasy-group: client.shortcuts
-    x-speakeasy-metadata:
-      after: sdk.shortcuts.create()
-      before: sdk.Shortcuts.createshortcut()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/deleteshortcut"]["post"]
     update:
       x-speakeasy-name-override: delete
       x-speakeasy-group: client.shortcuts
-    x-speakeasy-metadata:
-      after: sdk.shortcuts.delete()
-      before: sdk.Shortcuts.deleteshortcut()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   # Summarize
@@ -627,12 +326,6 @@ actions:
     update:
       x-speakeasy-name-override: summarize
       x-speakeasy-group: client.documents
-    x-speakeasy-metadata:
-      after: sdk.documents.summarize()
-      before: sdk.Summarize.summarize()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   # Verification
@@ -640,36 +333,18 @@ actions:
     update:
       x-speakeasy-name-override: list
       x-speakeasy-group: client.verification
-    x-speakeasy-metadata:
-      after: sdk.verification.list()
-      before: sdk.Verification.listverifications()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/addverificationreminder"]["post"]
     update:
       x-speakeasy-name-override: addReminder
       x-speakeasy-group: client.verification
-    x-speakeasy-metadata:
-      after: sdk.verification.addReminder()
-      before: sdk.Verification.addverificationreminder()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
 
   - target: $["paths"]["/rest/api/v1/verify"]["post"]
     update:
       x-speakeasy-name-override: verify
       x-speakeasy-group: client.verification
-    x-speakeasy-metadata:
-      after: sdk.verification.verify()
-      before: sdk.Verification.verify()
-      created_at: 1743113936039
-      reviewed_at: 1743114533812
-      type: method-name
 
   - target: $["components"]["schemas"]["ErrorInfo"]
     update:
