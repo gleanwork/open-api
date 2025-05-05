@@ -41,7 +41,7 @@ export async function run() {
       
       const yamlContent = await readYamlFromFile(sourceFilePath);
       
-      const transformedYaml = transform(yamlContent);
+      const transformedYaml = transform(yamlContent, specFile);
       
       fs.writeFileSync(outputFilePath, transformedYaml, 'utf8');
       
