@@ -1509,8 +1509,8 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: query
-      x-speakeasy-group: client.admin.search
+      x-speakeasy-group: client.search
+      x-speakeasy-name-override: queryAsAdmin
   /rest/api/v1/autocomplete:
     post:
       tags:
@@ -1613,8 +1613,8 @@ paths:
           description: Document does not exist or user cannot access document
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: recommendations
       x-speakeasy-group: client.search
+      x-speakeasy-name-override: recommendations
   /rest/api/v1/search:
     post:
       tags:
@@ -1659,8 +1659,8 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: query
       x-speakeasy-group: client.search
+      x-speakeasy-name-override: query
   /rest/api/v1/listentities:
     post:
       tags:
@@ -1820,8 +1820,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.shortcuts
+      x-speakeasy-name-override: retrieve
   /rest/api/v1/listshortcuts:
     post:
       tags:
@@ -1853,8 +1853,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: list
       x-speakeasy-group: client.shortcuts
+      x-speakeasy-name-override: list
   /rest/api/v1/updateshortcut:
     post:
       tags:
@@ -1886,8 +1886,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
-      x-speakeasy-name-override: update
       x-speakeasy-group: client.shortcuts
+      x-speakeasy-name-override: update
   /rest/api/v1/summarize:
     post:
       tags:
@@ -2831,6 +2831,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: bulkIndex
+      x-speakeasy-group: indexing.people
   /api/index/v1/indexemployeelist:
     post:
       summary: Bulk index employees
@@ -2854,8 +2856,6 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
-      x-speakeasy-name-override: bulkIndex
-      x-speakeasy-group: indexing.people
   /api/index/v1/processallemployeesandteams:
     post:
       summary: Schedules the processing of uploaded employees and teams
