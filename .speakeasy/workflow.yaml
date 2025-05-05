@@ -4,12 +4,10 @@ sources:
     glean-api-specs:
         inputs:
             - location: generated_specs/client_rest.yaml
-            - location: overlayed_specs/indexing-spec.yaml
         overlays:
             - location: overlays/chat-endpoint-fixes-overlay.yaml
             - location: overlays/info-name-overlay.yaml
             - location: overlays/strip-headers-overlay.yaml
-            - location: overlays/indexing-shortcut-rename.yaml
             - location: overlays/client-modifications-overlay.yaml
             - location: overlays/indexing-modifications-overlay.yaml
             - location: overlays/agent-modifications-overlay.yaml
