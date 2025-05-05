@@ -61,7 +61,6 @@ actions:
       x-speakeasy-name-override: index
       x-speakeasy-group: indexing.documents
 
-
   # People
   - target: $["paths"]["/api/index/v1/bulkindexteams"]["post"]
     update:
@@ -70,10 +69,7 @@ actions:
 
 
   - target: $["paths"]["/api/index/v1/indexemployeelist"]["post"]
-    update:
-      x-speakeasy-name-override: bulkIndex
-      x-speakeasy-group: indexing.people
-
+    action: remove
 
   - target: $["paths"]["/api/index/v1/indexemployee"]["post"]
     update:
