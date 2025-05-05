@@ -69,7 +69,7 @@ actions:
 
 
   - target: $["paths"]["/api/index/v1/indexemployeelist"]["post"]
-    action: remove
+    remove: true
 
   - target: $["paths"]["/api/index/v1/indexemployee"]["post"]
     update:
