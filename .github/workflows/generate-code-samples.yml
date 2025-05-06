@@ -18,7 +18,7 @@ jobs:
         uses: ./.github/actions/speakeasy-setup
       
       - name: Generate code samples
-        run: speakeasy run -s glean-client-merged-code-samples-spec glean-index-merged-code-samples-spec
+        run: speakeasy run -s glean-client-merged-code-samples-spec -s glean-index-merged-code-samples-spec
         env:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
       
