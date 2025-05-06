@@ -3137,10 +3137,7 @@ paths:
       x-speakeasy-name-override: createStream
       x-speakeasy-usage-example: true
 components:
-  securitySchemes:
-    BearerAuth:
-      scheme: bearer
-      type: http
+  securitySchemes: {}
   schemas:
     ActivityEventParams:
       properties:
