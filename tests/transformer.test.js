@@ -2,7 +2,7 @@ import { describe, test, expect } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
-import { transform, extractBasePath, transformShortcutComponent } from '../src/transformer.js';
+import { transform, extractBasePath, transformShortcutComponent, transformBearerAuthToAPIToken } from '../src/transformer.js';
 
 function readFixture(filename) {
   const fixtureFile = path.join(__dirname, 'fixtures', filename);
@@ -169,5 +169,58 @@ paths: {}
     expect(transformedSpec.components.schemas).not.toHaveProperty('Shortcut');
     expect(transformedSpec.components.schemas).toHaveProperty('IndexingShortcut');
     expect(transformedSpec.components.schemas.OtherSchema.properties.shortcutRef.$ref).toBe('#/components/schemas/IndexingShortcut');
+  });
+  
+  test('transformBearerAuthToAPIToken renames BearerAuth to APIToken', () => {
+    const testSpec = {
+      components: {
+        securitySchemes: {
+          BearerAuth: {
+            type: 'http',
+            scheme: 'bearer'
+          }
+        }
+      },
+      security: [
+        { BearerAuth: [] }
+      ],
+      paths: {
+        '/test': {
+          get: {
+            security: [
+              { BearerAuth: [] }
+            ],
+            'x-code-samples': [
+              {
+                lang: 'typescript',
+                source: 'client.bearerAuth(token).testEndpoint()'
+              },
+              {
+                lang: 'python',
+                source: 'client.BEARER_AUTH = token'
+              }
+            ]
+          }
+        }
+      }
+    };
+    
+    const transformedSpec = transformBearerAuthToAPIToken(testSpec);
+    
+    // Check security scheme is renamed
+    expect(transformedSpec.components.securitySchemes).not.toHaveProperty('BearerAuth');
+    expect(transformedSpec.components.securitySchemes).toHaveProperty('APIToken');
+    
+    // Check top-level security is updated
+    expect(transformedSpec.security[0]).not.toHaveProperty('BearerAuth');
+    expect(transformedSpec.security[0]).toHaveProperty('APIToken');
+    
+    // Check operation-level security is updated
+    expect(transformedSpec.paths['/test'].get.security[0]).not.toHaveProperty('BearerAuth');
+    expect(transformedSpec.paths['/test'].get.security[0]).toHaveProperty('APIToken');
+    
+    // Check code samples are updated
+    expect(transformedSpec.paths['/test'].get['x-code-samples'][0].source).toBe('client.apiToken(token).testEndpoint()');
+    expect(transformedSpec.paths['/test'].get['x-code-samples'][1].source).toBe('client.API_TOKEN = token');
   });
 });
