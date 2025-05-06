@@ -12,6 +12,7 @@ sources:
             - location: overlays/client-modifications-overlay.yaml
             - location: overlays/indexing-modifications-overlay.yaml
             - location: overlays/agent-modifications-overlay.yaml
+            - location: overlays/rename-bearerauth-overlay.yaml
         output: overlayed_specs/glean-merged-spec.yaml
         registry:
             location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs
