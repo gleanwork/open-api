@@ -39,8 +39,8 @@ sources:
             - 0.9.0
     glean-index-merged-code-samples-spec:
         sourceNamespace: glean-index-merged-code-samples-spec
-        sourceRevisionDigest: sha256:49a2f375fe0f33bd646a9337692bc59d7c71b5e86fd5686a017f8d83ed8f7194
-        sourceBlobDigest: sha256:06b0cf7a350123c96238cadf289166b70e565e2e32651e4f5d428cfe12206b00
+        sourceRevisionDigest: sha256:a7416fbaf7e240dccff3e830725a02757fd62d81338f6784bda9972914d3110e
+        sourceBlobDigest: sha256:7f54e8cc0d22abe060612efc10c1ef7921035f607e56ca582f34b356689b9121
         tags:
             - latest
             - main

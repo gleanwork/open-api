@@ -20,7 +20,7 @@ servers:
         default: domain
         description: Email domain (without extension) that determines the deployment backend.
 security:
-  - BearerAuth: []
+  - APIToken: []
 tags:
   - name: Datasources
     description: Manage datasources.
@@ -59,14 +59,14 @@ paths:
           description: Too Many Requests
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean, models
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.documents.add_or_update(document=models.DocumentDefinition(
@@ -75,12 +75,12 @@ paths:
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -95,14 +95,14 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.DocumentDefinition;
-            import com.glean.api_client.models.components.IndexDocumentRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1IndexdocumentResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.DocumentDefinition;
+            import com.glean.api_client.glean_api_client.models.components.IndexDocumentRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1IndexdocumentResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -110,7 +110,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     IndexDocumentRequest req = IndexDocumentRequest.builder()
@@ -127,7 +127,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -143,7 +143,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Documents.AddOrUpdate(ctx, components.IndexDocumentRequest{
@@ -184,14 +184,14 @@ paths:
           description: Too Many Requests
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean, models
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.documents.index(datasource="<value>", documents=[
@@ -202,12 +202,12 @@ paths:
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -225,14 +225,14 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.DocumentDefinition;
-            import com.glean.api_client.models.components.IndexDocumentsRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1IndexdocumentsResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.DocumentDefinition;
+            import com.glean.api_client.glean_api_client.models.components.IndexDocumentsRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1IndexdocumentsResponse;
             import java.lang.Exception;
             import java.util.List;
 
@@ -241,7 +241,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     IndexDocumentsRequest req = IndexDocumentsRequest.builder()
@@ -260,7 +260,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -276,7 +276,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Documents.Index(ctx, components.IndexDocumentsRequest{
@@ -318,14 +318,14 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean, models
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.documents.bulk_index(upload_id="<id>", datasource="<value>", documents=[
@@ -336,12 +336,12 @@ paths:
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -360,14 +360,14 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.BulkIndexDocumentsRequest;
-            import com.glean.api_client.models.components.DocumentDefinition;
-            import com.glean.api_client.models.operations.PostApiIndexV1BulkindexdocumentsResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.BulkIndexDocumentsRequest;
+            import com.glean.api_client.glean_api_client.models.components.DocumentDefinition;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BulkindexdocumentsResponse;
             import java.lang.Exception;
             import java.util.List;
 
@@ -376,7 +376,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     BulkIndexDocumentsRequest req = BulkIndexDocumentsRequest.builder()
@@ -396,7 +396,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -412,7 +412,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Documents.BulkIndex(ctx, components.BulkIndexDocumentsRequest{
@@ -457,26 +457,26 @@ paths:
           description: Too Many Requests
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.update_permissions(datasource="<value>", permissions={})
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -490,14 +490,14 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.DocumentPermissionsDefinition;
-            import com.glean.api_client.models.components.UpdatePermissionsRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1UpdatepermissionsResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.DocumentPermissionsDefinition;
+            import com.glean.api_client.glean_api_client.models.components.UpdatePermissionsRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1UpdatepermissionsResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -505,7 +505,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     UpdatePermissionsRequest req = UpdatePermissionsRequest.builder()
@@ -522,7 +522,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -538,7 +538,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Permissions.UpdatePermissions(ctx, components.UpdatePermissionsRequest{
@@ -586,26 +586,26 @@ paths:
           description: Too Many Requests
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.documents.process_all()
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -616,13 +616,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.ProcessAllDocumentsRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1ProcessalldocumentsResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.ProcessAllDocumentsRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1ProcessalldocumentsResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -630,7 +630,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     ProcessAllDocumentsRequest req = ProcessAllDocumentsRequest.builder()
@@ -644,7 +644,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -659,7 +659,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Documents.ProcessAll(ctx, nil)
@@ -694,26 +694,26 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.documents.delete(datasource="<value>", object_type="<value>", id="<id>")
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -728,13 +728,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.DeleteDocumentRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1DeletedocumentResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.DeleteDocumentRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DeletedocumentResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -742,7 +742,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     DeleteDocumentRequest req = DeleteDocumentRequest.builder()
@@ -759,7 +759,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -775,7 +775,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Documents.Delete(ctx, components.DeleteDocumentRequest{
@@ -814,14 +814,14 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.index_user(datasource="<value>", user={
@@ -831,12 +831,12 @@ paths:
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -853,14 +853,14 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.DatasourceUserDefinition;
-            import com.glean.api_client.models.components.IndexUserRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1IndexuserResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.DatasourceUserDefinition;
+            import com.glean.api_client.glean_api_client.models.components.IndexUserRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1IndexuserResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -868,7 +868,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     IndexUserRequest req = IndexUserRequest.builder()
@@ -887,7 +887,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -903,7 +903,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Permissions.IndexUser(ctx, components.IndexUserRequest{
@@ -944,14 +944,14 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.bulk_index_users(upload_id="<id>", datasource="<value>", users=[
@@ -971,12 +971,12 @@ paths:
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -1004,14 +1004,14 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.BulkIndexUsersRequest;
-            import com.glean.api_client.models.components.DatasourceUserDefinition;
-            import com.glean.api_client.models.operations.PostApiIndexV1BulkindexusersResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.BulkIndexUsersRequest;
+            import com.glean.api_client.glean_api_client.models.components.DatasourceUserDefinition;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BulkindexusersResponse;
             import java.lang.Exception;
             import java.util.List;
 
@@ -1020,7 +1020,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     BulkIndexUsersRequest req = BulkIndexUsersRequest.builder()
@@ -1049,7 +1049,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -1065,7 +1065,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Permissions.BulkIndexUsers(ctx, components.BulkIndexUsersRequest{
@@ -1117,14 +1117,14 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.index_group(datasource="<value>", group={
@@ -1133,12 +1133,12 @@ paths:
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -1154,14 +1154,14 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.DatasourceGroupDefinition;
-            import com.glean.api_client.models.components.IndexGroupRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1IndexgroupResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.DatasourceGroupDefinition;
+            import com.glean.api_client.glean_api_client.models.components.IndexGroupRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1IndexgroupResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -1169,7 +1169,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     IndexGroupRequest req = IndexGroupRequest.builder()
@@ -1187,7 +1187,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -1203,7 +1203,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Permissions.IndexGroup(ctx, components.IndexGroupRequest{
@@ -1243,14 +1243,14 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.bulk_index_groups(upload_id="<id>", datasource="<value>", groups=[
@@ -1264,12 +1264,12 @@ paths:
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -1291,14 +1291,14 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.BulkIndexGroupsRequest;
-            import com.glean.api_client.models.components.DatasourceGroupDefinition;
-            import com.glean.api_client.models.operations.PostApiIndexV1BulkindexgroupsResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.BulkIndexGroupsRequest;
+            import com.glean.api_client.glean_api_client.models.components.DatasourceGroupDefinition;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BulkindexgroupsResponse;
             import java.lang.Exception;
             import java.util.List;
 
@@ -1307,7 +1307,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     BulkIndexGroupsRequest req = BulkIndexGroupsRequest.builder()
@@ -1330,7 +1330,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -1346,7 +1346,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Permissions.BulkIndexGroups(ctx, components.BulkIndexGroupsRequest{
@@ -1392,14 +1392,14 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.index_membership(datasource="<value>", membership={
@@ -1408,12 +1408,12 @@ paths:
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -1429,14 +1429,14 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.DatasourceMembershipDefinition;
-            import com.glean.api_client.models.components.IndexMembershipRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1IndexmembershipResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.DatasourceMembershipDefinition;
+            import com.glean.api_client.glean_api_client.models.components.IndexMembershipRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1IndexmembershipResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -1444,7 +1444,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     IndexMembershipRequest req = IndexMembershipRequest.builder()
@@ -1462,7 +1462,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -1478,7 +1478,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Permissions.IndexMembership(ctx, components.IndexMembershipRequest{
@@ -1518,14 +1518,14 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.bulk_index_memberships(upload_id="<id>", datasource="<value>", memberships=[
@@ -1536,12 +1536,12 @@ paths:
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -1560,14 +1560,14 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.BulkIndexMembershipsRequest;
-            import com.glean.api_client.models.components.DatasourceBulkMembershipDefinition;
-            import com.glean.api_client.models.operations.PostApiIndexV1BulkindexmembershipsResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.BulkIndexMembershipsRequest;
+            import com.glean.api_client.glean_api_client.models.components.DatasourceBulkMembershipDefinition;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BulkindexmembershipsResponse;
             import java.lang.Exception;
             import java.util.List;
 
@@ -1576,7 +1576,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     BulkIndexMembershipsRequest req = BulkIndexMembershipsRequest.builder()
@@ -1599,7 +1599,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -1615,7 +1615,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Permissions.BulkIndexMemberships(ctx, components.BulkIndexMembershipsRequest{
@@ -1656,26 +1656,26 @@ paths:
           description: Not Authorized
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.process_memberships()
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -1686,13 +1686,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.ProcessAllMembershipsRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1ProcessallmembershipsResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.ProcessAllMembershipsRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1ProcessallmembershipsResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -1700,7 +1700,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     ProcessAllMembershipsRequest req = ProcessAllMembershipsRequest.builder()
@@ -1714,7 +1714,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -1729,7 +1729,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Permissions.ProcessMemberships(ctx, nil)
@@ -1764,26 +1764,26 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.delete_user(datasource="<value>", email="Estrella.Robel56@gmail.com")
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -1797,13 +1797,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.DeleteUserRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1DeleteuserResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.DeleteUserRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DeleteuserResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -1811,7 +1811,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     DeleteUserRequest req = DeleteUserRequest.builder()
@@ -1827,7 +1827,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -1843,7 +1843,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Permissions.DeleteUser(ctx, components.DeleteUserRequest{
@@ -1881,26 +1881,26 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.delete_group(datasource="<value>", group_name="<value>")
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -1914,13 +1914,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.DeleteGroupRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1DeletegroupResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.DeleteGroupRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DeletegroupResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -1928,7 +1928,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     DeleteGroupRequest req = DeleteGroupRequest.builder()
@@ -1944,7 +1944,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -1960,7 +1960,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Permissions.DeleteGroup(ctx, components.DeleteGroupRequest{
@@ -1998,14 +1998,14 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.delete_membership(datasource="<value>", membership={
@@ -2014,12 +2014,12 @@ paths:
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -2035,14 +2035,14 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.DatasourceMembershipDefinition;
-            import com.glean.api_client.models.components.DeleteMembershipRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1DeletemembershipResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.DatasourceMembershipDefinition;
+            import com.glean.api_client.glean_api_client.models.components.DeleteMembershipRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DeletemembershipResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -2050,7 +2050,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     DeleteMembershipRequest req = DeleteMembershipRequest.builder()
@@ -2068,7 +2068,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -2084,7 +2084,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Permissions.DeleteMembership(ctx, components.DeleteMembershipRequest{
@@ -2131,33 +2131,31 @@ paths:
           description: Not Authorized
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.indexing.troubleshooting.get_datasource_status(datasource="<value>")
+                res = g_client.indexing.datasource.status(datasource="<value>")
 
                 # Handle response
                 print(res)
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
-              const result = await glean.indexing.troubleshooting.getDatasourceStatus({
-                datasource: "<value>",
-              });
+              const result = await glean.indexing.datasource.status("<value>");
 
               // Handle the result
               console.log(result);
@@ -2165,12 +2163,12 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.operations.PostApiIndexV1DebugDatasourceStatusResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DebugDatasourceStatusResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -2178,10 +2176,10 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
-                    PostApiIndexV1DebugDatasourceStatusResponse res = sdk.indexing().troubleshooting().getDatasourceStatus()
+                    PostApiIndexV1DebugDatasourceStatusResponse res = sdk.indexing().datasource().status()
                             .datasource("<value>")
                             .call();
 
@@ -2191,7 +2189,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -2206,10 +2204,10 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Indexing.Troubleshooting.GetDatasourceStatus(ctx, "<value>")
+                res, err := s.Indexing.Datasource.Status(ctx, "<value>")
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -2255,37 +2253,34 @@ paths:
           description: Not Authorized
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.indexing.troubleshooting.post_document_debug(datasource="<value>", object_type="Article", doc_id="art123")
+                res = g_client.indexing.documents.debug(datasource="<value>", object_type="Article", doc_id="art123")
 
                 # Handle response
                 print(res)
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
-              const result = await glean.indexing.troubleshooting.postDocumentDebug({
-                datasource: "<value>",
-                debugDocumentRequest: {
-                  objectType: "Article",
-                  docId: "art123",
-                },
-              });
+              const result = await glean.indexing.documents.debug({
+                objectType: "Article",
+                docId: "art123",
+              }, "<value>");
 
               // Handle the result
               console.log(result);
@@ -2293,13 +2288,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.DebugDocumentRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1DebugDatasourceDocumentResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.DebugDocumentRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DebugDatasourceDocumentResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -2307,10 +2302,10 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
-                    PostApiIndexV1DebugDatasourceDocumentResponse res = sdk.indexing().troubleshooting().postDocumentDebug()
+                    PostApiIndexV1DebugDatasourceDocumentResponse res = sdk.indexing().documents().debug()
                             .datasource("<value>")
                             .debugDocumentRequest(DebugDocumentRequest.builder()
                                 .objectType("Article")
@@ -2324,7 +2319,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -2340,10 +2335,10 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Indexing.Troubleshooting.PostDocumentDebug(ctx, "<value>", components.DebugDocumentRequest{
+                res, err := s.Indexing.Documents.Debug(ctx, "<value>", components.DebugDocumentRequest{
                     ObjectType: "Article",
                     DocID: "art123",
                 })
@@ -2392,17 +2387,17 @@ paths:
           description: Not Authorized
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.indexing.troubleshooting.post_documents_debug(datasource="<value>", debug_documents=[
+                res = g_client.indexing.documents.debug_many(datasource="<value>", debug_documents=[
                     {
                         "object_type": "Article",
                         "doc_id": "art123",
@@ -2416,30 +2411,27 @@ paths:
                 # Handle response
                 print(res)
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
-              const result = await glean.indexing.troubleshooting.postDocumentsDebug({
-                datasource: "<value>",
-                debugDocumentsRequest: {
-                  debugDocuments: [
-                    {
-                      objectType: "Article",
-                      docId: "art123",
-                    },
-                    {
-                      objectType: "Article",
-                      docId: "art123",
-                    },
-                  ],
-                },
-              });
+              const result = await glean.indexing.documents.debugMany({
+                debugDocuments: [
+                  {
+                    objectType: "Article",
+                    docId: "art123",
+                  },
+                  {
+                    objectType: "Article",
+                    docId: "art123",
+                  },
+                ],
+              }, "<value>");
 
               // Handle the result
               console.log(result);
@@ -2447,14 +2439,14 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.DebugDocumentRequest;
-            import com.glean.api_client.models.components.DebugDocumentsRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1DebugDatasourceDocumentsResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.DebugDocumentRequest;
+            import com.glean.api_client.glean_api_client.models.components.DebugDocumentsRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DebugDatasourceDocumentsResponse;
             import java.lang.Exception;
             import java.util.List;
 
@@ -2463,10 +2455,10 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
-                    PostApiIndexV1DebugDatasourceDocumentsResponse res = sdk.indexing().troubleshooting().postDocumentsDebug()
+                    PostApiIndexV1DebugDatasourceDocumentsResponse res = sdk.indexing().documents().debugMany()
                             .datasource("<value>")
                             .debugDocumentsRequest(DebugDocumentsRequest.builder()
                                 .debugDocuments(List.of(
@@ -2487,7 +2479,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -2503,10 +2495,10 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Indexing.Troubleshooting.PostDocumentsDebug(ctx, "<value>", components.DebugDocumentsRequest{
+                res, err := s.Indexing.Documents.DebugMany(ctx, "<value>", components.DebugDocumentsRequest{
                     DebugDocuments: []components.DebugDocumentRequest{
                         components.DebugDocumentRequest{
                             ObjectType: "Article",
@@ -2563,36 +2555,33 @@ paths:
           description: Not Authorized
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.indexing.troubleshooting.debug_user(datasource="<value>", email="u1@foo.com")
+                res = g_client.indexing.people.debug(datasource="<value>", email="u1@foo.com")
 
                 # Handle response
                 print(res)
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
-              const result = await glean.indexing.troubleshooting.debugUser({
-                datasource: "<value>",
-                debugUserRequest: {
-                  email: "u1@foo.com",
-                },
-              });
+              const result = await glean.indexing.people.debug({
+                email: "u1@foo.com",
+              }, "<value>");
 
               // Handle the result
               console.log(result);
@@ -2600,13 +2589,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.DebugUserRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1DebugDatasourceUserResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.DebugUserRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DebugDatasourceUserResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -2614,10 +2603,10 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
-                    PostApiIndexV1DebugDatasourceUserResponse res = sdk.indexing().troubleshooting().debugUser()
+                    PostApiIndexV1DebugDatasourceUserResponse res = sdk.indexing().people().debug()
                             .datasource("<value>")
                             .debugUserRequest(DebugUserRequest.builder()
                                 .email("u1@foo.com")
@@ -2630,7 +2619,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -2646,10 +2635,10 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Indexing.Troubleshooting.DebugUser(ctx, "<value>", components.DebugUserRequest{
+                res, err := s.Indexing.People.Debug(ctx, "<value>", components.DebugUserRequest{
                     Email: "u1@foo.com",
                 })
                 if err != nil {
@@ -2690,31 +2679,31 @@ paths:
           description: Too Many Requests
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.indexing.troubleshooting.check_access(datasource="<value>", object_type="<value>", doc_id="<id>", user_email="<value>")
+                res = g_client.indexing.documents.check_access(datasource="<value>", object_type="<value>", doc_id="<id>", user_email="<value>")
 
                 # Handle response
                 print(res)
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
-              const result = await glean.indexing.troubleshooting.checkAccess({
+              const result = await glean.indexing.documents.checkAccess({
                 datasource: "<value>",
                 objectType: "<value>",
                 docId: "<id>",
@@ -2727,13 +2716,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.CheckDocumentAccessRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1CheckdocumentaccessResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.CheckDocumentAccessRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1CheckdocumentaccessResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -2741,7 +2730,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     CheckDocumentAccessRequest req = CheckDocumentAccessRequest.builder()
@@ -2751,7 +2740,7 @@ paths:
                             .userEmail("<value>")
                             .build();
 
-                    PostApiIndexV1CheckdocumentaccessResponse res = sdk.indexing().troubleshooting().checkAccess()
+                    PostApiIndexV1CheckdocumentaccessResponse res = sdk.indexing().documents().checkAccess()
                             .request(req)
                             .call();
 
@@ -2761,7 +2750,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -2777,10 +2766,10 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Indexing.Troubleshooting.CheckAccess(ctx, components.CheckDocumentAccessRequest{
+                res, err := s.Indexing.Documents.CheckAccess(ctx, components.CheckDocumentAccessRequest{
                     Datasource: "<value>",
                     ObjectType: "<value>",
                     DocID: "<id>",
@@ -2907,14 +2896,14 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.authorize_beta_users(datasource="<value>", emails=[
@@ -2924,12 +2913,12 @@ paths:
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -2946,13 +2935,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.GreenlistUsersRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1BetausersResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.GreenlistUsersRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BetausersResponse;
             import java.lang.Exception;
             import java.util.List;
 
@@ -2961,7 +2950,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     GreenlistUsersRequest req = GreenlistUsersRequest.builder()
@@ -2979,7 +2968,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -2995,7 +2984,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Permissions.AuthorizeBetaUsers(ctx, components.GreenlistUsersRequest{
@@ -3034,14 +3023,14 @@ paths:
           description: Not Authorized
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean, models
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.datasources.add(name="<value>", url_regex="https://example-company.datasource.com/.*", quicklinks=[
@@ -3065,12 +3054,12 @@ paths:
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -3102,13 +3091,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.*;
-            import com.glean.api_client.models.operations.PostApiIndexV1AdddatasourceResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.*;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1AdddatasourceResponse;
             import java.lang.Exception;
             import java.util.List;
 
@@ -3117,7 +3106,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     CustomDatasourceConfig req = CustomDatasourceConfig.builder()
@@ -3150,7 +3139,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -3166,7 +3155,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Datasources.Add(ctx, components.CustomDatasourceConfig{
@@ -3226,31 +3215,31 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.indexing.datasources.get_config(datasource="<value>")
+                res = g_client.indexing.datasources.retrieve_config(datasource="<value>")
 
                 # Handle response
                 print(res)
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
-              const result = await glean.indexing.datasources.getConfig({
+              const result = await glean.indexing.datasources.retrieveConfig({
                 datasource: "<value>",
               });
 
@@ -3260,13 +3249,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.GetDatasourceConfigRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1GetdatasourceconfigResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.GetDatasourceConfigRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1GetdatasourceconfigResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -3274,14 +3263,14 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     GetDatasourceConfigRequest req = GetDatasourceConfigRequest.builder()
                             .datasource("<value>")
                             .build();
 
-                    PostApiIndexV1GetdatasourceconfigResponse res = sdk.indexing().datasources().getConfig()
+                    PostApiIndexV1GetdatasourceconfigResponse res = sdk.indexing().datasources().retrieveConfig()
                             .request(req)
                             .call();
 
@@ -3291,7 +3280,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -3307,10 +3296,10 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Indexing.Datasources.GetConfig(ctx, components.GetDatasourceConfigRequest{
+                res, err := s.Indexing.Datasources.RetrieveConfig(ctx, components.GetDatasourceConfigRequest{
                     Datasource: "<value>",
                 })
                 if err != nil {
@@ -3339,14 +3328,14 @@ paths:
           description: Not Authorized
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 res = g_client.indexing.authentication.rotate_token()
@@ -3354,12 +3343,12 @@ paths:
                 # Handle response
                 print(res)
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -3371,12 +3360,12 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.operations.PostApiIndexV1RotatetokenResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1RotatetokenResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -3384,7 +3373,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     PostApiIndexV1RotatetokenResponse res = sdk.indexing().authentication().rotateToken()
@@ -3396,7 +3385,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -3411,7 +3400,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Authentication.RotateToken(ctx)
@@ -3446,14 +3435,14 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.people.index(employee={
@@ -3473,12 +3462,12 @@ paths:
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -3504,13 +3493,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.*;
-            import com.glean.api_client.models.operations.PostApiIndexV1IndexemployeeResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.*;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1IndexemployeeResponse;
             import java.lang.Exception;
             import java.util.List;
 
@@ -3519,7 +3508,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     IndexEmployeeRequest req = IndexEmployeeRequest.builder()
@@ -3546,7 +3535,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -3562,7 +3551,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.People.Index(ctx, components.IndexEmployeeRequest{
@@ -3612,32 +3601,62 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                g_client.indexing.people.bulk_index_employees(upload_id="<id>", employees=[])
+                g_client.indexing.people.bulk_index(upload_id="<id>", employees=[
+                    {
+                        "email": "Kiera_Bashirian18@yahoo.com",
+                        "department": "<value>",
+                        "datasource_profiles": [
+                            {
+                                "datasource": "github",
+                                "handle": "<value>",
+                            },
+                            {
+                                "datasource": "github",
+                                "handle": "<value>",
+                            },
+                        ],
+                    },
+                ])
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
-              await glean.indexing.people.bulkIndexEmployees({
+              await glean.indexing.people.bulkIndex({
                 uploadId: "<id>",
-                employees: [],
+                employees: [
+                  {
+                    email: "Kiera_Bashirian18@yahoo.com",
+                    department: "<value>",
+                    datasourceProfiles: [
+                      {
+                        datasource: "github",
+                        handle: "<value>",
+                      },
+                      {
+                        datasource: "github",
+                        handle: "<value>",
+                      },
+                    ],
+                  },
+                ],
               });
 
 
@@ -3645,13 +3664,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.BulkIndexEmployeesRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1BulkindexemployeesResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.*;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BulkindexemployeesResponse;
             import java.lang.Exception;
             import java.util.List;
 
@@ -3660,15 +3679,28 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     BulkIndexEmployeesRequest req = BulkIndexEmployeesRequest.builder()
                             .uploadId("<id>")
-                            .employees(List.of())
+                            .employees(List.of(
+                                EmployeeInfoDefinition.builder()
+                                    .email("Kiera_Bashirian18@yahoo.com")
+                                    .department("<value>")
+                                    .datasourceProfiles(List.of(
+                                        DatasourceProfile.builder()
+                                            .datasource("github")
+                                            .handle("<value>")
+                                            .build(),
+                                        DatasourceProfile.builder()
+                                            .datasource("github")
+                                            .handle("<value>")
+                                            .build()))
+                                    .build()))
                             .build();
 
-                    PostApiIndexV1BulkindexemployeesResponse res = sdk.indexing().people().bulkIndexEmployees()
+                    PostApiIndexV1BulkindexemployeesResponse res = sdk.indexing().people().bulkIndex()
                             .request(req)
                             .call();
 
@@ -3676,7 +3708,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -3692,12 +3724,27 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Indexing.People.BulkIndexEmployees(ctx, components.BulkIndexEmployeesRequest{
+                res, err := s.Indexing.People.BulkIndex(ctx, components.BulkIndexEmployeesRequest{
                     UploadID: "<id>",
-                    Employees: []components.EmployeeInfoDefinition{},
+                    Employees: []components.EmployeeInfoDefinition{
+                        components.EmployeeInfoDefinition{
+                            Email: "Kiera_Bashirian18@yahoo.com",
+                            Department: "<value>",
+                            DatasourceProfiles: []components.DatasourceProfile{
+                                components.DatasourceProfile{
+                                    Datasource: "github",
+                                    Handle: "<value>",
+                                },
+                                components.DatasourceProfile{
+                                    Datasource: "github",
+                                    Handle: "<value>",
+                                },
+                            },
+                        },
+                    },
                 })
                 if err != nil {
                     log.Fatal(err)
@@ -3747,26 +3794,26 @@ paths:
           description: Too Many Requests
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.people.process_all_employees_and_teams()
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -3777,12 +3824,12 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.operations.PostApiIndexV1ProcessallemployeesandteamsResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1ProcessallemployeesandteamsResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -3790,7 +3837,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     PostApiIndexV1ProcessallemployeesandteamsResponse res = sdk.indexing().people().processAllEmployeesAndTeams()
@@ -3800,7 +3847,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -3815,7 +3862,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.People.ProcessAllEmployeesAndTeams(ctx)
@@ -3850,26 +3897,26 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.people.delete(employee_email="<value>")
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -3882,13 +3929,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.DeleteEmployeeRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1DeleteemployeeResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.DeleteEmployeeRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DeleteemployeeResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -3896,7 +3943,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     DeleteEmployeeRequest req = DeleteEmployeeRequest.builder()
@@ -3911,7 +3958,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -3927,7 +3974,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.People.Delete(ctx, components.DeleteEmployeeRequest{
@@ -3964,14 +4011,14 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.people.index_team(team={
@@ -4006,12 +4053,12 @@ paths:
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -4052,13 +4099,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.*;
-            import com.glean.api_client.models.operations.PostApiIndexV1IndexteamResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.*;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1IndexteamResponse;
             import java.lang.Exception;
             import java.util.List;
 
@@ -4067,7 +4114,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     IndexTeamRequest req = IndexTeamRequest.builder()
@@ -4108,7 +4155,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -4124,7 +4171,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.People.IndexTeam(ctx, components.IndexTeamRequest{
@@ -4189,26 +4236,26 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.people.delete_team(id="<id>")
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -4221,13 +4268,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.DeleteTeamRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1DeleteteamResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.DeleteTeamRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DeleteteamResponse;
             import java.lang.Exception;
 
             public class Application {
@@ -4235,7 +4282,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     DeleteTeamRequest req = DeleteTeamRequest.builder()
@@ -4250,7 +4297,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -4266,7 +4313,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.People.DeleteTeam(ctx, components.DeleteTeamRequest{
@@ -4303,26 +4350,26 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.people.bulk_index_teams(upload_id="<id>", teams=[])
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -4336,13 +4383,13 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.BulkIndexTeamsRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1BulkindexteamsResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.BulkIndexTeamsRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BulkindexteamsResponse;
             import java.lang.Exception;
             import java.util.List;
 
@@ -4351,7 +4398,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     BulkIndexTeamsRequest req = BulkIndexTeamsRequest.builder()
@@ -4367,7 +4414,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -4383,7 +4430,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.People.BulkIndexTeams(ctx, components.BulkIndexTeamsRequest{
@@ -4421,14 +4468,14 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
                 g_client.indexing.shortcuts.bulk_index(upload_id="<id>", shortcuts=[
@@ -4442,12 +4489,12 @@ paths:
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
@@ -4468,14 +4515,14 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.BulkIndexShortcutsRequest;
-            import com.glean.api_client.models.components.ExternalShortcut;
-            import com.glean.api_client.models.operations.PostApiIndexV1BulkindexshortcutsResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.BulkIndexShortcutsRequest;
+            import com.glean.api_client.glean_api_client.models.components.ExternalShortcut;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BulkindexshortcutsResponse;
             import java.lang.Exception;
             import java.util.List;
 
@@ -4484,7 +4531,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     BulkIndexShortcutsRequest req = BulkIndexShortcutsRequest.builder()
@@ -4506,7 +4553,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -4522,7 +4569,7 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
                 res, err := s.Indexing.Shortcuts.BulkIndex(ctx, components.BulkIndexShortcutsRequest{
@@ -4567,17 +4614,17 @@ paths:
           description: Conflict
       x-codeSamples:
         - lang: python
-          label: Python (SDK)
+          label: Python (API Client)
           source: |-
             from glean import Glean
             import os
 
 
             with Glean(
-                bearer_auth=os.getenv("GLEAN_BEARER_AUTH", ""),
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                g_client.client.shortcuts.upload(upload_id="<id>", shortcuts=[
+                g_client.indexing.shortcuts.upload(upload_id="<id>", shortcuts=[
                     {
                         "input_alias": "<value>",
                         "destination_url": "https://needy-harp.name",
@@ -4587,16 +4634,16 @@ paths:
 
                 # Use the SDK ...
         - lang: typescript
-          label: Typescript (SDK)
+          label: Typescript (API Client)
           source: |-
             import { Glean } from "@gleanwork/api-client";
 
             const glean = new Glean({
-              bearerAuth: process.env["GLEAN_BEARER_AUTH"] ?? "",
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
             });
 
             async function run() {
-              await glean.client.shortcuts.upload({
+              await glean.indexing.shortcuts.upload({
                 uploadId: "<id>",
                 shortcuts: [
                   {
@@ -4612,14 +4659,14 @@ paths:
 
             run();
         - lang: java
-          label: Java (SDK)
+          label: Java (API Client)
           source: |-
             package hello.world;
 
-            import com.glean.api_client.Glean;
-            import com.glean.api_client.models.components.Shortcut;
-            import com.glean.api_client.models.components.UploadShortcutsRequest;
-            import com.glean.api_client.models.operations.PostApiIndexV1UploadshortcutsResponse;
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.IndexingShortcut;
+            import com.glean.api_client.glean_api_client.models.components.UploadShortcutsRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1UploadshortcutsResponse;
             import java.lang.Exception;
             import java.util.List;
 
@@ -4628,20 +4675,20 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .bearerAuth("<YOUR_BEARER_TOKEN_HERE>")
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
                     UploadShortcutsRequest req = UploadShortcutsRequest.builder()
                             .uploadId("<id>")
                             .shortcuts(List.of(
-                                Shortcut.builder()
+                                IndexingShortcut.builder()
                                     .inputAlias("<value>")
                                     .destinationUrl("https://needy-harp.name")
                                     .createdBy("<value>")
                                     .build()))
                             .build();
 
-                    PostApiIndexV1UploadshortcutsResponse res = sdk.client().shortcuts().upload()
+                    PostApiIndexV1UploadshortcutsResponse res = sdk.indexing().shortcuts().upload()
                             .request(req)
                             .call();
 
@@ -4649,7 +4696,7 @@ paths:
                 }
             }
         - lang: go
-          label: Go (SDK)
+          label: Go (API Client)
           source: |-
             package main
 
@@ -4665,13 +4712,13 @@ paths:
                 ctx := context.Background()
 
                 s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_BEARER_AUTH")),
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Client.Shortcuts.Upload(ctx, components.UploadShortcutsRequest{
+                res, err := s.Indexing.Shortcuts.Upload(ctx, components.UploadShortcutsRequest{
                     UploadID: "<id>",
-                    Shortcuts: []components.Shortcut{
-                        components.Shortcut{
+                    Shortcuts: []components.IndexingShortcut{
+                        components.IndexingShortcut{
                             InputAlias: "<value>",
                             DestinationURL: "https://needy-harp.name",
                             CreatedBy: "<value>",
@@ -4687,7 +4734,7 @@ paths:
             }
 components:
   securitySchemes:
-    BearerAuth:
+    APIToken:
       scheme: bearer
       type: http
   schemas:
@@ -5820,7 +5867,7 @@ components:
               description: Batch of shortcuts information
               type: array
               items:
-                $ref: "#/components/schemas/Shortcut"
+                $ref: "#/components/schemas/IndexingShortcut"
           required:
             - shortcuts
     DebugDatasourceStatusResponse:
@@ -6466,21 +6513,6 @@ components:
           type: string
           format: url
           description: The URL using which the user can access the edit page of the shortcut.
-    Shortcut:
-      allOf:
-        - $ref: "#/components/schemas/ShortcutProperties"
-        - type: object
-          required:
-            - destinationUrl
-            - createdBy
-            - inputAlias
-      properties:
-        unlisted:
-          type: boolean
-          description: Whether this shortcut is unlisted or not. Unlisted shortcuts are visible to author and admins only.
-        urlTemplate:
-          type: string
-          description: For variable shortcuts, contains the URL template; note, `destinationUrl` contains default URL.
     SharedDatasourceConfig:
       description: Structure describing shared config properties of the datasource (including multi-instance support)
       allOf:
@@ -6496,3 +6528,18 @@ components:
             instanceDescription:
               type: string
               description: A human readable string identifying this instance as compared to its peers, e.g. "github.com/askscio" or "github.askscio.com"
+    IndexingShortcut:
+      allOf:
+        - $ref: "#/components/schemas/ShortcutProperties"
+        - type: object
+          required:
+            - destinationUrl
+            - createdBy
+            - inputAlias
+      properties:
+        unlisted:
+          type: boolean
+          description: Whether this shortcut is unlisted or not. Unlisted shortcuts are visible to author and admins only.
+        urlTemplate:
+          type: string
+          description: For variable shortcuts, contains the URL template; note, `destinationUrl` contains default URL.
