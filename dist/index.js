@@ -31365,6 +31365,88 @@ function transformShortcutComponent(spec) {
 }
 
 /**
+ * Transforms the BearerAuth security scheme to APIToken
+ * @param {Object} spec The OpenAPI spec object
+ * @returns {Object} Transformed spec object
+ */
+function transformBearerAuthToAPIToken(spec) {
+  // Only proceed if we have securitySchemes defined
+  if (!spec.components || !spec.components.securitySchemes) {
+    return spec;
+  }
+
+  // Rename BearerAuth to APIToken if it exists
+  if (spec.components.securitySchemes.BearerAuth) {
+    spec.components.securitySchemes.APIToken = spec.components.securitySchemes.BearerAuth;
+    delete spec.components.securitySchemes.BearerAuth;
+  }
+
+  // Update top-level security requirement
+  if (spec.security) {
+    spec.security = spec.security.map(secReq => {
+      if (secReq.BearerAuth !== undefined) {
+        return { APIToken: secReq.BearerAuth };
+      }
+      return secReq;
+    });
+  }
+
+  // Update operation-level security requirements
+  if (spec.paths) {
+    Object.keys(spec.paths).forEach(path => {
+      const pathObj = spec.paths[path];
+      Object.keys(pathObj).forEach(method => {
+        if (typeof pathObj[method] === 'object' && pathObj[method].security) {
+          pathObj[method].security = pathObj[method].security.map(secReq => {
+            if (secReq.BearerAuth !== undefined) {
+              return { APIToken: secReq.BearerAuth };
+            }
+            return secReq;
+          });
+        }
+      });
+    });
+  }
+
+  // Update all references to bearerAuth in code samples (lowercase used in samples)
+  const replaceInCodeSamples = (obj) => {
+    if (!obj || typeof obj !== 'object') return;
+
+    Object.keys(obj).forEach(key => {
+      // Replace in string values for code samples
+      if (typeof obj[key] === 'string') {
+        if (obj[key].includes('bearerAuth')) {
+          obj[key] = obj[key].replace(/bearerAuth/g, 'apiToken');
+        }
+        if (obj[key].includes('BEARER_AUTH')) {
+          obj[key] = obj[key].replace(/BEARER_AUTH/g, 'API_TOKEN');
+        }
+      } else if (typeof obj[key] === 'object') {
+        replaceInCodeSamples(obj[key]);
+      }
+    });
+  };
+
+  // Process x-code-samples if they exist
+  if (spec['x-code-samples']) {
+    replaceInCodeSamples(spec['x-code-samples']);
+  }
+
+  // Process individual operation code samples
+  if (spec.paths) {
+    Object.values(spec.paths).forEach(pathObj => {
+      Object.values(pathObj).forEach(operation => {
+        if (operation['x-code-samples']) {
+          replaceInCodeSamples(operation['x-code-samples']);
+        }
+      });
+    });
+  }
+  
+  return spec;
+}
+
+/**
  * Transforms OpenAPI YAML by adjusting server URLs and paths
  * @param {string} content The OpenAPI YAML content
  * @param {string} filename The name of the file being processed
@@ -31409,10 +31491,13 @@ function transform(content, filename) {
     spec.paths = newPaths;
   }
 
-  // Apply additional transformation for indexing.yaml
+  // Apply Shortcut -> IndexingShortcut transformation for indexing.yaml
   if (filename === 'indexing.yaml') {
     transformShortcutComponent(spec);
   }
+  
+  // Apply BearerAuth -> APIToken transformation for all files
+  transformBearerAuthToAPIToken(spec);
   
   return js_yaml.dump(spec, {
     lineWidth: -1,  // Preserve line breaks

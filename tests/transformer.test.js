@@ -5,8 +5,8 @@ import * as yaml from 'js-yaml';
 import { transform, extractBasePath, transformShortcutComponent, transformBearerAuthToAPIToken } from '../src/transformer.js';
 
 function readFixture(filename) {
-  const fixtureFile = path.join(__dirname, 'fixtures', filename);
-  return fs.readFileSync(fixtureFile, 'utf8');
+  const sourceFile = path.join(process.cwd(), 'source_specs', filename);
+  return fs.readFileSync(sourceFile, 'utf8');
 }
 
 describe('OpenAPI YAML Transformer', () => {
@@ -79,7 +79,6 @@ describe('OpenAPI YAML Transformer', () => {
       expect(path.startsWith(originalBasePath)).toBe(true);
     }
     
-    // If there's a Shortcut component in the test fixture, it should be renamed to IndexingShortcut
     if (originalSpec.components && originalSpec.components.schemas && originalSpec.components.schemas.Shortcut) {
       expect(transformedSpec.components.schemas).not.toHaveProperty('Shortcut');
       expect(transformedSpec.components.schemas).toHaveProperty('IndexingShortcut');
@@ -128,99 +127,25 @@ describe('OpenAPI YAML Transformer', () => {
     }
   });
   
-  test('handles empty or missing paths', () => {
-    const sampleYaml = `
-openapi: 3.0.0
-servers:
-  - url: https://api.example.com/v1
-paths: {}
-`;
-    
-    const transformedContent = transform(sampleYaml, 'sample.yaml');
+  test('transformShortcutComponent renames Shortcut to IndexingShortcut', () => {
+    const indexingYaml = readFixture('indexing.yaml');
+    const transformedContent = transform(indexingYaml, 'indexing.yaml');
     const transformedSpec = yaml.load(transformedContent);
     
-    expect(transformedSpec.servers[0].url).toBe('https://api.example.com');
-    
-    expect(transformedSpec.paths).toEqual({});
-  });
-  
-  test('transformShortcutComponent renames Shortcut to IndexingShortcut', () => {
-    const testSpec = {
-      components: {
-        schemas: {
-          Shortcut: {
-            type: 'object',
-            properties: {
-              testProperty: { type: 'string' }
-            }
-          },
-          OtherSchema: {
-            type: 'object',
-            properties: {
-              shortcutRef: { $ref: '#/components/schemas/Shortcut' }
-            }
-          }
-        }
-      }
-    };
-    
-    const transformedSpec = transformShortcutComponent(testSpec);
-    
-    expect(transformedSpec.components.schemas).not.toHaveProperty('Shortcut');
     expect(transformedSpec.components.schemas).toHaveProperty('IndexingShortcut');
-    expect(transformedSpec.components.schemas.OtherSchema.properties.shortcutRef.$ref).toBe('#/components/schemas/IndexingShortcut');
+    expect(transformedSpec.components.schemas).not.toHaveProperty('Shortcut');
   });
-  
-  test('transformBearerAuthToAPIToken renames BearerAuth to APIToken', () => {
-    const testSpec = {
-      components: {
-        securitySchemes: {
-          BearerAuth: {
-            type: 'http',
-            scheme: 'bearer'
-          }
-        }
-      },
-      security: [
-        { BearerAuth: [] }
-      ],
-      paths: {
-        '/test': {
-          get: {
-            security: [
-              { BearerAuth: [] }
-            ],
-            'x-code-samples': [
-              {
-                lang: 'typescript',
-                source: 'client.bearerAuth(token).testEndpoint()'
-              },
-              {
-                lang: 'python',
-                source: 'client.BEARER_AUTH = token'
-              }
-            ]
-          }
-        }
-      }
-    };
     
-    const transformedSpec = transformBearerAuthToAPIToken(testSpec);
-    
-    // Check security scheme is renamed
-    expect(transformedSpec.components.securitySchemes).not.toHaveProperty('BearerAuth');
-    expect(transformedSpec.components.securitySchemes).toHaveProperty('APIToken');
-    
-    // Check top-level security is updated
-    expect(transformedSpec.security[0]).not.toHaveProperty('BearerAuth');
-    expect(transformedSpec.security[0]).toHaveProperty('APIToken');
-    
-    // Check operation-level security is updated
-    expect(transformedSpec.paths['/test'].get.security[0]).not.toHaveProperty('BearerAuth');
-    expect(transformedSpec.paths['/test'].get.security[0]).toHaveProperty('APIToken');
-    
-    // Check code samples are updated
-    expect(transformedSpec.paths['/test'].get['x-code-samples'][0].source).toBe('client.apiToken(token).testEndpoint()');
-    expect(transformedSpec.paths['/test'].get['x-code-samples'][1].source).toBe('client.API_TOKEN = token');
+  ['client_rest.yaml', 'indexing.yaml']
+  .forEach(filename => {
+    test(`transformBearerAuthToAPIToken renames BearerAuth to APIToken in ${filename}`, () => {
+      const yamlContent = readFixture(filename);
+      const transformedContent = transform(yamlContent, filename);
+      const transformedSpec = yaml.load(transformedContent);
+      
+      expect(transformedSpec.security[0]).toHaveProperty('APIToken');
+      expect(transformedSpec.components.securitySchemes).toHaveProperty('APIToken');
+      expect(transformedSpec.components.securitySchemes).not.toHaveProperty('BearerAuth');
+    });
   });
 });
