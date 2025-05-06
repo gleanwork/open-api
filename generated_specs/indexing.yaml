@@ -20,7 +20,7 @@ servers:
         default: domain
         description: Email domain (without extension) that determines the deployment backend.
 security:
-  - BearerAuth: []
+  - APIToken: []
 tags:
   - name: Datasources
     description: Manage datasources.
@@ -957,7 +957,7 @@ paths:
           description: Conflict
 components:
   securitySchemes:
-    BearerAuth:
+    APIToken:
       scheme: bearer
       type: http
   schemas:

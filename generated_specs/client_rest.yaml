@@ -39,7 +39,7 @@ servers:
         default: domain
         description: Email domain (without extension) that determines the deployment backend.
 security:
-  - BearerAuth: []
+  - APIToken: []
 paths:
   /rest/api/v1/activity:
     post:
@@ -2032,7 +2032,7 @@ paths:
           description: Too Many Requests
 components:
   securitySchemes:
-    BearerAuth:
+    APIToken:
       scheme: bearer
       type: http
   schemas:
