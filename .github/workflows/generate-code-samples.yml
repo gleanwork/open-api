@@ -17,11 +17,16 @@ jobs:
       - name: Setup Speakeasy CLI
         uses: ./.github/actions/speakeasy-setup
       
-      - name: Generate code samples
-        run: speakeasy run -s glean-client-merged-code-samples-spec -s glean-index-merged-code-samples-spec
+      - name: Generate client code samples
+        run: speakeasy run -s glean-client-merged-code-samples-spec
         env:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
-      
+          
+      - name: Generate indexing code samples
+        run: speakeasy run glean-index-merged-code-samples-spec
+        env:
+          SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
+          
       - name: Commit changes
         uses: ./.github/actions/git-commit
         with:
