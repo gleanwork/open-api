@@ -23,7 +23,7 @@ jobs:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
           
       - name: Generate indexing code samples
-        run: speakeasy run glean-index-merged-code-samples-spec
+        run: speakeasy run -s glean-index-merged-code-samples-spec
         env:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
           
