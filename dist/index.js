@@ -31447,6 +31447,34 @@ function transformBearerAuthToAPIToken(spec) {
 }
 
 /**
+ * Transforms server variables from 'domain' to 'instance'
+ * @param {Object} spec The OpenAPI spec object
+ * @returns {Object} Transformed spec object
+ */
+function transformServerVariables(spec) {
+  if (!spec.servers || !Array.isArray(spec.servers)) {
+    return spec;
+  }
+
+  for (const server of spec.servers) {
+    if (server.url) {
+      server.url = server.url.replace(/{domain}/g, '{instance}');
+    }
+    
+    if (server.variables && server.variables.domain) {
+      server.variables.instance = {
+        default: 'instance-name',
+        description: 'The instance name (typically the email domain without the extension) that determines the deployment backend.'
+      };
+      
+      delete server.variables.domain;
+    }
+  }
+  
+  return spec;
+}
+
+/**
  * Transforms OpenAPI YAML by adjusting server URLs and paths
  * @param {string} content The OpenAPI YAML content
  * @param {string} filename The name of the file being processed
@@ -31498,6 +31526,9 @@ function transform(content, filename) {
   
   // Apply BearerAuth -> APIToken transformation for all files
   transformBearerAuthToAPIToken(spec);
+  
+  // Apply domain -> instance transformation for all files
+  transformServerVariables(spec);
   
   return js_yaml.dump(spec, {
     lineWidth: -1,  // Preserve line breaks
