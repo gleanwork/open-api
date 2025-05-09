@@ -154,7 +154,7 @@ export function transformServerVariables(spec) {
     if (server.variables && server.variables.domain) {
       server.variables.instance = {
         default: 'instance-name',
-        description: 'The instance name (typically the email domain without the extension) that determines the deployment backend.'
+        description: 'The instance name (typically the email domain without the TLD) that determines the deployment backend.'
       };
       
       delete server.variables.domain;
