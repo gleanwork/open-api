@@ -2,7 +2,7 @@ import { describe, test, expect } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
-import { transform, extractBasePath, transformShortcutComponent, transformBearerAuthToAPIToken } from '../src/transformer.js';
+import { transform, extractBasePath, transformShortcutComponent, transformBearerAuthToAPIToken, transformServerVariables } from '../src/transformer.js';
 
 function readFixture(filename) {
   const sourceFile = path.join(process.cwd(), 'source_specs', filename);
@@ -26,7 +26,7 @@ describe('OpenAPI YAML Transformer', () => {
     const originalBasePath = extractBasePath(originalSpec.servers[0].url);
     
     expect(transformedSpec.servers[0].url).not.toContain(originalBasePath);
-    expect(transformedSpec.servers[0].url).toBe('https://{domain}-be.glean.com');
+    expect(transformedSpec.servers[0].url).toBe('https://{instance}-be.glean.com');
     
     const originalPaths = Object.keys(originalSpec.paths);
     const transformedPaths = Object.keys(transformedSpec.paths);
@@ -58,7 +58,7 @@ describe('OpenAPI YAML Transformer', () => {
     const originalBasePath = extractBasePath(originalSpec.servers[0].url);
     
     expect(transformedSpec.servers[0].url).not.toContain(originalBasePath);
-    expect(transformedSpec.servers[0].url).toBe('https://{domain}-be.glean.com');
+    expect(transformedSpec.servers[0].url).toBe('https://{instance}-be.glean.com');
     
     const originalPaths = Object.keys(originalSpec.paths);
     const transformedPaths = Object.keys(transformedSpec.paths);
@@ -147,5 +147,52 @@ describe('OpenAPI YAML Transformer', () => {
       expect(transformedSpec.components.securitySchemes).toHaveProperty('APIToken');
       expect(transformedSpec.components.securitySchemes).not.toHaveProperty('BearerAuth');
     });
+  });
+
+  ['client_rest.yaml', 'indexing.yaml']
+  .forEach(filename => {
+    test(`transformServerVariables changes 'domain' to 'instance' in ${filename}`, () => {
+      const yamlContent = readFixture(filename);
+      const transformedContent = transform(yamlContent, filename);
+      const transformedSpec = yaml.load(transformedContent);
+      
+      // Check that server URL now uses {instance}
+      expect(transformedSpec.servers[0].url).toContain('{instance}');
+      expect(transformedSpec.servers[0].url).not.toContain('{domain}');
+      
+      // Check that variables section has instance instead of domain
+      expect(transformedSpec.servers[0].variables).toHaveProperty('instance');
+      expect(transformedSpec.servers[0].variables).not.toHaveProperty('domain');
+      
+      // Check new values are set correctly
+      expect(transformedSpec.servers[0].variables.instance.default).toBe('instance-name');
+      expect(transformedSpec.servers[0].variables.instance.description)
+        .toContain('instance name');
+    });
+  });
+
+  test('transformServerVariables changes domain to instance in server variables', () => {
+    const testSpec = {
+      servers: [
+        {
+          url: 'https://{domain}-be.glean.com/api/test',
+          variables: {
+            domain: {
+              default: 'domain',
+              description: 'Email domain (without extension) that determines the deployment backend.'
+            }
+          }
+        }
+      ]
+    };
+    
+    const transformedSpec = transformServerVariables(testSpec);
+    
+    expect(transformedSpec.servers[0].url).toBe('https://{instance}-be.glean.com/api/test');
+    expect(transformedSpec.servers[0].variables).toHaveProperty('instance');
+    expect(transformedSpec.servers[0].variables).not.toHaveProperty('domain');
+    expect(transformedSpec.servers[0].variables.instance.default).toBe('instance-name');
+    expect(transformedSpec.servers[0].variables.instance.description)
+      .toContain('instance name');
   });
 });
