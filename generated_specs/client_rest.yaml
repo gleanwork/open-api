@@ -4997,10 +4997,14 @@ components:
           type: string
           example: https://en.wikipedia.org/wiki/Diffuse_sky_radiation
         document:
+          deprecated: true
+          description: Deprecated. To be gradually migrated to structuredResult.
           $ref: "#/components/schemas/Document"
         text:
           type: string
           example: Because its wavelengths are shorter, blue light is more strongly scattered than the longer-wavelength lights, red or green. Hence the result that when looking at the sky away from the direct incident sunlight, the human eye perceives the sky to be blue.
+        structuredResult:
+          $ref: "#/components/schemas/StructuredResult"
     AnnouncementMutableProperties:
       properties:
         startTime:
