@@ -1,0 +1,38 @@
+overlay: 1.0.0
+x-speakeasy-jsonpath: rfc9535
+info:
+  title: Speakeasy Modifications
+  version: 0.0.5
+
+actions:
+  # Governance Admin endpoints
+  - target: $["paths"]["/rest/api/v1/governance/data/policies/{id}"]["get"]
+    update:
+      x-speakeasy-group: client
+  - target: $["paths"]["/rest/api/v1/governance/data/policies/{id}"]["post"]
+    update:
+      x-speakeasy-group: client
+  - target: $["paths"]["/rest/api/v1/governance/data/policies"]["get"]
+    update:
+      x-speakeasy-group: client
+  - target: $["paths"]["/rest/api/v1/governance/data/policies"]["post"]
+    update:
+      x-speakeasy-group: client
+  - target: $["paths"]["/rest/api/v1/governance/data/policies/{id}/download"]["get"]
+    update:
+      x-speakeasy-group: client
+  - target: $["paths"]["/rest/api/v1/governance/data/reports"]["post"]
+    update:
+      x-speakeasy-group: client
+  - target: $["paths"]["/rest/api/v1/governance/data/reports/{id}/download"]["get"]
+    update:
+      x-speakeasy-group: client
+  - target: $["paths"]["/rest/api/v1/governance/data/reports/{id}/status"]["get"]
+    update:
+      x-speakeasy-group: client
+  - target: $["paths"]["/rest/api/v1/governance/documents/visibilityoverrides"]["get"]
+    update:
+      x-speakeasy-group: client
+  - target: $["paths"]["/rest/api/v1/governance/documents/visibilityoverrides"]["post"]
+    update:
+      x-speakeasy-group: client
