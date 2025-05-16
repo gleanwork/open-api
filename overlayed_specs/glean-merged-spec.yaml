@@ -837,6 +837,8 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: retrieveSchemas
   /rest/api/v1/agents/search:
     post:
       tags:
