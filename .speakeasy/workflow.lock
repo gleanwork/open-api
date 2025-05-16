@@ -1,9 +1,9 @@
-speakeasyVersion: 1.545.0
+speakeasyVersion: 1.546.1
 sources:
     glean-api-specs:
         sourceNamespace: glean-api-specs
-        sourceRevisionDigest: sha256:dce4f7a504880bcecd350dbfcaabb6654be20893602c9f24aca3901d53caf5bb
-        sourceBlobDigest: sha256:506715b91a22e7ddaf9a942e65f5b155150583aa90a9049a43c09de164931ab1
+        sourceRevisionDigest: sha256:ba7c48f9548940140afcf9dec437fda917a4955723c16534ad374dc4c284c5f4
+        sourceBlobDigest: sha256:a04c93d195d506d036b401c78aa4d8d316c457bf29b678f430bcbf117ecf50c7
         tags:
             - latest
             - main
@@ -54,19 +54,23 @@ workflow:
             inputs:
                 - location: generated_specs/client_rest.yaml
                 - location: generated_specs/indexing.yaml
+                - location: generated_specs/admin_rest.yaml
             overlays:
                 - location: overlays/chat-endpoint-fixes-overlay.yaml
+                - location: overlays/policies-operationid-fix-overlay.yaml
                 - location: overlays/info-name-overlay.yaml
                 - location: overlays/strip-headers-overlay.yaml
                 - location: overlays/client-modifications-overlay.yaml
                 - location: overlays/indexing-modifications-overlay.yaml
                 - location: overlays/agent-modifications-overlay.yaml
+                - location: overlays/admin-modifications-overlay.yaml
             output: overlayed_specs/glean-merged-spec.yaml
             registry:
                 location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs
         glean-client-merged-code-samples-spec:
             inputs:
                 - location: generated_specs/client_rest.yaml
+                - location: generated_specs/admin_rest.yaml
             overlays:
                 - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-python-code-samples
                 - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-typescript-code-samples
