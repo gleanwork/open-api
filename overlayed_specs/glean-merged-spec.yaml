@@ -792,6 +792,8 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: retrieve
   /rest/api/v1/agents/{agent_id}/schemas:
     get:
       tags:
@@ -874,6 +876,8 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: list
   /rest/api/v1/agents/runs/stream:
     post:
       tags:
@@ -925,6 +929,8 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: runStream
   /rest/api/v1/agents/runs/wait:
     post:
       tags:
@@ -958,6 +964,8 @@ paths:
           description: Validation Error
         "500":
           description: Internal server error
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: run
   /rest/api/v1/addcollectionitems:
     post:
       tags:
@@ -3132,7 +3140,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.data.policies
+      x-speakeasy-name-override: retrieve
     post:
       description: Updates an existing policy.
       summary: Updates an existing policy.
@@ -3163,7 +3172,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.data.policies
+      x-speakeasy-name-override: update
   /rest/api/v1/governance/data/policies:
     get:
       description: Lists policies with filtering.
@@ -3196,7 +3206,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.data.policies
+      x-speakeasy-name-override: list
     post:
       description: Creates a new policy with specified specifications and returns its id.
       summary: Creates new policy.
@@ -3221,7 +3232,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.data.policies
+      x-speakeasy-name-override: create
   /rest/api/v1/governance/data/policies/{id}/download:
     get:
       description: Downloads CSV violations report for a specific policy id. This does not support continuous policies.
@@ -3249,7 +3261,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.data.policies
+      x-speakeasy-name-override: download
   /rest/api/v1/governance/data/reports:
     post:
       description: Creates a new one-time report and executes its batch job.
@@ -3275,7 +3288,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.data.reports
+      x-speakeasy-name-override: create
   /rest/api/v1/governance/data/reports/{id}/download:
     get:
       description: Downloads CSV violations report for a specific report id.
@@ -3303,7 +3317,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.data.reports
+      x-speakeasy-name-override: download
   /rest/api/v1/governance/data/reports/{id}/status:
     get:
       description: Fetches the status of the run corresponding to the report-id.
@@ -3330,7 +3345,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.data.reports
+      x-speakeasy-name-override: status
   /rest/api/v1/governance/documents/visibilityoverrides:
     get:
       description: Fetches the visibility override status of the documents passed.
@@ -3358,7 +3374,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.documents.visibilityoverrides
+      x-speakeasy-name-override: list
     post:
       description: Sets the visibility-override state of the documents specified, effectively hiding or un-hiding documents.
       summary: Hide/Un-hide docs.
@@ -3383,7 +3400,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.documents.visibilityoverrides
+      x-speakeasy-name-override: create
   /rest/api/v1/chat#stream:
     post:
       tags:
