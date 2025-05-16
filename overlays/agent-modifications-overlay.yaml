@@ -10,7 +10,7 @@ actions:
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: retrieve
 
-  - target: $["paths"]["/rest/api/v1/agents/{agent_id}/schemas"]["post"]
+  - target: $["paths"]["/rest/api/v1/agents/{agent_id}/schemas"]["get"]
     update:
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: retrieveSchemas
