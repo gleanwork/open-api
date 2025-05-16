@@ -10,7 +10,8 @@ const OUTPUT_DIR = 'generated_specs';
 // Specification files
 const SPEC_FILES = [
   'client_rest.yaml',
-  'indexing.yaml'
+  'indexing.yaml',
+  'admin_rest.yaml'
 ];
 
 async function ensureDirectoryExists(directory) {
