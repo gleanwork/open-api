@@ -149,6 +149,15 @@ describe('OpenAPI YAML Transformer', () => {
     });
   });
 
+  test(`transformBearerAuthToAPIToken renames actAsBearerToken to APIToken in admin_rest.yaml`, () => {
+    const yamlContent = readFixture('admin_rest.yaml');
+    const transformedContent = transform(yamlContent, 'admin_rest.yaml');
+    const transformedSpec = yaml.load(transformedContent);
+    
+    expect(transformedSpec.security[0]).toHaveProperty('APIToken');
+    expect(transformedSpec.security[0]).not.toHaveProperty('actAsBearerToken');
+  });
+
   ['client_rest.yaml', 'indexing.yaml']
   .forEach(filename => {
     test(`transformServerVariables changes 'domain' to 'instance' in ${filename}`, () => {

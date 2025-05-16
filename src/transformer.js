@@ -135,6 +135,46 @@ export function transformBearerAuthToAPIToken(spec) {
   
   return spec;
 }
+/**
+ * Transforms the actAsBearerToken security scheme to APIToken
+ * @param {Object} spec The OpenAPI spec object
+ * @returns {Object} Transformed spec object
+ */
+export function transformActAsBearerTokenToAPIToken(spec) {
+  // Only proceed if we have securitySchemes defined
+  if (!spec.components) {
+    return spec;
+  }
+
+  // Update top-level security requirement
+  if (spec.security) {
+    spec.security = spec.security.map(secReq => {
+      if (secReq.actAsBearerToken !== undefined) {
+        return { APIToken: secReq.actAsBearerToken };
+      }
+      return secReq;
+    });
+  }
+
+  // Update operation-level security requirements
+  if (spec.paths) {
+    Object.keys(spec.paths).forEach(path => {
+      const pathObj = spec.paths[path];
+      Object.keys(pathObj).forEach(method => {
+        if (typeof pathObj[method] === 'object' && pathObj[method].security) {
+          pathObj[method].security = pathObj[method].security.map(secReq => {
+            if (secReq.actAsBearerToken !== undefined) {
+              return { APIToken: secReq.actAsBearerToken };
+            }
+            return secReq;
+          });
+        }
+      });
+    });
+  }
+  
+  return spec;
+}
 
 /**
  * Transforms server variables from 'domain' to 'instance'
@@ -235,13 +275,15 @@ export function transform(content, filename) {
   
   // Apply BearerAuth -> APIToken transformation for all files
   transformBearerAuthToAPIToken(spec);
+
   
   // Apply domain -> instance transformation for all files
   transformServerVariables(spec);
-
+  
   // Apply admin duplicate operationId fix
   if (filename === 'admin_rest.yaml') {
     transformAdminPoliciesOperationId(spec, basePath);
+    transformActAsBearerTokenToAPIToken(spec);
   }
   
   return yaml.dump(spec, {
