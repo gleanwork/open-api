@@ -2,7 +2,7 @@ speakeasyVersion: 1.546.1
 sources:
     glean-api-specs:
         sourceNamespace: glean-api-specs
-        sourceRevisionDigest: sha256:ba7c48f9548940140afcf9dec437fda917a4955723c16534ad374dc4c284c5f4
+        sourceRevisionDigest: sha256:c0dd4c5725fabadbe1cd236cb7348c2b4006604dd0111b52a9f17ebce4a055a0
         sourceBlobDigest: sha256:a04c93d195d506d036b401c78aa4d8d316c457bf29b678f430bcbf117ecf50c7
         tags:
             - latest
@@ -57,7 +57,6 @@ workflow:
                 - location: generated_specs/admin_rest.yaml
             overlays:
                 - location: overlays/chat-endpoint-fixes-overlay.yaml
-                - location: overlays/policies-operationid-fix-overlay.yaml
                 - location: overlays/info-name-overlay.yaml
                 - location: overlays/strip-headers-overlay.yaml
                 - location: overlays/client-modifications-overlay.yaml
