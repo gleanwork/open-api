@@ -2283,6 +2283,22 @@ components:
           type: string
           description: Permission identity status, enum of NOT_UPLOADED, UPLOADED, STATUS_UNKNOWN (Always unknown if `identityDatasourceName` is set). Document visibility may be affected status is `NOT_UPLOADED`.
           example: UPLOADED
+    LifeCycleEvent:
+      type: object
+      properties:
+        event:
+          type: string
+          description: Type of event
+          enum:
+            - UPLOADED
+            - INDEXED
+            - DELETION_REQUESTED
+            - DELETED
+          example: INDEXED
+        timestamp:
+          type: string
+          description: Timestamp of the event
+          example: '2021-08-06T17:58:01.000Z'
     ProcessingHistoryEvent:
       type: object
       description: Processing history event for a datasource
