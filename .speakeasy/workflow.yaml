@@ -8,6 +8,7 @@ sources:
             - location: generated_specs/admin_rest.yaml
         overlays:
             - location: overlays/chat-endpoint-fixes-overlay.yaml
+            - location: overlays/policies-operationid-fix-overlay.yaml
             - location: overlays/info-name-overlay.yaml
             - location: overlays/strip-headers-overlay.yaml
             - location: overlays/client-modifications-overlay.yaml
