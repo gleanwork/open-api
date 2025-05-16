@@ -165,6 +165,25 @@ export function transformServerVariables(spec) {
 }
 
 /**
+ * Fixes duplicate operationId in admin_rest.yaml for the GET operation on /governance/data/policies
+ * @param {Object} spec The OpenAPI spec object
+ * @param {string} filename The name of the file being processed
+ * @param {string} basePath The computed base path from server URL
+ * @returns {Object} Transformed spec object
+ */
+export function transformAdminPoliciesOperationId(spec, basePath) {
+  const targetPath = `${basePath}/governance/data/policies`;
+
+  if (
+    spec.paths?.[targetPath]?.get?.operationId === 'getpolicy'
+  ) {
+    spec.paths[targetPath].get.operationId = 'getpolicies';
+  }
+
+  return spec;
+}
+
+/**
  * Transforms OpenAPI YAML by adjusting server URLs and paths
  * @param {string} content The OpenAPI YAML content
  * @param {string} filename The name of the file being processed
@@ -219,6 +238,11 @@ export function transform(content, filename) {
   
   // Apply domain -> instance transformation for all files
   transformServerVariables(spec);
+
+  // Apply admin duplicate operationId fix
+  if (filename === 'admin_rest.yaml') {
+    transformAdminPoliciesOperationId(spec, basePath);
+  }
   
   return yaml.dump(spec, {
     lineWidth: -1,  // Preserve line breaks
