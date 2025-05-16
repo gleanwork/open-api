@@ -5,17 +5,27 @@ info:
   version: 0.0.5
 
 actions:
-  - target: $["paths"]["/rest/api/v1/runagent"]["post"]
+  - target: $["paths"]["/rest/api/v1/agents/{agent_id}"]["get"]
     update:
       x-speakeasy-group: client.agents
-      x-speakeasy-name-override: run
+      x-speakeasy-name-override: retrieve
 
-  - target: $["paths"]["/rest/api/v1/getagentinputs"]["post"]
+  - target: $["paths"]["/rest/api/v1/agents/{agent_id}/schemas"]["post"]
     update:
       x-speakeasy-group: client.agents
-      x-speakeasy-name-override: retrieveInputs
+      x-speakeasy-name-override: retrieveSchemas
 
-  - target: $["paths"]["/rest/api/v1/listagents"]["post"]
+  - target: $["paths"]["/rest/api/v1/agents/search"]["post"]
     update:
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: list
+
+  - target: $["paths"]["/rest/api/v1/agents/runs/wait"]["post"]
+    update:
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: run
+  
+  - target: $["paths"]["/rest/api/v1/agents/runs/stream"]["post"]
+    update:
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: runStream

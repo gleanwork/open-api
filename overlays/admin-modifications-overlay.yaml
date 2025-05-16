@@ -8,31 +8,41 @@ actions:
   # Governance Admin endpoints
   - target: $["paths"]["/rest/api/v1/governance/data/policies/{id}"]["get"]
     update:
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.data.policies
+      x-speakeasy-name-override: retrieve
   - target: $["paths"]["/rest/api/v1/governance/data/policies/{id}"]["post"]
     update:
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.data.policies
+      x-speakeasy-name-override: update
   - target: $["paths"]["/rest/api/v1/governance/data/policies"]["get"]
     update:
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.data.policies
+      x-speakeasy-name-override: list
   - target: $["paths"]["/rest/api/v1/governance/data/policies"]["post"]
     update:
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.data.policies
+      x-speakeasy-name-override: create
   - target: $["paths"]["/rest/api/v1/governance/data/policies/{id}/download"]["get"]
     update:
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.data.policies
+      x-speakeasy-name-override: download
   - target: $["paths"]["/rest/api/v1/governance/data/reports"]["post"]
     update:
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.data.reports
+      x-speakeasy-name-override: create
   - target: $["paths"]["/rest/api/v1/governance/data/reports/{id}/download"]["get"]
     update:
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.data.reports
+      x-speakeasy-name-override: download
   - target: $["paths"]["/rest/api/v1/governance/data/reports/{id}/status"]["get"]
     update:
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.data.reports
+      x-speakeasy-name-override: status
   - target: $["paths"]["/rest/api/v1/governance/documents/visibilityoverrides"]["get"]
     update:
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.documents.visibilityoverrides
+      x-speakeasy-name-override: list
   - target: $["paths"]["/rest/api/v1/governance/documents/visibilityoverrides"]["post"]
     update:
-      x-speakeasy-group: client
+      x-speakeasy-group: client.governance.documents.visibilityoverrides
+      x-speakeasy-name-override: create
