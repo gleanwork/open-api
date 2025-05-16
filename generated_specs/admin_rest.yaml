@@ -17,7 +17,7 @@ servers:
         default: instance-name
         description: The instance name (typically the email domain without the TLD) that determines the deployment backend.
 security:
-  - actAsBearerToken: []
+  - APIToken: []
   - cookieAuth: []
 paths:
   /rest/api/v1/governance/data/policies/{id}:
