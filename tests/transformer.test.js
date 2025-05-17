@@ -156,6 +156,8 @@ describe('OpenAPI YAML Transformer', () => {
     
     expect(transformedSpec.security[0]).toHaveProperty('APIToken');
     expect(transformedSpec.security[0]).not.toHaveProperty('actAsBearerToken');
+    const hasCookie = transformedSpec.security.some(s => 'cookieAuth' in s);
+    expect(hasCookie).toBe(false, 'cookieAuth should not be present in security');
   });
 
   ['client_rest.yaml', 'indexing.yaml']
