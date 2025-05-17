@@ -135,39 +135,49 @@ export function transformBearerAuthToAPIToken(spec) {
   
   return spec;
 }
+
 /**
  * Transforms the actAsBearerToken security scheme to APIToken
  * @param {Object} spec The OpenAPI spec object
  * @returns {Object} Transformed spec object
  */
 export function transformActAsBearerTokenToAPIToken(spec) {
-  // Only proceed if we have securitySchemes defined
   if (!spec.components) {
     return spec;
   }
 
-  // Update top-level security requirement
-  if (spec.security) {
-    spec.security = spec.security.map(secReq => {
-      if (secReq.actAsBearerToken !== undefined) {
-        return { APIToken: secReq.actAsBearerToken };
-      }
-      return secReq;
-    });
+
+  if (spec.components.securitySchemes?.cookieAuth) {
+    delete spec.components.securitySchemes.cookieAuth;
   }
 
-  // Update operation-level security requirements
+
+  const cleanSecurityObject = (secObj) => {
+    if (!secObj || typeof secObj !== 'object') return secObj;
+
+    const cleaned = { ...secObj };
+
+    if ('actAsBearerToken' in cleaned) {
+      cleaned.APIToken = cleaned.actAsBearerToken;
+      delete cleaned.actAsBearerToken;
+    }
+
+    if ('cookieAuth' in cleaned) {
+      delete cleaned.cookieAuth;
+    }
+
+    return Object.keys(cleaned).length ? cleaned : null;
+  };
+
+  if (Array.isArray(spec.security)) {
+    spec.security = spec.security.map(cleanSecurityObject).filter(Boolean);
+  }
+
   if (spec.paths) {
-    Object.keys(spec.paths).forEach(path => {
-      const pathObj = spec.paths[path];
-      Object.keys(pathObj).forEach(method => {
-        if (typeof pathObj[method] === 'object' && pathObj[method].security) {
-          pathObj[method].security = pathObj[method].security.map(secReq => {
-            if (secReq.actAsBearerToken !== undefined) {
-              return { APIToken: secReq.actAsBearerToken };
-            }
-            return secReq;
-          });
+    Object.values(spec.paths).forEach(pathObj => {
+      Object.values(pathObj).forEach(operation => {
+        if (Array.isArray(operation.security)) {
+          operation.security = operation.security.map(cleanSecurityObject).filter(Boolean);
         }
       });
     });
