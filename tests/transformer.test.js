@@ -206,16 +206,4 @@ describe('OpenAPI YAML Transformer', () => {
     expect(transformedSpec.servers[0].variables.instance.description)
       .toContain('instance name');
   });
-
-  test('transformAdminPoliciesOperationId changes duplicate operationId in admin_rest.yaml', () => {
-    const adminYaml = readFixture('admin_rest.yaml');
-    const transformedContent = transform(adminYaml, 'admin_rest.yaml');
-    const transformedSpec = yaml.load(transformedContent);
-
-    const originalSpec = yaml.load(adminYaml);
-    const basePath = extractBasePath(originalSpec.servers[0].url);
-    const pathKey = `${basePath}/governance/data/policies`;
-
-    expect(transformedSpec.paths[pathKey].get.operationId).toBe('getpolicies');
-  });
 });

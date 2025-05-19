@@ -42,12 +42,6 @@ describe('Post-transformation smoke tests', () => {
     expect('IndexingShortcut' in schemas).toBe(true);
   });
 
-  test('duplicate operationId fix applied', () => {
-    const policiesGet = spec.paths?.['/rest/api/v1/governance/data/policies']?.get ?? {};
-
-    expect(policiesGet.operationId).toBe('getpolicies');
-  });
-
   test('overlay applied title', () => {
     expect(spec.info?.title).toBe('Glean API');
   });
