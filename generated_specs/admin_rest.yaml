@@ -86,7 +86,7 @@ paths:
     get:
       description: Lists policies with filtering.
       summary: Lists policies.
-      operationId: getpolicies
+      operationId: listpolicies
       x-visibility: Public
       tags:
         - Governance
