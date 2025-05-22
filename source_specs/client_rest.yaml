@@ -1595,6 +1595,7 @@ paths:
             schema:
               $ref: '#/components/schemas/SearchRequest'
         description: Admin search request
+        required: true
         x-exportParamName: Request
       responses:
         '200':
@@ -1707,6 +1708,7 @@ paths:
             schema:
               $ref: '#/components/schemas/RecommendationsRequest'
         description: Recommendations request
+        required: true
         x-exportParamName: Request
       responses:
         '200':
@@ -1745,6 +1747,7 @@ paths:
             schema:
               $ref: '#/components/schemas/SearchRequest'
         description: Search request
+        required: true
         x-exportParamName: Request
       responses:
         '200':
