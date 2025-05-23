@@ -328,6 +328,18 @@ actions:
       x-speakeasy-group: client.documents
 
 
+  # Tools
+  - target: $["paths"]["/rest/api/v1/tools/list"]["get"]
+    update:
+      x-speakeasy-name-override: list
+      x-speakeasy-group: client.tools
+
+  - target: $["paths"]["/rest/api/v1/tools/call"]["post"]
+    update:
+      x-speakeasy-name-override: run
+      x-speakeasy-group: client.tools
+
+
   # Verification
   - target: $["paths"]["/rest/api/v1/listverifications"]["post"]
     update:
