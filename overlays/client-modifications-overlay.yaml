@@ -331,11 +331,15 @@ actions:
   # Tools
   - target: $["paths"]["/rest/api/v1/tools/list"]["get"]
     update:
+      tags:
+        - Tools
       x-speakeasy-name-override: list
       x-speakeasy-group: client.tools
 
   - target: $["paths"]["/rest/api/v1/tools/call"]["post"]
     update:
+      tags:
+        - Tools
       x-speakeasy-name-override: run
       x-speakeasy-group: client.tools
 
