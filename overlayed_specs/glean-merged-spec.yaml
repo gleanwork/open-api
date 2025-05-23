@@ -4315,6 +4315,7 @@ components:
           enum:
             - BOLD
             - CITATION
+            - HIGHLIGHT
             - LINK
         url:
           type: string
