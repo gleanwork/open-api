@@ -2168,6 +2168,8 @@ paths:
           description: Not Found
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: list
+      x-speakeasy-group: client.tools
   /rest/api/v1/tools/call:
     post:
       summary: Execute the specified tool
@@ -2194,6 +2196,8 @@ paths:
           description: Not Found
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: run
+      x-speakeasy-group: client.tools
   /api/index/v1/indexdocument:
     post:
       summary: Index document
