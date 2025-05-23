@@ -6105,6 +6105,7 @@ components:
           type: object
           title: Input
           description: The input to the agent.
+          additionalProperties: true
         messages:
           type: array
           items:
