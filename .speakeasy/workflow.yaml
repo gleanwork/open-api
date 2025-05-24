@@ -46,7 +46,6 @@ sources:
         inputs:
             - location: generated_specs/indexing.yaml
         overlays:
-            - location: overlays/chat-endpoint-fixes-overlay.yaml
             - location: overlays/info-name-overlay.yaml
             - location: overlays/strip-headers-overlay.yaml
             - location: overlays/indexing-modifications-overlay.yaml
