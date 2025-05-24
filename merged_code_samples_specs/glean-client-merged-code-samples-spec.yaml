@@ -1,15 +1,29 @@
 openapi: 3.0.0
 info:
   version: 0.9.0
-  title: Glean Rest Admin API
+  title: Glean API
   contact:
     email: support@glean.com
   description: |
     # Introduction
-    These are all the APIs exposed to the users through an auth token to utilize certain admin
-    operations. These offer limited exposure to the admin APIs through rest endpoints.
+    In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
+
+    # Usage guidelines
+    This API is evolving fast. Glean will provide advance notice of any planned backwards incompatible changes along
+    with a 6-month sunset period for anything that requires developers to adopt the new versions.
+
+    # API Clients
+    Official API clients for the Glean Indexing API are available in multiple languages:
+
+    - [Python](https://github.com/gleanwork/api-client-python)
+    - [TypeScript](https://github.com/gleanwork/api-client-typescript)
+    - [Go](https://github.com/gleanwork/api-client-go)
+    - [Java](https://github.com/gleanwork/api-client-java)
+
+    These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
+  x-speakeasy-name: "Glean API"
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -44,6 +58,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: report
+      x-speakeasy-group: client.activity
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -241,8 +257,6 @@ paths:
       x-visibility: Public
       x-codegen-request-body-name: payload
       parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
         - name: feedback
           in: query
           description: A URL encoded versions of Feedback. This is useful for requests.
@@ -264,6 +278,7 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-group: client.activity
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -378,9 +393,7 @@ paths:
       operationId: createannouncement
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -402,6 +415,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: create
+      x-speakeasy-group: client.announcements
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -10695,9 +10710,7 @@ paths:
       operationId: deleteannouncement
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -10715,6 +10728,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: delete
+      x-speakeasy-group: client.announcements
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -10816,9 +10831,7 @@ paths:
       operationId: updateannouncement
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -10840,6 +10853,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: update
+      x-speakeasy-group: client.announcements
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -25920,9 +25935,7 @@ paths:
       operationId: createanswer
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -25944,6 +25957,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: create
+      x-speakeasy-group: client.answers
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -26265,9 +26280,7 @@ paths:
       operationId: deleteanswer
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -26285,6 +26298,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: delete
+      x-speakeasy-group: client.answers
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -26389,9 +26404,7 @@ paths:
       operationId: editanswer
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -26413,6 +26426,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: update
+      x-speakeasy-group: client.answers
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -26782,9 +26797,7 @@ paths:
       operationId: getanswer
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -26806,6 +26819,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: retrieve
+      x-speakeasy-group: client.answers
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -26917,9 +26932,7 @@ paths:
       operationId: listanswers
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -26941,6 +26954,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: list
+      x-speakeasy-group: client.answers
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -27040,9 +27055,7 @@ paths:
       description: Creates an authentication token for the authenticated user.
       operationId: createauthtoken
       x-visibility: Public
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       responses:
         "200":
           description: OK
@@ -27056,6 +27069,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: createToken
+      x-speakeasy-group: client.authentication
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -27151,8 +27166,6 @@ paths:
       x-visibility: Public
       x-codegen-request-body-name: payload
       parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
         - $ref: "#/components/parameters/timezoneOffset"
       requestBody:
         content:
@@ -27183,7 +27196,7 @@ paths:
         "200":
           description: OK
           content:
-            text/plain:
+            application/json:
               schema:
                 $ref: "#/components/schemas/ChatResponse"
               examples:
@@ -27278,6 +27291,9 @@ paths:
           description: Request Timeout
         "429":
           description: Too Many Requests
+      x-speakeasy-group: client.chat
+      x-speakeasy-name-override: create
+      x-speakeasy-usage-example: true
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -27413,8 +27429,6 @@ paths:
       x-visibility: Public
       x-codegen-request-body-name: payload
       parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
         - $ref: "#/components/parameters/timezoneOffset"
       responses:
         "200":
@@ -27425,6 +27439,8 @@ paths:
           description: Not Authorized
         "403":
           description: Forbidden
+      x-speakeasy-name-override: deleteAll
+      x-speakeasy-group: client.chat
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -27516,8 +27532,6 @@ paths:
       x-visibility: Public
       x-codegen-request-body-name: payload
       parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
         - $ref: "#/components/parameters/timezoneOffset"
       requestBody:
         content:
@@ -27537,6 +27551,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: delete
+      x-speakeasy-group: client.chat
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -27638,8 +27654,6 @@ paths:
       x-visibility: Public
       x-codegen-request-body-name: payload
       parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
         - $ref: "#/components/parameters/timezoneOffset"
       requestBody:
         content:
@@ -27663,6 +27677,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: retrieve
+      x-speakeasy-group: client.chat
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -27767,8 +27783,6 @@ paths:
       x-visibility: Public
       x-codegen-request-body-name: payload
       parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
         - $ref: "#/components/parameters/timezoneOffset"
       responses:
         "200":
@@ -27783,6 +27797,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: list
+      x-speakeasy-group: client.chat
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -27878,8 +27894,6 @@ paths:
       x-visibility: Preview
       x-codegen-request-body-name: payload
       parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
         - $ref: "#/components/parameters/timezoneOffset"
       requestBody:
         content:
@@ -27901,6 +27915,8 @@ paths:
           description: Not Authorized
         "403":
           description: Forbidden
+      x-speakeasy-name-override: retrieveApplication
+      x-speakeasy-group: client.chat
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -28004,8 +28020,6 @@ paths:
       operationId: uploadchatfiles
       x-visibility: Public
       parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
         - $ref: "#/components/parameters/timezoneOffset"
       requestBody:
         required: true
@@ -28029,6 +28043,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: uploadFiles
+      x-speakeasy-group: client.chat
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -28155,8 +28171,6 @@ paths:
       operationId: getchatfiles
       x-visibility: Public
       parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
         - $ref: "#/components/parameters/timezoneOffset"
       requestBody:
         required: true
@@ -28180,6 +28194,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: retrieveFiles
+      x-speakeasy-group: client.chat
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -28291,8 +28307,6 @@ paths:
       operationId: deletechatfiles
       x-visibility: Public
       parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
         - $ref: "#/components/parameters/timezoneOffset"
       requestBody:
         required: true
@@ -28311,6 +28325,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: deleteFiles
+      x-speakeasy-group: client.chat
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -28426,8 +28442,6 @@ paths:
       operationId: getAgent
       x-visibility: Preview
       parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
         - $ref: "#/components/parameters/timezoneOffset"
         - description: The ID of the agent.
           required: true
@@ -28456,6 +28470,8 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: retrieve
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -28551,8 +28567,6 @@ paths:
       operationId: getAgentSchemas
       x-visibility: Preview
       parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
         - $ref: "#/components/parameters/timezoneOffset"
         - description: The ID of the agent.
           required: true
@@ -28587,6 +28601,8 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: retrieveSchemas
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -28712,6 +28728,8 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: list
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -28854,6 +28872,8 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: runStream
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -28978,6 +28998,8 @@ paths:
           description: Validation Error
         "500":
           description: Internal server error
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: run
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -29078,9 +29100,7 @@ paths:
       operationId: addcollectionitems
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -29102,6 +29122,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: addItems
+      x-speakeasy-group: client.collections
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -29207,9 +29229,7 @@ paths:
       operationId: createcollection
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -29237,6 +29257,8 @@ paths:
                 $ref: "#/components/schemas/CollectionError"
         "429":
           description: Too Many Requests
+      x-speakeasy-group: client.collections
+      x-speakeasy-name-override: create
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -29525,9 +29547,7 @@ paths:
       operationId: deletecollection
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -29551,6 +29571,8 @@ paths:
                 $ref: "#/components/schemas/CollectionError"
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: delete
+      x-speakeasy-group: client.collections
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -29669,9 +29691,7 @@ paths:
       operationId: deletecollectionitem
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -29695,6 +29715,8 @@ paths:
           description: Failed to save deletion
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: deleteItem
+      x-speakeasy-group: client.collections
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -29803,9 +29825,7 @@ paths:
       operationId: editcollection
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -29833,6 +29853,8 @@ paths:
                 $ref: "#/components/schemas/CollectionError"
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: update
+      x-speakeasy-group: client.collections
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -30096,9 +30118,7 @@ paths:
       operationId: editcollectionitem
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -30120,6 +30140,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: updateItem
+      x-speakeasy-group: client.collections
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -30228,9 +30250,7 @@ paths:
       operationId: getcollection
       x-visibility: Preview
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -30252,6 +30272,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: retrieve
+      x-speakeasy-group: client.collections
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -30357,9 +30379,7 @@ paths:
       operationId: listcollections
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -30381,6 +30401,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: list
+      x-speakeasy-group: client.collections
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -30481,9 +30503,7 @@ paths:
       operationId: getdocpermissions
       x-visibility: Preview
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -30507,6 +30527,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: retrievePermissions
+      x-speakeasy-group: client.documents
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -30607,9 +30629,7 @@ paths:
       operationId: getdocuments
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -30631,6 +30651,8 @@ paths:
           description: Documents does not exist, or user cannot access documents.
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: retrieve
+      x-speakeasy-group: client.documents
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -30734,9 +30756,7 @@ paths:
       operationId: getdocumentsbyfacets
       x-visibility: Preview
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -30758,6 +30778,8 @@ paths:
           description: Not Found
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: retrieveByFacets
+      x-speakeasy-group: client.documents
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -31001,9 +31023,7 @@ paths:
       operationId: insights
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -31025,6 +31045,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: retrieve
+      x-speakeasy-group: client.insights
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -31147,9 +31169,7 @@ paths:
       operationId: messages
       x-visibility: Preview
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -31171,6 +31191,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: retrieve
+      x-speakeasy-group: client.messages
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -31280,9 +31302,7 @@ paths:
       operationId: editpin
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -31304,6 +31324,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: update
+      x-speakeasy-group: client.pins
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -31466,9 +31488,7 @@ paths:
       operationId: getpin
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -31490,6 +31510,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: retrieve
+      x-speakeasy-group: client.pins
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -31590,9 +31612,7 @@ paths:
       operationId: listpins
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -31614,6 +31634,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: list
+      x-speakeasy-group: client.pins
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -31714,9 +31736,7 @@ paths:
       operationId: pin
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -31738,6 +31758,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: create
+      x-speakeasy-group: client.pins
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -31900,9 +31922,7 @@ paths:
       operationId: unpin
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -31922,6 +31942,8 @@ paths:
           description: Forbidden from unpinning someone else's pin
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: remove
+      x-speakeasy-group: client.pins
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -32018,9 +32040,7 @@ paths:
       operationId: adminsearch
       x-visibility: Preview
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -32054,6 +32074,8 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
         "429":
           description: Too Many Requests
+      x-speakeasy-group: client.search
+      x-speakeasy-name-override: queryAsAdmin
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -32307,9 +32329,7 @@ paths:
       operationId: autocomplete
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -32331,6 +32351,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-group: client.search
+      x-speakeasy-name-override: autocomplete
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -32450,9 +32472,7 @@ paths:
       operationId: feed
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -32476,6 +32496,8 @@ paths:
           description: Request Timeout
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: retrieveFeed
+      x-speakeasy-group: client.search
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -32583,9 +32605,7 @@ paths:
       operationId: recommendations
       x-visibility: Preview
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -32613,6 +32633,8 @@ paths:
           description: Document does not exist or user cannot access document
         "429":
           description: Too Many Requests
+      x-speakeasy-group: client.search
+      x-speakeasy-name-override: recommendations
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -33002,9 +33024,7 @@ paths:
       operationId: search
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -33040,6 +33060,8 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
         "429":
           description: Too Many Requests
+      x-speakeasy-group: client.search
+      x-speakeasy-name-override: query
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -33293,9 +33315,7 @@ paths:
       operationId: listentities
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -33317,6 +33337,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-group: client.entities
+      x-speakeasy-name-override: list
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -33483,9 +33505,7 @@ paths:
       operationId: people
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -33507,6 +33527,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: readPeople
+      x-speakeasy-group: client.entities
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -33626,9 +33648,7 @@ paths:
       operationId: createshortcut
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -33650,6 +33670,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: create
+      x-speakeasy-group: client.shortcuts
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -33942,9 +33964,7 @@ paths:
       operationId: deleteshortcut
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -33962,6 +33982,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: delete
+      x-speakeasy-group: client.shortcuts
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -34063,9 +34085,7 @@ paths:
       operationId: getshortcut
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -34087,6 +34107,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-group: client.shortcuts
+      x-speakeasy-name-override: retrieve
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -34197,9 +34219,7 @@ paths:
       operationId: listshortcuts
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -34221,6 +34241,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-group: client.shortcuts
+      x-speakeasy-name-override: list
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -34384,9 +34406,7 @@ paths:
       operationId: updateshortcut
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -34408,6 +34428,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-group: client.shortcuts
+      x-speakeasy-name-override: update
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -34638,9 +34660,7 @@ paths:
       operationId: summarize
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -34662,6 +34682,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: summarize
+      x-speakeasy-group: client.documents
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -34792,9 +34814,7 @@ paths:
       operationId: addverificationreminder
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -34818,6 +34838,8 @@ paths:
           description: Document does not exist, does not support verification or user cannot access document
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: addReminder
+      x-speakeasy-group: client.verification
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -34924,8 +34946,6 @@ paths:
       x-visibility: Public
       x-codegen-request-body-name: payload
       parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
         - in: query
           name: count
           description: Maximum number of documents to return
@@ -34945,6 +34965,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: list
+      x-speakeasy-group: client.verification
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -35039,9 +35061,7 @@ paths:
       operationId: verify
       x-visibility: Public
       x-codegen-request-body-name: payload
-      parameters:
-        - $ref: "#/components/parameters/xGleanActAsHeader"
-        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      parameters: []
       requestBody:
         content:
           application/json:
@@ -35065,6 +35085,8 @@ paths:
           description: Document does not exist, does not support verification or user cannot access document
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: verify
+      x-speakeasy-group: client.verification
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -35192,6 +35214,10 @@ paths:
           description: Not Found
         "429":
           description: Too Many Requests
+      tags:
+        - Tools
+      x-speakeasy-name-override: list
+      x-speakeasy-group: client.tools
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -35303,6 +35329,10 @@ paths:
           description: Not Found
         "429":
           description: Too Many Requests
+      tags:
+        - Tools
+      x-speakeasy-name-override: run
+      x-speakeasy-group: client.tools
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -35456,6 +35486,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
+      x-speakeasy-group: client.governance.data.policies
+      x-speakeasy-name-override: retrieve
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -35572,6 +35604,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
+      x-speakeasy-group: client.governance.data.policies
+      x-speakeasy-name-override: update
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -35694,6 +35728,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
+      x-speakeasy-group: client.governance.data.policies
+      x-speakeasy-name-override: list
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -35803,6 +35839,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
+      x-speakeasy-group: client.governance.data.policies
+      x-speakeasy-name-override: create
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -35921,6 +35959,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
+      x-speakeasy-group: client.governance.data.policies
+      x-speakeasy-name-override: download
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -36032,6 +36072,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
+      x-speakeasy-group: client.governance.data.reports
+      x-speakeasy-name-override: create
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -36150,6 +36192,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
+      x-speakeasy-group: client.governance.data.reports
+      x-speakeasy-name-override: download
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -36262,6 +36306,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
+      x-speakeasy-group: client.governance.data.reports
+      x-speakeasy-name-override: status
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -36375,6 +36421,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
+      x-speakeasy-group: client.governance.documents.visibilityoverrides
+      x-speakeasy-name-override: list
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -36484,6 +36532,8 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
+      x-speakeasy-group: client.governance.documents.visibilityoverrides
+      x-speakeasy-name-override: create
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -36571,6 +36621,269 @@ paths:
                             .call();
 
                     if (res.updateDocumentVisibilityOverridesResponse().isPresent()) {
+                        // handle response
+                    }
+                }
+            }
+  /rest/api/v1/chat#stream:
+    post:
+      tags:
+        - Chat
+      summary: Chat
+      description: Have a conversation with Glean AI.
+      operationId: chatStream
+      x-visibility: Public
+      x-codegen-request-body-name: payload
+      parameters:
+        - $ref: '#/components/parameters/timezoneOffset'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+            examples:
+              defaultExample:
+                value:
+                  messages:
+                    - author: USER
+                      messageType: CONTENT
+                      fragments:
+                        - text: What are the company holidays this year?
+              gptAgentExample:
+                value:
+                  agentConfig:
+                    agent: GPT
+                  messages:
+                    - author: USER
+                      messageType: CONTENT
+                      fragments:
+                        - text: Who was the first person to land on the moon?
+        description: Includes chat history for Glean AI to respond to.
+        required: true
+        x-exportParamName: Request
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ChatRequestStream'
+              examples:
+                defaultExample:
+                  value:
+                    messages:
+                      - author: GLEAN_AI
+                        messageType: CONTENT
+                        hasMoreFragments: false
+                        agentConfig:
+                          agent: DEFAULT
+                          mode: DEFAULT
+                        fragments:
+                          - text: There are no holidays!
+                streamingExample:
+                  value:
+                    messages:
+                      - author: GLEAN_AI
+                        messageType: CONTENT
+                        agentConfig:
+                          agent: DEFAULT
+                          mode: DEFAULT
+                          hasMoreFragments: true
+                        fragments: null
+                      - author: GLEAN_AI
+                        messageType: CONTENT
+                        agentConfig:
+                          agent: DEFAULT
+                          mode: DEFAULT
+                          hasMoreFragments: true
+                        fragments: null
+                      - author: GLEAN_AI
+                        messageType: CONTENT
+                        agentConfig:
+                          agent: DEFAULT
+                          mode: DEFAULT
+                          hasMoreFragments: true
+                        fragments:
+                          - text: e are
+                      - author: GLEAN_AI
+                        messageType: CONTENT
+                        agentConfig:
+                          agent: DEFAULT
+                          mode: DEFAULT
+                          hasMoreFragments: true
+                        fragments:
+                          - text: no hol
+                      - author: GLEAN_AI
+                        messageType: CONTENT
+                        agentConfig:
+                          agent: DEFAULT
+                          mode: DEFAULT
+                          hasMoreFragments: false
+                        fragments:
+                          - text: idays!
+                updateResponse:
+                  value:
+                    messages:
+                      - author: GLEAN_AI
+                        messageType: UPDATE
+                        agentConfig:
+                          agent: DEFAULT
+                          mode: DEFAULT
+                        fragments:
+                          - text: '**Reading:**'
+                          - structuredResults:
+                              - document:
+                                  id: '123'
+                                  title: Company Handbook
+                citationResponse:
+                  value:
+                    messages:
+                      - author: GLEAN_AI
+                        messageType: CONTENT
+                        agentConfig:
+                          agent: DEFAULT
+                          mode: DEFAULT
+                        citations:
+                          - sourceDocument:
+                              id: '123'
+                              title: Company Handbook
+                              referenceRanges:
+                                - textRange:
+                                    startIndex: 0
+                                    endIndex: 12
+                                    type: CITATION
+        '400':
+          description: Invalid request
+        '401':
+          description: Not Authorized
+        '408':
+          description: Request Timeout
+        '429':
+          description: Too Many Requests
+      x-speakeasy-group: client.chat
+      x-speakeasy-name-override: createStream
+      x-speakeasy-usage-example: true
+      x-codeSamples:
+        - lang: python
+          label: Python (API Client)
+          source: |-
+            from glean import Glean, models
+            import os
+
+
+            with Glean(
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
+            ) as g_client:
+
+                res = g_client.client.chat.create_stream(messages=[
+                    {
+                        "fragments": [
+                            models.ChatMessageFragment(
+                                text="What are the company holidays this year?",
+                            ),
+                        ],
+                    },
+                ], timeout_millis=30000)
+
+                # Handle response
+                print(res)
+        - lang: typescript
+          label: Typescript (API Client)
+          source: |-
+            import { Glean } from "@gleanwork/api-client";
+
+            const glean = new Glean({
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+            });
+
+            async function run() {
+              const result = await glean.client.chat.createStream({
+                messages: [
+                  {
+                    fragments: [
+                      {
+                        text: "What are the company holidays this year?",
+                      },
+                    ],
+                  },
+                ],
+              });
+
+              // Handle the result
+              console.log(result);
+            }
+
+            run();
+        - lang: go
+          label: Go (API Client)
+          source: |-
+            package main
+
+            import(
+            	"context"
+            	"os"
+            	apiclientgo "github.com/gleanwork/api-client-go"
+            	"github.com/gleanwork/api-client-go/models/components"
+            	"log"
+            )
+
+            func main() {
+                ctx := context.Background()
+
+                s := apiclientgo.New(
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
+                )
+
+                res, err := s.Client.Chat.CreateStream(ctx, components.ChatRequest{
+                    Messages: []components.ChatMessage{
+                        components.ChatMessage{
+                            Fragments: []components.ChatMessageFragment{
+                                components.ChatMessageFragment{
+                                    Text: apiclientgo.String("What are the company holidays this year?"),
+                                },
+                            },
+                        },
+                    },
+                }, nil)
+                if err != nil {
+                    log.Fatal(err)
+                }
+                if res.ChatRequestStream != nil {
+                    // handle response
+                }
+            }
+        - lang: java
+          label: Java (API Client)
+          source: |-
+            package hello.world;
+
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.*;
+            import com.glean.api_client.glean_api_client.models.operations.ChatStreamResponse;
+            import java.lang.Exception;
+            import java.util.List;
+
+            public class Application {
+
+                public static void main(String[] args) throws Exception {
+
+                    Glean sdk = Glean.builder()
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                        .build();
+
+                    ChatStreamResponse res = sdk.client().chat().createStream()
+                            .chatRequest(ChatRequest.builder()
+                                .messages(List.of(
+                                    ChatMessage.builder()
+                                        .fragments(List.of(
+                                            ChatMessageFragment.builder()
+                                                .text("What are the company holidays this year?")
+                                                .build()))
+                                        .build()))
+                                .build())
+                            .call();
+
+                    if (res.chatRequestStream().isPresent()) {
                         // handle response
                     }
                 }
@@ -41296,6 +41609,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ErrorMessage"
+      x-speakeasy-name-override: GleanDataError
     ResultsResponse:
       properties:
         trackingToken:
@@ -43375,22 +43689,50 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/DocumentVisibilityUpdateResult"
+    ChatRequestStream:
+      required:
+        - messages
+      properties:
+        saveChat:
+          type: boolean
+          description: >-
+            Save the current interaction as a Chat for the user to access and potentially continue later.
+        chatId:
+          type: string
+          description: >-
+            The id of the Chat that context should be retrieved from and messages added to. An empty id starts a new Chat, and the Chat is saved if saveChat is true.
+        messages:
+          type: array
+          description: >-
+            A list of chat messages, from most recent to least recent. It can be assumed that the first chat message in the list is the user's most recent query.
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+        agentConfig:
+          $ref: '#/components/schemas/AgentConfig'
+          description: Describes the agent that will execute the request.
+        inclusions:
+          $ref: '#/components/schemas/ChatRestrictionFilters'
+          description: >-
+            A list of filters which only allows chat to access certain content.
+        exclusions:
+          $ref: '#/components/schemas/ChatRestrictionFilters'
+          description: >-
+            A list of filters which disallows chat from accessing certain content. If content is in both inclusions and exclusions, it'll be excluded.
+        timeoutMillis:
+          type: integer
+          description: >-
+            Timeout in milliseconds for the request. A `408` error will be returned if handling the request takes longer.
+          example: 30000
+        applicationId:
+          type: string
+          description: >-
+            The ID of the application this request originates from, used to determine the configuration of underlying chat processes. This should correspond to the ID set during admin setup. If not specified, the default chat experience will be used.
+        stream:
+          type: boolean
+          description: >-
+            If set, response lines will be streamed one-by-one as they become available. Each will be a ChatResponse, formatted as JSON, and separated by a new line. If false, the entire response will be returned at once. Note that if this is set and the model being used does not support streaming, the model's response will not be streamed, but other messages from the endpoint still will be.
+          default: true
   parameters:
-    xGleanActAsHeader:
-      name: X-Glean-ActAs
-      in: header
-      description: Email address of a user on whose behalf the request is intended to be made (should be non-empty only for global tokens).
-      required: false
-      schema:
-        type: string
-        format: email
-    xGleanAuthTypeHeader:
-      name: X-Glean-Auth-Type
-      in: header
-      description: Auth type being used to access the endpoint (should be non-empty only for global tokens).
-      required: false
-      schema:
-        type: string
     timezoneOffset:
       name: timezoneOffset
       in: query

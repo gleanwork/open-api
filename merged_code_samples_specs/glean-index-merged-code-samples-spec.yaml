@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   version: 0.9.0
-  title: Glean Indexing API
+  title: Glean API
   contact:
     email: support@glean.com
   description: |
@@ -11,8 +11,19 @@ info:
     # Usage guidelines
     This API is evolving fast. Glean will provide advance notice of any planned backwards incompatible changes along
     with a 6-month sunset period for anything that requires developers to adopt the new versions.
+
+    # API Clients
+    Official API clients for the Glean Indexing API are available in multiple languages:
+
+    - [Python](https://github.com/gleanwork/api-client-python)
+    - [TypeScript](https://github.com/gleanwork/api-client-typescript)
+    - [Go](https://github.com/gleanwork/api-client-go)
+    - [Java](https://github.com/gleanwork/api-client-java)
+
+    These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
+  x-speakeasy-name: "Glean API"
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -57,6 +68,8 @@ paths:
           description: Conflict
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: addOrUpdate
+      x-speakeasy-group: indexing.documents
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -182,6 +195,8 @@ paths:
           description: Conflict
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: index
+      x-speakeasy-group: indexing.documents
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -300,6 +315,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: bulkIndex
+      x-speakeasy-group: indexing.documents
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -423,6 +440,8 @@ paths:
           description: Conflict
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: updatePermissions
+      x-speakeasy-group: indexing.permissions
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -552,6 +571,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: processAll
+      x-speakeasy-group: indexing.documents
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -660,6 +681,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: delete
+      x-speakeasy-group: indexing.documents
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -780,6 +803,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: indexUser
+      x-speakeasy-group: indexing.permissions
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -910,6 +935,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: bulkIndexUsers
+      x-speakeasy-group: indexing.permissions
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -1083,6 +1110,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: indexGroup
+      x-speakeasy-group: indexing.permissions
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -1209,6 +1238,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: bulkIndexGroups
+      x-speakeasy-group: indexing.permissions
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -1358,6 +1389,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: indexMembership
+      x-speakeasy-group: indexing.permissions
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -1484,6 +1517,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: bulkIndexMemberships
+      x-speakeasy-group: indexing.permissions
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -1622,6 +1657,8 @@ paths:
           description: Bad Request
         "401":
           description: Not Authorized
+      x-speakeasy-name-override: processMemberships
+      x-speakeasy-group: indexing.permissions
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -1730,6 +1767,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: deleteUser
+      x-speakeasy-group: indexing.permissions
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -1847,6 +1886,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: deleteGroup
+      x-speakeasy-group: indexing.permissions
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -1964,6 +2005,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: deleteMembership
+      x-speakeasy-group: indexing.permissions
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -2097,6 +2140,8 @@ paths:
           description: Bad Request
         "401":
           description: Not Authorized
+      x-speakeasy-name-override: status
+      x-speakeasy-group: indexing.datasource
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -2219,6 +2264,8 @@ paths:
           description: Bad Request
         "401":
           description: Not Authorized
+      x-speakeasy-group: indexing.documents
+      x-speakeasy-name-override: debug
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -2353,6 +2400,8 @@ paths:
           description: Bad Request
         "401":
           description: Not Authorized
+      x-speakeasy-group: indexing.documents
+      x-speakeasy-name-override: debugMany
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -2505,6 +2554,8 @@ paths:
           description: Bad Request
         "401":
           description: Not Authorized
+      x-speakeasy-name-override: debug
+      x-speakeasy-group: indexing.people
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -2629,6 +2680,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-group: indexing.documents
+      x-speakeasy-name-override: checkAccess
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -2764,6 +2817,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-group: indexing.documents
+      x-speakeasy-name-override: status
   /api/index/v1/getdocumentcount:
     post:
       deprecated: true
@@ -2794,6 +2849,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-group: indexing.documents
+      x-speakeasy-name-override: count
   /api/index/v1/getusercount:
     post:
       deprecated: true
@@ -2824,6 +2881,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: count
+      x-speakeasy-group: indexing.people
   /api/index/v1/betausers:
     post:
       summary: Beta users
@@ -2846,6 +2905,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: authorizeBetaUsers
+      x-speakeasy-group: indexing.permissions
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -2977,6 +3038,8 @@ paths:
           description: Bad Request
         "401":
           description: Not Authorized
+      x-speakeasy-name-override: add
+      x-speakeasy-group: indexing.datasources
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -3137,6 +3200,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: retrieveConfig
+      x-speakeasy-group: indexing.datasources
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -3250,6 +3315,8 @@ paths:
           description: Bad Request
         "401":
           description: Not Authorized
+      x-speakeasy-name-override: rotateToken
+      x-speakeasy-group: indexing.authentication
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -3357,6 +3424,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: index
+      x-speakeasy-group: indexing.people
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -3507,6 +3576,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: bulkIndex
+      x-speakeasy-group: indexing.people
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -3723,29 +3794,7 @@ paths:
                     // handle response
                 }
             }
-  /api/index/v1/indexemployeelist:
-    post:
-      summary: Bulk index employees
-      description: Bulk upload details of all the employees. This deletes all employees uploaded in the prior batch. SOON TO BE DEPRECATED in favor of /bulkindexemployees.
-      deprecated: true
-      tags:
-        - People
-      requestBody:
-        content:
-          application/json; charset=UTF-8:
-            schema:
-              $ref: "#/components/schemas/IndexEmployeeListRequest"
-        required: true
-        x-exportParamName: IndexEmployeeListRequest
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: Bad Request
-        "401":
-          description: Not Authorized
-        "409":
-          description: Conflict
+  /api/index/v1/indexemployeelist: {}
   /api/index/v1/processallemployeesandteams:
     post:
       summary: Schedules the processing of uploaded employees and teams
@@ -3762,6 +3811,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-name-override: processAllEmployeesAndTeams
+      x-speakeasy-group: indexing.people
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -3865,6 +3916,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: delete
+      x-speakeasy-group: indexing.people
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -3979,6 +4032,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: indexTeam
+      x-speakeasy-group: indexing.people
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -4180,6 +4235,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: deleteTeam
+      x-speakeasy-group: indexing.people
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -4294,6 +4351,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: bulkIndexTeams
+      x-speakeasy-group: indexing.people
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -4592,6 +4651,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: bulkIndex
+      x-speakeasy-group: indexing.shortcuts
       x-codeSamples:
         - lang: python
           label: Python (API Client)
@@ -4762,6 +4823,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-speakeasy-name-override: upload
+      x-speakeasy-group: indexing.shortcuts
       x-codeSamples:
         - lang: python
           label: Python (API Client)
