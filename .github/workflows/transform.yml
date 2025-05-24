@@ -33,6 +33,20 @@ jobs:
         run: speakeasy run -s glean-api-specs
         env:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
+
+      # We intentionally skip uploading the spec to the Speakeasy registry since 
+      # we're only using them for code sample generation.
+      - name: Generate Client API specs for code sample generation
+        run: speakeasy run -s glean-client-api-specs --skip-upload-spec
+        env:
+          SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
+
+      # We intentionally skip uploading the spec to the Speakeasy registry since 
+      # we're only using them for code sample generation.
+      - name: Generate Indexing API specs for code sample generation
+        run: speakeasy run -s glean-indexing-api-specs --skip-upload-spec
+        env:
+          SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
