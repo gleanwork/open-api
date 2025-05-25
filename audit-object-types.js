@@ -94,8 +94,8 @@ class OpenAPIObjectAuditor {
               
               const operationId = operation.operationId || `${method.toUpperCase()} ${pathKey}`;
               
-              // Map schemas used in this operation
-              this.mapSchemasInOperation(operation, operationId, filePath, `paths.${pathKey}.${method}`);
+              // Map schemas used in REQUEST contexts only (not responses)
+              this.mapSchemasInRequestOperation(operation, operationId, filePath, `paths.${pathKey}.${method}`);
             }
           }
         }
@@ -110,18 +110,38 @@ class OpenAPIObjectAuditor {
     }
   }
 
-  mapSchemasInOperation(operation, operationId, filePath, operationPath) {
-    this.findSchemaReferences(operation, (schemaPath) => {
-      const key = `${filePath}:${schemaPath}`;
-      if (!this.operationMappings.has(key)) {
-        this.operationMappings.set(key, []);
-      }
-      this.operationMappings.get(key).push({
-        operationId,
-        operationPath,
-        method: operationPath.split('.').pop().toUpperCase(),
-        path: operationPath.split('.').slice(1, -1).join('.')
+  mapSchemasInRequestOperation(operation, operationId, filePath, operationPath) {
+    // Only look for schemas in request contexts (requestBody, parameters)
+    // Skip responses entirely
+    
+    // Check requestBody
+    if (operation.requestBody) {
+      this.findSchemaReferences(operation.requestBody, (schemaPath) => {
+        this.addOperationMapping(filePath, schemaPath, operationId, operationPath, 'requestBody');
       });
+    }
+    
+    // Check parameters
+    if (operation.parameters && Array.isArray(operation.parameters)) {
+      operation.parameters.forEach((param, index) => {
+        this.findSchemaReferences(param, (schemaPath) => {
+          this.addOperationMapping(filePath, schemaPath, operationId, operationPath, `parameters[${index}]`);
+        });
+      });
+    }
+  }
+
+  addOperationMapping(filePath, schemaPath, operationId, operationPath, context) {
+    const key = `${filePath}:${schemaPath}`;
+    if (!this.operationMappings.has(key)) {
+      this.operationMappings.set(key, []);
+    }
+    this.operationMappings.get(key).push({
+      operationId,
+      operationPath,
+      method: operationPath.split('.').pop().toUpperCase(),
+      path: operationPath.split('.').slice(1, -1).join('.'),
+      context // 'requestBody' or 'parameters[N]'
     });
   }
 
@@ -147,6 +167,14 @@ class OpenAPIObjectAuditor {
     try {
       // Check if this is an object schema
       if (obj.type === 'object') {
+        // Only audit this object if it's used in request contexts
+        const operations = this.getOperationsForSchema(filePath, currentPath);
+        
+        // Skip this object if it's not used in any request contexts
+        if (operations.length === 0) {
+          return;
+        }
+        
         this.results.summary.totalObjectSchemas++;
         
         const hasAdditionalProperties = obj.hasOwnProperty('additionalProperties');
@@ -175,7 +203,7 @@ class OpenAPIObjectAuditor {
             hasOneOf && 'oneOf', 
             hasAnyOf && 'anyOf'
           ].filter(Boolean),
-          operations: this.getOperationsForSchema(filePath, currentPath)
+          operations
         };
 
         // Determine if this should be "open" or "closed"
@@ -242,7 +270,8 @@ class OpenAPIObjectAuditor {
 
   generateReport() {
     console.log(`\n${colors.bright}${colors.cyan}═══════════════════════════════════════════════════════════════════════════════${colors.reset}`);
-    console.log(`${colors.bright}${colors.cyan}                           OPENAPI OBJECT TYPE AUDIT REPORT                           ${colors.reset}`);
+    console.log(`${colors.bright}${colors.cyan}                     OPENAPI REQUEST OBJECT TYPE AUDIT REPORT                     ${colors.reset}`);
+    console.log(`${colors.bright}${colors.cyan}                      (Request Body & Parameters Only)                           ${colors.reset}`);
     console.log(`${colors.bright}${colors.cyan}═══════════════════════════════════════════════════════════════════════════════${colors.reset}\n`);
 
     this.printSummary();
@@ -258,21 +287,23 @@ class OpenAPIObjectAuditor {
     console.log(`${colors.bright}📊 SUMMARY${colors.reset}`);
     console.log(`${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`);
     console.log(`Files processed: ${summary.totalFiles}`);
-    console.log(`Total object schemas found: ${summary.totalObjectSchemas}`);
-    console.log(`Objects missing additionalProperties: ${colors.red}${summary.objectsMissingAdditionalProps}${colors.reset}`);
-    console.log(`Objects with additionalProperties: ${colors.green}${summary.objectsWithAdditionalProps}${colors.reset}`);
-    console.log(`Open objects (no properties): ${colors.yellow}${summary.openObjectsCount}${colors.reset} ${colors.red}[HIGH PRIORITY]${colors.reset}`);
-    console.log(`Closed objects (with properties): ${colors.blue}${summary.closedObjectsCount}${colors.reset} ${colors.yellow}[MEDIUM PRIORITY]${colors.reset}\n`);
+    console.log(`Request object schemas found: ${summary.totalObjectSchemas}`);
+    console.log(`Request objects missing additionalProperties: ${colors.red}${summary.objectsMissingAdditionalProps}${colors.reset}`);
+    console.log(`Request objects with additionalProperties: ${colors.green}${summary.objectsWithAdditionalProps}${colors.reset}`);
+    console.log(`Open request objects (no properties): ${colors.yellow}${summary.openObjectsCount}${colors.reset} ${colors.red}[HIGH PRIORITY]${colors.reset}`);
+    console.log(`Closed request objects (with properties): ${colors.blue}${summary.closedObjectsCount}${colors.reset} ${colors.yellow}[MEDIUM PRIORITY]${colors.reset}\n`);
+    console.log(`${colors.bright}${colors.green}Note: Only objects used in requestBody or parameters are audited${colors.reset}`);
+    console.log(`${colors.bright}${colors.green}Response objects are excluded from this audit${colors.reset}\n`);
   }
 
   printOpenObjects() {
     if (this.results.openObjects.length === 0) {
-      console.log(`${colors.green}✅ No open objects found - all objects without properties have been properly configured!${colors.reset}\n`);
+      console.log(`${colors.green}✅ No open request objects found - all request objects without properties have been properly configured!${colors.reset}\n`);
       return;
     }
 
-    console.log(`${colors.bright}🔓 OPEN OBJECTS (HIGH PRIORITY)${colors.reset}`);
-    console.log(`${colors.red}These objects have no properties defined and likely need additionalProperties: true${colors.reset}`);
+    console.log(`${colors.bright}🔓 OPEN REQUEST OBJECTS (HIGH PRIORITY)${colors.reset}`);
+    console.log(`${colors.red}These request objects have no properties defined and likely need additionalProperties: true${colors.reset}`);
     console.log(`${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`);
     
     this.results.openObjects.forEach((obj, index) => {
@@ -285,7 +316,10 @@ class OpenAPIObjectAuditor {
       console.log(`   Reason: ${obj.reason}`);
       
       if (obj.operations && obj.operations.length > 0) {
-        console.log(`   Used in operations: ${obj.operations.map(op => op.operationId).join(', ')}`);
+        console.log(`   Used in request contexts:`);
+        obj.operations.forEach(op => {
+          console.log(`     - ${op.operationId} (${op.context})`);
+        });
       }
       console.log('');
     });
@@ -293,12 +327,12 @@ class OpenAPIObjectAuditor {
 
   printClosedObjects() {
     if (this.results.closedObjects.length === 0) {
-      console.log(`${colors.green}✅ No closed objects found - all objects with properties have been properly configured!${colors.reset}\n`);
+      console.log(`${colors.green}✅ No closed request objects found - all request objects with properties have been properly configured!${colors.reset}\n`);
       return;
     }
 
-    console.log(`${colors.bright}🔒 CLOSED OBJECTS (MEDIUM PRIORITY)${colors.reset}`);
-    console.log(`${colors.blue}These objects have properties defined and likely need additionalProperties: false${colors.reset}`);
+    console.log(`${colors.bright}🔒 CLOSED REQUEST OBJECTS (MEDIUM PRIORITY)${colors.reset}`);
+    console.log(`${colors.blue}These request objects have properties defined and likely need additionalProperties: false${colors.reset}`);
     console.log(`${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`);
     
     this.results.closedObjects.forEach((obj, index) => {
@@ -312,14 +346,17 @@ class OpenAPIObjectAuditor {
       console.log(`   Reason: ${obj.reason}`);
       
       if (obj.operations && obj.operations.length > 0) {
-        console.log(`   Used in operations: ${obj.operations.map(op => op.operationId).join(', ')}`);
+        console.log(`   Used in request contexts:`);
+        obj.operations.forEach(op => {
+          console.log(`     - ${op.operationId} (${op.context})`);
+        });
       }
       console.log('');
     });
   }
 
   printOperationsTable() {
-    console.log(`${colors.bright}📋 OPERATIONS AFFECTED BY OBJECT TYPE ISSUES${colors.reset}`);
+    console.log(`${colors.bright}📋 OPERATIONS AFFECTED BY REQUEST OBJECT TYPE ISSUES${colors.reset}`);
     console.log(`${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`);
     
     const operationsMap = new Map();
@@ -334,7 +371,8 @@ class OpenAPIObjectAuditor {
             method: operation.method,
             path: operation.path,
             affectedSchemas: [],
-            priority: 'MEDIUM'
+            priority: 'MEDIUM',
+            contexts: new Set()
           });
         }
         
@@ -343,8 +381,11 @@ class OpenAPIObjectAuditor {
           file: obj.file,
           schemaPath: obj.path,
           type: isOpen ? 'open' : 'closed',
-          hasAdditionalProperties: obj.hasAdditionalProperties
+          hasAdditionalProperties: obj.hasAdditionalProperties,
+          context: operation.context
         });
+        
+        operationsMap.get(key).contexts.add(operation.context);
         
         // Set priority to HIGH if any open objects are involved
         if (isOpen) {
@@ -354,7 +395,7 @@ class OpenAPIObjectAuditor {
     });
 
     if (operationsMap.size === 0) {
-      console.log(`${colors.green}✅ No operations are affected by object type issues!${colors.reset}\n`);
+      console.log(`${colors.green}✅ No operations are affected by request object type issues!${colors.reset}\n`);
       return;
     }
 
@@ -366,18 +407,21 @@ class OpenAPIObjectAuditor {
       return a.operationId.localeCompare(b.operationId);
     });
 
-    console.log(`${'Operation ID'.padEnd(50)} ${'Method'.padEnd(8)} ${'Priority'.padEnd(10)} ${'Issues'.padEnd(10)}`);
-    console.log(`${'-'.repeat(50)} ${'-'.repeat(8)} ${'-'.repeat(10)} ${'-'.repeat(10)}`);
+    console.log(`${'Operation ID'.padEnd(50)} ${'Method'.padEnd(8)} ${'Priority'.padEnd(10)} ${'Issues'.padEnd(10)} ${'Context'}`);
+    console.log(`${'-'.repeat(50)} ${'-'.repeat(8)} ${'-'.repeat(10)} ${'-'.repeat(10)} ${'-'.repeat(15)}`);
     
     sortedOperations.forEach(operation => {
       const priorityColor = operation.priority === 'HIGH' ? colors.red : colors.yellow;
       const openIssues = operation.affectedSchemas.filter(s => s.type === 'open').length;
       const closedIssues = operation.affectedSchemas.filter(s => s.type === 'closed').length;
+      const contexts = Array.from(operation.contexts).join(', ');
       
-      console.log(`${operation.operationId.padEnd(50)} ${operation.method.padEnd(8)} ${priorityColor}${operation.priority.padEnd(10)}${colors.reset} ${openIssues}/${closedIssues}`);
+      console.log(`${operation.operationId.padEnd(50)} ${operation.method.padEnd(8)} ${priorityColor}${operation.priority.padEnd(10)}${colors.reset} ${openIssues}/${closedIssues.toString().padEnd(8)} ${contexts}`);
     });
 
-    console.log(`\nLegend: Issues column shows "Open Objects"/"Closed Objects"`);
+    console.log(`\nLegend:`);
+    console.log(`  Issues column: "Open Objects"/"Closed Objects"`);
+    console.log(`  Context: requestBody, parameters[N], etc.`);
     console.log('');
   }
 
@@ -385,29 +429,36 @@ class OpenAPIObjectAuditor {
     console.log(`${colors.bright}💡 RECOMMENDATIONS${colors.reset}`);
     console.log(`${colors.cyan}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`);
     
+    console.log(`${colors.bright}${colors.blue}📝 Scope: Request Objects Only${colors.reset}`);
+    console.log(`   This audit focuses exclusively on objects used in request contexts:`);
+    console.log(`   - requestBody schemas`);
+    console.log(`   - parameter schemas`);
+    console.log(`   Response objects are excluded as they don't affect client generation\n`);
+    
     if (this.results.summary.openObjectsCount > 0) {
-      console.log(`${colors.red}🔴 HIGH PRIORITY: ${this.results.summary.openObjectsCount} open objects${colors.reset}`);
-      console.log(`   Action: Add "additionalProperties: true" to schemas with no properties`);
-      console.log(`   Impact: These objects are likely intended to accept arbitrary key-value pairs`);
+      console.log(`${colors.red}🔴 HIGH PRIORITY: ${this.results.summary.openObjectsCount} open request objects${colors.reset}`);
+      console.log(`   Action: Add "additionalProperties: true" to request schemas with no properties`);
+      console.log(`   Impact: These objects are likely intended to accept arbitrary key-value pairs in requests`);
       console.log(`   Risk: High - may break client generation if not addressed\n`);
     }
     
     if (this.results.summary.closedObjectsCount > 0) {
-      console.log(`${colors.yellow}🟡 MEDIUM PRIORITY: ${this.results.summary.closedObjectsCount} closed objects${colors.reset}`);
-      console.log(`   Action: Add "additionalProperties: false" to schemas with defined properties`);
-      console.log(`   Impact: Ensures type safety and prevents unexpected properties`);
+      console.log(`${colors.yellow}🟡 MEDIUM PRIORITY: ${this.results.summary.closedObjectsCount} closed request objects${colors.reset}`);
+      console.log(`   Action: Add "additionalProperties: false" to request schemas with defined properties`);
+      console.log(`   Impact: Ensures type safety and prevents unexpected properties in requests`);
       console.log(`   Risk: Medium - may cause stricter validation than expected\n`);
     }
     
     console.log(`${colors.bright}Next Steps:${colors.reset}`);
-    console.log(`1. Review and fix HIGH priority open objects first`);
-    console.log(`2. Consider business requirements for each schema`);
-    console.log(`3. Update schemas systematically using the paths provided`);
+    console.log(`1. Review and fix HIGH priority open request objects first`);
+    console.log(`2. Consider business requirements for each request schema`);
+    console.log(`3. Update request schemas systematically using the paths provided`);
     console.log(`4. Test with Speakeasy tools after changes`);
-    console.log(`5. Validate that client code generation works as expected\n`);
+    console.log(`5. Validate that client code generation works as expected`);
+    console.log(`6. Remember: Response objects are not affected by this audit\n`);
     
     if (this.results.summary.objectsMissingAdditionalProps === 0) {
-      console.log(`${colors.green}🎉 Congratulations! All object schemas have explicit additionalProperties settings!${colors.reset}`);
+      console.log(`${colors.green}🎉 Congratulations! All request object schemas have explicit additionalProperties settings!${colors.reset}`);
     }
   }
 }

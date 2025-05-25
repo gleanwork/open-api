@@ -13,8 +13,9 @@ class CSVGenerator {
     this.auditor = new OpenAPIObjectAuditor();
   }
 
-  async generateCSV(dirPath, outputPath = 'openapi-object-audit.csv') {
-    console.log('🔍 Running OpenAPI Object Type Audit...');
+  async generateCSV(dirPath, outputPath = 'openapi-request-object-audit.csv') {
+    console.log('🔍 Running OpenAPI Request Object Type Audit...');
+    console.log('📝 Focusing on request objects only (requestBody & parameters)');
     
     const files = fs.readdirSync(dirPath).filter(file => 
       file.endsWith('.yaml') || file.endsWith('.yml') || file.endsWith('.json')
@@ -42,15 +43,17 @@ class CSVGenerator {
       'Recommendation',
       'Reason',
       'Operations Count',
-      'Operation IDs'
+      'Operation IDs',
+      'Request Contexts'
     ]);
 
     // Add open objects (HIGH priority)
     this.auditor.results.openObjects.forEach(obj => {
+      const contexts = [...new Set(obj.operations.map(op => op.context))].join('; ');
       csvRows.push([
         obj.file,
         obj.path,
-        'Open',
+        'Open Request Object',
         'HIGH',
         obj.hasProperties ? 'Yes' : 'No',
         obj.propertiesCount,
@@ -60,16 +63,18 @@ class CSVGenerator {
         obj.recommendation,
         obj.reason,
         obj.operations.length,
-        obj.operations.map(op => op.operationId).join('; ')
+        obj.operations.map(op => op.operationId).join('; '),
+        contexts
       ]);
     });
 
     // Add closed objects (MEDIUM priority)
     this.auditor.results.closedObjects.forEach(obj => {
+      const contexts = [...new Set(obj.operations.map(op => op.context))].join('; ');
       csvRows.push([
         obj.file,
         obj.path,
-        'Closed',
+        'Closed Request Object',
         'MEDIUM',
         obj.hasProperties ? 'Yes' : 'No',
         obj.propertiesCount,
@@ -79,7 +84,8 @@ class CSVGenerator {
         obj.recommendation,
         obj.reason,
         obj.operations.length,
-        obj.operations.map(op => op.operationId).join('; ')
+        obj.operations.map(op => op.operationId).join('; '),
+        contexts
       ]);
     });
 
@@ -99,13 +105,15 @@ class CSVGenerator {
     fs.writeFileSync(outputPath, csvContent);
     
     console.log(`\n✅ CSV report generated: ${outputPath}`);
-    console.log(`📊 Summary:`);
+    console.log(`📊 Summary (Request Objects Only):`);
     console.log(`   - Files processed: ${this.auditor.results.summary.totalFiles}`);
-    console.log(`   - Total object schemas: ${this.auditor.results.summary.totalObjectSchemas}`);
-    console.log(`   - HIGH priority (open objects): ${this.auditor.results.summary.openObjectsCount}`);
-    console.log(`   - MEDIUM priority (closed objects): ${this.auditor.results.summary.closedObjectsCount}`);
-    console.log(`   - Objects missing additionalProperties: ${this.auditor.results.summary.objectsMissingAdditionalProps}`);
-    console.log(`   - Objects with additionalProperties: ${this.auditor.results.summary.objectsWithAdditionalProps}`);
+    console.log(`   - Request object schemas found: ${this.auditor.results.summary.totalObjectSchemas}`);
+    console.log(`   - HIGH priority (open request objects): ${this.auditor.results.summary.openObjectsCount}`);
+    console.log(`   - MEDIUM priority (closed request objects): ${this.auditor.results.summary.closedObjectsCount}`);
+    console.log(`   - Request objects missing additionalProperties: ${this.auditor.results.summary.objectsMissingAdditionalProps}`);
+    console.log(`   - Request objects with additionalProperties: ${this.auditor.results.summary.objectsWithAdditionalProps}`);
+    console.log(`\n🔍 Note: Only objects used in requestBody or parameters are included`);
+    console.log(`📝 Response objects are excluded from this audit`);
   }
 }
 
@@ -113,7 +121,7 @@ class CSVGenerator {
 async function main() {
   const generator = new CSVGenerator();
   const specsDir = './generated_specs';
-  const outputFile = process.argv[2] || 'openapi-object-audit.csv';
+  const outputFile = process.argv[2] || 'openapi-request-object-audit.csv';
   
   if (!fs.existsSync(specsDir)) {
     console.error(`❌ Directory ${specsDir} does not exist`);
