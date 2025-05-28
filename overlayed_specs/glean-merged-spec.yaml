@@ -7244,6 +7244,9 @@ components:
           type: integer
           description: Timeout in milliseconds for the request. A `408` error will be returned if handling the request takes longer.
           example: 30000
+        sessionInfo:
+          description: Optional object for tracking the session used by the client and for debugging purposes.
+          $ref: "#/components/schemas/SessionInfo"
         applicationId:
           type: string
           description: The ID of the application this request originates from, used to determine the configuration of underlying chat processes. This should correspond to the ID set during admin setup. If not specified, the default chat experience will be used.
