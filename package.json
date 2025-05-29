@@ -17,6 +17,8 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
+    "lint": "prettier --check . --ignore-unknown",
+    "lint:fix": "prettier --write . --ignore-unknown",
     "test": "vitest run",
     "test:all": "pnpm test",
     "test:watch": "vitest",
@@ -26,6 +28,7 @@
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {
+    "prettier": "^3.5.3",
     "vitest": "^1.2.0"
   }
 }
