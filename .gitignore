@@ -1,6 +1,10 @@
 node_modules/
 .DS_Store
 
+# Lock files - keep pnpm-lock.yaml, ignore others
+package-lock.json
+yarn.lock
+
 .speakeasy/temp
 .speakeasy/reports
 .speakeasy/logs

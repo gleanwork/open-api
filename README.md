@@ -157,17 +157,17 @@ To set up the development environment:
 2. Install dependencies:
 
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. Run tests:
 
    ```bash
-   npm test
+   pnpm test
    ```
 
 4. Build the action:
 
    ```bash
-   npm run build
+   pnpm run build
    ```
