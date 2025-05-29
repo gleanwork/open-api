@@ -3,7 +3,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import yaml from 'js-yaml';
 
-const SPEC_PATH = path.join(process.cwd(), 'overlayed_specs', 'glean-merged-spec.yaml');
+const SPEC_PATH = path.join(
+  process.cwd(),
+  'overlayed_specs',
+  'glean-merged-spec.yaml',
+);
 
 const loadSpec = () => yaml.load(fs.readFileSync(SPEC_PATH, 'utf8'));
 
@@ -52,8 +56,10 @@ describe('Post-transformation smoke tests', () => {
     expect(paths.length).toBeGreaterThan(0);
 
     const allowedPrefixes = ['/rest/api/v1', '/api/index/v1'];
-    const hasUnexpected = paths.some((p) => !allowedPrefixes.some((prefix) => p.startsWith(prefix)));
+    const hasUnexpected = paths.some(
+      (p) => !allowedPrefixes.some((prefix) => p.startsWith(prefix)),
+    );
 
     expect(hasUnexpected).toBe(false);
   });
-}); 
+});

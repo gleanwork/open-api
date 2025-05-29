@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+
+# Source specs (input files, should not be reformatted)
+/source_specs/
+
+# Generated directories
+/generated_specs/
+/overlayed_specs/
+/merged_code_samples_specs/
+
+# Build artifacts
+dist/
+build/
+
+# Logs
+*.log
+
+# Coverage reports
+coverage/
+
+# OS files
+.DS_Store
+Thumbs.db

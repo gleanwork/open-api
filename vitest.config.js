@@ -6,4 +6,4 @@ export default defineConfig({
     include: ['tests/**/*.test.js'],
     globals: true,
   },
-}); 
+});

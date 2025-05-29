@@ -7,11 +7,11 @@ import yaml from 'js-yaml';
  */
 export function extractBasePath(url) {
   const tempUrl = url.replace(/{([^}]+)}/g, 'domain');
-  
+
   try {
     const urlObj = new URL(tempUrl);
     const basePath = urlObj.pathname;
-    
+
     return basePath.endsWith('/') ? basePath.slice(0, -1) : basePath;
   } catch (error) {
     console.warn(`Unable to parse URL: ${url}`);
@@ -40,8 +40,11 @@ export function transformShortcutComponent(spec) {
   const replaceReferences = (obj) => {
     if (!obj || typeof obj !== 'object') return;
 
-    Object.keys(obj).forEach(key => {
-      if (typeof obj[key] === 'string' && obj[key] === '#/components/schemas/Shortcut') {
+    Object.keys(obj).forEach((key) => {
+      if (
+        typeof obj[key] === 'string' &&
+        obj[key] === '#/components/schemas/Shortcut'
+      ) {
         obj[key] = '#/components/schemas/IndexingShortcut';
       } else if (typeof obj[key] === 'object') {
         replaceReferences(obj[key]);
@@ -50,7 +53,7 @@ export function transformShortcutComponent(spec) {
   };
 
   replaceReferences(spec);
-  
+
   return spec;
 }
 
@@ -67,13 +70,14 @@ export function transformBearerAuthToAPIToken(spec) {
 
   // Rename BearerAuth to APIToken if it exists
   if (spec.components.securitySchemes.BearerAuth) {
-    spec.components.securitySchemes.APIToken = spec.components.securitySchemes.BearerAuth;
+    spec.components.securitySchemes.APIToken =
+      spec.components.securitySchemes.BearerAuth;
     delete spec.components.securitySchemes.BearerAuth;
   }
 
   // Update top-level security requirement
   if (spec.security) {
-    spec.security = spec.security.map(secReq => {
+    spec.security = spec.security.map((secReq) => {
       if (secReq.BearerAuth !== undefined) {
         return { APIToken: secReq.BearerAuth };
       }
@@ -83,11 +87,11 @@ export function transformBearerAuthToAPIToken(spec) {
 
   // Update operation-level security requirements
   if (spec.paths) {
-    Object.keys(spec.paths).forEach(path => {
+    Object.keys(spec.paths).forEach((path) => {
       const pathObj = spec.paths[path];
-      Object.keys(pathObj).forEach(method => {
+      Object.keys(pathObj).forEach((method) => {
         if (typeof pathObj[method] === 'object' && pathObj[method].security) {
-          pathObj[method].security = pathObj[method].security.map(secReq => {
+          pathObj[method].security = pathObj[method].security.map((secReq) => {
             if (secReq.BearerAuth !== undefined) {
               return { APIToken: secReq.BearerAuth };
             }
@@ -102,7 +106,7 @@ export function transformBearerAuthToAPIToken(spec) {
   const replaceInCodeSamples = (obj) => {
     if (!obj || typeof obj !== 'object') return;
 
-    Object.keys(obj).forEach(key => {
+    Object.keys(obj).forEach((key) => {
       // Replace in string values for code samples
       if (typeof obj[key] === 'string') {
         if (obj[key].includes('bearerAuth')) {
@@ -124,15 +128,15 @@ export function transformBearerAuthToAPIToken(spec) {
 
   // Process individual operation code samples
   if (spec.paths) {
-    Object.values(spec.paths).forEach(pathObj => {
-      Object.values(pathObj).forEach(operation => {
+    Object.values(spec.paths).forEach((pathObj) => {
+      Object.values(pathObj).forEach((operation) => {
         if (operation['x-code-samples']) {
           replaceInCodeSamples(operation['x-code-samples']);
         }
       });
     });
   }
-  
+
   return spec;
 }
 
@@ -146,11 +150,9 @@ export function transformActAsBearerTokenToAPIToken(spec) {
     return spec;
   }
 
-
   if (spec.components.securitySchemes?.cookieAuth) {
     delete spec.components.securitySchemes.cookieAuth;
   }
-
 
   const cleanSecurityObject = (secObj) => {
     if (!secObj || typeof secObj !== 'object') return secObj;
@@ -174,15 +176,17 @@ export function transformActAsBearerTokenToAPIToken(spec) {
   }
 
   if (spec.paths) {
-    Object.values(spec.paths).forEach(pathObj => {
-      Object.values(pathObj).forEach(operation => {
+    Object.values(spec.paths).forEach((pathObj) => {
+      Object.values(pathObj).forEach((operation) => {
         if (Array.isArray(operation.security)) {
-          operation.security = operation.security.map(cleanSecurityObject).filter(Boolean);
+          operation.security = operation.security
+            .map(cleanSecurityObject)
+            .filter(Boolean);
         }
       });
     });
   }
-  
+
   return spec;
 }
 
@@ -200,17 +204,18 @@ export function transformServerVariables(spec) {
     if (server.url) {
       server.url = server.url.replace(/{domain}/g, '{instance}');
     }
-    
+
     if (server.variables && server.variables.domain) {
       server.variables.instance = {
         default: 'instance-name',
-        description: 'The instance name (typically the email domain without the TLD) that determines the deployment backend.'
+        description:
+          'The instance name (typically the email domain without the TLD) that determines the deployment backend.',
       };
-      
+
       delete server.variables.domain;
     }
   }
-  
+
   return spec;
 }
 
@@ -222,37 +227,37 @@ export function transformServerVariables(spec) {
  */
 export function transform(content, filename) {
   const spec = yaml.load(content);
-  
+
   if (!spec.servers || spec.servers.length === 0) {
     console.warn('No servers found in the OpenAPI spec');
     return content;
   }
-  
+
   const firstServer = spec.servers[0];
 
   if (!firstServer.url) {
     console.warn('Server URL is missing');
     return content;
   }
-  
+
   const basePath = extractBasePath(firstServer.url);
-  
+
   if (!basePath) {
     console.warn('No base path found in server URL');
     return content;
   }
-  
+
   for (const server of spec.servers) {
     if (server.url) {
       server.url = server.url.replace(basePath, '');
     }
   }
-  
+
   if (spec.paths) {
     const newPaths = {};
     for (const [pathKey, pathValue] of Object.entries(spec.paths)) {
       const normalizedPath = pathKey.startsWith('/') ? pathKey : `/${pathKey}`;
-      
+
       const newPathKey = `${basePath}${normalizedPath}`;
       newPaths[newPathKey] = pathValue;
     }
@@ -263,22 +268,21 @@ export function transform(content, filename) {
   if (filename === 'indexing.yaml') {
     transformShortcutComponent(spec);
   }
-  
+
   // Apply BearerAuth -> APIToken transformation for all files
   transformBearerAuthToAPIToken(spec);
 
-  
   // Apply domain -> instance transformation for all files
   transformServerVariables(spec);
-  
+
   // Apply admin duplicate operationId fix
   if (filename === 'admin_rest.yaml') {
     transformActAsBearerTokenToAPIToken(spec);
   }
-  
+
   return yaml.dump(spec, {
-    lineWidth: -1,  // Preserve line breaks
-    noRefs: true,   // Don't use anchors and aliases
-    quotingType: '"' // Use double quotes for strings
+    lineWidth: -1, // Preserve line breaks
+    noRefs: true, // Don't use anchors and aliases
+    quotingType: '"', // Use double quotes for strings
   });
 }

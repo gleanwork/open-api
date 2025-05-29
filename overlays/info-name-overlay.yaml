@@ -9,8 +9,8 @@ info:
 actions:
   - target: $["info"]
     update:
-      title: "Glean API"
-      x-speakeasy-name: "Glean API"
+      title: 'Glean API'
+      x-speakeasy-name: 'Glean API'
     x-speakeasy-metadata:
       type: info-modification
 
@@ -41,7 +41,7 @@ actions:
   - target: $["info"]
     when:
       - target: $["info"]["title"]
-        equals: "Glean Indexing API"
+        equals: 'Glean Indexing API'
     update:
       description: |
         # Introduction
@@ -50,7 +50,7 @@ actions:
         # Usage guidelines
         This API is evolving fast. Glean will provide advance notice of any planned backwards incompatible changes along
         with a 6-month sunset period for anything that requires developers to adopt the new versions.
-        
+
         # API Clients
         Official API clients for the Glean Indexing API are available in multiple languages:
 

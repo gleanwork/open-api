@@ -10,7 +10,7 @@ actions:
     update:
       application/json:
         schema:
-          $ref: "#/components/schemas/ChatResponse"
+          $ref: '#/components/schemas/ChatResponse'
         examples:
           defaultExample:
             value:
@@ -73,10 +73,10 @@ actions:
                     agent: DEFAULT
                     mode: DEFAULT
                   fragments:
-                    - text: "**Reading:**"
+                    - text: '**Reading:**'
                     - structuredResults:
                         - document:
-                            id: "123"
+                            id: '123'
                             title: Company Handbook
           citationResponse:
             value:
@@ -88,7 +88,7 @@ actions:
                     mode: DEFAULT
                   citations:
                     - sourceDocument:
-                        id: "123"
+                        id: '123'
                         title: Company Handbook
                         referenceRanges:
                           - textRange:

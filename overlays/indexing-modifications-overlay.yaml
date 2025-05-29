@@ -11,19 +11,16 @@ actions:
       x-speakeasy-name-override: rotateToken
       x-speakeasy-group: indexing.authentication
 
-
   # Datasources
   - target: $["paths"]["/api/index/v1/getdatasourceconfig"]["post"]
     update:
       x-speakeasy-name-override: retrieveConfig
       x-speakeasy-group: indexing.datasources
 
-
   - target: $["paths"]["/api/index/v1/adddatasource"]["post"]
     update:
       x-speakeasy-name-override: add
       x-speakeasy-group: indexing.datasources
-
 
   # Documents
   - target: $["paths"]["/api/index/v1/deletedocument"]["post"]
@@ -31,30 +28,25 @@ actions:
       x-speakeasy-name-override: delete
       x-speakeasy-group: indexing.documents
 
-
   - target: $["paths"]["/api/index/v1/bulkindexdocuments"]["post"]
     update:
       x-speakeasy-name-override: bulkIndex
       x-speakeasy-group: indexing.documents
-
 
   - target: $["paths"]["/api/index/v1/bulkindexemployees"]["post"]
     update:
       x-speakeasy-name-override: bulkIndex
       x-speakeasy-group: indexing.people
 
-
   - target: $["paths"]["/api/index/v1/processalldocuments"]["post"]
     update:
       x-speakeasy-name-override: processAll
       x-speakeasy-group: indexing.documents
 
-
   - target: $["paths"]["/api/index/v1/indexdocument"]["post"]
     update:
       x-speakeasy-name-override: addOrUpdate
       x-speakeasy-group: indexing.documents
-
 
   - target: $["paths"]["/api/index/v1/indexdocuments"]["post"]
     update:
@@ -67,7 +59,6 @@ actions:
       x-speakeasy-name-override: bulkIndexTeams
       x-speakeasy-group: indexing.people
 
-
   - target: $["paths"]["/api/index/v1/indexemployeelist"]["post"]
     remove: true
 
@@ -76,30 +67,25 @@ actions:
       x-speakeasy-name-override: index
       x-speakeasy-group: indexing.people
 
-
   - target: $["paths"]["/api/index/v1/deleteemployee"]["post"]
     update:
       x-speakeasy-name-override: delete
       x-speakeasy-group: indexing.people
-
 
   - target: $["paths"]["/api/index/v1/indexteam"]["post"]
     update:
       x-speakeasy-name-override: indexTeam
       x-speakeasy-group: indexing.people
 
-
   - target: $["paths"]["/api/index/v1/processallemployeesandteams"]["post"]
     update:
       x-speakeasy-name-override: processAllEmployeesAndTeams
       x-speakeasy-group: indexing.people
 
-
   - target: $["paths"]["/api/index/v1/deleteteam"]["post"]
     update:
       x-speakeasy-name-override: deleteTeam
       x-speakeasy-group: indexing.people
-
 
   # Permissions
   - target: $["paths"]["/api/index/v1/processallmemberships"]["post"]
@@ -107,72 +93,60 @@ actions:
       x-speakeasy-name-override: processMemberships
       x-speakeasy-group: indexing.permissions
 
-
   - target: $["paths"]["/api/index/v1/bulkindexusers"]["post"]
     update:
       x-speakeasy-name-override: bulkIndexUsers
       x-speakeasy-group: indexing.permissions
-
 
   - target: $["paths"]["/api/index/v1/updatepermissions"]["post"]
     update:
       x-speakeasy-name-override: updatePermissions
       x-speakeasy-group: indexing.permissions
 
-
   - target: $["paths"]["/api/index/v1/bulkindexgroups"]["post"]
     update:
       x-speakeasy-name-override: bulkIndexGroups
       x-speakeasy-group: indexing.permissions
-
 
   - target: $["paths"]["/api/index/v1/bulkindexmemberships"]["post"]
     update:
       x-speakeasy-name-override: bulkIndexMemberships
       x-speakeasy-group: indexing.permissions
 
-
   - target: $["paths"]["/api/index/v1/betausers"]["post"]
     update:
       x-speakeasy-name-override: authorizeBetaUsers
       x-speakeasy-group: indexing.permissions
-
 
   - target: $["paths"]["/api/index/v1/indexgroup"]["post"]
     update:
       x-speakeasy-name-override: indexGroup
       x-speakeasy-group: indexing.permissions
 
-
   - target: $["paths"]["/api/index/v1/indexuser"]["post"]
     update:
       x-speakeasy-name-override: indexUser
       x-speakeasy-group: indexing.permissions
-
 
   - target: $["paths"]["/api/index/v1/indexmembership"]["post"]
     update:
       x-speakeasy-name-override: indexMembership
       x-speakeasy-group: indexing.permissions
 
-
   - target: $["paths"]["/api/index/v1/deletegroup"]["post"]
     update:
       x-speakeasy-name-override: deleteGroup
       x-speakeasy-group: indexing.permissions
-
 
   - target: $["paths"]["/api/index/v1/deleteuser"]["post"]
     update:
       x-speakeasy-name-override: deleteUser
       x-speakeasy-group: indexing.permissions
 
-
   - target: $["paths"]["/api/index/v1/deletemembership"]["post"]
     update:
       x-speakeasy-name-override: deleteMembership
       x-speakeasy-group: indexing.permissions
-
 
   # Shortcuts
   - target: $["paths"]["/api/index/v1/bulkindexshortcuts"]["post"]
@@ -180,12 +154,10 @@ actions:
       x-speakeasy-name-override: bulkIndex
       x-speakeasy-group: indexing.shortcuts
 
-
   - target: $["paths"]["/api/index/v1/uploadshortcuts"]["post"]
     update:
       x-speakeasy-name-override: upload
       x-speakeasy-group: indexing.shortcuts
-
 
   # Troubleshooting
   - target: $["paths"]["/api/index/v1/checkdocumentaccess"]["post"]
@@ -193,42 +165,35 @@ actions:
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: checkAccess
 
-
   - target: $["paths"]["/api/index/v1/getdocumentcount"]["post"]
     update:
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: count
-
 
   - target: $["paths"]["/api/index/v1/debug/{datasource}/documents"]["post"]
     update:
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: debugMany
 
-
   - target: $["paths"]["/api/index/v1/getdocumentstatus"]["post"]
     update:
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: status
-
 
   - target: $["paths"]["/api/index/v1/getusercount"]["post"]
     update:
       x-speakeasy-name-override: count
       x-speakeasy-group: indexing.people
 
-
   - target: $["paths"]["/api/index/v1/debug/{datasource}/status"]["post"]
     update:
       x-speakeasy-name-override: status
       x-speakeasy-group: indexing.datasource
 
-
   - target: $["paths"]["/api/index/v1/debug/{datasource}/document"]["post"]
     update:
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: debug
-
 
   - target: $["paths"]["/api/index/v1/debug/{datasource}/user"]["post"]
     update:

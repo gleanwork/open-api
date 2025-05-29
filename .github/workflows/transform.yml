@@ -15,7 +15,7 @@ permissions:
 jobs:
   transform:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -42,14 +42,14 @@ jobs:
         env:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
 
-      # We intentionally skip uploading the spec to the Speakeasy registry since 
+      # We intentionally skip uploading the spec to the Speakeasy registry since
       # we're only using them for code sample generation.
       - name: Generate Client API specs for code sample generation
         run: speakeasy run -s glean-client-api-specs --skip-upload-spec
         env:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
 
-      # We intentionally skip uploading the spec to the Speakeasy registry since 
+      # We intentionally skip uploading the spec to the Speakeasy registry since
       # we're only using them for code sample generation.
       - name: Generate Indexing API specs for code sample generation
         run: speakeasy run -s glean-indexing-api-specs --skip-upload-spec
@@ -62,6 +62,6 @@ jobs:
       - name: Commit changes
         uses: ./.github/actions/git-commit
         with:
-          commit_message: "Update OpenAPI specs"
-          file_patterns: "generated_specs/* .speakeasy/* overlayed_specs/*"
+          commit_message: 'Update OpenAPI specs'
+          file_patterns: 'generated_specs/* .speakeasy/* overlayed_specs/*'
           github_token: ${{ secrets.GITHUB_TOKEN }}

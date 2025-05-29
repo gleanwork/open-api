@@ -7,11 +7,7 @@ const SOURCE_DIR = 'source_specs';
 const OUTPUT_DIR = 'generated_specs';
 
 // Specification files
-const SPEC_FILES = [
-  'client_rest.yaml',
-  'indexing.yaml',
-  'admin_rest.yaml'
-];
+const SPEC_FILES = ['client_rest.yaml', 'indexing.yaml', 'admin_rest.yaml'];
 
 async function ensureDirectoryExists(directory) {
   if (!fs.existsSync(directory)) {
@@ -32,22 +28,22 @@ export async function readYamlFromFile(filePath) {
 export async function run() {
   try {
     await ensureDirectoryExists(OUTPUT_DIR);
-    
+
     for (const specFile of SPEC_FILES) {
       const sourceFilePath = path.join(SOURCE_DIR, specFile);
       const outputFilePath = path.join(OUTPUT_DIR, specFile);
-      
+
       console.log(`Processing ${sourceFilePath}`);
-      
+
       const yamlContent = await readYamlFromFile(sourceFilePath);
-      
+
       const transformedYaml = transform(yamlContent, specFile);
-      
+
       fs.writeFileSync(outputFilePath, transformedYaml, 'utf8');
-      
+
       console.log(`Saved transformed YAML to ${outputFilePath}`);
     }
-    
+
     console.log('OpenAPI specs transformation completed');
   } catch (error) {
     console.error(`Transformation failed: ${error.message}`);

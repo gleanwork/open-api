@@ -6,21 +6,21 @@ Preprocesses our OpenAPI specs to prepare them for generation via Speakeasy (our
 
 This repository manages several types of OpenAPI specifications in different directories:
 
-| Directory | Purpose |
-|-----------|---------|
-| `source_specs/` | Original OpenAPI specification files provided as input to the transformation process. These are the source of truth for our API definitions. |
-| `generated_specs/` | Transformed OpenAPI specs with server URL subpaths moved to individual API paths. These files are consumed by Speakeasy to generate client libraries. |
-| `overlayed_specs/` | Specs with various overlays applied (see Overlays section below). The overlays add additional metadata or modifications needed for specific purposes. |
-| `merged_code_samples_specs/` | Specs with code samples merged from multiple sources. These enhanced specs provide examples for documentation and developer usage. |
+| Directory                    | Purpose                                                                                                                                               |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `source_specs/`              | Original OpenAPI specification files provided as input to the transformation process. These are the source of truth for our API definitions.          |
+| `generated_specs/`           | Transformed OpenAPI specs with server URL subpaths moved to individual API paths. These files are consumed by Speakeasy to generate client libraries. |
+| `overlayed_specs/`           | Specs with various overlays applied (see Overlays section below). The overlays add additional metadata or modifications needed for specific purposes. |
+| `merged_code_samples_specs/` | Specs with code samples merged from multiple sources. These enhanced specs provide examples for documentation and developer usage.                    |
 
 ## Overlays
 
 The `overlays` directory contains OpenAPI Specification overlay files used to modify the base specs:
 
-| File | Description |
-|------|-------------|
-| `info-name-overlay.yaml` | Modifies the API title and adds Speakeasy naming metadata to improve SDK generation. |
-| `strip-headers-overlay.yaml` | Removes specific authentication headers from the API specification that shouldn't be exposed in the generated SDKs. |
+| File                                   | Description                                                                                                                              |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `info-name-overlay.yaml`               | Modifies the API title and adds Speakeasy naming metadata to improve SDK generation.                                                     |
+| `strip-headers-overlay.yaml`           | Removes specific authentication headers from the API specification that shouldn't be exposed in the generated SDKs.                      |
 | `speakeasy-modifications-overlay.yaml` | Contains extensive Speakeasy-specific modifications to improve SDK generation, including method name overrides and grouping information. |
 
 These overlay files use the OpenAPI Specification Overlay format (RFC9535) to apply targeted modifications to the base specs without changing the original files. Speakeasy uses these overlays during the SDK generation process.
@@ -29,10 +29,10 @@ These overlay files use the OpenAPI Specification Overlay format (RFC9535) to ap
 
 The `merged_code_samples_specs` directory contains OpenAPI specifications with embedded code samples:
 
-| File | Description |
-|------|-------------|
-| `glean-client-merged-code-samples-spec.yaml` | Client API specification enhanced with code samples in multiple programming languages. Used for documentation and SDK generation. |
-| `glean-index-merged-code-samples-spec.yaml` | Indexing API specification enhanced with code samples in multiple programming languages. Used for documentation and SDK generation. |
+| File                                         | Description                                                                                                                         |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `glean-client-merged-code-samples-spec.yaml` | Client API specification enhanced with code samples in multiple programming languages. Used for documentation and SDK generation.   |
+| `glean-index-merged-code-samples-spec.yaml`  | Indexing API specification enhanced with code samples in multiple programming languages. Used for documentation and SDK generation. |
 
 These files are generated by Speakeasy after external repositories have run their workflows and uploaded code samples to the Speakeasy registry. They provide developers with working code examples for each API endpoint.
 
@@ -40,9 +40,9 @@ These files are generated by Speakeasy after external repositories have run thei
 
 The `overlayed_specs` directory contains merged OpenAPI specifications that combine multiple API definitions:
 
-| File | Description |
-|------|-------------|
-| `glean-merged-spec.yaml` | A comprehensive merged spec containing both the Client and Indexing APIs in a single document. This provides a unified view of all Glean APIs and includes Speakeasy-specific extensions (x-speakeasy-*) for code generation. |
+| File                     | Description                                                                                                                                                                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `glean-merged-spec.yaml` | A comprehensive merged spec containing both the Client and Indexing APIs in a single document. This provides a unified view of all Glean APIs and includes Speakeasy-specific extensions (x-speakeasy-\*) for code generation. |
 
 These merged specs are used for generating consistent client libraries across multiple APIs and provide a single source of documentation.
 
@@ -68,7 +68,7 @@ flowchart TD
 
     %% External repos - arranged in a 2x2 grid for clarity
     api_python["api-client-python"]:::ext
-    api_typescript["api-client-typescript"]:::ext  
+    api_typescript["api-client-typescript"]:::ext
     api_go["api-client-go"]:::ext
     api_java["api-client-java"]:::ext
 
@@ -81,11 +81,11 @@ flowchart TD
     %% STAGE 2: External repos process specs
     subgraph Stage2[STAGE 2: Client SDKs]
         overlayed_specs --> api_clients
-        
+
         subgraph api_clients[API Client Repos]
             api_python & api_typescript & api_go & api_java
         end
-        
+
         %% All API clients upload samples to registry
         api_python & api_typescript & api_go & api_java -->|speakeasy run| speakeasy_registry
     end
@@ -112,11 +112,11 @@ flowchart TD
 
 This repository uses several GitHub Actions workflows to process the OpenAPI specifications:
 
-| Workflow | Purpose | Trigger |
-|----------|---------|---------|
-| `transform.yml` | Transforms source specs and runs the `glean-api-specs` Speakeasy source to generate API specs. | Push to main (source_specs changes), schedule, manual |
-| `generate-code-samples.yml` | Runs Speakeasy to generate merged code samples specs. | Manual only |
-| `deploy-pages.yml` | Deploys specs to GitHub Pages. | After generate-code-samples completes, manual |
+| Workflow                    | Purpose                                                                                        | Trigger                                               |
+| --------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `transform.yml`             | Transforms source specs and runs the `glean-api-specs` Speakeasy source to generate API specs. | Push to main (source_specs changes), schedule, manual |
+| `generate-code-samples.yml` | Runs Speakeasy to generate merged code samples specs.                                          | Manual only                                           |
+| `deploy-pages.yml`          | Deploys specs to GitHub Pages.                                                                 | After generate-code-samples completes, manual         |
 
 The processing follows this sequence:
 
