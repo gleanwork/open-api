@@ -24,7 +24,7 @@ actions:
     update:
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: run
-  
+
   - target: $["paths"]["/rest/api/v1/agents/runs/stream"]["post"]
     update:
       x-speakeasy-group: client.agents

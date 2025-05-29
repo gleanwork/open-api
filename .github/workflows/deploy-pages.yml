@@ -2,7 +2,7 @@ name: Deploy Specs to GitHub Pages
 
 on:
   workflow_run:
-    workflows: ["Generate Code Samples"]
+    workflows: ['Generate Code Samples']
     types:
       - completed
     branches:
@@ -15,7 +15,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: 'pages'
   cancel-in-progress: false
 
 jobs:
@@ -25,36 +25,36 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: main
-      
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
-      
+
       - name: Copy spec files to docs directory
         run: |
           # Create directory structure if it doesn't exist
           mkdir -p docs/specs/source docs/specs/merged
-          
+
           # Copy source specs
           cp -R source_specs/*.yaml docs/specs/source/
-          
+
           # Copy merged specs
           cp -R merged_code_samples_specs/*.yaml docs/specs/merged/
-      
+
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
           source: ./docs
           destination: ./_site
-      
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
-      
+
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 
+        uses: actions/deploy-pages@v4

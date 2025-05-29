@@ -10,7 +10,7 @@ actions:
   - target: "$..parameters[?(@['$ref']=='#/components/parameters/xGleanAuthTypeHeader')]"
     remove: true
 
-  - target: "$.components.parameters.xGleanActAsHeader"
+  - target: '$.components.parameters.xGleanActAsHeader'
     remove: true
-  - target: "$.components.parameters.xGleanAuthTypeHeader"
+  - target: '$.components.parameters.xGleanAuthTypeHeader'
     remove: true
