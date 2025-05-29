@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { transform } from './transformer.js';
+import { transform } from './source-spec-transformer.js';
 
 // Source and output directories
 const SOURCE_DIR = 'source_specs';
@@ -25,7 +25,7 @@ export async function readYamlFromFile(filePath) {
   }
 }
 
-export async function run() {
+export async function transformSourceSpecs() {
   try {
     await ensureDirectoryExists(OUTPUT_DIR);
 
@@ -48,6 +48,13 @@ export async function run() {
   } catch (error) {
     console.error(`Transformation failed: ${error.message}`);
     process.exit(1);
+  }
+}
+
+export async function run() {
+  const args = process.argv.slice(2);
+  if (args.includes('--source_specs')) {
+    await transformSourceSpecs();
   }
 }
 

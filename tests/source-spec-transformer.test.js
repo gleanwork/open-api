@@ -8,7 +8,7 @@ import {
   transformShortcutComponent,
   transformBearerAuthToAPIToken,
   transformServerVariables,
-} from '../src/transformer.js';
+} from '../src/source-spec-transformer.js';
 
 function readFixture(filename) {
   const sourceFile = path.join(process.cwd(), 'source_specs', filename);
