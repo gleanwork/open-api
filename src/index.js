@@ -1,4 +1,3 @@
-import * as core from '@actions/core';
 import * as fs from 'fs';
 import * as path from 'path';
 import { transform } from './transformer.js';
@@ -17,7 +16,7 @@ const SPEC_FILES = [
 async function ensureDirectoryExists(directory) {
   if (!fs.existsSync(directory)) {
     fs.mkdirSync(directory, { recursive: true });
-    core.info(`Created directory: ${directory}`);
+    console.log(`Created directory: ${directory}`);
   }
 }
 
@@ -25,7 +24,7 @@ export async function readYamlFromFile(filePath) {
   try {
     return fs.readFileSync(filePath, 'utf8');
   } catch (error) {
-    core.setFailed(`Error reading file ${filePath}: ${error.message}`);
+    console.error(`Error reading file ${filePath}: ${error.message}`);
     throw error;
   }
 }
@@ -38,7 +37,7 @@ export async function run() {
       const sourceFilePath = path.join(SOURCE_DIR, specFile);
       const outputFilePath = path.join(OUTPUT_DIR, specFile);
       
-      core.info(`Processing ${sourceFilePath}`);
+      console.log(`Processing ${sourceFilePath}`);
       
       const yamlContent = await readYamlFromFile(sourceFilePath);
       
@@ -46,12 +45,13 @@ export async function run() {
       
       fs.writeFileSync(outputFilePath, transformedYaml, 'utf8');
       
-      core.info(`Saved transformed YAML to ${outputFilePath}`);
+      console.log(`Saved transformed YAML to ${outputFilePath}`);
     }
     
-    core.info('OpenAPI specs transformation completed');
+    console.log('OpenAPI specs transformation completed');
   } catch (error) {
-    core.setFailed(`Action failed: ${error.message}`);
+    console.error(`Transformation failed: ${error.message}`);
+    process.exit(1);
   }
 }
 
