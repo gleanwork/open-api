@@ -1,37 +1,30 @@
 {
   "name": "open-api",
   "version": "1.0.0",
-  "description": "GitHub Action to transform OpenAPI YAML specifications",
-  "main": "dist/index.js",
+  "description": "Tool to transform OpenAPI YAML specifications",
+  "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "build": "ncc build src/index.js -o dist --source-map",
+    "transform": "node src/index.js",
     "test": "vitest run",
-    "test:all": "pnpm run build && pnpm test",
-    "test:watch": "vitest",
-    "prepare": "pnpm run build"
+    "test:all": "pnpm test",
+    "test:watch": "vitest"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gleanwork/open-api.git"
   },
   "keywords": [
-    "github",
-    "action",
     "openapi",
-    "yaml"
+    "yaml",
+    "transform"
   ],
   "author": "Glean",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.10.1",
-    "@actions/exec": "^1.1.1",
-    "@actions/github": "^5.1.1",
-    "@actions/http-client": "^2.1.1",
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.38.1",
     "vitest": "^1.2.0"
   }
 } 

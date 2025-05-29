@@ -127,13 +127,13 @@ The processing follows this sequence:
 
 ## Transformation Process
 
-The GitHub Action that transforms OpenAPI YAML specification files by:
+The transformation script processes OpenAPI YAML specification files by:
 
-1. Downloading files from specified URLs
+1. Reading files from the `source_specs/` directory
 2. Moving the server URL subpath to each individual API path
 3. Writing the transformed files to the `generated_specs/` directory
 
-This action performs the following transformations:
+This script performs the following transformations:
 
 - **Before**: `servers.url = "https://{domain}-be.glean.com/rest/api/v1"`, `path = "/activity"`
 - **After**: `servers.url = "https://{domain}-be.glean.com/"`, `path = "/rest/api/v1/activity"`
@@ -144,10 +144,15 @@ Transformed files are saved to the `generated_specs/` directory:
 
 - `generated_specs/client_rest.yaml`
 - `generated_specs/indexing.yaml`
+- `generated_specs/admin_rest.yaml`
 
 ## Usage
 
-See usage in the `./github/workflows/transform.yml` workflow.
+To run the transformation:
+
+```bash
+pnpm run transform
+```
 
 ## Development
 
@@ -160,14 +165,14 @@ To set up the development environment:
    pnpm install
    ```
 
-3. Run tests:
+3. Run the transformation:
+
+   ```bash
+   pnpm run transform
+   ```
+
+4. Run tests:
 
    ```bash
    pnpm test
-   ```
-
-4. Build the action:
-
-   ```bash
-   pnpm run build
    ```

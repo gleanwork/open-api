@@ -25,13 +25,3 @@ jobs:
 
       - name: Run tests
         run: pnpm test
-
-      - name: Build
-        run: pnpm run build
-
-      - name: Check build artifacts
-        run: |
-          if [ ! -f "dist/index.js" ]; then
-            echo "Build failed: dist/index.js not found"
-            exit 1
-          fi

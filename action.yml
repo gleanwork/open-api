@@ -1,9 +1,0 @@
-name: 'OpenAPI YAML Transformer'
-description: 'Downloads and transforms OpenAPI YAML specification files'
-author: 'Glean'
-runs:
-  using: 'node20'
-  main: 'dist/index.js'
-branding:
-  icon: 'file-text'
-  color: 'blue' 
