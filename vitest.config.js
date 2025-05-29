@@ -4,6 +4,6 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['tests/**/*.test.js'],
-    globals: true,
+    globals: false,
   },
 });
