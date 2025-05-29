@@ -7,9 +7,9 @@
   "scripts": {
     "build": "ncc build src/index.js -o dist --source-map",
     "test": "vitest run",
-    "test:all": "npm run build && npm test",
+    "test:all": "pnpm run build && pnpm test",
     "test:watch": "vitest",
-    "prepare": "npm run build"
+    "prepare": "pnpm run build"
   },
   "repository": {
     "type": "git",
