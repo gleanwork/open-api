@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'vitest';
+import { beforeEach, describe, test, expect } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import yaml from 'js-yaml';
