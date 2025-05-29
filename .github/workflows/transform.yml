@@ -32,7 +32,7 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Transform OpenAPI spec paths
-        run: pnpm run transform
+        run: pnpm run transform:source_specs
 
       - name: Setup Speakeasy CLI
         uses: ./.github/actions/speakeasy-setup
