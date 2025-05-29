@@ -1,31 +1,31 @@
 {
   "name": "open-api",
   "version": "1.0.0",
+  "private": true,
   "description": "Tool to transform OpenAPI YAML specifications",
-  "main": "src/index.js",
-  "type": "module",
-  "scripts": {
-    "transform": "node src/index.js",
-    "test": "vitest run",
-    "test:all": "pnpm test",
-    "test:watch": "vitest"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gleanwork/open-api.git"
-  },
   "keywords": [
     "openapi",
     "yaml",
     "transform"
   ],
-  "author": "Glean",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gleanwork/open-api.git"
+  },
   "license": "MIT",
+  "author": "Glean",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "vitest run",
+    "test:all": "pnpm test",
+    "test:watch": "vitest",
+    "transform": "node src/index.js"
+  },
   "dependencies": {
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {
     "vitest": "^1.2.0"
-  },
-  "private": true
-} 
+  }
+}
