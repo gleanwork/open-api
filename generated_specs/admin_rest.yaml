@@ -20,7 +20,7 @@ paths:
   /rest/api/v1/governance/data/policies/{id}:
     get:
       description: Fetches the specified policy version, or the latest if no version is provided.
-      summary: Gets specified Policy.
+      summary: Gets specified policy
       operationId: getpolicy
       x-visibility: Public
       tags:
@@ -52,7 +52,7 @@ paths:
           description: Internal error
     post:
       description: Updates an existing policy.
-      summary: Updates an existing policy.
+      summary: Updates an existing policy
       operationId: updatepolicy
       tags:
         - Governance
@@ -83,7 +83,7 @@ paths:
   /rest/api/v1/governance/data/policies:
     get:
       description: Lists policies with filtering.
-      summary: Lists policies.
+      summary: Lists policies
       operationId: listpolicies
       x-visibility: Public
       tags:
@@ -114,7 +114,7 @@ paths:
           description: Internal error
     post:
       description: Creates a new policy with specified specifications and returns its id.
-      summary: Creates new policy.
+      summary: Creates new policy
       operationId: createpolicy
       x-visibility: Public
       tags:
@@ -139,7 +139,7 @@ paths:
   /rest/api/v1/governance/data/policies/{id}/download:
     get:
       description: Downloads CSV violations report for a specific policy id. This does not support continuous policies.
-      summary: Downloads violations CSV for policy.
+      summary: Downloads violations CSV for policy
       operationId: downloadpolicycsv
       x-visibility: Public
       tags:
@@ -166,7 +166,7 @@ paths:
   /rest/api/v1/governance/data/reports:
     post:
       description: Creates a new one-time report and executes its batch job.
-      summary: Creates new one-time report.
+      summary: Creates new one-time report
       operationId: createreport
       x-visibility: Public
       tags:
@@ -191,7 +191,7 @@ paths:
   /rest/api/v1/governance/data/reports/{id}/download:
     get:
       description: Downloads CSV violations report for a specific report id.
-      summary: Downloads violations CSV for report.
+      summary: Downloads violations CSV for report
       operationId: downloadreportcsv
       x-visibility: Public
       tags:
@@ -218,7 +218,7 @@ paths:
   /rest/api/v1/governance/data/reports/{id}/status:
     get:
       description: Fetches the status of the run corresponding to the report-id.
-      summary: Fetches report run status.
+      summary: Fetches report run status
       operationId: getreportstatus
       x-visibility: Public
       tags:
@@ -244,7 +244,7 @@ paths:
   /rest/api/v1/governance/documents/visibilityoverrides:
     get:
       description: Fetches the visibility override status of the documents passed.
-      summary: Fetches documents visibility.
+      summary: Fetches documents visibility
       operationId: getdocvisibility
       x-visibility: Public
       tags:
@@ -270,7 +270,7 @@ paths:
           description: Internal error
     post:
       description: Sets the visibility-override state of the documents specified, effectively hiding or un-hiding documents.
-      summary: Hide/Un-hide docs.
+      summary: Hide or unhide docs
       operationId: setdocvisibility
       x-visibility: Public
       tags:
