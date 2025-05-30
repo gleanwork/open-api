@@ -34,8 +34,8 @@
     <h1>Glean OpenAPI Specifications</h1>
     <h2>Source Specs</h2>
     <ul id="source-specs"></ul>
-    <h2>Merged Code Samples Specs</h2>
-    <ul id="merged-specs"></ul>
+    <h2>Final Specs</h2>
+    <ul id="final-specs"></ul>
 
     <script>
       function listSpecs() {
@@ -44,10 +44,7 @@
           'indexing.yaml',
           'admin_rest.yaml',
         ];
-        const mergedFiles = [
-          'glean-client-merged-code-samples-spec.yaml',
-          'glean-index-merged-code-samples-spec.yaml',
-        ];
+        const finalSpecs = ['client_rest.yaml', 'indexing.yaml'];
 
         const sourceList = document.getElementById('source-specs');
         sourceFiles.forEach((file) => {
@@ -59,11 +56,11 @@
           sourceList.appendChild(li);
         });
 
-        const mergedList = document.getElementById('merged-specs');
-        mergedFiles.forEach((file) => {
+        const mergedList = document.getElementById('final-specs');
+        finalSpecs.forEach((file) => {
           const li = document.createElement('li');
           const a = document.createElement('a');
-          a.href = `specs/merged/${file}`;
+          a.href = `specs/final/${file}`;
           a.textContent = file;
           li.appendChild(a);
           mergedList.appendChild(li);
