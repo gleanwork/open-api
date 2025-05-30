@@ -1,0 +1,568 @@
+openapi: 3.0.0
+info:
+  version: 0.9.0
+  title: Glean API
+  x-speakeasy-name: 'Glean API'
+servers:
+  - url: https://{instance}-be.glean.com
+    variables:
+      instance:
+        default: instance-name
+        description: The instance name (typically the email domain without the TLD) that determines the deployment backend.
+security:
+  - APIToken: []
+paths:
+  /rest/api/v1/chat:
+    post:
+      tags:
+        - Chat
+      summary: Chat
+      description: Have a conversation with Glean AI.
+      operationId: chat
+      x-visibility: Public
+      x-codegen-request-body-name: payload
+      parameters:
+        - $ref: '#/components/parameters/timezoneOffset'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+            examples:
+              defaultExample:
+                value:
+                  messages:
+                    - author: USER
+                      messageType: CONTENT
+                      fragments:
+                        - text: What are the company holidays this year?
+              gptAgentExample:
+                value:
+                  agentConfig:
+                    agent: GPT
+                  messages:
+                    - author: USER
+                      messageType: CONTENT
+                      fragments:
+                        - text: Who was the first person to land on the moon?
+        description: Includes chat history for Glean AI to respond to.
+        required: true
+        x-exportParamName: Request
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+              examples:
+                defaultExample:
+                  value:
+                    messages:
+                      - author: GLEAN_AI
+                        messageType: CONTENT
+                        hasMoreFragments: false
+                        agentConfig:
+                          agent: DEFAULT
+                          mode: DEFAULT
+                        fragments:
+                          - text: There are no holidays!
+                streamingExample:
+                  value:
+                    messages:
+                      - author: GLEAN_AI
+                        messageType: CONTENT
+                        agentConfig:
+                          agent: DEFAULT
+                          mode: DEFAULT
+                          hasMoreFragments: true
+                        fragments: null
+                      - author: GLEAN_AI
+                        messageType: CONTENT
+                        agentConfig:
+                          agent: DEFAULT
+                          mode: DEFAULT
+                          hasMoreFragments: true
+                        fragments: null
+                      - author: GLEAN_AI
+                        messageType: CONTENT
+                        agentConfig:
+                          agent: DEFAULT
+                          mode: DEFAULT
+                          hasMoreFragments: true
+                        fragments:
+                          - text: e are
+                      - author: GLEAN_AI
+                        messageType: CONTENT
+                        agentConfig:
+                          agent: DEFAULT
+                          mode: DEFAULT
+                          hasMoreFragments: true
+                        fragments:
+                          - text: no hol
+                      - author: GLEAN_AI
+                        messageType: CONTENT
+                        agentConfig:
+                          agent: DEFAULT
+                          mode: DEFAULT
+                          hasMoreFragments: false
+                        fragments:
+                          - text: idays!
+                updateResponse:
+                  value:
+                    messages:
+                      - author: GLEAN_AI
+                        messageType: UPDATE
+                        agentConfig:
+                          agent: DEFAULT
+                          mode: DEFAULT
+                        fragments:
+                          - text: '**Reading:**'
+                          - structuredResults:
+                              - document:
+                                  id: '123'
+                                  title: Company Handbook
+                citationResponse:
+                  value:
+                    messages:
+                      - author: GLEAN_AI
+                        messageType: CONTENT
+                        agentConfig:
+                          agent: DEFAULT
+                          mode: DEFAULT
+                        citations:
+                          - sourceDocument:
+                              id: '123'
+                              title: Company Handbook
+                              referenceRanges:
+                                - textRange:
+                                    startIndex: 0
+                                    endIndex: 12
+                                    type: CITATION
+        '400':
+          description: Invalid request
+        '401':
+          description: Not Authorized
+        '408':
+          description: Request Timeout
+        '429':
+          description: Too Many Requests
+      x-speakeasy-group: client.chat
+      x-speakeasy-name-override: create
+      x-speakeasy-usage-example: true
+      x-codeSamples:
+        - lang: python
+          label: Python (API Client)
+          source: |-
+            from glean import Glean, models
+            import os
+
+
+            with Glean(
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
+            ) as g_client:
+
+                res = g_client.client.chat.create(messages=[
+                    {
+                        "fragments": [
+                            models.ChatMessageFragment(
+                                text="What are the company holidays this year?",
+                            ),
+                        ],
+                    },
+                ], timeout_millis=30000)
+
+                # Handle response
+                print(res)
+        - lang: typescript
+          label: Typescript (API Client)
+          source: |-
+            import { Glean } from "@gleanwork/api-client";
+
+            const glean = new Glean({
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+            });
+
+            async function run() {
+              const result = await glean.client.chat.create({
+                messages: [
+                  {
+                    fragments: [
+                      {
+                        text: "What are the company holidays this year?",
+                      },
+                    ],
+                  },
+                ],
+              });
+
+              // Handle the result
+              console.log(result);
+            }
+
+            run();
+        - lang: go
+          label: Go (API Client)
+          source: |-
+            package main
+
+            import(
+            	"context"
+            	"os"
+            	apiclientgo "github.com/gleanwork/api-client-go"
+            	"github.com/gleanwork/api-client-go/models/components"
+            	"log"
+            )
+
+            func main() {
+                ctx := context.Background()
+
+                s := apiclientgo.New(
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
+                )
+
+                res, err := s.Client.Chat.Create(ctx, components.ChatRequest{
+                    Messages: []components.ChatMessage{
+                        components.ChatMessage{
+                            Fragments: []components.ChatMessageFragment{
+                                components.ChatMessageFragment{
+                                    Text: apiclientgo.String("What are the company holidays this year?"),
+                                },
+                            },
+                        },
+                    },
+                }, nil)
+                if err != nil {
+                    log.Fatal(err)
+                }
+                if res.ChatResponse != nil {
+                    // handle response
+                }
+            }
+        - lang: java
+          label: Java (API Client)
+          source: |-
+            package hello.world;
+
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.*;
+            import com.glean.api_client.glean_api_client.models.operations.ChatResponse;
+            import java.lang.Exception;
+            import java.util.List;
+
+            public class Application {
+
+                public static void main(String[] args) throws Exception {
+
+                    Glean sdk = Glean.builder()
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                        .build();
+
+                    ChatResponse res = sdk.client().chat().create()
+                            .chatRequest(ChatRequest.builder()
+                                .messages(List.of(
+                                    ChatMessage.builder()
+                                        .fragments(List.of(
+                                            ChatMessageFragment.builder()
+                                                .text("What are the company holidays this year?")
+                                                .build()))
+                                        .build()))
+                                .build())
+                            .call();
+
+                    if (res.chatResponse().isPresent()) {
+                        // handle response
+                    }
+                }
+            }
+  /rest/api/v1/search:
+    post:
+      tags:
+        - Search
+      summary: Search
+      description: Retrieve results from the index for the given query and filters.
+      operationId: search
+      x-visibility: Public
+      x-codegen-request-body-name: payload
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+        description: Search request
+        required: true
+        x-exportParamName: Request
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '400':
+          description: Invalid request
+        '401':
+          description: Not Authorized
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorInfo'
+        '408':
+          description: Request Timeout
+        '422':
+          description: Invalid Query
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorInfo'
+        '429':
+          description: Too Many Requests
+      x-speakeasy-group: client.search
+      x-speakeasy-name-override: query
+      x-codeSamples:
+        - lang: python
+          label: Python (API Client)
+          source: |-
+            from glean import Glean, models
+            from glean.utils import parse_datetime
+            import os
+
+
+            with Glean(
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
+            ) as g_client:
+
+                res = g_client.client.search.query(query="vacation policy", tracking_token="trackingToken", source_document=models.Document(
+                    container_document=models.Document(
+                        parent_document=models.Document(
+                            metadata=models.DocumentMetadata(
+                                datasource="datasource",
+                                object_type="Feature Request",
+                                container="container",
+                                parent_id="JIRA_EN-1337",
+                                mime_type="mimeType",
+                                document_id="documentId",
+                                create_time=parse_datetime("2000-01-23T04:56:07.000Z"),
+                                update_time=parse_datetime("2000-01-23T04:56:07.000Z"),
+                                author=models.Person(
+                                    name="name",
+                                    obfuscated_id="<id>",
+                                ),
+                                components=[
+                                    "Backend",
+                                    "Networking",
+                                ],
+                                status="[\"Done\"]",
+                                custom_data={
+                                    "someCustomField": models.CustomDataValue(),
+                                },
+                            ),
+                        ),
+                    ),
+                ), page_size=10, max_snippet_size=400, input_details={
+                    "has_copy_paste": True,
+                }, request_options=models.SearchRequestOptions(
+                    facet_filters=[
+                        models.FacetFilter(
+                            field_name="type",
+                            values=[
+                                models.FacetFilterValue(
+                                    value="article",
+                                    relation_type=models.RelationType.EQUALS,
+                                ),
+                                models.FacetFilterValue(
+                                    value="document",
+                                    relation_type=models.RelationType.EQUALS,
+                                ),
+                            ],
+                        ),
+                        models.FacetFilter(
+                            field_name="department",
+                            values=[
+                                models.FacetFilterValue(
+                                    value="engineering",
+                                    relation_type=models.RelationType.EQUALS,
+                                ),
+                            ],
+                        ),
+                    ],
+                    facet_bucket_size=939520,
+                ), timeout_millis=5000, people=[
+                    models.Person(
+                        name="George Clooney",
+                        obfuscated_id="abc123",
+                    ),
+                ])
+
+                # Handle response
+                print(res)
+        - lang: typescript
+          label: Typescript (API Client)
+          source: |-
+            import { Glean } from "@gleanwork/api-client";
+
+            const glean = new Glean({
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+            });
+
+            async function run() {
+              const result = await glean.client.search.query({
+                trackingToken: "trackingToken",
+                pageSize: 10,
+                query: "vacation policy",
+                requestOptions: {
+                  facetFilters: [
+                    {
+                      fieldName: "type",
+                      values: [
+                        {
+                          value: "article",
+                          relationType: "EQUALS",
+                        },
+                        {
+                          value: "document",
+                          relationType: "EQUALS",
+                        },
+                      ],
+                    },
+                    {
+                      fieldName: "department",
+                      values: [
+                        {
+                          value: "engineering",
+                          relationType: "EQUALS",
+                        },
+                      ],
+                    },
+                  ],
+                  facetBucketSize: 939520,
+                },
+              });
+
+              // Handle the result
+              console.log(result);
+            }
+
+            run();
+        - lang: go
+          label: Go (API Client)
+          source: |-
+            package main
+
+            import(
+            	"context"
+            	"os"
+            	apiclientgo "github.com/gleanwork/api-client-go"
+            	"github.com/gleanwork/api-client-go/types"
+            	"github.com/gleanwork/api-client-go/models/components"
+            	"log"
+            )
+
+            func main() {
+                ctx := context.Background()
+
+                s := apiclientgo.New(
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
+                )
+
+                res, err := s.Client.Search.Query(ctx, components.SearchRequest{
+                    TrackingToken: apiclientgo.String("trackingToken"),
+                    PageSize: apiclientgo.Int64(10),
+                    Query: "vacation policy",
+                    RequestOptions: &components.SearchRequestOptions{
+                        FacetFilters: []components.FacetFilter{
+                            components.FacetFilter{
+                                FieldName: apiclientgo.String("type"),
+                                Values: []components.FacetFilterValue{
+                                    components.FacetFilterValue{
+                                        Value: apiclientgo.String("article"),
+                                        RelationType: components.RelationTypeEquals.ToPointer(),
+                                    },
+                                    components.FacetFilterValue{
+                                        Value: apiclientgo.String("document"),
+                                        RelationType: components.RelationTypeEquals.ToPointer(),
+                                    },
+                                },
+                            },
+                            components.FacetFilter{
+                                FieldName: apiclientgo.String("department"),
+                                Values: []components.FacetFilterValue{
+                                    components.FacetFilterValue{
+                                        Value: apiclientgo.String("engineering"),
+                                        RelationType: components.RelationTypeEquals.ToPointer(),
+                                    },
+                                },
+                            },
+                        },
+                        FacetBucketSize: 939520,
+                    },
+                })
+                if err != nil {
+                    log.Fatal(err)
+                }
+                if res.SearchResponse != nil {
+                    // handle response
+                }
+            }
+        - lang: java
+          label: Java (API Client)
+          source: |-
+            package hello.world;
+
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.*;
+            import com.glean.api_client.glean_api_client.models.errors.GleanDataError;
+            import com.glean.api_client.glean_api_client.models.operations.SearchResponse;
+            import java.lang.Exception;
+            import java.util.List;
+
+            public class Application {
+
+                public static void main(String[] args) throws GleanDataError, Exception {
+
+                    Glean sdk = Glean.builder()
+                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                        .build();
+
+                    SearchRequest req = SearchRequest.builder()
+                            .query("vacation policy")
+                            .trackingToken("trackingToken")
+                            .pageSize(10L)
+                            .requestOptions(SearchRequestOptions.builder()
+                                .facetBucketSize(939520L)
+                                .facetFilters(List.of(
+                                    FacetFilter.builder()
+                                        .fieldName("type")
+                                        .values(List.of(
+                                            FacetFilterValue.builder()
+                                                .value("article")
+                                                .relationType(RelationType.EQUALS)
+                                                .build(),
+                                            FacetFilterValue.builder()
+                                                .value("document")
+                                                .relationType(RelationType.EQUALS)
+                                                .build()))
+                                        .build(),
+                                    FacetFilter.builder()
+                                        .fieldName("department")
+                                        .values(List.of(
+                                            FacetFilterValue.builder()
+                                                .value("engineering")
+                                                .relationType(RelationType.EQUALS)
+                                                .build()))
+                                        .build()))
+                                .build())
+                            .build();
+
+                    SearchResponse res = sdk.client().search().query()
+                            .request(req)
+                            .call();
+
+                    if (res.searchResponse().isPresent()) {
+                        // handle response
+                    }
+                }
+            }

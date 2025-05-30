@@ -22,7 +22,8 @@
     "test": "vitest run",
     "test:all": "pnpm test",
     "test:watch": "vitest",
-    "transform:source_specs": "node src/index.js --source_specs"
+    "transform:source_specs": "node src/index.js --source_specs",
+    "transform:merged_code_samples_specs": "node src/index.js --merged_code_samples_specs"
   },
   "dependencies": {
     "js-yaml": "^4.1.0"

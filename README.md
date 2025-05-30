@@ -6,13 +6,14 @@ Preprocesses our OpenAPI specs to prepare them for generation via Speakeasy (our
 
 This repository manages several types of OpenAPI specifications in different directories:
 
-| Directory                    | Purpose                                                                                                                                                                                                                                            |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `source_specs/`              | Original OpenAPI specification files provided as input to the transformation process. These are the source of truth for our API definitions.                                                                                                       |
-| `generated_specs/`           | Transformed OpenAPI specs with server URL subpaths moved to individual API paths. These files are consumed by Speakeasy to generate client libraries.                                                                                              |
-| `overlayed_specs/`           | Specs with various overlays applied (see Overlays section below). The overlays add additional metadata or modifications needed for specific purposes.                                                                                              |
-| `merged_code_samples_specs/` | Specs with code samples merged from multiple sources. These enhanced specs provide examples for documentation and developer usage.                                                                                                                 |
-| `final_specs/`               | Final, fully proccessed OpenAPI specifications that combine code samples from multiple sources that have been post-processed for correctness. These files are consumed by the gh-pages site and ultimately make their way to developers.glean.com. |
+| Directory                      | Purpose                                                                                                                                                                                                                                            |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `source_specs/`                | Original OpenAPI specification files provided as input to the transformation process. These are the source of truth for our API definitions.                                                                                                       |
+| `generated_specs/`             | Transformed OpenAPI specs with server URL subpaths moved to individual API paths. These files are consumed by Speakeasy to generate client libraries.                                                                                              |
+| `overlayed_specs/`             | Specs with various overlays applied (see Overlays section below). The overlays add additional metadata or modifications needed for specific purposes.                                                                                              |
+| `merged_code_samples_specs/`   | Specs with code samples merged from multiple sources. These enhanced specs provide examples for documentation and developer usage.                                                                                                                 |
+| `modified_code_samples_specs/` | Specs with code samples post processed (correcting issues with the generated code samples).                                                                                                                                                        |
+| `final_specs/`                 | Final, fully proccessed OpenAPI specifications that combine code samples from multiple sources that have been post-processed for correctness. These files are consumed by the gh-pages site and ultimately make their way to developers.glean.com. |
 
 ## Overlays
 
@@ -46,6 +47,10 @@ The `overlayed_specs` directory contains merged OpenAPI specifications that comb
 | `glean-merged-spec.yaml` | A comprehensive merged spec containing both the Client and Indexing APIs in a single document. This provides a unified view of all Glean APIs and includes Speakeasy-specific extensions (x-speakeasy-\*) for code generation. |
 
 These merged specs are used for generating consistent client libraries across multiple APIs and provide a single source of documentation.
+
+## Modified Code Samples Specs
+
+This takes the specs from `merged_code_samples_specs` and runs `pnpm transform:merged_code_samples_specs` to correct issues with the generated code samples. This is done in the `.github/workflows/generate-code-samples.yml` GHA workflow.
 
 ## Final Specs
 

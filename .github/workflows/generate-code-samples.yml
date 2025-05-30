@@ -38,9 +38,12 @@ jobs:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
 
       - name: Running code sample transformers
+        run: pnpm transform:merged_code_samples_specs
+
+      - name: Copy specs into final_specs
         run: |
-          cp -r ./merged_code_samples_specs/glean-client-merged-code-samples-spec.yaml ./final_specs/client_rest.yaml
-          cp -r ./merged_code_samples_specs/glean-index-merged-code-samples-spec.yaml ./final_specs/indexing.yaml
+          cp -r ./modified_code_samples_specs/client_rest.yaml ./final_specs/client_rest.yaml
+          cp -r ./modified_code_samples_specs/indexing.yaml ./final_specs/indexing.yaml
 
       - name: Commit changes
         uses: ./.github/actions/git-commit
