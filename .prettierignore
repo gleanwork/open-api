@@ -10,6 +10,9 @@ pnpm-lock.yaml
 /overlayed_specs/
 /merged_code_samples_specs/
 
+# Speakeasy managed files
+/.speakeasy/
+
 # Build artifacts
 dist/
 build/
