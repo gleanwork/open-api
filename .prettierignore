@@ -9,6 +9,7 @@ pnpm-lock.yaml
 /generated_specs/
 /overlayed_specs/
 /merged_code_samples_specs/
+/final_specs/
 
 # Speakeasy managed files
 /.speakeasy/

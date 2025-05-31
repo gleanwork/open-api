@@ -43,8 +43,13 @@ jobs:
           # Copy source specs
           cp -R source_specs/*.yaml docs/specs/source/
 
-          # Copy merged specs
-          cp -R merged_code_samples_specs/*.yaml docs/specs/merged/
+          # NOTE: Copying this into `docs/specs/merged` (to avoid race
+          # condition with gleanwork/glean-developer-site PR to change to use
+          # `docs/specs/final` instead)
+          cp -R merged_code_samples_specs/*.yaml docs/specs/merged/ 
+
+          # Copy final processed specs
+          cp -R final_specs/*.yaml docs/specs/final/
 
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
