@@ -1,13 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { transform } from './source-spec-transformer.js';
-
-// Source and output directories
-const SOURCE_DIR = 'source_specs';
-const OUTPUT_DIR = 'generated_specs';
-
-// Specification files
-const SPEC_FILES = ['client_rest.yaml', 'indexing.yaml', 'admin_rest.yaml'];
+import * as sourceSpecTransformer from './source-spec-transformer.js';
+import * as codeSamplesTransformer from './code-sample-transformer.js';
 
 async function ensureDirectoryExists(directory) {
   if (!fs.existsSync(directory)) {
@@ -25,19 +19,88 @@ export async function readYamlFromFile(filePath) {
   }
 }
 
-export async function transformSourceSpecs() {
+function getYamlFiles(directory) {
   try {
-    await ensureDirectoryExists(OUTPUT_DIR);
+    const files = fs.readdirSync(directory);
+    return files.filter(
+      (file) => file.endsWith('.yaml') || file.endsWith('.yml'),
+    );
+  } catch (error) {
+    console.error(`Error reading directory ${directory}: ${error.message}`);
+    throw error;
+  }
+}
 
-    for (const specFile of SPEC_FILES) {
-      const sourceFilePath = path.join(SOURCE_DIR, specFile);
-      const outputFilePath = path.join(OUTPUT_DIR, specFile);
+export async function transformSourceSpecs() {
+  const sourceDir = 'source_specs';
+  const outputDir = 'generated_specs';
+
+  try {
+    const specFiles = getYamlFiles(sourceDir);
+
+    if (specFiles.length === 0) {
+      console.log(`No YAML files found in ${sourceDir}`);
+      return;
+    }
+
+    await ensureDirectoryExists(outputDir);
+
+    for (const specFile of specFiles) {
+      const sourceFilePath = path.join(sourceDir, specFile);
+      const outputFilePath = path.join(outputDir, specFile);
 
       console.log(`Processing ${sourceFilePath}`);
 
       const yamlContent = await readYamlFromFile(sourceFilePath);
 
-      const transformedYaml = transform(yamlContent, specFile);
+      const transformedYaml = sourceSpecTransformer.transform(
+        yamlContent,
+        specFile,
+      );
+
+      fs.writeFileSync(outputFilePath, transformedYaml, 'utf8');
+
+      console.log(`Saved transformed YAML to ${outputFilePath}`);
+    }
+
+    console.log('OpenAPI specs transformation completed');
+  } catch (error) {
+    console.error(`Transformation failed: ${error.message}`);
+    process.exit(1);
+  }
+}
+
+export async function transformMergedCodeSamplesSpecs() {
+  const sourceDir = 'merged_code_samples_specs';
+  const outputDir = 'modified_code_samples_specs';
+
+  try {
+    const specFiles = getYamlFiles(sourceDir);
+
+    if (specFiles.length === 0) {
+      console.log(`No YAML files found in ${sourceDir}`);
+      return;
+    }
+
+    await ensureDirectoryExists(outputDir);
+
+    for (const specFile of specFiles) {
+      const sourceFilePath = path.join(sourceDir, specFile);
+      const outputFileName = specFile.includes('client')
+        ? 'client_rest.yaml'
+        : specFile.includes('index')
+          ? 'indexing.yaml'
+          : path.join(outputDir, specFile);
+      const outputFilePath = path.join(outputDir, outputFileName);
+
+      console.log(`Processing ${sourceFilePath}`);
+
+      const yamlContent = await readYamlFromFile(sourceFilePath);
+
+      const transformedYaml = codeSamplesTransformer.transform(
+        yamlContent,
+        specFile,
+      );
 
       fs.writeFileSync(outputFilePath, transformedYaml, 'utf8');
 
@@ -55,6 +118,8 @@ export async function run() {
   const args = process.argv.slice(2);
   if (args.includes('--source_specs')) {
     await transformSourceSpecs();
+  } else if (args.includes('--merged_code_samples_specs')) {
+    await transformMergedCodeSamplesSpecs();
   }
 }
 
