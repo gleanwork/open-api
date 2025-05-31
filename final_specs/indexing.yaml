@@ -2,8 +2,6 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  contact:
-    email: support@glean.com
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -23,7 +21,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-speakeasy-name: "Glean API"
+  x-speakeasy-name: Glean API
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -74,12 +72,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.documents.add_or_update(document=models.DocumentDefinition(
@@ -94,6 +93,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -124,6 +124,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     IndexDocumentRequest req = IndexDocumentRequest.builder()
@@ -141,36 +142,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Documents.AddOrUpdate(ctx, components.IndexDocumentRequest{
-                    Document: components.DocumentDefinition{
-                        Datasource: "<value>",
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Documents.AddOrUpdate(ctx, components.IndexDocumentRequest{\n        Document: components.DocumentDefinition{\n            Datasource: \"<value>\",\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/indexdocuments:
     post:
       summary: Index documents
@@ -201,12 +173,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.documents.index(datasource="<value>", documents=[])
@@ -219,6 +192,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -248,6 +222,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     IndexDocumentsRequest req = IndexDocumentsRequest.builder()
@@ -264,35 +239,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Documents.Index(ctx, components.IndexDocumentsRequest{
-                    Datasource: "<value>",
-                    Documents: []components.DocumentDefinition{},
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Documents.Index(ctx, components.IndexDocumentsRequest{\n        Datasource: \"<value>\",\n        Documents: []components.DocumentDefinition{},\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/bulkindexdocuments:
     post:
       summary: Bulk index documents
@@ -321,12 +268,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.documents.bulk_index(upload_id="<id>", datasource="<value>", documents=[])
@@ -339,6 +287,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -369,6 +318,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     BulkIndexDocumentsRequest req = BulkIndexDocumentsRequest.builder()
@@ -386,36 +336,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Documents.BulkIndex(ctx, components.BulkIndexDocumentsRequest{
-                    UploadID: "<id>",
-                    Datasource: "<value>",
-                    Documents: []components.DocumentDefinition{},
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Documents.BulkIndex(ctx, components.BulkIndexDocumentsRequest{\n        UploadID: \"<id>\",\n        Datasource: \"<value>\",\n        Documents: []components.DocumentDefinition{},\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/updatepermissions:
     post:
       summary: Update document permissions
@@ -446,12 +367,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.update_permissions(datasource="<value>", permissions={})
@@ -464,6 +386,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -493,6 +416,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     UpdatePermissionsRequest req = UpdatePermissionsRequest.builder()
@@ -510,35 +434,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Permissions.UpdatePermissions(ctx, components.UpdatePermissionsRequest{
-                    Datasource: "<value>",
-                    Permissions: components.DocumentPermissionsDefinition{},
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.UpdatePermissions(ctx, components.UpdatePermissionsRequest{\n        Datasource: \"<value>\",\n        Permissions: components.DocumentPermissionsDefinition{},\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/processalldocuments:
     post:
       summary: Schedules the processing of uploaded documents
@@ -577,12 +473,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.documents.process_all()
@@ -595,6 +492,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -620,6 +518,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     ProcessAllDocumentsRequest req = ProcessAllDocumentsRequest.builder()
@@ -634,31 +533,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Documents.ProcessAll(ctx, nil)
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Documents.ProcessAll(ctx, nil)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/deletedocument:
     post:
       summary: Delete document
@@ -687,12 +562,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.documents.delete(datasource="<value>", object_type="<value>", id="<id>")
@@ -705,6 +581,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -734,6 +611,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     DeleteDocumentRequest req = DeleteDocumentRequest.builder()
@@ -751,36 +629,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Documents.Delete(ctx, components.DeleteDocumentRequest{
-                    Datasource: "<value>",
-                    ObjectType: "<value>",
-                    ID: "<id>",
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Documents.Delete(ctx, components.DeleteDocumentRequest{\n        Datasource: \"<value>\",\n        ObjectType: \"<value>\",\n        ID: \"<id>\",\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/indexuser:
     post:
       summary: Index user
@@ -809,12 +658,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.index_user(datasource="<value>", user={
@@ -830,6 +680,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -862,6 +713,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     IndexUserRequest req = IndexUserRequest.builder()
@@ -881,38 +733,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Permissions.IndexUser(ctx, components.IndexUserRequest{
-                    Datasource: "<value>",
-                    User: components.DatasourceUserDefinition{
-                        Email: "Art.Schaden@hotmail.com",
-                        Name: "<value>",
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.IndexUser(ctx, components.IndexUserRequest{\n        Datasource: \"<value>\",\n        User: components.DatasourceUserDefinition{\n            Email: \"Art.Schaden@hotmail.com\",\n            Name: \"<value>\",\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/bulkindexusers:
     post:
       summary: Bulk index users
@@ -941,12 +762,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.bulk_index_users(upload_id="<id>", datasource="<value>", users=[
@@ -972,6 +794,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -1016,6 +839,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     BulkIndexUsersRequest req = BulkIndexUsersRequest.builder()
@@ -1045,49 +869,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Permissions.BulkIndexUsers(ctx, components.BulkIndexUsersRequest{
-                    UploadID: "<id>",
-                    Datasource: "<value>",
-                    Users: []components.DatasourceUserDefinition{
-                        components.DatasourceUserDefinition{
-                            Email: "Ivory_Cummerata@hotmail.com",
-                            Name: "<value>",
-                        },
-                        components.DatasourceUserDefinition{
-                            Email: "Ivory_Cummerata@hotmail.com",
-                            Name: "<value>",
-                        },
-                        components.DatasourceUserDefinition{
-                            Email: "Ivory_Cummerata@hotmail.com",
-                            Name: "<value>",
-                        },
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.BulkIndexUsers(ctx, components.BulkIndexUsersRequest{\n        UploadID: \"<id>\",\n        Datasource: \"<value>\",\n        Users: []components.DatasourceUserDefinition{\n            components.DatasourceUserDefinition{\n                Email: \"Ivory_Cummerata@hotmail.com\",\n                Name: \"<value>\",\n            },\n            components.DatasourceUserDefinition{\n                Email: \"Ivory_Cummerata@hotmail.com\",\n                Name: \"<value>\",\n            },\n            components.DatasourceUserDefinition{\n                Email: \"Ivory_Cummerata@hotmail.com\",\n                Name: \"<value>\",\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/indexgroup:
     post:
       summary: Index group
@@ -1116,12 +898,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.index_group(datasource="<value>", group={
@@ -1136,6 +919,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -1167,6 +951,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     IndexGroupRequest req = IndexGroupRequest.builder()
@@ -1185,37 +970,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Permissions.IndexGroup(ctx, components.IndexGroupRequest{
-                    Datasource: "<value>",
-                    Group: components.DatasourceGroupDefinition{
-                        Name: "<value>",
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.IndexGroup(ctx, components.IndexGroupRequest{\n        Datasource: \"<value>\",\n        Group: components.DatasourceGroupDefinition{\n            Name: \"<value>\",\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/bulkindexgroups:
     post:
       summary: Bulk index groups
@@ -1244,12 +999,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.bulk_index_groups(upload_id="<id>", datasource="<value>", groups=[
@@ -1269,6 +1025,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -1307,6 +1064,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     BulkIndexGroupsRequest req = BulkIndexGroupsRequest.builder()
@@ -1330,43 +1088,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Permissions.BulkIndexGroups(ctx, components.BulkIndexGroupsRequest{
-                    UploadID: "<id>",
-                    Datasource: "<value>",
-                    Groups: []components.DatasourceGroupDefinition{
-                        components.DatasourceGroupDefinition{
-                            Name: "<value>",
-                        },
-                        components.DatasourceGroupDefinition{
-                            Name: "<value>",
-                        },
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.BulkIndexGroups(ctx, components.BulkIndexGroupsRequest{\n        UploadID: \"<id>\",\n        Datasource: \"<value>\",\n        Groups: []components.DatasourceGroupDefinition{\n            components.DatasourceGroupDefinition{\n                Name: \"<value>\",\n            },\n            components.DatasourceGroupDefinition{\n                Name: \"<value>\",\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/indexmembership:
     post:
       summary: Index membership
@@ -1395,12 +1117,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.index_membership(datasource="<value>", membership={
@@ -1415,6 +1138,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -1446,6 +1170,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     IndexMembershipRequest req = IndexMembershipRequest.builder()
@@ -1464,37 +1189,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Permissions.IndexMembership(ctx, components.IndexMembershipRequest{
-                    Datasource: "<value>",
-                    Membership: components.DatasourceMembershipDefinition{
-                        GroupName: "<value>",
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.IndexMembership(ctx, components.IndexMembershipRequest{\n        Datasource: \"<value>\",\n        Membership: components.DatasourceMembershipDefinition{\n            GroupName: \"<value>\",\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/bulkindexmemberships:
     post:
       summary: Bulk index memberships for a group
@@ -1523,12 +1218,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.bulk_index_memberships(upload_id="<id>", datasource="<value>", memberships=[
@@ -1545,6 +1241,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -1580,6 +1277,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     BulkIndexMembershipsRequest req = BulkIndexMembershipsRequest.builder()
@@ -1603,40 +1301,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Permissions.BulkIndexMemberships(ctx, components.BulkIndexMembershipsRequest{
-                    UploadID: "<id>",
-                    Datasource: "<value>",
-                    Memberships: []components.DatasourceBulkMembershipDefinition{
-                        components.DatasourceBulkMembershipDefinition{},
-                        components.DatasourceBulkMembershipDefinition{},
-                        components.DatasourceBulkMembershipDefinition{},
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.BulkIndexMemberships(ctx, components.BulkIndexMembershipsRequest{\n        UploadID: \"<id>\",\n        Datasource: \"<value>\",\n        Memberships: []components.DatasourceBulkMembershipDefinition{\n            components.DatasourceBulkMembershipDefinition{},\n            components.DatasourceBulkMembershipDefinition{},\n            components.DatasourceBulkMembershipDefinition{},\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/processallmemberships:
     post:
       summary: Schedules the processing of group memberships
@@ -1663,12 +1328,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.process_memberships()
@@ -1681,6 +1347,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -1706,6 +1373,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     ProcessAllMembershipsRequest req = ProcessAllMembershipsRequest.builder()
@@ -1720,31 +1388,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Permissions.ProcessMemberships(ctx, nil)
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.ProcessMemberships(ctx, nil)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/deleteuser:
     post:
       summary: Delete user
@@ -1773,12 +1417,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.delete_user(datasource="<value>", email="Ed.Johnston@gmail.com")
@@ -1791,6 +1436,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -1819,6 +1465,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     DeleteUserRequest req = DeleteUserRequest.builder()
@@ -1835,35 +1482,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Permissions.DeleteUser(ctx, components.DeleteUserRequest{
-                    Datasource: "<value>",
-                    Email: "Ed.Johnston@gmail.com",
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.DeleteUser(ctx, components.DeleteUserRequest{\n        Datasource: \"<value>\",\n        Email: \"Ed.Johnston@gmail.com\",\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/deletegroup:
     post:
       summary: Delete group
@@ -1892,12 +1511,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.delete_group(datasource="<value>", group_name="<value>")
@@ -1910,6 +1530,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -1938,6 +1559,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     DeleteGroupRequest req = DeleteGroupRequest.builder()
@@ -1954,35 +1576,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Permissions.DeleteGroup(ctx, components.DeleteGroupRequest{
-                    Datasource: "<value>",
-                    GroupName: "<value>",
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.DeleteGroup(ctx, components.DeleteGroupRequest{\n        Datasource: \"<value>\",\n        GroupName: \"<value>\",\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/deletemembership:
     post:
       summary: Delete membership
@@ -2011,12 +1605,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.delete_membership(datasource="<value>", membership={
@@ -2031,6 +1626,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -2062,6 +1658,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     DeleteMembershipRequest req = DeleteMembershipRequest.builder()
@@ -2080,37 +1677,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Permissions.DeleteMembership(ctx, components.DeleteMembershipRequest{
-                    Datasource: "<value>",
-                    Membership: components.DatasourceMembershipDefinition{
-                        GroupName: "<value>",
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.DeleteMembership(ctx, components.DeleteMembershipRequest{\n        Datasource: \"<value>\",\n        Membership: components.DatasourceMembershipDefinition{\n            GroupName: \"<value>\",\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/debug/{datasource}/status:
     post:
       x-beta: true
@@ -2146,12 +1713,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 res = g_client.indexing.datasource.status(datasource="<value>")
@@ -2165,6 +1733,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -2190,6 +1759,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     PostApiIndexV1DebugDatasourceStatusResponse res = sdk.indexing().datasource().status()
@@ -2203,31 +1773,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Datasource.Status(ctx, "<value>")
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res.DebugDatasourceStatusResponse != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Datasource.Status(ctx, \"<value>\")\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.DebugDatasourceStatusResponse != nil {\n        // handle response\n    }\n}"
   /api/index/v1/debug/{datasource}/document:
     post:
       x-beta: true
@@ -2270,12 +1816,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 res = g_client.indexing.documents.debug(datasource="<value>", object_type="Article", doc_id="art123")
@@ -2289,6 +1836,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -2318,6 +1866,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     PostApiIndexV1DebugDatasourceDocumentResponse res = sdk.indexing().documents().debug()
@@ -2335,35 +1884,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Documents.Debug(ctx, "<value>", components.DebugDocumentRequest{
-                    ObjectType: "Article",
-                    DocID: "art123",
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res.DebugDocumentResponse != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Documents.Debug(ctx, \"<value>\", components.DebugDocumentRequest{\n        ObjectType: \"Article\",\n        DocID: \"art123\",\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.DebugDocumentResponse != nil {\n        // handle response\n    }\n}"
   /api/index/v1/debug/{datasource}/documents:
     post:
       x-beta: true
@@ -2406,12 +1927,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 res = g_client.indexing.documents.debug_many(datasource="<value>", debug_documents=[
@@ -2430,6 +1952,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -2465,6 +1988,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     PostApiIndexV1DebugDatasourceDocumentsResponse res = sdk.indexing().documents().debugMany()
@@ -2485,39 +2009,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Documents.DebugMany(ctx, "<value>", components.DebugDocumentsRequest{
-                    DebugDocuments: []components.DebugDocumentRequest{
-                        components.DebugDocumentRequest{
-                            ObjectType: "Article",
-                            DocID: "art123",
-                        },
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res.DebugDocumentsResponse != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Documents.DebugMany(ctx, \"<value>\", components.DebugDocumentsRequest{\n        DebugDocuments: []components.DebugDocumentRequest{\n            components.DebugDocumentRequest{\n                ObjectType: \"Article\",\n                DocID: \"art123\",\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.DebugDocumentsResponse != nil {\n        // handle response\n    }\n}"
   /api/index/v1/debug/{datasource}/user:
     post:
       x-beta: true
@@ -2560,12 +2052,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 res = g_client.indexing.people.debug(datasource="<value>", email="u1@foo.com")
@@ -2579,6 +2072,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -2607,6 +2101,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     PostApiIndexV1DebugDatasourceUserResponse res = sdk.indexing().people().debug()
@@ -2623,34 +2118,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.People.Debug(ctx, "<value>", components.DebugUserRequest{
-                    Email: "u1@foo.com",
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res.DebugUserResponse != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.People.Debug(ctx, \"<value>\", components.DebugUserRequest{\n        Email: \"u1@foo.com\",\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.DebugUserResponse != nil {\n        // handle response\n    }\n}"
   /api/index/v1/checkdocumentaccess:
     post:
       summary: Check document access
@@ -2686,12 +2154,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 res = g_client.indexing.documents.check_access(datasource="<value>", object_type="<value>", doc_id="<id>", user_email="<value>")
@@ -2705,6 +2174,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -2736,6 +2206,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     CheckDocumentAccessRequest req = CheckDocumentAccessRequest.builder()
@@ -2756,37 +2227,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Documents.CheckAccess(ctx, components.CheckDocumentAccessRequest{
-                    Datasource: "<value>",
-                    ObjectType: "<value>",
-                    DocID: "<id>",
-                    UserEmail: "<value>",
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res.CheckDocumentAccessResponse != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Documents.CheckAccess(ctx, components.CheckDocumentAccessRequest{\n        Datasource: \"<value>\",\n        ObjectType: \"<value>\",\n        DocID: \"<id>\",\n        UserEmail: \"<value>\",\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.CheckDocumentAccessResponse != nil {\n        // handle response\n    }\n}"
   /api/index/v1/getdocumentstatus:
     post:
       deprecated: true
@@ -2911,12 +2352,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.permissions.authorize_beta_users(datasource="<value>", emails=[
@@ -2933,6 +2375,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -2966,6 +2409,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     GreenlistUsersRequest req = GreenlistUsersRequest.builder()
@@ -2985,39 +2429,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Permissions.AuthorizeBetaUsers(ctx, components.GreenlistUsersRequest{
-                    Datasource: "<value>",
-                    Emails: []string{
-                        "Neil92@gmail.com",
-                        "Alejandrin_Boyer4@hotmail.com",
-                        "Shyanne_McLaughlin95@hotmail.com",
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.AuthorizeBetaUsers(ctx, components.GreenlistUsersRequest{\n        Datasource: \"<value>\",\n        Emails: []string{\n            \"Neil92@gmail.com\",\n            \"Alejandrin_Boyer4@hotmail.com\",\n            \"Shyanne_McLaughlin95@hotmail.com\",\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/adddatasource:
     post:
       summary: Add or update datasource
@@ -3044,12 +2456,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.datasources.add(name="<value>", url_regex="https://example-company.datasource.com/.*", quicklinks=[
@@ -3071,6 +2484,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -3110,6 +2524,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     CustomDatasourceConfig req = CustomDatasourceConfig.builder()
@@ -3135,45 +2550,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Datasources.Add(ctx, components.CustomDatasourceConfig{
-                    Name: "<value>",
-                    URLRegex: apiclientgo.String("https://example-company.datasource.com/.*"),
-                    Quicklinks: []components.Quicklink{
-                        components.Quicklink{
-                            IconConfig: &components.IconConfig{
-                                Color: apiclientgo.String("#343CED"),
-                                Key: apiclientgo.String("person_icon"),
-                                IconType: components.IconTypeGlyph.ToPointer(),
-                                Name: apiclientgo.String("user"),
-                            },
-                        },
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Datasources.Add(ctx, components.CustomDatasourceConfig{\n        Name: \"<value>\",\n        URLRegex: apiclientgo.String(\"https://example-company.datasource.com/.*\"),\n        Quicklinks: []components.Quicklink{\n            components.Quicklink{\n                IconConfig: &components.IconConfig{\n                    Color: apiclientgo.String(\"#343CED\"),\n                    Key: apiclientgo.String(\"person_icon\"),\n                    IconType: components.IconTypeGlyph.ToPointer(),\n                    Name: apiclientgo.String(\"user\"),\n                },\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/getdatasourceconfig:
     post:
       summary: Get datasource config
@@ -3206,12 +2583,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 res = g_client.indexing.datasources.retrieve_config(datasource="<value>")
@@ -3225,6 +2603,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -3253,6 +2632,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     GetDatasourceConfigRequest req = GetDatasourceConfigRequest.builder()
@@ -3270,34 +2650,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Datasources.RetrieveConfig(ctx, components.GetDatasourceConfigRequest{
-                    Datasource: "<value>",
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res.CustomDatasourceConfig != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Datasources.RetrieveConfig(ctx, components.GetDatasourceConfigRequest{\n        Datasource: \"<value>\",\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.CustomDatasourceConfig != nil {\n        // handle response\n    }\n}"
   /api/index/v1/rotatetoken:
     post:
       summary: Rotate token
@@ -3321,12 +2674,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 res = g_client.indexing.authentication.rotate_token()
@@ -3340,6 +2694,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -3365,6 +2720,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     PostApiIndexV1RotatetokenResponse res = sdk.indexing().authentication().rotateToken()
@@ -3377,31 +2733,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Authentication.RotateToken(ctx)
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res.RotateTokenResponse != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Authentication.RotateToken(ctx)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.RotateTokenResponse != nil {\n        // handle response\n    }\n}"
   /api/index/v1/indexemployee:
     post:
       summary: Index employee
@@ -3430,12 +2762,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.people.index(employee={
@@ -3457,6 +2790,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -3494,6 +2828,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     IndexEmployeeRequest req = IndexEmployeeRequest.builder()
@@ -3517,43 +2852,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.People.Index(ctx, components.IndexEmployeeRequest{
-                    Employee: components.EmployeeInfoDefinition{
-                        Email: "Jerrold_Hermann@hotmail.com",
-                        Department: "<value>",
-                        DatasourceProfiles: []components.DatasourceProfile{
-                            components.DatasourceProfile{
-                                Datasource: "github",
-                                Handle: "<value>",
-                            },
-                        },
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.People.Index(ctx, components.IndexEmployeeRequest{\n        Employee: components.EmployeeInfoDefinition{\n            Email: \"Jerrold_Hermann@hotmail.com\",\n            Department: \"<value>\",\n            DatasourceProfiles: []components.DatasourceProfile{\n                components.DatasourceProfile{\n                    Datasource: \"github\",\n                    Handle: \"<value>\",\n                },\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/bulkindexemployees:
     post:
       summary: Bulk index employees
@@ -3582,12 +2881,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.people.bulk_index(upload_id="<id>", employees=[
@@ -3631,6 +2931,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -3691,6 +2992,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     BulkIndexEmployeesRequest req = BulkIndexEmployeesRequest.builder()
@@ -3734,66 +3036,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.People.BulkIndex(ctx, components.BulkIndexEmployeesRequest{
-                    UploadID: "<id>",
-                    Employees: []components.EmployeeInfoDefinition{
-                        components.EmployeeInfoDefinition{
-                            Email: "Robin.Stoltenberg@yahoo.com",
-                            Department: "<value>",
-                            DatasourceProfiles: []components.DatasourceProfile{
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                            },
-                        },
-                        components.EmployeeInfoDefinition{
-                            Email: "Robin.Stoltenberg@yahoo.com",
-                            Department: "<value>",
-                            DatasourceProfiles: []components.DatasourceProfile{
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                            },
-                        },
-                        components.EmployeeInfoDefinition{
-                            Email: "Robin.Stoltenberg@yahoo.com",
-                            Department: "<value>",
-                            DatasourceProfiles: []components.DatasourceProfile{
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                            },
-                        },
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.People.BulkIndex(ctx, components.BulkIndexEmployeesRequest{\n        UploadID: \"<id>\",\n        Employees: []components.EmployeeInfoDefinition{\n            components.EmployeeInfoDefinition{\n                Email: \"Robin.Stoltenberg@yahoo.com\",\n                Department: \"<value>\",\n                DatasourceProfiles: []components.DatasourceProfile{\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                },\n            },\n            components.EmployeeInfoDefinition{\n                Email: \"Robin.Stoltenberg@yahoo.com\",\n                Department: \"<value>\",\n                DatasourceProfiles: []components.DatasourceProfile{\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                },\n            },\n            components.EmployeeInfoDefinition{\n                Email: \"Robin.Stoltenberg@yahoo.com\",\n                Department: \"<value>\",\n                DatasourceProfiles: []components.DatasourceProfile{\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                },\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/indexemployeelist: {}
   /api/index/v1/processallemployeesandteams:
     post:
@@ -3817,12 +3060,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.people.process_all_employees_and_teams()
@@ -3835,6 +3079,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -3859,6 +3104,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     PostApiIndexV1ProcessallemployeesandteamsResponse res = sdk.indexing().people().processAllEmployeesAndTeams()
@@ -3869,31 +3115,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.People.ProcessAllEmployeesAndTeams(ctx)
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.People.ProcessAllEmployeesAndTeams(ctx)\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/deleteemployee:
     post:
       summary: Delete employee
@@ -3922,12 +3144,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.people.delete(employee_email="<value>")
@@ -3940,6 +3163,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -3967,6 +3191,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     DeleteEmployeeRequest req = DeleteEmployeeRequest.builder()
@@ -3982,34 +3207,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.People.Delete(ctx, components.DeleteEmployeeRequest{
-                    EmployeeEmail: "<value>",
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.People.Delete(ctx, components.DeleteEmployeeRequest{\n        EmployeeEmail: \"<value>\",\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/indexteam:
     post:
       summary: Index team
@@ -4038,12 +3236,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.people.index_team(team={
@@ -4078,6 +3277,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -4128,6 +3328,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     IndexTeamRequest req = IndexTeamRequest.builder()
@@ -4163,56 +3364,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.People.IndexTeam(ctx, components.IndexTeamRequest{
-                    Team: components.TeamInfoDefinition{
-                        ID: "<id>",
-                        Name: "<value>",
-                        DatasourceProfiles: []components.DatasourceProfile{
-                            components.DatasourceProfile{
-                                Datasource: "github",
-                                Handle: "<value>",
-                            },
-                            components.DatasourceProfile{
-                                Datasource: "github",
-                                Handle: "<value>",
-                            },
-                            components.DatasourceProfile{
-                                Datasource: "github",
-                                Handle: "<value>",
-                            },
-                        },
-                        Members: []components.TeamMember{
-                            components.TeamMember{
-                                Email: "Nasir.Hilll73@hotmail.com",
-                            },
-                        },
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.People.IndexTeam(ctx, components.IndexTeamRequest{\n        Team: components.TeamInfoDefinition{\n            ID: \"<id>\",\n            Name: \"<value>\",\n            DatasourceProfiles: []components.DatasourceProfile{\n                components.DatasourceProfile{\n                    Datasource: \"github\",\n                    Handle: \"<value>\",\n                },\n                components.DatasourceProfile{\n                    Datasource: \"github\",\n                    Handle: \"<value>\",\n                },\n                components.DatasourceProfile{\n                    Datasource: \"github\",\n                    Handle: \"<value>\",\n                },\n            },\n            Members: []components.TeamMember{\n                components.TeamMember{\n                    Email: \"Nasir.Hilll73@hotmail.com\",\n                },\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/deleteteam:
     post:
       summary: Delete team
@@ -4241,12 +3393,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.people.delete_team(id="<id>")
@@ -4259,6 +3412,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -4286,6 +3440,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     DeleteTeamRequest req = DeleteTeamRequest.builder()
@@ -4301,34 +3456,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.People.DeleteTeam(ctx, components.DeleteTeamRequest{
-                    ID: "<id>",
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.People.DeleteTeam(ctx, components.DeleteTeamRequest{\n        ID: \"<id>\",\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/bulkindexteams:
     post:
       summary: Bulk index teams
@@ -4357,12 +3485,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.people.bulk_index_teams(upload_id="<id>", teams=[
@@ -4421,6 +3550,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -4496,6 +3626,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     BulkIndexTeamsRequest req = BulkIndexTeamsRequest.builder()
@@ -4554,81 +3685,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.People.BulkIndexTeams(ctx, components.BulkIndexTeamsRequest{
-                    UploadID: "<id>",
-                    Teams: []components.TeamInfoDefinition{
-                        components.TeamInfoDefinition{
-                            ID: "<id>",
-                            Name: "<value>",
-                            DatasourceProfiles: []components.DatasourceProfile{
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                            },
-                            Members: []components.TeamMember{},
-                        },
-                        components.TeamInfoDefinition{
-                            ID: "<id>",
-                            Name: "<value>",
-                            DatasourceProfiles: []components.DatasourceProfile{
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                            },
-                            Members: []components.TeamMember{},
-                        },
-                        components.TeamInfoDefinition{
-                            ID: "<id>",
-                            Name: "<value>",
-                            DatasourceProfiles: []components.DatasourceProfile{
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                            },
-                            Members: []components.TeamMember{},
-                        },
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.People.BulkIndexTeams(ctx, components.BulkIndexTeamsRequest{\n        UploadID: \"<id>\",\n        Teams: []components.TeamInfoDefinition{\n            components.TeamInfoDefinition{\n                ID: \"<id>\",\n                Name: \"<value>\",\n                DatasourceProfiles: []components.DatasourceProfile{\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                },\n                Members: []components.TeamMember{},\n            },\n            components.TeamInfoDefinition{\n                ID: \"<id>\",\n                Name: \"<value>\",\n                DatasourceProfiles: []components.DatasourceProfile{\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                },\n                Members: []components.TeamMember{},\n            },\n            components.TeamInfoDefinition{\n                ID: \"<id>\",\n                Name: \"<value>\",\n                DatasourceProfiles: []components.DatasourceProfile{\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                },\n                Members: []components.TeamMember{},\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/bulkindexshortcuts:
     post:
       summary: Bulk index external shortcuts
@@ -4657,12 +3714,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.shortcuts.bulk_index(upload_id="<id>", shortcuts=[
@@ -4688,6 +3746,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -4731,6 +3790,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     BulkIndexShortcutsRequest req = BulkIndexShortcutsRequest.builder()
@@ -4759,48 +3819,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Shortcuts.BulkIndex(ctx, components.BulkIndexShortcutsRequest{
-                    UploadID: "<id>",
-                    Shortcuts: []components.ExternalShortcut{
-                        components.ExternalShortcut{
-                            InputAlias: "<value>",
-                            DestinationURL: "https://plump-tune-up.biz/",
-                            CreatedBy: "<value>",
-                            IntermediateURL: "https://lean-sightseeing.net",
-                        },
-                        components.ExternalShortcut{
-                            InputAlias: "<value>",
-                            DestinationURL: "https://plump-tune-up.biz/",
-                            CreatedBy: "<value>",
-                            IntermediateURL: "https://lean-sightseeing.net",
-                        },
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Shortcuts.BulkIndex(ctx, components.BulkIndexShortcutsRequest{\n        UploadID: \"<id>\",\n        Shortcuts: []components.ExternalShortcut{\n            components.ExternalShortcut{\n                InputAlias: \"<value>\",\n                DestinationURL: \"https://plump-tune-up.biz/\",\n                CreatedBy: \"<value>\",\n                IntermediateURL: \"https://lean-sightseeing.net\",\n            },\n            components.ExternalShortcut{\n                InputAlias: \"<value>\",\n                DestinationURL: \"https://plump-tune-up.biz/\",\n                CreatedBy: \"<value>\",\n                IntermediateURL: \"https://lean-sightseeing.net\",\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/uploadshortcuts:
     post:
       summary: Upload shortcuts
@@ -4829,12 +3848,13 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
+                instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
                 g_client.indexing.shortcuts.upload(upload_id="<id>", shortcuts=[
@@ -4863,6 +3883,7 @@ paths:
 
             const glean = new Glean({
               apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+              instance: process.env["GLEAN_INSTANCE"] ?? "",
             });
 
             async function run() {
@@ -4909,6 +3930,7 @@ paths:
 
                     Glean sdk = Glean.builder()
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
+                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
                     UploadShortcutsRequest req = UploadShortcutsRequest.builder()
@@ -4940,51 +3962,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.Shortcuts.Upload(ctx, components.UploadShortcutsRequest{
-                    UploadID: "<id>",
-                    Shortcuts: []components.IndexingShortcut{
-                        components.IndexingShortcut{
-                            InputAlias: "<value>",
-                            DestinationURL: "https://majestic-pharmacopoeia.info/",
-                            CreatedBy: "<value>",
-                        },
-                        components.IndexingShortcut{
-                            InputAlias: "<value>",
-                            DestinationURL: "https://majestic-pharmacopoeia.info/",
-                            CreatedBy: "<value>",
-                        },
-                        components.IndexingShortcut{
-                            InputAlias: "<value>",
-                            DestinationURL: "https://majestic-pharmacopoeia.info/",
-                            CreatedBy: "<value>",
-                        },
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Shortcuts.Upload(ctx, components.UploadShortcutsRequest{\n        UploadID: \"<id>\",\n        Shortcuts: []components.IndexingShortcut{\n            components.IndexingShortcut{\n                InputAlias: \"<value>\",\n                DestinationURL: \"https://majestic-pharmacopoeia.info/\",\n                CreatedBy: \"<value>\",\n            },\n            components.IndexingShortcut{\n                InputAlias: \"<value>\",\n                DestinationURL: \"https://majestic-pharmacopoeia.info/\",\n                CreatedBy: \"<value>\",\n            },\n            components.IndexingShortcut{\n                InputAlias: \"<value>\",\n                DestinationURL: \"https://majestic-pharmacopoeia.info/\",\n                CreatedBy: \"<value>\",\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
 components:
   securitySchemes:
     APIToken:
