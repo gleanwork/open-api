@@ -49,5 +49,5 @@ jobs:
         uses: ./.github/actions/git-commit
         with:
           commit_message: 'Update code samples'
-          file_patterns: 'merged_code_samples_specs/* .speakeasy/*'
+          file_patterns: 'merged_code_samples_specs/* modified_code_samples_specs/* final_specs/* .speakeasy/*'
           github_token: ${{ secrets.GITHUB_TOKEN }}
