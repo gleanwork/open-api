@@ -38,7 +38,7 @@ jobs:
       - name: Copy spec files to docs directory
         run: |
           # Create directory structure if it doesn't exist
-          mkdir -p docs/specs/source docs/specs/merged
+          mkdir -p docs/specs/source docs/specs/merged docs/specs/final
 
           # Copy source specs
           cp -R source_specs/*.yaml docs/specs/source/
