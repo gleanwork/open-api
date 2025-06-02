@@ -43,11 +43,6 @@ jobs:
           # Copy source specs
           cp -R source_specs/*.yaml docs/specs/source/
 
-          # NOTE: Copying this into `docs/specs/merged` (to avoid race
-          # condition with gleanwork/glean-developer-site PR to change to use
-          # `docs/specs/final` instead)
-          cp -R merged_code_samples_specs/*.yaml docs/specs/merged/ 
-
           # Copy final processed specs
           cp -R final_specs/*.yaml docs/specs/final/
 
