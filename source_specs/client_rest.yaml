@@ -7370,6 +7370,11 @@ components:
               - OPERATOR_VALUE
               - QUICKLINK
               - SUGGESTION
+        kgTypes:
+          type: array
+          description: If resultTypes include ENTITY and KG suggestions are enabled, return only KG entities of the specified types. Entities of all types may be returned if omitted.
+          items:
+            type: string
         resultSize:
           type: integer
           description: |
