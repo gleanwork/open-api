@@ -608,7 +608,6 @@ paths:
             package hello.world;
 
             import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.ProcessAllDocumentsRequest;
             import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1ProcessalldocumentsResponse;
             import java.lang.Exception;
 
@@ -620,11 +619,7 @@ paths:
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
-                    ProcessAllDocumentsRequest req = ProcessAllDocumentsRequest.builder()
-                            .build();
-
                     PostApiIndexV1ProcessalldocumentsResponse res = sdk.indexing().documents().processAll()
-                            .request(req)
                             .call();
 
                     // handle response
@@ -952,14 +947,6 @@ paths:
                         "email": "Ivory_Cummerata@hotmail.com",
                         "name": "<value>",
                     },
-                    {
-                        "email": "Ivory_Cummerata@hotmail.com",
-                        "name": "<value>",
-                    },
-                    {
-                        "email": "Ivory_Cummerata@hotmail.com",
-                        "name": "<value>",
-                    },
                 ])
 
                 # Use the SDK ...
@@ -1023,14 +1010,6 @@ paths:
                                 DatasourceUserDefinition.builder()
                                     .email("Ivory_Cummerata@hotmail.com")
                                     .name("<value>")
-                                    .build(),
-                                DatasourceUserDefinition.builder()
-                                    .email("Ivory_Cummerata@hotmail.com")
-                                    .name("<value>")
-                                    .build(),
-                                DatasourceUserDefinition.builder()
-                                    .email("Ivory_Cummerata@hotmail.com")
-                                    .name("<value>")
                                     .build()))
                             .build();
 
@@ -1065,14 +1044,6 @@ paths:
                     UploadID: "<id>",
                     Datasource: "<value>",
                     Users: []components.DatasourceUserDefinition{
-                        components.DatasourceUserDefinition{
-                            Email: "Ivory_Cummerata@hotmail.com",
-                            Name: "<value>",
-                        },
-                        components.DatasourceUserDefinition{
-                            Email: "Ivory_Cummerata@hotmail.com",
-                            Name: "<value>",
-                        },
                         components.DatasourceUserDefinition{
                             Email: "Ivory_Cummerata@hotmail.com",
                             Name: "<value>",
@@ -1254,9 +1225,6 @@ paths:
                     {
                         "name": "<value>",
                     },
-                    {
-                        "name": "<value>",
-                    },
                 ])
 
                 # Use the SDK ...
@@ -1313,9 +1281,6 @@ paths:
                             .groups(List.of(
                                 DatasourceGroupDefinition.builder()
                                     .name("<value>")
-                                    .build(),
-                                DatasourceGroupDefinition.builder()
-                                    .name("<value>")
                                     .build()))
                             .build();
 
@@ -1350,9 +1315,6 @@ paths:
                     UploadID: "<id>",
                     Datasource: "<value>",
                     Groups: []components.DatasourceGroupDefinition{
-                        components.DatasourceGroupDefinition{
-                            Name: "<value>",
-                        },
                         components.DatasourceGroupDefinition{
                             Name: "<value>",
                         },
@@ -1531,8 +1493,6 @@ paths:
 
                 g_client.indexing.permissions.bulk_index_memberships(upload_id="<id>", datasource="<value>", memberships=[
                     {},
-                    {},
-                    {},
                 ])
 
                 # Use the SDK ...
@@ -1585,10 +1545,6 @@ paths:
                             .datasource("<value>")
                             .memberships(List.of(
                                 DatasourceBulkMembershipDefinition.builder()
-                                    .build(),
-                                DatasourceBulkMembershipDefinition.builder()
-                                    .build(),
-                                DatasourceBulkMembershipDefinition.builder()
                                     .build()))
                             .build();
 
@@ -1623,8 +1579,6 @@ paths:
                     UploadID: "<id>",
                     Datasource: "<value>",
                     Memberships: []components.DatasourceBulkMembershipDefinition{
-                        components.DatasourceBulkMembershipDefinition{},
-                        components.DatasourceBulkMembershipDefinition{},
                         components.DatasourceBulkMembershipDefinition{},
                     },
                 })
@@ -1694,7 +1648,6 @@ paths:
             package hello.world;
 
             import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.ProcessAllMembershipsRequest;
             import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1ProcessallmembershipsResponse;
             import java.lang.Exception;
 
@@ -1706,11 +1659,7 @@ paths:
                             .apiToken("<YOUR_BEARER_TOKEN_HERE>")
                         .build();
 
-                    ProcessAllMembershipsRequest req = ProcessAllMembershipsRequest.builder()
-                            .build();
-
                     PostApiIndexV1ProcessallmembershipsResponse res = sdk.indexing().permissions().processMemberships()
-                            .request(req)
                             .call();
 
                     // handle response
@@ -2412,12 +2361,7 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.indexing.documents.debug_many(datasource="<value>", debug_documents=[
-                    {
-                        "object_type": "Article",
-                        "doc_id": "art123",
-                    },
-                ])
+                res = g_client.indexing.documents.debug_many(datasource="<value>", debug_documents=[])
 
                 # Handle response
                 print(res)
@@ -2451,7 +2395,6 @@ paths:
             package hello.world;
 
             import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DebugDocumentRequest;
             import com.glean.api_client.glean_api_client.models.components.DebugDocumentsRequest;
             import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DebugDatasourceDocumentsResponse;
             import java.lang.Exception;
@@ -2468,11 +2411,7 @@ paths:
                     PostApiIndexV1DebugDatasourceDocumentsResponse res = sdk.indexing().documents().debugMany()
                             .datasource("<value>")
                             .debugDocumentsRequest(DebugDocumentsRequest.builder()
-                                .debugDocuments(List.of(
-                                    DebugDocumentRequest.builder()
-                                        .objectType("Article")
-                                        .docId("art123")
-                                        .build()))
+                                .debugDocuments(List.of())
                                 .build())
                             .call();
 
@@ -2502,12 +2441,7 @@ paths:
                 )
 
                 res, err := s.Indexing.Documents.DebugMany(ctx, "<value>", components.DebugDocumentsRequest{
-                    DebugDocuments: []components.DebugDocumentRequest{
-                        components.DebugDocumentRequest{
-                            ObjectType: "Article",
-                            DocID: "art123",
-                        },
-                    },
+                    DebugDocuments: []components.DebugDocumentRequest{},
                 })
                 if err != nil {
                     log.Fatal(err)
@@ -3050,7 +2984,7 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                g_client.indexing.datasources.add(name="<value>", url_regex="https://example-company.datasource.com/.*", quicklinks=[
+                g_client.indexing.datasources.add(name="<value>", datasource_category=models.DatasourceCategory.UNCATEGORIZED, url_regex="https://example-company.datasource.com/.*", quicklinks=[
                     {
                         "icon_config": {
                             "color": "#343CED",
@@ -3059,7 +2993,7 @@ paths:
                             "name": "user",
                         },
                     },
-                ])
+                ], trust_url_regex_for_view_activity=True, strip_fragment_in_canonical_url=True, is_entity_datasource=False, is_test_datasource=False)
 
                 # Use the SDK ...
         - lang: typescript
@@ -3599,26 +3533,6 @@ paths:
                             },
                         ],
                     },
-                    {
-                        "email": "Robin.Stoltenberg@yahoo.com",
-                        "department": "<value>",
-                        "datasource_profiles": [
-                            {
-                                "datasource": "github",
-                                "handle": "<value>",
-                            },
-                        ],
-                    },
-                    {
-                        "email": "Robin.Stoltenberg@yahoo.com",
-                        "department": "<value>",
-                        "datasource_profiles": [
-                            {
-                                "datasource": "github",
-                                "handle": "<value>",
-                            },
-                        ],
-                    },
                 ])
 
                 # Use the SDK ...
@@ -3702,24 +3616,6 @@ paths:
                                             .datasource("github")
                                             .handle("<value>")
                                             .build()))
-                                    .build(),
-                                EmployeeInfoDefinition.builder()
-                                    .email("Robin.Stoltenberg@yahoo.com")
-                                    .department("<value>")
-                                    .datasourceProfiles(List.of(
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
-                                            .build()))
-                                    .build(),
-                                EmployeeInfoDefinition.builder()
-                                    .email("Robin.Stoltenberg@yahoo.com")
-                                    .department("<value>")
-                                    .datasourceProfiles(List.of(
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
-                                            .build()))
                                     .build()))
                             .build();
 
@@ -3753,26 +3649,6 @@ paths:
                 res, err := s.Indexing.People.BulkIndex(ctx, components.BulkIndexEmployeesRequest{
                     UploadID: "<id>",
                     Employees: []components.EmployeeInfoDefinition{
-                        components.EmployeeInfoDefinition{
-                            Email: "Robin.Stoltenberg@yahoo.com",
-                            Department: "<value>",
-                            DatasourceProfiles: []components.DatasourceProfile{
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                            },
-                        },
-                        components.EmployeeInfoDefinition{
-                            Email: "Robin.Stoltenberg@yahoo.com",
-                            Department: "<value>",
-                            DatasourceProfiles: []components.DatasourceProfile{
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                            },
-                        },
                         components.EmployeeInfoDefinition{
                             Email: "Robin.Stoltenberg@yahoo.com",
                             Department: "<value>",
@@ -4052,18 +3928,10 @@ paths:
                             "datasource": "github",
                             "handle": "<value>",
                         },
-                        {
-                            "datasource": "github",
-                            "handle": "<value>",
-                        },
-                        {
-                            "datasource": "github",
-                            "handle": "<value>",
-                        },
                     ],
                     "members": [
                         {
-                            "email": "Nasir.Hilll73@hotmail.com",
+                            "email": "Valerie9@gmail.com",
                         },
                     ],
                 })
@@ -4134,17 +4002,9 @@ paths:
                                 .name("<value>")
                                 .members(List.of(
                                     TeamMember.builder()
-                                        .email("Nasir.Hilll73@hotmail.com")
+                                        .email("Valerie9@gmail.com")
                                         .build()))
                                 .datasourceProfiles(List.of(
-                                    DatasourceProfile.builder()
-                                        .datasource("github")
-                                        .handle("<value>")
-                                        .build(),
-                                    DatasourceProfile.builder()
-                                        .datasource("github")
-                                        .handle("<value>")
-                                        .build(),
                                     DatasourceProfile.builder()
                                         .datasource("github")
                                         .handle("<value>")
@@ -4188,18 +4048,10 @@ paths:
                                 Datasource: "github",
                                 Handle: "<value>",
                             },
-                            components.DatasourceProfile{
-                                Datasource: "github",
-                                Handle: "<value>",
-                            },
-                            components.DatasourceProfile{
-                                Datasource: "github",
-                                Handle: "<value>",
-                            },
                         },
                         Members: []components.TeamMember{
                             components.TeamMember{
-                                Email: "Nasir.Hilll73@hotmail.com",
+                                Email: "Valerie9@gmail.com",
                             },
                         },
                     },
@@ -4372,42 +4224,12 @@ paths:
                                 "datasource": "github",
                                 "handle": "<value>",
                             },
+                        ],
+                        "members": [
                             {
-                                "datasource": "github",
-                                "handle": "<value>",
+                                "email": "Nina_Erdman16@gmail.com",
                             },
                         ],
-                        "members": [],
-                    },
-                    {
-                        "id": "<id>",
-                        "name": "<value>",
-                        "datasource_profiles": [
-                            {
-                                "datasource": "github",
-                                "handle": "<value>",
-                            },
-                            {
-                                "datasource": "github",
-                                "handle": "<value>",
-                            },
-                        ],
-                        "members": [],
-                    },
-                    {
-                        "id": "<id>",
-                        "name": "<value>",
-                        "datasource_profiles": [
-                            {
-                                "datasource": "github",
-                                "handle": "<value>",
-                            },
-                            {
-                                "datasource": "github",
-                                "handle": "<value>",
-                            },
-                        ],
-                        "members": [],
                     },
                 ])
 
@@ -4502,40 +4324,11 @@ paths:
                                 TeamInfoDefinition.builder()
                                     .id("<id>")
                                     .name("<value>")
-                                    .members(List.of())
-                                    .datasourceProfiles(List.of(
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
-                                            .build(),
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
+                                    .members(List.of(
+                                        TeamMember.builder()
+                                            .email("Nina_Erdman16@gmail.com")
                                             .build()))
-                                    .build(),
-                                TeamInfoDefinition.builder()
-                                    .id("<id>")
-                                    .name("<value>")
-                                    .members(List.of())
                                     .datasourceProfiles(List.of(
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
-                                            .build(),
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
-                                            .build()))
-                                    .build(),
-                                TeamInfoDefinition.builder()
-                                    .id("<id>")
-                                    .name("<value>")
-                                    .members(List.of())
-                                    .datasourceProfiles(List.of(
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
-                                            .build(),
                                         DatasourceProfile.builder()
                                             .datasource("github")
                                             .handle("<value>")
@@ -4581,42 +4374,12 @@ paths:
                                     Datasource: "github",
                                     Handle: "<value>",
                                 },
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
+                            },
+                            Members: []components.TeamMember{
+                                components.TeamMember{
+                                    Email: "Nina_Erdman16@gmail.com",
                                 },
                             },
-                            Members: []components.TeamMember{},
-                        },
-                        components.TeamInfoDefinition{
-                            ID: "<id>",
-                            Name: "<value>",
-                            DatasourceProfiles: []components.DatasourceProfile{
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                            },
-                            Members: []components.TeamMember{},
-                        },
-                        components.TeamInfoDefinition{
-                            ID: "<id>",
-                            Name: "<value>",
-                            DatasourceProfiles: []components.DatasourceProfile{
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                            },
-                            Members: []components.TeamMember{},
                         },
                     },
                 })
@@ -4664,12 +4427,6 @@ paths:
             ) as g_client:
 
                 g_client.indexing.shortcuts.bulk_index(upload_id="<id>", shortcuts=[
-                    {
-                        "input_alias": "<value>",
-                        "destination_url": "https://plump-tune-up.biz/",
-                        "created_by": "<value>",
-                        "intermediate_url": "https://lean-sightseeing.net",
-                    },
                     {
                         "input_alias": "<value>",
                         "destination_url": "https://plump-tune-up.biz/",
@@ -4739,12 +4496,6 @@ paths:
                                     .destinationUrl("https://plump-tune-up.biz/")
                                     .createdBy("<value>")
                                     .intermediateUrl("https://lean-sightseeing.net")
-                                    .build(),
-                                ExternalShortcut.builder()
-                                    .inputAlias("<value>")
-                                    .destinationUrl("https://plump-tune-up.biz/")
-                                    .createdBy("<value>")
-                                    .intermediateUrl("https://lean-sightseeing.net")
                                     .build()))
                             .build();
 
@@ -4778,12 +4529,6 @@ paths:
                 res, err := s.Indexing.Shortcuts.BulkIndex(ctx, components.BulkIndexShortcutsRequest{
                     UploadID: "<id>",
                     Shortcuts: []components.ExternalShortcut{
-                        components.ExternalShortcut{
-                            InputAlias: "<value>",
-                            DestinationURL: "https://plump-tune-up.biz/",
-                            CreatedBy: "<value>",
-                            IntermediateURL: "https://lean-sightseeing.net",
-                        },
                         components.ExternalShortcut{
                             InputAlias: "<value>",
                             DestinationURL: "https://plump-tune-up.biz/",
@@ -4836,16 +4581,6 @@ paths:
             ) as g_client:
 
                 g_client.indexing.shortcuts.upload(upload_id="<id>", shortcuts=[
-                    {
-                        "input_alias": "<value>",
-                        "destination_url": "https://majestic-pharmacopoeia.info/",
-                        "created_by": "<value>",
-                    },
-                    {
-                        "input_alias": "<value>",
-                        "destination_url": "https://majestic-pharmacopoeia.info/",
-                        "created_by": "<value>",
-                    },
                     {
                         "input_alias": "<value>",
                         "destination_url": "https://majestic-pharmacopoeia.info/",
@@ -4916,16 +4651,6 @@ paths:
                                     .inputAlias("<value>")
                                     .destinationUrl("https://majestic-pharmacopoeia.info/")
                                     .createdBy("<value>")
-                                    .build(),
-                                IndexingShortcut.builder()
-                                    .inputAlias("<value>")
-                                    .destinationUrl("https://majestic-pharmacopoeia.info/")
-                                    .createdBy("<value>")
-                                    .build(),
-                                IndexingShortcut.builder()
-                                    .inputAlias("<value>")
-                                    .destinationUrl("https://majestic-pharmacopoeia.info/")
-                                    .createdBy("<value>")
                                     .build()))
                             .build();
 
@@ -4959,16 +4684,6 @@ paths:
                 res, err := s.Indexing.Shortcuts.Upload(ctx, components.UploadShortcutsRequest{
                     UploadID: "<id>",
                     Shortcuts: []components.IndexingShortcut{
-                        components.IndexingShortcut{
-                            InputAlias: "<value>",
-                            DestinationURL: "https://majestic-pharmacopoeia.info/",
-                            CreatedBy: "<value>",
-                        },
-                        components.IndexingShortcut{
-                            InputAlias: "<value>",
-                            DestinationURL: "https://majestic-pharmacopoeia.info/",
-                            CreatedBy: "<value>",
-                        },
                         components.IndexingShortcut{
                             InputAlias: "<value>",
                             DestinationURL: "https://majestic-pharmacopoeia.info/",

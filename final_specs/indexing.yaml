@@ -508,7 +508,6 @@ paths:
             package hello.world;
 
             import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.ProcessAllDocumentsRequest;
             import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1ProcessalldocumentsResponse;
             import java.lang.Exception;
 
@@ -521,11 +520,7 @@ paths:
                             .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
-                    ProcessAllDocumentsRequest req = ProcessAllDocumentsRequest.builder()
-                            .build();
-
                     PostApiIndexV1ProcessalldocumentsResponse res = sdk.indexing().documents().processAll()
-                            .request(req)
                             .call();
 
                     // handle response
@@ -776,14 +771,6 @@ paths:
                         "email": "Ivory_Cummerata@hotmail.com",
                         "name": "<value>",
                     },
-                    {
-                        "email": "Ivory_Cummerata@hotmail.com",
-                        "name": "<value>",
-                    },
-                    {
-                        "email": "Ivory_Cummerata@hotmail.com",
-                        "name": "<value>",
-                    },
                 ])
 
                 # Use the SDK ...
@@ -849,14 +836,6 @@ paths:
                                 DatasourceUserDefinition.builder()
                                     .email("Ivory_Cummerata@hotmail.com")
                                     .name("<value>")
-                                    .build(),
-                                DatasourceUserDefinition.builder()
-                                    .email("Ivory_Cummerata@hotmail.com")
-                                    .name("<value>")
-                                    .build(),
-                                DatasourceUserDefinition.builder()
-                                    .email("Ivory_Cummerata@hotmail.com")
-                                    .name("<value>")
                                     .build()))
                             .build();
 
@@ -869,7 +848,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.BulkIndexUsers(ctx, components.BulkIndexUsersRequest{\n        UploadID: \"<id>\",\n        Datasource: \"<value>\",\n        Users: []components.DatasourceUserDefinition{\n            components.DatasourceUserDefinition{\n                Email: \"Ivory_Cummerata@hotmail.com\",\n                Name: \"<value>\",\n            },\n            components.DatasourceUserDefinition{\n                Email: \"Ivory_Cummerata@hotmail.com\",\n                Name: \"<value>\",\n            },\n            components.DatasourceUserDefinition{\n                Email: \"Ivory_Cummerata@hotmail.com\",\n                Name: \"<value>\",\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.BulkIndexUsers(ctx, components.BulkIndexUsersRequest{\n        UploadID: \"<id>\",\n        Datasource: \"<value>\",\n        Users: []components.DatasourceUserDefinition{\n            components.DatasourceUserDefinition{\n                Email: \"Ivory_Cummerata@hotmail.com\",\n                Name: \"<value>\",\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/indexgroup:
     post:
       summary: Index group
@@ -1012,9 +991,6 @@ paths:
                     {
                         "name": "<value>",
                     },
-                    {
-                        "name": "<value>",
-                    },
                 ])
 
                 # Use the SDK ...
@@ -1073,9 +1049,6 @@ paths:
                             .groups(List.of(
                                 DatasourceGroupDefinition.builder()
                                     .name("<value>")
-                                    .build(),
-                                DatasourceGroupDefinition.builder()
-                                    .name("<value>")
                                     .build()))
                             .build();
 
@@ -1088,7 +1061,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.BulkIndexGroups(ctx, components.BulkIndexGroupsRequest{\n        UploadID: \"<id>\",\n        Datasource: \"<value>\",\n        Groups: []components.DatasourceGroupDefinition{\n            components.DatasourceGroupDefinition{\n                Name: \"<value>\",\n            },\n            components.DatasourceGroupDefinition{\n                Name: \"<value>\",\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.BulkIndexGroups(ctx, components.BulkIndexGroupsRequest{\n        UploadID: \"<id>\",\n        Datasource: \"<value>\",\n        Groups: []components.DatasourceGroupDefinition{\n            components.DatasourceGroupDefinition{\n                Name: \"<value>\",\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/indexmembership:
     post:
       summary: Index membership
@@ -1229,8 +1202,6 @@ paths:
 
                 g_client.indexing.permissions.bulk_index_memberships(upload_id="<id>", datasource="<value>", memberships=[
                     {},
-                    {},
-                    {},
                 ])
 
                 # Use the SDK ...
@@ -1285,10 +1256,6 @@ paths:
                             .datasource("<value>")
                             .memberships(List.of(
                                 DatasourceBulkMembershipDefinition.builder()
-                                    .build(),
-                                DatasourceBulkMembershipDefinition.builder()
-                                    .build(),
-                                DatasourceBulkMembershipDefinition.builder()
                                     .build()))
                             .build();
 
@@ -1301,7 +1268,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.BulkIndexMemberships(ctx, components.BulkIndexMembershipsRequest{\n        UploadID: \"<id>\",\n        Datasource: \"<value>\",\n        Memberships: []components.DatasourceBulkMembershipDefinition{\n            components.DatasourceBulkMembershipDefinition{},\n            components.DatasourceBulkMembershipDefinition{},\n            components.DatasourceBulkMembershipDefinition{},\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Permissions.BulkIndexMemberships(ctx, components.BulkIndexMembershipsRequest{\n        UploadID: \"<id>\",\n        Datasource: \"<value>\",\n        Memberships: []components.DatasourceBulkMembershipDefinition{\n            components.DatasourceBulkMembershipDefinition{},\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/processallmemberships:
     post:
       summary: Schedules the processing of group memberships
@@ -1363,7 +1330,6 @@ paths:
             package hello.world;
 
             import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.ProcessAllMembershipsRequest;
             import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1ProcessallmembershipsResponse;
             import java.lang.Exception;
 
@@ -1376,11 +1342,7 @@ paths:
                             .instance("<YOUR_GLEAN_INSTANCE_HERE>")
                         .build();
 
-                    ProcessAllMembershipsRequest req = ProcessAllMembershipsRequest.builder()
-                            .build();
-
                     PostApiIndexV1ProcessallmembershipsResponse res = sdk.indexing().permissions().processMemberships()
-                            .request(req)
                             .call();
 
                     // handle response
@@ -1936,12 +1898,7 @@ paths:
                 instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
-                res = g_client.indexing.documents.debug_many(datasource="<value>", debug_documents=[
-                    {
-                        "object_type": "Article",
-                        "doc_id": "art123",
-                    },
-                ])
+                res = g_client.indexing.documents.debug_many(datasource="<value>", debug_documents=[])
 
                 # Handle response
                 print(res)
@@ -1976,7 +1933,6 @@ paths:
             package hello.world;
 
             import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DebugDocumentRequest;
             import com.glean.api_client.glean_api_client.models.components.DebugDocumentsRequest;
             import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DebugDatasourceDocumentsResponse;
             import java.lang.Exception;
@@ -1994,11 +1950,7 @@ paths:
                     PostApiIndexV1DebugDatasourceDocumentsResponse res = sdk.indexing().documents().debugMany()
                             .datasource("<value>")
                             .debugDocumentsRequest(DebugDocumentsRequest.builder()
-                                .debugDocuments(List.of(
-                                    DebugDocumentRequest.builder()
-                                        .objectType("Article")
-                                        .docId("art123")
-                                        .build()))
+                                .debugDocuments(List.of())
                                 .build())
                             .call();
 
@@ -2009,7 +1961,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Documents.DebugMany(ctx, \"<value>\", components.DebugDocumentsRequest{\n        DebugDocuments: []components.DebugDocumentRequest{\n            components.DebugDocumentRequest{\n                ObjectType: \"Article\",\n                DocID: \"art123\",\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.DebugDocumentsResponse != nil {\n        // handle response\n    }\n}"
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Documents.DebugMany(ctx, \"<value>\", components.DebugDocumentsRequest{\n        DebugDocuments: []components.DebugDocumentRequest{},\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.DebugDocumentsResponse != nil {\n        // handle response\n    }\n}"
   /api/index/v1/debug/{datasource}/user:
     post:
       x-beta: true
@@ -2465,7 +2417,7 @@ paths:
                 instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as g_client:
 
-                g_client.indexing.datasources.add(name="<value>", url_regex="https://example-company.datasource.com/.*", quicklinks=[
+                g_client.indexing.datasources.add(name="<value>", datasource_category=models.DatasourceCategory.UNCATEGORIZED, url_regex="https://example-company.datasource.com/.*", quicklinks=[
                     {
                         "icon_config": {
                             "color": "#343CED",
@@ -2474,7 +2426,7 @@ paths:
                             "name": "user",
                         },
                     },
-                ])
+                ], trust_url_regex_for_view_activity=True, strip_fragment_in_canonical_url=True, is_entity_datasource=False, is_test_datasource=False)
 
                 # Use the SDK ...
         - lang: typescript
@@ -2901,26 +2853,6 @@ paths:
                             },
                         ],
                     },
-                    {
-                        "email": "Robin.Stoltenberg@yahoo.com",
-                        "department": "<value>",
-                        "datasource_profiles": [
-                            {
-                                "datasource": "github",
-                                "handle": "<value>",
-                            },
-                        ],
-                    },
-                    {
-                        "email": "Robin.Stoltenberg@yahoo.com",
-                        "department": "<value>",
-                        "datasource_profiles": [
-                            {
-                                "datasource": "github",
-                                "handle": "<value>",
-                            },
-                        ],
-                    },
                 ])
 
                 # Use the SDK ...
@@ -3006,24 +2938,6 @@ paths:
                                             .datasource("github")
                                             .handle("<value>")
                                             .build()))
-                                    .build(),
-                                EmployeeInfoDefinition.builder()
-                                    .email("Robin.Stoltenberg@yahoo.com")
-                                    .department("<value>")
-                                    .datasourceProfiles(List.of(
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
-                                            .build()))
-                                    .build(),
-                                EmployeeInfoDefinition.builder()
-                                    .email("Robin.Stoltenberg@yahoo.com")
-                                    .department("<value>")
-                                    .datasourceProfiles(List.of(
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
-                                            .build()))
                                     .build()))
                             .build();
 
@@ -3036,7 +2950,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.People.BulkIndex(ctx, components.BulkIndexEmployeesRequest{\n        UploadID: \"<id>\",\n        Employees: []components.EmployeeInfoDefinition{\n            components.EmployeeInfoDefinition{\n                Email: \"Robin.Stoltenberg@yahoo.com\",\n                Department: \"<value>\",\n                DatasourceProfiles: []components.DatasourceProfile{\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                },\n            },\n            components.EmployeeInfoDefinition{\n                Email: \"Robin.Stoltenberg@yahoo.com\",\n                Department: \"<value>\",\n                DatasourceProfiles: []components.DatasourceProfile{\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                },\n            },\n            components.EmployeeInfoDefinition{\n                Email: \"Robin.Stoltenberg@yahoo.com\",\n                Department: \"<value>\",\n                DatasourceProfiles: []components.DatasourceProfile{\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                },\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.People.BulkIndex(ctx, components.BulkIndexEmployeesRequest{\n        UploadID: \"<id>\",\n        Employees: []components.EmployeeInfoDefinition{\n            components.EmployeeInfoDefinition{\n                Email: \"Robin.Stoltenberg@yahoo.com\",\n                Department: \"<value>\",\n                DatasourceProfiles: []components.DatasourceProfile{\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                },\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/indexemployeelist: {}
   /api/index/v1/processallemployeesandteams:
     post:
@@ -3253,18 +3167,10 @@ paths:
                             "datasource": "github",
                             "handle": "<value>",
                         },
-                        {
-                            "datasource": "github",
-                            "handle": "<value>",
-                        },
-                        {
-                            "datasource": "github",
-                            "handle": "<value>",
-                        },
                     ],
                     "members": [
                         {
-                            "email": "Nasir.Hilll73@hotmail.com",
+                            "email": "Valerie9@gmail.com",
                         },
                     ],
                 })
@@ -3337,17 +3243,9 @@ paths:
                                 .name("<value>")
                                 .members(List.of(
                                     TeamMember.builder()
-                                        .email("Nasir.Hilll73@hotmail.com")
+                                        .email("Valerie9@gmail.com")
                                         .build()))
                                 .datasourceProfiles(List.of(
-                                    DatasourceProfile.builder()
-                                        .datasource("github")
-                                        .handle("<value>")
-                                        .build(),
-                                    DatasourceProfile.builder()
-                                        .datasource("github")
-                                        .handle("<value>")
-                                        .build(),
                                     DatasourceProfile.builder()
                                         .datasource("github")
                                         .handle("<value>")
@@ -3364,7 +3262,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.People.IndexTeam(ctx, components.IndexTeamRequest{\n        Team: components.TeamInfoDefinition{\n            ID: \"<id>\",\n            Name: \"<value>\",\n            DatasourceProfiles: []components.DatasourceProfile{\n                components.DatasourceProfile{\n                    Datasource: \"github\",\n                    Handle: \"<value>\",\n                },\n                components.DatasourceProfile{\n                    Datasource: \"github\",\n                    Handle: \"<value>\",\n                },\n                components.DatasourceProfile{\n                    Datasource: \"github\",\n                    Handle: \"<value>\",\n                },\n            },\n            Members: []components.TeamMember{\n                components.TeamMember{\n                    Email: \"Nasir.Hilll73@hotmail.com\",\n                },\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.People.IndexTeam(ctx, components.IndexTeamRequest{\n        Team: components.TeamInfoDefinition{\n            ID: \"<id>\",\n            Name: \"<value>\",\n            DatasourceProfiles: []components.DatasourceProfile{\n                components.DatasourceProfile{\n                    Datasource: \"github\",\n                    Handle: \"<value>\",\n                },\n            },\n            Members: []components.TeamMember{\n                components.TeamMember{\n                    Email: \"Valerie9@gmail.com\",\n                },\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/deleteteam:
     post:
       summary: Delete team
@@ -3503,42 +3401,12 @@ paths:
                                 "datasource": "github",
                                 "handle": "<value>",
                             },
+                        ],
+                        "members": [
                             {
-                                "datasource": "github",
-                                "handle": "<value>",
+                                "email": "Nina_Erdman16@gmail.com",
                             },
                         ],
-                        "members": [],
-                    },
-                    {
-                        "id": "<id>",
-                        "name": "<value>",
-                        "datasource_profiles": [
-                            {
-                                "datasource": "github",
-                                "handle": "<value>",
-                            },
-                            {
-                                "datasource": "github",
-                                "handle": "<value>",
-                            },
-                        ],
-                        "members": [],
-                    },
-                    {
-                        "id": "<id>",
-                        "name": "<value>",
-                        "datasource_profiles": [
-                            {
-                                "datasource": "github",
-                                "handle": "<value>",
-                            },
-                            {
-                                "datasource": "github",
-                                "handle": "<value>",
-                            },
-                        ],
-                        "members": [],
                     },
                 ])
 
@@ -3635,40 +3503,11 @@ paths:
                                 TeamInfoDefinition.builder()
                                     .id("<id>")
                                     .name("<value>")
-                                    .members(List.of())
-                                    .datasourceProfiles(List.of(
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
-                                            .build(),
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
+                                    .members(List.of(
+                                        TeamMember.builder()
+                                            .email("Nina_Erdman16@gmail.com")
                                             .build()))
-                                    .build(),
-                                TeamInfoDefinition.builder()
-                                    .id("<id>")
-                                    .name("<value>")
-                                    .members(List.of())
                                     .datasourceProfiles(List.of(
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
-                                            .build(),
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
-                                            .build()))
-                                    .build(),
-                                TeamInfoDefinition.builder()
-                                    .id("<id>")
-                                    .name("<value>")
-                                    .members(List.of())
-                                    .datasourceProfiles(List.of(
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
-                                            .build(),
                                         DatasourceProfile.builder()
                                             .datasource("github")
                                             .handle("<value>")
@@ -3685,7 +3524,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.People.BulkIndexTeams(ctx, components.BulkIndexTeamsRequest{\n        UploadID: \"<id>\",\n        Teams: []components.TeamInfoDefinition{\n            components.TeamInfoDefinition{\n                ID: \"<id>\",\n                Name: \"<value>\",\n                DatasourceProfiles: []components.DatasourceProfile{\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                },\n                Members: []components.TeamMember{},\n            },\n            components.TeamInfoDefinition{\n                ID: \"<id>\",\n                Name: \"<value>\",\n                DatasourceProfiles: []components.DatasourceProfile{\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                },\n                Members: []components.TeamMember{},\n            },\n            components.TeamInfoDefinition{\n                ID: \"<id>\",\n                Name: \"<value>\",\n                DatasourceProfiles: []components.DatasourceProfile{\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                },\n                Members: []components.TeamMember{},\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.People.BulkIndexTeams(ctx, components.BulkIndexTeamsRequest{\n        UploadID: \"<id>\",\n        Teams: []components.TeamInfoDefinition{\n            components.TeamInfoDefinition{\n                ID: \"<id>\",\n                Name: \"<value>\",\n                DatasourceProfiles: []components.DatasourceProfile{\n                    components.DatasourceProfile{\n                        Datasource: \"github\",\n                        Handle: \"<value>\",\n                    },\n                },\n                Members: []components.TeamMember{\n                    components.TeamMember{\n                        Email: \"Nina_Erdman16@gmail.com\",\n                    },\n                },\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/bulkindexshortcuts:
     post:
       summary: Bulk index external shortcuts
@@ -3724,12 +3563,6 @@ paths:
             ) as g_client:
 
                 g_client.indexing.shortcuts.bulk_index(upload_id="<id>", shortcuts=[
-                    {
-                        "input_alias": "<value>",
-                        "destination_url": "https://plump-tune-up.biz/",
-                        "created_by": "<value>",
-                        "intermediate_url": "https://lean-sightseeing.net",
-                    },
                     {
                         "input_alias": "<value>",
                         "destination_url": "https://plump-tune-up.biz/",
@@ -3801,12 +3634,6 @@ paths:
                                     .destinationUrl("https://plump-tune-up.biz/")
                                     .createdBy("<value>")
                                     .intermediateUrl("https://lean-sightseeing.net")
-                                    .build(),
-                                ExternalShortcut.builder()
-                                    .inputAlias("<value>")
-                                    .destinationUrl("https://plump-tune-up.biz/")
-                                    .createdBy("<value>")
-                                    .intermediateUrl("https://lean-sightseeing.net")
                                     .build()))
                             .build();
 
@@ -3819,7 +3646,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Shortcuts.BulkIndex(ctx, components.BulkIndexShortcutsRequest{\n        UploadID: \"<id>\",\n        Shortcuts: []components.ExternalShortcut{\n            components.ExternalShortcut{\n                InputAlias: \"<value>\",\n                DestinationURL: \"https://plump-tune-up.biz/\",\n                CreatedBy: \"<value>\",\n                IntermediateURL: \"https://lean-sightseeing.net\",\n            },\n            components.ExternalShortcut{\n                InputAlias: \"<value>\",\n                DestinationURL: \"https://plump-tune-up.biz/\",\n                CreatedBy: \"<value>\",\n                IntermediateURL: \"https://lean-sightseeing.net\",\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Shortcuts.BulkIndex(ctx, components.BulkIndexShortcutsRequest{\n        UploadID: \"<id>\",\n        Shortcuts: []components.ExternalShortcut{\n            components.ExternalShortcut{\n                InputAlias: \"<value>\",\n                DestinationURL: \"https://plump-tune-up.biz/\",\n                CreatedBy: \"<value>\",\n                IntermediateURL: \"https://lean-sightseeing.net\",\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
   /api/index/v1/uploadshortcuts:
     post:
       summary: Upload shortcuts
@@ -3858,16 +3685,6 @@ paths:
             ) as g_client:
 
                 g_client.indexing.shortcuts.upload(upload_id="<id>", shortcuts=[
-                    {
-                        "input_alias": "<value>",
-                        "destination_url": "https://majestic-pharmacopoeia.info/",
-                        "created_by": "<value>",
-                    },
-                    {
-                        "input_alias": "<value>",
-                        "destination_url": "https://majestic-pharmacopoeia.info/",
-                        "created_by": "<value>",
-                    },
                     {
                         "input_alias": "<value>",
                         "destination_url": "https://majestic-pharmacopoeia.info/",
@@ -3940,16 +3757,6 @@ paths:
                                     .inputAlias("<value>")
                                     .destinationUrl("https://majestic-pharmacopoeia.info/")
                                     .createdBy("<value>")
-                                    .build(),
-                                IndexingShortcut.builder()
-                                    .inputAlias("<value>")
-                                    .destinationUrl("https://majestic-pharmacopoeia.info/")
-                                    .createdBy("<value>")
-                                    .build(),
-                                IndexingShortcut.builder()
-                                    .inputAlias("<value>")
-                                    .destinationUrl("https://majestic-pharmacopoeia.info/")
-                                    .createdBy("<value>")
                                     .build()))
                             .build();
 
@@ -3962,7 +3769,7 @@ paths:
             }
         - lang: go
           label: Go (API Client)
-          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Shortcuts.Upload(ctx, components.UploadShortcutsRequest{\n        UploadID: \"<id>\",\n        Shortcuts: []components.IndexingShortcut{\n            components.IndexingShortcut{\n                InputAlias: \"<value>\",\n                DestinationURL: \"https://majestic-pharmacopoeia.info/\",\n                CreatedBy: \"<value>\",\n            },\n            components.IndexingShortcut{\n                InputAlias: \"<value>\",\n                DestinationURL: \"https://majestic-pharmacopoeia.info/\",\n                CreatedBy: \"<value>\",\n            },\n            components.IndexingShortcut{\n                InputAlias: \"<value>\",\n                DestinationURL: \"https://majestic-pharmacopoeia.info/\",\n                CreatedBy: \"<value>\",\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Indexing.Shortcuts.Upload(ctx, components.UploadShortcutsRequest{\n        UploadID: \"<id>\",\n        Shortcuts: []components.IndexingShortcut{\n            components.IndexingShortcut{\n                InputAlias: \"<value>\",\n                DestinationURL: \"https://majestic-pharmacopoeia.info/\",\n                CreatedBy: \"<value>\",\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res != nil {\n        // handle response\n    }\n}"
 components:
   securitySchemes:
     APIToken:
