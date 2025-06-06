@@ -1,3 +1,4 @@
 [tools]
+"aqua:speakeasy-api/speakeasy" = "latest"
 node = "20"
 pnpm = "10"
