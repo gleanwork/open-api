@@ -1,0 +1,57 @@
+name: Trigger Developer Site Redeploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for triggering developer site redeploy'
+        required: false
+        default: 'Manual trigger'
+        type: string
+
+  workflow_run:
+    workflows: ['Deploy Specs to GitHub Pages']
+    types:
+      - completed
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  trigger-redeploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Log trigger reason
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Manually triggered: ${{ github.event.inputs.reason }}"
+          else
+            echo "Automatically triggered after successful Deploy Specs to GitHub Pages workflow"
+          fi
+
+      - name: Trigger Developer Site Redeploy
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.DEVELOPER_SITE_REDEPLOY_TOKEN }}
+          script: |
+            const result = await github.rest.actions.createWorkflowDispatch({
+              owner: 'gleanwork',
+              repo: 'glean-developer-site',
+              workflow_id: 'trigger-redeploy.yml',
+              ref: 'main',
+              inputs: {
+                reason: '${{ github.event.inputs.reason || "Triggered by OpenAPI specs deployment" }}'
+              }
+            });
+            console.log('Developer site redeploy triggered:', result.status);
+
+      - name: Summary
+        run: |
+          echo "✅ Developer site redeploy workflow has been triggered successfully!"
+          echo ""
+          echo "View the triggered workflow at:"
+          echo "https://github.com/gleanwork/glean-developer-site/actions"
