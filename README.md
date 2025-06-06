@@ -186,3 +186,24 @@ To set up the development environment:
    ```bash
    pnpm test
    ```
+
+## Deployment
+
+In order to roll out changes from the upstream original source repo all the way to [developers.glean.com](https://developers.glean.com) there are a number of steps (👷s are manual, 🤖s are automated):
+
+1. 👷Land a change in the upstream source repo
+2. 🤖CI pushes that to an internal staging repo to strip out private details
+3. 🤖CI in internal staging repo pushes the stripped specs to this repo
+4. 🤖CI in this repo runs the [transform.yml](https://github.com/gleanwork/open-api/actions/workflows/transform.yml) workflow to transform the specs
+5. 🤖CI in this repo runs [trigger-client-generation.yml](https://github.com/gleanwork/open-api/actions/workflows/trigger-client-generation.yml) workflow
+6. 👷Merge PRs in all 4 of the API Client repos:
+   - [gleanwork/api-client-python](https://github.com/gleanwork/api-client-python)
+   - [gleanwork/api-client-java](https://github.com/gleanwork/api-client-java)
+   - [gleanwork/api-client-typescript](https://github.com/gleanwork/api-client-typescript)
+   - [gleanwork/api-client-go](https://github.com/gleanwork/api-client-go)
+7. 🤖CI in each of the API Client repos releases to their respective package managers
+8. 👷Once all 4 API Clients are merged and released, manually trigger [generate-code-samples.yml](https://github.com/gleanwork/open-api/actions/workflows/generate-code-samples.yml) workflow
+9. 🤖CI in this repo runs the [deploy-pages.yml](https://github.com/gleanwork/open-api/actions/workflows/deploy-pages.yml) workflow to deploy the final specs to GitHub Pages
+10. 🤖CI in this repo runs [trigger-developer-site-redeploy.yml](https://github.com/gleanwork/open-api/actions/workflows/trigger-developer-site-redeploy.yml)
+11. 🤖CI in [gleanwork/glean-developer-site](https://github.com/gleanwork/glean-developer-site) pushes a commit to trigger deployment
+12. 🤖Mintlify Deployment updates [developers.glean.com](https://developers.glean.com)
