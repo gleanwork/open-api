@@ -24,11 +24,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Setup Speakeasy CLI
-        uses: ./.github/actions/speakeasy-setup
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Generate client code samples
         run: speakeasy run -s glean-client-merged-code-samples-spec
         env:
