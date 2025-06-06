@@ -43,9 +43,7 @@ jobs:
               repo: 'api-client-python',
               workflow_id: 'sdk_generation.yaml',
               ref: 'main',
-              inputs: {
-                trigger_source: 'open-api-repo'
-              }
+              inputs: {}
             });
             console.log('Python client generation triggered:', result.status);
 
@@ -59,9 +57,7 @@ jobs:
               repo: 'api-client-typescript',
               workflow_id: 'sdk_generation.yaml',
               ref: 'main',
-              inputs: {
-                trigger_source: 'open-api-repo'
-              }
+              inputs: {}
             });
             console.log('TypeScript client generation triggered:', result.status);
 
@@ -75,9 +71,7 @@ jobs:
               repo: 'api-client-go',
               workflow_id: 'sdk_generation.yaml',
               ref: 'main',
-              inputs: {
-                trigger_source: 'open-api-repo'
-              }
+              inputs: {}
             });
             console.log('Go client generation triggered:', result.status);
 
@@ -91,9 +85,7 @@ jobs:
               repo: 'api-client-java',
               workflow_id: 'sdk_generation.yaml',
               ref: 'main',
-              inputs: {
-                trigger_source: 'open-api-repo'
-              }
+              inputs: {}
             });
             console.log('Java client generation triggered:', result.status);
 
