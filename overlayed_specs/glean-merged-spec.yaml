@@ -7475,11 +7475,11 @@ components:
         input_schema:
           type: object
           title: Input Schema
-          description: The schema for the agent input. In JSON schema format.
+          description: The schema for the agent input. In JSON Schema format.
         output_schema:
           type: object
           title: Output Schema
-          description: The schema for the agent output. In JSON schema format.
+          description: The schema for the agent output. In JSON Schema format.
       type: object
       required:
         - agent_id
