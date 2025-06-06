@@ -38,13 +38,14 @@ jobs:
         with:
           github-token: ${{ secrets.DEVELOPER_SITE_REDEPLOY_TOKEN }}
           script: |
+            const reason = '${{ github.event.inputs.reason }}' || "Triggered by OpenAPI specs deployment";
             const result = await github.rest.actions.createWorkflowDispatch({
               owner: 'gleanwork',
               repo: 'glean-developer-site',
               workflow_id: 'trigger-redeploy.yml',
               ref: 'main',
               inputs: {
-                reason: '${{ github.event.inputs.reason || "Triggered by OpenAPI specs deployment" }}'
+                reason,
               }
             });
             console.log('Developer site redeploy triggered:', result.status);
