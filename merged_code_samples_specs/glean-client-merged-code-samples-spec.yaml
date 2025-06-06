@@ -197,12 +197,12 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.ActivityResponse;
             import java.lang.Exception;
             import java.time.OffsetDateTime;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.ActivityResponse;
 
             public class Application {
 
@@ -356,12 +356,12 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.Event;
-            import com.glean.api_client.glean_api_client.models.components.Feedback;
-            import com.glean.api_client.glean_api_client.models.operations.FeedbackResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.Event;
+            import org.openapis.openapi.models.components.Feedback;
+            import org.openapis.openapi.models.operations.FeedbackResponse;
 
             public class Application {
 
@@ -5269,13 +5269,13 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.CreateannouncementResponse;
             import java.lang.Exception;
             import java.time.OffsetDateTime;
             import java.util.List;
             import java.util.Map;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.CreateannouncementResponse;
 
             public class Application {
 
@@ -6432,10 +6432,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DeleteAnnouncementRequest;
-            import com.glean.api_client.glean_api_client.models.operations.DeleteannouncementResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DeleteAnnouncementRequest;
+            import org.openapis.openapi.models.operations.DeleteannouncementResponse;
 
             public class Application {
 
@@ -12562,13 +12562,13 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.UpdateannouncementResponse;
             import java.lang.Exception;
             import java.time.OffsetDateTime;
             import java.util.List;
             import java.util.Map;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.UpdateannouncementResponse;
 
             public class Application {
 
@@ -13883,11 +13883,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.CreateanswerResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.CreateanswerResponse;
 
             public class Application {
 
@@ -14052,10 +14052,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DeleteAnswerRequest;
-            import com.glean.api_client.glean_api_client.models.operations.DeleteanswerResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DeleteAnswerRequest;
+            import org.openapis.openapi.models.operations.DeleteanswerResponse;
 
             public class Application {
 
@@ -14337,11 +14337,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.EditanswerResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.EditanswerResponse;
 
             public class Application {
 
@@ -14452,10 +14452,7 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.client.answers.retrieve(request={
-                    "id": 3,
-                    "doc_id": "ANSWERS_answer_3",
-                })
+                res = g_client.client.answers.retrieve(id=3, doc_id="ANSWERS_answer_3")
 
                 # Handle response
                 print(res)
@@ -14515,10 +14512,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.GetAnswerRequest;
-            import com.glean.api_client.glean_api_client.models.operations.GetanswerResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.GetAnswerRequest;
+            import org.openapis.openapi.models.operations.GetanswerResponse;
 
             public class Application {
 
@@ -14641,10 +14638,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.ListAnswersRequest;
-            import com.glean.api_client.glean_api_client.models.operations.ListanswersResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.ListAnswersRequest;
+            import org.openapis.openapi.models.operations.ListanswersResponse;
 
             public class Application {
 
@@ -14755,9 +14752,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.CreateauthtokenResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.CreateauthtokenResponse;
 
             public class Application {
 
@@ -15007,11 +15004,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.ChatResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.ChatResponse;
 
             public class Application {
 
@@ -15123,9 +15120,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.DeleteallchatsResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.DeleteallchatsResponse;
 
             public class Application {
 
@@ -15240,11 +15237,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DeleteChatsRequest;
-            import com.glean.api_client.glean_api_client.models.operations.DeletechatsResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DeleteChatsRequest;
+            import org.openapis.openapi.models.operations.DeletechatsResponse;
 
             public class Application {
 
@@ -15368,10 +15365,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.GetChatRequest;
-            import com.glean.api_client.glean_api_client.models.operations.GetchatResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.GetChatRequest;
+            import org.openapis.openapi.models.operations.GetchatResponse;
 
             public class Application {
 
@@ -15483,9 +15480,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.ListchatsResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.ListchatsResponse;
 
             public class Application {
 
@@ -15606,10 +15603,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.GetChatApplicationRequest;
-            import com.glean.api_client.glean_api_client.models.operations.GetchatapplicationResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.GetChatApplicationRequest;
+            import org.openapis.openapi.models.operations.GetchatapplicationResponse;
 
             public class Application {
 
@@ -15740,11 +15737,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.UploadChatFilesRequest;
-            import com.glean.api_client.glean_api_client.models.operations.UploadchatfilesResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.UploadChatFilesRequest;
+            import org.openapis.openapi.models.operations.UploadchatfilesResponse;
 
             public class Application {
 
@@ -15875,11 +15872,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.GetChatFilesRequest;
-            import com.glean.api_client.glean_api_client.models.operations.GetchatfilesResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.GetChatFilesRequest;
+            import org.openapis.openapi.models.operations.GetchatfilesResponse;
 
             public class Application {
 
@@ -16010,11 +16007,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DeleteChatFilesRequest;
-            import com.glean.api_client.glean_api_client.models.operations.DeletechatfilesResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DeleteChatFilesRequest;
+            import org.openapis.openapi.models.operations.DeletechatfilesResponse;
 
             public class Application {
 
@@ -16040,8 +16037,8 @@ paths:
     get:
       tags:
         - Agents
-      summary: Get Agent
-      description: Get an agent by ID. This endpoint implements the LangChain Agent Protocol, specifically part of the Agents stage (https://langchain-ai.github.io/agent-protocol/api.html#tag/agents/GET/agents/{agent_id}). It adheres to the standard contract defined for agent interoperability and can be used by agent runtimes that support the Agent Protocol.
+      summary: Retrieve an agent
+      description: Returns details of an [agent](https://developers.glean.com/agents/agents-api) created in the Agent Builder.
       operationId: getAgent
       x-visibility: Preview
       parameters:
@@ -16140,9 +16137,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.GetAgentResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.GetAgentResponse;
 
             public class Application {
 
@@ -16165,8 +16162,8 @@ paths:
     get:
       tags:
         - Agents
-      summary: Get Agent Schemas
-      description: Get an agent's schemas by ID. This endpoint implements the LangChain Agent Protocol, specifically part of the Agents stage (https://langchain-ai.github.io/agent-protocol/api.html#tag/agents/GET/agents/{agent_id}/schemas). It adheres to the standard contract defined for agent interoperability and can be used by agent runtimes that support the Agent Protocol.
+      summary: List an agent's schemas
+      description: Return [agent](https://developers.glean.com/agents/agents-api)'s input and output schemas. You can use these schemas to detect changes to an agent's input or output structure.
       operationId: getAgentSchemas
       x-visibility: Preview
       parameters:
@@ -16271,9 +16268,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.GetAgentSchemasResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.GetAgentSchemasResponse;
 
             public class Application {
 
@@ -16296,8 +16293,8 @@ paths:
     post:
       tags:
         - Agents
-      summary: Search Agents
-      description: List Agents available in this service. This endpoint implements the LangChain Agent Protocol, specifically part of the Agents stage (https://langchain-ai.github.io/agent-protocol/api.html#tag/agents/POST/agents/search). It adheres to the standard contract defined for agent interoperability and can be used by agent runtimes that support the Agent Protocol.
+      summary: Search agents
+      description: "Search for [agents](https://developers.glean.com/agents/agents-api) by agent name. "
       operationId: searchAgents
       x-visibility: Preview
       requestBody:
@@ -16345,7 +16342,7 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.client.agents.list()
+                res = g_client.client.agents.list(name="HR Policy Agent")
 
                 # Handle response
                 print(res)
@@ -16359,7 +16356,9 @@ paths:
             });
 
             async function run() {
-              const result = await glean.client.agents.list({});
+              const result = await glean.client.agents.list({
+                name: "HR Policy Agent",
+              });
 
               // Handle the result
               console.log(result);
@@ -16386,7 +16385,9 @@ paths:
                     apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Client.Agents.List(ctx, components.SearchAgentsRequest{})
+                res, err := s.Client.Agents.List(ctx, components.SearchAgentsRequest{
+                    Name: apiclientgo.String("HR Policy Agent"),
+                })
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -16399,10 +16400,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.SearchAgentsRequest;
-            import com.glean.api_client.glean_api_client.models.operations.SearchAgentsResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.SearchAgentsRequest;
+            import org.openapis.openapi.models.operations.SearchAgentsResponse;
 
             public class Application {
 
@@ -16413,6 +16414,7 @@ paths:
                         .build();
 
                     SearchAgentsRequest req = SearchAgentsRequest.builder()
+                            .name("HR Policy Agent")
                             .build();
 
                     SearchAgentsResponse res = sdk.client().agents().list()
@@ -16428,8 +16430,8 @@ paths:
     post:
       tags:
         - Agents
-      summary: Create Run, Stream Output
-      description: Creates and triggers a run of an agent. Streams the output in SSE format. This endpoint implements the LangChain Agent Protocol, specifically part of the Runs stage (https://langchain-ai.github.io/agent-protocol/api.html#tag/runs/POST/runs/stream). It adheres to the standard contract defined for agent interoperability and can be used by agent runtimes that support the Agent Protocol. Note that running agents that reference third party platform write actions is unsupported as it requires user confirmation.
+      summary: Create an agent run and stream the response
+      description: Executes an [agent](https://developers.glean.com/agents/agents-api) run and returns the result as a stream of server-sent events (SSE).
       operationId: createAndStreamRun
       x-visibility: Preview
       requestBody:
@@ -16445,12 +16447,23 @@ paths:
             text/event-stream:
               schema:
                 type: string
-                description: |-
-                  The server will send a stream of events in SSE format.
-                  **Example event**:
+                description: The server will send a stream of events in server-sent events (SSE) format.
+                example: |
                   id: 1
                   event: message
-                  data: {}
+                  data: {"messages":[{"role":"GLEAN_AI","content":[{"text":"Hello","type":"text"}]}]}
+
+                  id: 2
+                  event: message
+                  data: {"messages":[{"role":"GLEAN_AI","content":[{"text":",","type":"text"}]}]}
+
+                  id: 3
+                  event: message
+                  data: {"messages":[{"role":"GLEAN_AI","content":[{"text":" I'm","type":"text"}]}]}
+
+                  id: 4
+                  event: message
+                  data: {"messages":[{"role":"GLEAN_AI","content":[{"text":" your","type":"text"}]}]}
         "400":
           description: Bad request
         "403":
@@ -16547,10 +16560,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.AgentRunCreate;
-            import com.glean.api_client.glean_api_client.models.operations.CreateAndStreamRunResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.AgentRunCreate;
+            import org.openapis.openapi.models.operations.CreateAndStreamRunResponse;
 
             public class Application {
 
@@ -16577,8 +16590,8 @@ paths:
     post:
       tags:
         - Agents
-      summary: Create Run, Wait for Output
-      description: Creates and triggers a run of an agent. Waits for final output and then returns it. This endpoint implements the LangChain Agent Protocol, specifically part of the Runs stage (https://langchain-ai.github.io/agent-protocol/api.html#tag/runs/POST/runs/wait). It adheres to the standard contract defined for agent interoperability and can be used by agent runtimes that support the Agent Protocol. Note that running agents that reference third party platform write actions is unsupported as it requires user confirmation.
+      summary: Create an [agent](https://developers.glean.com/agents/agents-api) run and wait for the response
+      description: Executes an agent run and returns the final response.
       operationId: createAndWaitRun
       x-visibility: Preview
       requestBody:
@@ -16678,10 +16691,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.AgentRunCreate;
-            import com.glean.api_client.glean_api_client.models.operations.CreateAndWaitRunResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.AgentRunCreate;
+            import org.openapis.openapi.models.operations.CreateAndWaitRunResponse;
 
             public class Application {
 
@@ -16807,10 +16820,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.AddCollectionItemsRequest;
-            import com.glean.api_client.glean_api_client.models.operations.AddcollectionitemsResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.AddCollectionItemsRequest;
+            import org.openapis.openapi.models.operations.AddcollectionitemsResponse;
 
             public class Application {
 
@@ -17052,12 +17065,12 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.errors.CollectionError;
-            import com.glean.api_client.glean_api_client.models.operations.CreatecollectionResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.errors.CollectionError;
+            import org.openapis.openapi.models.operations.CreatecollectionResponse;
 
             public class Application {
 
@@ -17224,12 +17237,12 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DeleteCollectionRequest;
-            import com.glean.api_client.glean_api_client.models.errors.CollectionError;
-            import com.glean.api_client.glean_api_client.models.operations.DeletecollectionResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DeleteCollectionRequest;
+            import org.openapis.openapi.models.errors.CollectionError;
+            import org.openapis.openapi.models.operations.DeletecollectionResponse;
 
             public class Application {
 
@@ -17360,10 +17373,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DeleteCollectionItemRequest;
-            import com.glean.api_client.glean_api_client.models.operations.DeletecollectionitemResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DeleteCollectionItemRequest;
+            import org.openapis.openapi.models.operations.DeletecollectionitemResponse;
 
             public class Application {
 
@@ -17601,12 +17614,12 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.errors.CollectionError;
-            import com.glean.api_client.glean_api_client.models.operations.EditcollectionResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.errors.CollectionError;
+            import org.openapis.openapi.models.operations.EditcollectionResponse;
 
             public class Application {
 
@@ -17764,10 +17777,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.EditCollectionItemRequest;
-            import com.glean.api_client.glean_api_client.models.operations.EditcollectionitemResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.EditCollectionItemRequest;
+            import org.openapis.openapi.models.operations.EditcollectionitemResponse;
 
             public class Application {
 
@@ -17894,10 +17907,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.GetCollectionRequest;
-            import com.glean.api_client.glean_api_client.models.operations.GetcollectionResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.GetCollectionRequest;
+            import org.openapis.openapi.models.operations.GetcollectionResponse;
 
             public class Application {
 
@@ -18019,10 +18032,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.ListCollectionsRequest;
-            import com.glean.api_client.glean_api_client.models.operations.ListcollectionsResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.ListCollectionsRequest;
+            import org.openapis.openapi.models.operations.ListcollectionsResponse;
 
             public class Application {
 
@@ -18145,10 +18158,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.GetDocPermissionsRequest;
-            import com.glean.api_client.glean_api_client.models.operations.GetdocpermissionsResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.GetDocPermissionsRequest;
+            import org.openapis.openapi.models.operations.GetdocpermissionsResponse;
 
             public class Application {
 
@@ -18268,9 +18281,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.GetdocumentsResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.GetdocumentsResponse;
 
             public class Application {
 
@@ -18464,11 +18477,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.GetdocumentsbyfacetsResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.GetdocumentsbyfacetsResponse;
 
             public class Application {
 
@@ -18617,12 +18630,12 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.InsightsRequest;
-            import com.glean.api_client.glean_api_client.models.components.InsightsRequestCategory;
-            import com.glean.api_client.glean_api_client.models.operations.InsightsResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.InsightsRequest;
+            import org.openapis.openapi.models.components.InsightsRequestCategory;
+            import org.openapis.openapi.models.operations.InsightsResponse;
 
             public class Application {
 
@@ -18751,11 +18764,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.IdType;
-            import com.glean.api_client.glean_api_client.models.components.MessagesRequest;
-            import com.glean.api_client.glean_api_client.models.operations.MessagesResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.IdType;
+            import org.openapis.openapi.models.components.MessagesRequest;
+            import org.openapis.openapi.models.operations.MessagesResponse;
 
             public class Application {
 
@@ -18824,23 +18837,21 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.client.pins.update(request={
-                    "audience_filters": [
-                        {
-                            "field_name": "type",
-                            "values": [
-                                {
-                                    "value": "Spreadsheet",
-                                    "relation_type": models.RelationType.EQUALS,
-                                },
-                                {
-                                    "value": "Presentation",
-                                    "relation_type": models.RelationType.EQUALS,
-                                },
-                            ],
-                        },
-                    ],
-                })
+                res = g_client.client.pins.update(audience_filters=[
+                    {
+                        "field_name": "type",
+                        "values": [
+                            {
+                                "value": "Spreadsheet",
+                                "relation_type": models.RelationType.EQUALS,
+                            },
+                            {
+                                "value": "Presentation",
+                                "relation_type": models.RelationType.EQUALS,
+                            },
+                        ],
+                    },
+                ])
 
                 # Handle response
                 print(res)
@@ -18926,11 +18937,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.EditpinResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.EditpinResponse;
 
             public class Application {
 
@@ -19064,10 +19075,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.GetPinRequest;
-            import com.glean.api_client.glean_api_client.models.operations.GetpinResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.GetPinRequest;
+            import org.openapis.openapi.models.operations.GetpinResponse;
 
             public class Application {
 
@@ -19134,7 +19145,7 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.client.pins.list()
+                res = g_client.client.pins.list(request={})
 
                 # Handle response
                 print(res)
@@ -19188,10 +19199,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.ListpinsRequest;
-            import com.glean.api_client.glean_api_client.models.operations.ListpinsResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.ListpinsRequest;
+            import org.openapis.openapi.models.operations.ListpinsResponse;
 
             public class Application {
 
@@ -19258,23 +19269,21 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.client.pins.create(request={
-                    "audience_filters": [
-                        {
-                            "field_name": "type",
-                            "values": [
-                                {
-                                    "value": "Spreadsheet",
-                                    "relation_type": models.RelationType.EQUALS,
-                                },
-                                {
-                                    "value": "Presentation",
-                                    "relation_type": models.RelationType.EQUALS,
-                                },
-                            ],
-                        },
-                    ],
-                })
+                res = g_client.client.pins.create(audience_filters=[
+                    {
+                        "field_name": "type",
+                        "values": [
+                            {
+                                "value": "Spreadsheet",
+                                "relation_type": models.RelationType.EQUALS,
+                            },
+                            {
+                                "value": "Presentation",
+                                "relation_type": models.RelationType.EQUALS,
+                            },
+                        ],
+                    },
+                ])
 
                 # Handle response
                 print(res)
@@ -19360,11 +19369,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.PinResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.PinResponse;
 
             public class Application {
 
@@ -19494,10 +19503,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.Unpin;
-            import com.glean.api_client.glean_api_client.models.operations.UnpinResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.Unpin;
+            import org.openapis.openapi.models.operations.UnpinResponse;
 
             public class Application {
 
@@ -19796,12 +19805,12 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.errors.GleanDataError;
-            import com.glean.api_client.glean_api_client.models.operations.AdminsearchResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.errors.GleanDataError;
+            import org.openapis.openapi.models.operations.AdminsearchResponse;
 
             public class Application {
 
@@ -19895,12 +19904,15 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.client.search.autocomplete(request={
-                    "tracking_token": "trackingToken",
-                    "query": "what is a que",
-                    "datasource": "GDRIVE",
-                    "result_size": 10,
-                })
+                res = g_client.client.search.autocomplete(tracking_token="trackingToken", query="what is a que", datasource="GDRIVE", result_size=10, auth_tokens=[
+                    {
+                        "access_token": "123abc",
+                        "datasource": "gmail",
+                        "scope": "email profile https://www.googleapis.com/auth/gmail.readonly",
+                        "token_type": "Bearer",
+                        "auth_user": "1",
+                    },
+                ])
 
                 # Handle response
                 print(res)
@@ -19964,10 +19976,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.AutocompleteRequest;
-            import com.glean.api_client.glean_api_client.models.operations.AutocompleteResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.AutocompleteRequest;
+            import org.openapis.openapi.models.operations.AutocompleteResponse;
 
             public class Application {
 
@@ -20040,9 +20052,7 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.client.search.retrieve_feed(request={
-                    "timeout_millis": 5000,
-                })
+                res = g_client.client.search.retrieve_feed(timeout_millis=5000)
 
                 # Handle response
                 print(res)
@@ -20100,10 +20110,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.FeedRequest;
-            import com.glean.api_client.glean_api_client.models.operations.FeedResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.FeedRequest;
+            import org.openapis.openapi.models.operations.FeedResponse;
 
             public class Application {
 
@@ -20178,8 +20188,98 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.client.search.recommendations(request=models.RecommendationsRequest(
-                    source_document=models.Document(
+                res = g_client.client.search.recommendations(source_document=models.Document(
+                    container_document=models.Document(
+                        metadata=models.DocumentMetadata(
+                            datasource="datasource",
+                            object_type="Feature Request",
+                            container="container",
+                            parent_id="JIRA_EN-1337",
+                            mime_type="mimeType",
+                            document_id="documentId",
+                            create_time=parse_datetime("2000-01-23T04:56:07.000Z"),
+                            update_time=parse_datetime("2000-01-23T04:56:07.000Z"),
+                            author=models.Person(
+                                name="name",
+                                obfuscated_id="<id>",
+                            ),
+                            components=[
+                                "Backend",
+                                "Networking",
+                            ],
+                            status="[\"Done\"]",
+                            custom_data={
+                                "someCustomField": models.CustomDataValue(),
+                            },
+                        ),
+                    ),
+                    parent_document=models.Document(
+                        metadata=models.DocumentMetadata(
+                            datasource="datasource",
+                            object_type="Feature Request",
+                            container="container",
+                            parent_id="JIRA_EN-1337",
+                            mime_type="mimeType",
+                            document_id="documentId",
+                            create_time=parse_datetime("2000-01-23T04:56:07.000Z"),
+                            update_time=parse_datetime("2000-01-23T04:56:07.000Z"),
+                            author=models.Person(
+                                name="name",
+                                obfuscated_id="<id>",
+                            ),
+                            components=[
+                                "Backend",
+                                "Networking",
+                            ],
+                            status="[\"Done\"]",
+                            custom_data={
+                                "someCustomField": models.CustomDataValue(),
+                            },
+                        ),
+                    ),
+                    metadata=models.DocumentMetadata(
+                        datasource="datasource",
+                        object_type="Feature Request",
+                        container="container",
+                        parent_id="JIRA_EN-1337",
+                        mime_type="mimeType",
+                        document_id="documentId",
+                        create_time=parse_datetime("2000-01-23T04:56:07.000Z"),
+                        update_time=parse_datetime("2000-01-23T04:56:07.000Z"),
+                        author=models.Person(
+                            name="name",
+                            obfuscated_id="<id>",
+                        ),
+                        components=[
+                            "Backend",
+                            "Networking",
+                        ],
+                        status="[\"Done\"]",
+                        custom_data={
+                            "someCustomField": models.CustomDataValue(),
+                        },
+                    ),
+                ), page_size=100, max_snippet_size=400, request_options=models.RecommendationsRequestOptions(
+                    facet_filter_sets=[
+                        models.FacetFilterSet(
+                            filters=[
+                                models.FacetFilter(
+                                    field_name="type",
+                                    values=[
+                                        models.FacetFilterValue(
+                                            value="Spreadsheet",
+                                            relation_type=models.RelationType.EQUALS,
+                                        ),
+                                        models.FacetFilterValue(
+                                            value="Presentation",
+                                            relation_type=models.RelationType.EQUALS,
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
+                    ],
+                    context=models.Document(
                         container_document=models.Document(
                             metadata=models.DocumentMetadata(
                                 datasource="datasource",
@@ -20249,101 +20349,6 @@ paths:
                             custom_data={
                                 "someCustomField": models.CustomDataValue(),
                             },
-                        ),
-                    ),
-                    page_size=100,
-                    max_snippet_size=400,
-                    request_options=models.RecommendationsRequestOptions(
-                        facet_filter_sets=[
-                            models.FacetFilterSet(
-                                filters=[
-                                    models.FacetFilter(
-                                        field_name="type",
-                                        values=[
-                                            models.FacetFilterValue(
-                                                value="Spreadsheet",
-                                                relation_type=models.RelationType.EQUALS,
-                                            ),
-                                            models.FacetFilterValue(
-                                                value="Presentation",
-                                                relation_type=models.RelationType.EQUALS,
-                                            ),
-                                        ],
-                                    ),
-                                ],
-                            ),
-                        ],
-                        context=models.Document(
-                            container_document=models.Document(
-                                metadata=models.DocumentMetadata(
-                                    datasource="datasource",
-                                    object_type="Feature Request",
-                                    container="container",
-                                    parent_id="JIRA_EN-1337",
-                                    mime_type="mimeType",
-                                    document_id="documentId",
-                                    create_time=parse_datetime("2000-01-23T04:56:07.000Z"),
-                                    update_time=parse_datetime("2000-01-23T04:56:07.000Z"),
-                                    author=models.Person(
-                                        name="name",
-                                        obfuscated_id="<id>",
-                                    ),
-                                    components=[
-                                        "Backend",
-                                        "Networking",
-                                    ],
-                                    status="[\"Done\"]",
-                                    custom_data={
-                                        "someCustomField": models.CustomDataValue(),
-                                    },
-                                ),
-                            ),
-                            parent_document=models.Document(
-                                metadata=models.DocumentMetadata(
-                                    datasource="datasource",
-                                    object_type="Feature Request",
-                                    container="container",
-                                    parent_id="JIRA_EN-1337",
-                                    mime_type="mimeType",
-                                    document_id="documentId",
-                                    create_time=parse_datetime("2000-01-23T04:56:07.000Z"),
-                                    update_time=parse_datetime("2000-01-23T04:56:07.000Z"),
-                                    author=models.Person(
-                                        name="name",
-                                        obfuscated_id="<id>",
-                                    ),
-                                    components=[
-                                        "Backend",
-                                        "Networking",
-                                    ],
-                                    status="[\"Done\"]",
-                                    custom_data={
-                                        "someCustomField": models.CustomDataValue(),
-                                    },
-                                ),
-                            ),
-                            metadata=models.DocumentMetadata(
-                                datasource="datasource",
-                                object_type="Feature Request",
-                                container="container",
-                                parent_id="JIRA_EN-1337",
-                                mime_type="mimeType",
-                                document_id="documentId",
-                                create_time=parse_datetime("2000-01-23T04:56:07.000Z"),
-                                update_time=parse_datetime("2000-01-23T04:56:07.000Z"),
-                                author=models.Person(
-                                    name="name",
-                                    obfuscated_id="<id>",
-                                ),
-                                components=[
-                                    "Backend",
-                                    "Networking",
-                                ],
-                                status="[\"Done\"]",
-                                custom_data={
-                                    "someCustomField": models.CustomDataValue(),
-                                },
-                            ),
                         ),
                     ),
                 ))
@@ -20643,13 +20648,13 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.RecommendationsResponse;
             import java.lang.Exception;
             import java.time.OffsetDateTime;
             import java.util.List;
             import java.util.Map;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.RecommendationsResponse;
 
             public class Application {
 
@@ -21110,12 +21115,12 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.errors.GleanDataError;
-            import com.glean.api_client.glean_api_client.models.operations.SearchResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.errors.GleanDataError;
+            import org.openapis.openapi.models.operations.SearchResponse;
 
             public class Application {
 
@@ -21209,24 +21214,21 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.client.entities.list(request={
-                    "filter_": [
-                        {
-                            "field_name": "type",
-                            "values": [
-                                {
-                                    "value": "Spreadsheet",
-                                    "relation_type": models.RelationType.EQUALS,
-                                },
-                                {
-                                    "value": "Presentation",
-                                    "relation_type": models.RelationType.EQUALS,
-                                },
-                            ],
-                        },
-                    ],
-                    "page_size": 100,
-                })
+                res = g_client.client.entities.list(filter_=[
+                    {
+                        "field_name": "type",
+                        "values": [
+                            {
+                                "value": "Spreadsheet",
+                                "relation_type": models.RelationType.EQUALS,
+                            },
+                            {
+                                "value": "Presentation",
+                                "relation_type": models.RelationType.EQUALS,
+                            },
+                        ],
+                    },
+                ], entity_type=models.ListEntitiesRequestEntityType.PEOPLE, page_size=100)
 
                 # Handle response
                 print(res)
@@ -21314,11 +21316,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.ListentitiesResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.ListentitiesResponse;
 
             public class Application {
 
@@ -21399,12 +21401,10 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as g_client:
 
-                res = g_client.client.entities.read_people(request={
-                    "obfuscated_ids": [
-                        "abc123",
-                        "abc456",
-                    ],
-                })
+                res = g_client.client.entities.read_people(obfuscated_ids=[
+                    "abc123",
+                    "abc456",
+                ])
 
                 # Handle response
                 print(res)
@@ -21468,11 +21468,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.PeopleRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PeopleResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.PeopleRequest;
+            import org.openapis.openapi.models.operations.PeopleResponse;
 
             public class Application {
 
@@ -21685,11 +21685,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.CreateshortcutResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.CreateshortcutResponse;
 
             public class Application {
 
@@ -21826,10 +21826,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DeleteShortcutRequest;
-            import com.glean.api_client.glean_api_client.models.operations.DeleteshortcutResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DeleteShortcutRequest;
+            import org.openapis.openapi.models.operations.DeleteshortcutResponse;
 
             public class Application {
 
@@ -21957,11 +21957,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.GetShortcutRequest;
-            import com.glean.api_client.glean_api_client.models.components.GetShortcutRequestUnion;
-            import com.glean.api_client.glean_api_client.models.operations.GetshortcutResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.GetShortcutRequest;
+            import org.openapis.openapi.models.components.GetShortcutRequestUnion;
+            import org.openapis.openapi.models.operations.GetshortcutResponse;
 
             public class Application {
 
@@ -22131,11 +22131,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.ListshortcutsResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.ListshortcutsResponse;
 
             public class Application {
 
@@ -22340,11 +22340,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.UpdateshortcutResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.UpdateshortcutResponse;
 
             public class Application {
 
@@ -22496,11 +22496,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.SummarizeResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.SummarizeResponse;
 
             public class Application {
 
@@ -22630,10 +22630,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.ReminderRequest;
-            import com.glean.api_client.glean_api_client.models.operations.AddverificationreminderResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.ReminderRequest;
+            import org.openapis.openapi.models.operations.AddverificationreminderResponse;
 
             public class Application {
 
@@ -22752,9 +22752,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.ListverificationsResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.ListverificationsResponse;
 
             public class Application {
 
@@ -22877,10 +22877,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.VerifyRequest;
-            import com.glean.api_client.glean_api_client.models.operations.VerifyResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.VerifyRequest;
+            import org.openapis.openapi.models.operations.VerifyResponse;
 
             public class Application {
 
@@ -23003,9 +23003,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.GetRestApiV1ToolsListResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.GetRestApiV1ToolsListResponse;
 
             public class Application {
 
@@ -23134,11 +23134,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.ToolsCallRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostRestApiV1ToolsCallResponse;
             import java.lang.Exception;
             import java.util.Map;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.ToolsCallRequest;
+            import org.openapis.openapi.models.operations.PostRestApiV1ToolsCallResponse;
 
             public class Application {
 
@@ -23263,9 +23263,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.GetpolicyResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.GetpolicyResponse;
 
             public class Application {
 
@@ -23382,10 +23382,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.UpdateDlpReportRequest;
-            import com.glean.api_client.glean_api_client.models.operations.UpdatepolicyResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.UpdateDlpReportRequest;
+            import org.openapis.openapi.models.operations.UpdatepolicyResponse;
 
             public class Application {
 
@@ -23505,9 +23505,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.ListpoliciesResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.ListpoliciesResponse;
 
             public class Application {
 
@@ -23617,10 +23617,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.CreateDlpReportRequest;
-            import com.glean.api_client.glean_api_client.models.operations.CreatepolicyResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.CreateDlpReportRequest;
+            import org.openapis.openapi.models.operations.CreatepolicyResponse;
 
             public class Application {
 
@@ -23736,9 +23736,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.DownloadpolicycsvResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.DownloadpolicycsvResponse;
 
             public class Application {
 
@@ -23850,10 +23850,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.UpdateDlpConfigRequest;
-            import com.glean.api_client.glean_api_client.models.operations.CreatereportResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.UpdateDlpConfigRequest;
+            import org.openapis.openapi.models.operations.CreatereportResponse;
 
             public class Application {
 
@@ -23969,9 +23969,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.DownloadreportcsvResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.DownloadreportcsvResponse;
 
             public class Application {
 
@@ -24083,9 +24083,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.GetreportstatusResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.GetreportstatusResponse;
 
             public class Application {
 
@@ -24198,9 +24198,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.GetdocvisibilityResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.GetdocvisibilityResponse;
 
             public class Application {
 
@@ -24310,10 +24310,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.UpdateDocumentVisibilityOverridesRequest;
-            import com.glean.api_client.glean_api_client.models.operations.SetdocvisibilityResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.UpdateDocumentVisibilityOverridesRequest;
+            import org.openapis.openapi.models.operations.SetdocvisibilityResponse;
 
             public class Application {
 
@@ -24567,11 +24567,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.ChatStreamResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.ChatStreamResponse;
 
             public class Application {
 
@@ -28410,31 +28410,38 @@ components:
           type: string
           title: Agent Id
           description: The ID of the agent.
+          example: mho4lwzylcozgoc2
         name:
           type: string
           title: Agent Name
           description: The name of the agent
+          example: HR Policy Agent
         description:
           type: string
           title: Description
           description: The description of the agent.
+          example: This agent answers questions about the current company HR policies.
         metadata:
           type: object
           title: Metadata
-          description: The agent metadata.
+          description: The agent metadata. Currently not implemented.
         capabilities:
           type: object
           title: Agent Capabilities
-          description: Describes which protocol features the agent supports. In addition to the standard capabilities (prefixed with ap.), implementations can declare custom capabilities, named in reverse domain notation (eg. com.example.some.capability).
+          description: |-
+            Describes features that the agent supports. example: {
+              "ap.io.messages": true,
+              "ap.io.streaming": true
+            }
           properties:
             ap.io.messages:
               type: boolean
               title: Messages
-              description: Whether the agent supports Messages as input/output/state. If true, the agent uses the `messages` key in threads/runs endpoints.
+              description: Whether the agent supports messages as an input. If true, you'll pass `messages` as an input when running the agent.
             ap.io.streaming:
               type: boolean
               title: Streaming
-              description: Whether the agent supports streaming output.
+              description: Whether the agent supports streaming output. If true, you you can stream agent ouput. All agents currently support streaming.
           additionalProperties: true
     ErrorResponse:
       type: string
@@ -28446,14 +28453,15 @@ components:
           type: string
           title: Agent Id
           description: The ID of the agent.
+          example: mho4lwzylcozgoc2
         input_schema:
           type: object
           title: Input Schema
-          description: The schema for the agent input. In JSON Schema format.
+          description: The schema for the agent input. In JSON schema format.
         output_schema:
           type: object
           title: Output Schema
-          description: The schema for the agent output. In JSON Schema format.
+          description: The schema for the agent output. In JSON schema format.
       type: object
       required:
         - agent_id
@@ -28466,7 +28474,8 @@ components:
       properties:
         name:
           type: string
-          description: Filters on the name of the agent. If empty, acts as no filter.
+          description: Filters on the name of the agent. The keyword search is case-insensitive. If search string is ommited or empty, acts as no filter.
+          example: HR Policy Agent
     SearchAgentsResponse:
       type: object
       title: Response Search Agents
@@ -30265,11 +30274,16 @@ components:
         runCount:
           $ref: "#/components/schemas/CountInfo"
           description: This tracks how many times this prompt template was run. If user runs a prompt template after modifying the original one, it still counts as a run for the original template.
-    WorkflowMutableProperties:
+    WorkflowDraftableProperties:
       properties:
         name:
           type: string
           description: The name of the workflow.
+    WorkflowMutableProperties:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/WorkflowDraftableProperties"
+        - type: object
     WorkflowMetadata:
       allOf:
         - type: object

@@ -112,11 +112,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DocumentDefinition;
-            import com.glean.api_client.glean_api_client.models.components.IndexDocumentRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1IndexdocumentResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DocumentDefinition;
+            import org.openapis.openapi.models.components.IndexDocumentRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1IndexdocumentResponse;
 
             public class Application {
 
@@ -210,11 +210,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.IndexDocumentsRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1IndexdocumentsResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.IndexDocumentsRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1IndexdocumentsResponse;
 
             public class Application {
 
@@ -306,11 +306,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.BulkIndexDocumentsRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BulkindexdocumentsResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.BulkIndexDocumentsRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1BulkindexdocumentsResponse;
 
             public class Application {
 
@@ -404,11 +404,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DocumentPermissionsDefinition;
-            import com.glean.api_client.glean_api_client.models.components.UpdatePermissionsRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1UpdatepermissionsResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DocumentPermissionsDefinition;
+            import org.openapis.openapi.models.components.UpdatePermissionsRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1UpdatepermissionsResponse;
 
             public class Application {
 
@@ -507,9 +507,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1ProcessalldocumentsResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.PostApiIndexV1ProcessalldocumentsResponse;
 
             public class Application {
 
@@ -595,10 +595,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DeleteDocumentRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DeletedocumentResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DeleteDocumentRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1DeletedocumentResponse;
 
             public class Application {
 
@@ -696,11 +696,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DatasourceUserDefinition;
-            import com.glean.api_client.glean_api_client.models.components.IndexUserRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1IndexuserResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DatasourceUserDefinition;
+            import org.openapis.openapi.models.components.IndexUserRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1IndexuserResponse;
 
             public class Application {
 
@@ -813,12 +813,12 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.BulkIndexUsersRequest;
-            import com.glean.api_client.glean_api_client.models.components.DatasourceUserDefinition;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BulkindexusersResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.BulkIndexUsersRequest;
+            import org.openapis.openapi.models.components.DatasourceUserDefinition;
+            import org.openapis.openapi.models.operations.PostApiIndexV1BulkindexusersResponse;
 
             public class Application {
 
@@ -918,11 +918,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DatasourceGroupDefinition;
-            import com.glean.api_client.glean_api_client.models.components.IndexGroupRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1IndexgroupResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DatasourceGroupDefinition;
+            import org.openapis.openapi.models.components.IndexGroupRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1IndexgroupResponse;
 
             public class Application {
 
@@ -1027,12 +1027,12 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.BulkIndexGroupsRequest;
-            import com.glean.api_client.glean_api_client.models.components.DatasourceGroupDefinition;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BulkindexgroupsResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.BulkIndexGroupsRequest;
+            import org.openapis.openapi.models.components.DatasourceGroupDefinition;
+            import org.openapis.openapi.models.operations.PostApiIndexV1BulkindexgroupsResponse;
 
             public class Application {
 
@@ -1131,11 +1131,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DatasourceMembershipDefinition;
-            import com.glean.api_client.glean_api_client.models.components.IndexMembershipRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1IndexmembershipResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DatasourceMembershipDefinition;
+            import org.openapis.openapi.models.components.IndexMembershipRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1IndexmembershipResponse;
 
             public class Application {
 
@@ -1235,12 +1235,12 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.BulkIndexMembershipsRequest;
-            import com.glean.api_client.glean_api_client.models.components.DatasourceBulkMembershipDefinition;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BulkindexmembershipsResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.BulkIndexMembershipsRequest;
+            import org.openapis.openapi.models.components.DatasourceBulkMembershipDefinition;
+            import org.openapis.openapi.models.operations.PostApiIndexV1BulkindexmembershipsResponse;
 
             public class Application {
 
@@ -1329,9 +1329,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1ProcessallmembershipsResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.PostApiIndexV1ProcessallmembershipsResponse;
 
             public class Application {
 
@@ -1416,10 +1416,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DeleteUserRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DeleteuserResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DeleteUserRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1DeleteuserResponse;
 
             public class Application {
 
@@ -1510,10 +1510,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DeleteGroupRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DeletegroupResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DeleteGroupRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1DeletegroupResponse;
 
             public class Application {
 
@@ -1608,11 +1608,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DatasourceMembershipDefinition;
-            import com.glean.api_client.glean_api_client.models.components.DeleteMembershipRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DeletemembershipResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DatasourceMembershipDefinition;
+            import org.openapis.openapi.models.components.DeleteMembershipRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1DeletemembershipResponse;
 
             public class Application {
 
@@ -1711,9 +1711,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DebugDatasourceStatusResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.PostApiIndexV1DebugDatasourceStatusResponse;
 
             public class Application {
 
@@ -1817,10 +1817,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DebugDocumentRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DebugDatasourceDocumentResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DebugDocumentRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1DebugDatasourceDocumentResponse;
 
             public class Application {
 
@@ -1932,11 +1932,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DebugDocumentsRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DebugDatasourceDocumentsResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DebugDocumentsRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1DebugDatasourceDocumentsResponse;
 
             public class Application {
 
@@ -2042,10 +2042,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DebugUserRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DebugDatasourceUserResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DebugUserRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1DebugDatasourceUserResponse;
 
             public class Application {
 
@@ -2147,10 +2147,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.CheckDocumentAccessRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1CheckdocumentaccessResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.CheckDocumentAccessRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1CheckdocumentaccessResponse;
 
             public class Application {
 
@@ -2349,11 +2349,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.GreenlistUsersRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BetausersResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.GreenlistUsersRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1BetausersResponse;
 
             public class Application {
 
@@ -2464,11 +2464,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1AdddatasourceResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.PostApiIndexV1AdddatasourceResponse;
 
             public class Application {
 
@@ -2573,10 +2573,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.GetDatasourceConfigRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1GetdatasourceconfigResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.GetDatasourceConfigRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1GetdatasourceconfigResponse;
 
             public class Application {
 
@@ -2662,9 +2662,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1RotatetokenResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.PostApiIndexV1RotatetokenResponse;
 
             public class Application {
 
@@ -2768,11 +2768,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1IndexemployeeResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.PostApiIndexV1IndexemployeeResponse;
 
             public class Application {
 
@@ -2912,11 +2912,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BulkindexemployeesResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.PostApiIndexV1BulkindexemployeesResponse;
 
             public class Application {
 
@@ -3008,9 +3008,9 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1ProcessallemployeesandteamsResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.operations.PostApiIndexV1ProcessallemployeesandteamsResponse;
 
             public class Application {
 
@@ -3094,10 +3094,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DeleteEmployeeRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DeleteemployeeResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DeleteEmployeeRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1DeleteemployeeResponse;
 
             public class Application {
 
@@ -3222,11 +3222,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1IndexteamResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.PostApiIndexV1IndexteamResponse;
 
             public class Application {
 
@@ -3327,10 +3327,10 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.DeleteTeamRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1DeleteteamResponse;
             import java.lang.Exception;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.DeleteTeamRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1DeleteteamResponse;
 
             public class Application {
 
@@ -3482,11 +3482,11 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BulkindexteamsResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.*;
+            import org.openapis.openapi.models.operations.PostApiIndexV1BulkindexteamsResponse;
 
             public class Application {
 
@@ -3610,12 +3610,12 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.BulkIndexShortcutsRequest;
-            import com.glean.api_client.glean_api_client.models.components.ExternalShortcut;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BulkindexshortcutsResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.BulkIndexShortcutsRequest;
+            import org.openapis.openapi.models.components.ExternalShortcut;
+            import org.openapis.openapi.models.operations.PostApiIndexV1BulkindexshortcutsResponse;
 
             public class Application {
 
@@ -3734,12 +3734,12 @@ paths:
           source: |-
             package hello.world;
 
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.IndexingShortcut;
-            import com.glean.api_client.glean_api_client.models.components.UploadShortcutsRequest;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1UploadshortcutsResponse;
             import java.lang.Exception;
             import java.util.List;
+            import org.openapis.openapi.Glean;
+            import org.openapis.openapi.models.components.IndexingShortcut;
+            import org.openapis.openapi.models.components.UploadShortcutsRequest;
+            import org.openapis.openapi.models.operations.PostApiIndexV1UploadshortcutsResponse;
 
             public class Application {
 
