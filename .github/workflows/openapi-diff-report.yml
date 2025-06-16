@@ -1,0 +1,45 @@
+name: OpenAPI Diff Report
+
+on:
+  pull_request:
+    paths:
+      - 'source_specs/**'
+      - 'src/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'source_specs/**'
+      - 'src/**'
+  workflow_dispatch:
+
+jobs:
+  generate-diff-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up mise
+        uses: jdx/mise-action@v2
+        with:
+          cache: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Generate diff report
+        run: |
+          mkdir -p ./reports
+          pnpm diff-source-specs --report-file ./reports/index.html
+          echo "Report generated at: ./reports/changes-report.html"
+
+      - name: Upload HTML report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: openapi-diff-report
+          path: ./reports/index.html
+          retention-days: 30

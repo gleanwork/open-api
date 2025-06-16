@@ -17,6 +17,7 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
+    "diff-source-specs": "node src/diff-source-specs.js",
     "lint": "prettier --check . --ignore-unknown",
     "lint:fix": "prettier --write . --ignore-unknown",
     "test": "vitest run",
@@ -26,6 +27,7 @@
     "transform:merged_code_samples_specs": "node src/index.js --merged_code_samples_specs"
   },
   "dependencies": {
+    "execa": "^9.6.0",
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {

@@ -2,3 +2,4 @@
 "aqua:speakeasy-api/speakeasy" = "latest"
 node = "20"
 pnpm = "10"
+"ubi:pb33f/openapi-changes" = "latest"
