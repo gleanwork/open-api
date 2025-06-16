@@ -62,16 +62,16 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
-            from glean.utils import parse_datetime
+            from glean.api_client import Glean, models
+            from glean.api_client.utils import parse_datetime
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.client.activity.report(events=[
+                glean.client.activity.report(events=[
                     {
                         "action": models.ActivityEventAction.HISTORICAL_VIEW,
                         "timestamp": parse_datetime("2000-01-23T04:56:07.000Z"),
@@ -281,15 +281,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.client.activity.feedback(feedback1={
+                glean.client.activity.feedback(feedback1={
                     "tracking_tokens": [
                         "trackingTokens",
                     ],
@@ -419,16 +419,16 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
-            from glean.utils import parse_datetime
+            from glean.api_client import Glean, models
+            from glean.api_client.utils import parse_datetime
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.announcements.create(start_time=parse_datetime("2023-05-01T12:02:10.816Z"), end_time=parse_datetime("2024-03-17T14:19:30.278Z"), title="<value>", body={
+                res = glean.client.announcements.create(start_time=parse_datetime("2023-05-01T12:02:10.816Z"), end_time=parse_datetime("2024-03-17T14:19:30.278Z"), title="<value>", body={
                     "text": "From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
                     "structured_list": [
                         models.StructuredTextItem(
@@ -6368,15 +6368,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.client.announcements.delete(id=458809)
+                glean.client.announcements.delete(id=458809)
 
                 # Use the SDK ...
         - lang: typescript
@@ -6493,16 +6493,16 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
-            from glean.utils import parse_datetime
+            from glean.api_client import Glean, models
+            from glean.api_client.utils import parse_datetime
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.announcements.update(start_time=parse_datetime("2023-10-24T01:53:24.440Z"), end_time=parse_datetime("2024-10-30T07:24:12.087Z"), title="<value>", id=210913, body={
+                res = glean.client.announcements.update(start_time=parse_datetime("2023-10-24T01:53:24.440Z"), end_time=parse_datetime("2024-10-30T07:24:12.087Z"), title="<value>", id=210913, body={
                     "text": "From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
                     "structured_list": [
                         models.StructuredTextItem(
@@ -13666,15 +13666,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.answers.create(data={
+                res = glean.client.answers.create(data={
                     "question": "Why is the sky blue?",
                     "body_text": "From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
                     "audience_filters": [
@@ -13986,15 +13986,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.client.answers.delete(id=3, doc_id="ANSWERS_answer_3")
+                glean.client.answers.delete(id=3, doc_id="ANSWERS_answer_3")
 
                 # Use the SDK ...
         - lang: typescript
@@ -14114,15 +14114,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.answers.update(id=3, doc_id="ANSWERS_answer_3", question="Why is the sky blue?", body_text="From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.", audience_filters=[
+                res = glean.client.answers.update(id=3, doc_id="ANSWERS_answer_3", question="Why is the sky blue?", body_text="From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.", audience_filters=[
                     {
                         "field_name": "type",
                         "values": [
@@ -14444,15 +14444,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.answers.retrieve(id=3, doc_id="ANSWERS_answer_3")
+                res = glean.client.answers.retrieve(id=3, doc_id="ANSWERS_answer_3")
 
                 # Handle response
                 print(res)
@@ -14576,15 +14576,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.answers.list()
+                res = glean.client.answers.list()
 
                 # Handle response
                 print(res)
@@ -14668,7 +14668,12 @@ paths:
       tags:
         - Authentication
       summary: Create authentication token
-      description: Creates an authentication token for the authenticated user.
+      description: |
+        Creates an authentication token for the authenticated user. These are
+        specifically intended to be used with the [Web SDK](https://developers.glean.com/web).
+
+        Note: The tokens generated from this endpoint are **not** valid tokens
+        for use with the Client API (e.g. `/rest/api/v1/*`).
       operationId: createauthtoken
       x-visibility: Public
       parameters: []
@@ -14691,15 +14696,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.authentication.create_token()
+                res = glean.client.authentication.create_token()
 
                 # Handle response
                 print(res)
@@ -14914,15 +14919,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.chat.create(messages=[
+                res = glean.client.chat.create(messages=[
                     {
                         "fragments": [
                             models.ChatMessageFragment(
@@ -15061,15 +15066,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.client.chat.delete_all()
+                glean.client.chat.delete_all()
 
                 # Use the SDK ...
         - lang: typescript
@@ -15173,15 +15178,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.client.chat.delete(ids=[])
+                glean.client.chat.delete(ids=[])
 
                 # Use the SDK ...
         - lang: typescript
@@ -15299,15 +15304,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.chat.retrieve(id="<id>")
+                res = glean.client.chat.retrieve(id="<id>")
 
                 # Handle response
                 print(res)
@@ -15419,15 +15424,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.chat.list()
+                res = glean.client.chat.list()
 
                 # Handle response
                 print(res)
@@ -15537,15 +15542,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.chat.retrieve_application(id="<id>")
+                res = glean.client.chat.retrieve_application(id="<id>")
 
                 # Handle response
                 print(res)
@@ -15665,15 +15670,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.chat.upload_files(files=[])
+                res = glean.client.chat.upload_files(files=[])
 
                 # Handle response
                 print(res)
@@ -15800,15 +15805,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.chat.retrieve_files(file_ids=[
+                res = glean.client.chat.retrieve_files(file_ids=[
                     "<value 1>",
                 ])
 
@@ -15931,15 +15936,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.client.chat.delete_files(file_ids=[
+                glean.client.chat.delete_files(file_ids=[
                     "<value 1>",
                     "<value 2>",
                     "<value 3>",
@@ -16076,15 +16081,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.agents.retrieve(agent_id="<id>")
+                res = glean.client.agents.retrieve(agent_id="<id>")
 
                 # Handle response
                 print(res)
@@ -16207,15 +16212,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.agents.retrieve_schemas(agent_id="<id>")
+                res = glean.client.agents.retrieve_schemas(agent_id="<id>")
 
                 # Handle response
                 print(res)
@@ -16294,7 +16299,7 @@ paths:
       tags:
         - Agents
       summary: Search agents
-      description: "Search for [agents](https://developers.glean.com/agents/agents-api) by agent name. "
+      description: Search for [agents](https://developers.glean.com/agents/agents-api) by agent name.
       operationId: searchAgents
       x-visibility: Preview
       requestBody:
@@ -16334,15 +16339,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.agents.list(name="HR Policy Agent")
+                res = glean.client.agents.list(name="HR Policy Agent")
 
                 # Handle response
                 print(res)
@@ -16494,15 +16499,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.agents.run_stream(agent_id="<id>")
+                res = glean.client.agents.run_stream(agent_id="<id>")
 
                 # Handle response
                 print(res)
@@ -16625,15 +16630,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.agents.run(agent_id="<id>")
+                res = glean.client.agents.run(agent_id="<id>")
 
                 # Handle response
                 print(res)
@@ -16754,15 +16759,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.collections.add_items(collection_id=7742.68)
+                res = glean.client.collections.add_items(collection_id=7742.68)
 
                 # Handle response
                 print(res)
@@ -16889,15 +16894,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.collections.create(name="<value>", added_roles=[
+                res = glean.client.collections.create(name="<value>", added_roles=[
                     models.UserRoleSpecification(
                         person=models.Person(
                             name="George Clooney",
@@ -17161,15 +17166,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.client.collections.delete(ids=[
+                glean.client.collections.delete(ids=[
                     930352,
                     156719,
                     25102,
@@ -17305,15 +17310,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.collections.delete_item(collection_id=6980.49, item_id="<id>")
+                res = glean.client.collections.delete_item(collection_id=6980.49, item_id="<id>")
 
                 # Handle response
                 print(res)
@@ -17443,15 +17448,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.collections.update(name="<value>", id=347152, added_roles=[
+                res = glean.client.collections.update(name="<value>", id=347152, added_roles=[
                     models.UserRoleSpecification(
                         person=models.Person(
                             name="George Clooney",
@@ -17709,15 +17714,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.collections.update_item(collection_id=142375, item_id="<id>")
+                res = glean.client.collections.update_item(collection_id=142375, item_id="<id>")
 
                 # Handle response
                 print(res)
@@ -17841,15 +17846,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.collections.retrieve(id=425335)
+                res = glean.client.collections.retrieve(id=425335)
 
                 # Handle response
                 print(res)
@@ -17970,15 +17975,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.collections.list()
+                res = glean.client.collections.list()
 
                 # Handle response
                 print(res)
@@ -18096,15 +18101,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.documents.retrieve_permissions()
+                res = glean.client.documents.retrieve_permissions()
 
                 # Handle response
                 print(res)
@@ -18220,15 +18225,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.documents.retrieve()
+                res = glean.client.documents.retrieve()
 
                 # Handle response
                 print(res)
@@ -18338,15 +18343,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.documents.retrieve_by_facets(request={
+                res = glean.client.documents.retrieve_by_facets(request={
                     "filter_sets": [
                         {
                             "filters": [
@@ -18556,15 +18561,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.insights.retrieve(categories=[
+                res = glean.client.insights.retrieve(categories=[
                     models.InsightsRequestCategory.COLLECTIONS,
                 ])
 
@@ -18696,15 +18701,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.messages.retrieve(id_type=models.IDType.CONVERSATION_ID, id="<id>")
+                res = glean.client.messages.retrieve(id_type=models.IDType.CONVERSATION_ID, id="<id>")
 
                 # Handle response
                 print(res)
@@ -18829,15 +18834,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.pins.update(audience_filters=[
+                res = glean.client.pins.update(audience_filters=[
                     {
                         "field_name": "type",
                         "values": [
@@ -19013,15 +19018,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.pins.retrieve()
+                res = glean.client.pins.retrieve()
 
                 # Handle response
                 print(res)
@@ -19137,15 +19142,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.pins.list(request={})
+                res = glean.client.pins.list(request={})
 
                 # Handle response
                 print(res)
@@ -19261,15 +19266,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.pins.create(audience_filters=[
+                res = glean.client.pins.create(audience_filters=[
                     {
                         "field_name": "type",
                         "values": [
@@ -19443,15 +19448,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.client.pins.remove()
+                glean.client.pins.remove()
 
                 # Use the SDK ...
         - lang: typescript
@@ -19575,16 +19580,16 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
-            from glean.utils import parse_datetime
+            from glean.api_client import Glean, models
+            from glean.api_client.utils import parse_datetime
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.search.query_as_admin(query="vacation policy", tracking_token="trackingToken", source_document=models.Document(
+                res = glean.client.search.query_as_admin(query="vacation policy", tracking_token="trackingToken", source_document=models.Document(
                     container_document=models.Document(
                         metadata=models.DocumentMetadata(
                             datasource="datasource",
@@ -19749,7 +19754,6 @@ paths:
             	"context"
             	"os"
             	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/types"
             	"github.com/gleanwork/api-client-go/models/components"
             	"log"
             )
@@ -19896,15 +19900,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.search.autocomplete(tracking_token="trackingToken", query="what is a que", datasource="GDRIVE", result_size=10, auth_tokens=[
+                res = glean.client.search.autocomplete(tracking_token="trackingToken", query="what is a que", datasource="GDRIVE", result_size=10, auth_tokens=[
                     {
                         "access_token": "123abc",
                         "datasource": "gmail",
@@ -20044,15 +20048,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.search.retrieve_feed(timeout_millis=5000)
+                res = glean.client.search.retrieve_feed(timeout_millis=5000)
 
                 # Handle response
                 print(res)
@@ -20179,16 +20183,16 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
-            from glean.utils import parse_datetime
+            from glean.api_client import Glean, models
+            from glean.api_client.utils import parse_datetime
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.search.recommendations(source_document=models.Document(
+                res = glean.client.search.recommendations(source_document=models.Document(
                     container_document=models.Document(
                         metadata=models.DocumentMetadata(
                             datasource="datasource",
@@ -20885,16 +20889,16 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
-            from glean.utils import parse_datetime
+            from glean.api_client import Glean, models
+            from glean.api_client.utils import parse_datetime
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.search.query(query="vacation policy", tracking_token="trackingToken", source_document=models.Document(
+                res = glean.client.search.query(query="vacation policy", tracking_token="trackingToken", source_document=models.Document(
                     container_document=models.Document(
                         metadata=models.DocumentMetadata(
                             datasource="datasource",
@@ -21059,7 +21063,6 @@ paths:
             	"context"
             	"os"
             	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/types"
             	"github.com/gleanwork/api-client-go/models/components"
             	"log"
             )
@@ -21206,15 +21209,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.entities.list(filter_=[
+                res = glean.client.entities.list(filter_=[
                     {
                         "field_name": "type",
                         "values": [
@@ -21393,15 +21396,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.entities.read_people(obfuscated_ids=[
+                res = glean.client.entities.read_people(obfuscated_ids=[
                     "abc123",
                     "abc456",
                 ])
@@ -21534,15 +21537,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.shortcuts.create(data={
+                res = glean.client.shortcuts.create(data={
                     "added_roles": [
                         models.UserRoleSpecification(
                             person=models.Person(
@@ -21762,15 +21765,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                g_client.client.shortcuts.delete(id=975862)
+                glean.client.shortcuts.delete(id=975862)
 
                 # Use the SDK ...
         - lang: typescript
@@ -21887,15 +21890,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.shortcuts.retrieve(request={
+                res = glean.client.shortcuts.retrieve(request={
                     "alias": "<value>",
                 })
 
@@ -22021,15 +22024,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.shortcuts.list(page_size=10, filters=[
+                res = glean.client.shortcuts.list(page_size=10, filters=[
                     {
                         "field_name": "type",
                         "values": [
@@ -22208,15 +22211,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.shortcuts.update(id=268238, added_roles=[
+                res = glean.client.shortcuts.update(id=268238, added_roles=[
                     models.UserRoleSpecification(
                         person=models.Person(
                             name="George Clooney",
@@ -22420,15 +22423,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.documents.summarize(document_specs=[
+                res = glean.client.documents.summarize(document_specs=[
                     {},
                 ])
 
@@ -22564,15 +22567,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.verification.add_reminder(document_id="<id>")
+                res = glean.client.verification.add_reminder(document_id="<id>")
 
                 # Handle response
                 print(res)
@@ -22691,15 +22694,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.verification.list()
+                res = glean.client.verification.list()
 
                 # Handle response
                 print(res)
@@ -22811,15 +22814,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.verification.verify(document_id="<id>")
+                res = glean.client.verification.verify(document_id="<id>")
 
                 # Handle response
                 print(res)
@@ -22942,15 +22945,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.tools.list()
+                res = glean.client.tools.list()
 
                 # Handle response
                 print(res)
@@ -23057,15 +23060,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.tools.run(name="<value>", parameters={
+                res = glean.client.tools.run(name="<value>", parameters={
 
                 })
 
@@ -23202,15 +23205,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.governance.data.policies.retrieve(id="<id>")
+                res = glean.client.governance.data.policies.retrieve(id="<id>")
 
                 # Handle response
                 print(res)
@@ -23320,15 +23323,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.governance.data.policies.update(id="<id>")
+                res = glean.client.governance.data.policies.update(id="<id>")
 
                 # Handle response
                 print(res)
@@ -23444,15 +23447,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.governance.data.policies.list()
+                res = glean.client.governance.data.policies.list()
 
                 # Handle response
                 print(res)
@@ -23555,15 +23558,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.governance.data.policies.create()
+                res = glean.client.governance.data.policies.create()
 
                 # Handle response
                 print(res)
@@ -23675,15 +23678,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.governance.data.policies.download(id="<id>")
+                res = glean.client.governance.data.policies.download(id="<id>")
 
                 # Handle response
                 print(res)
@@ -23788,15 +23791,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.governance.data.reports.create()
+                res = glean.client.governance.data.reports.create()
 
                 # Handle response
                 print(res)
@@ -23908,15 +23911,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.governance.data.reports.download(id="<id>")
+                res = glean.client.governance.data.reports.download(id="<id>")
 
                 # Handle response
                 print(res)
@@ -24022,15 +24025,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.governance.data.reports.status(id="<id>")
+                res = glean.client.governance.data.reports.status(id="<id>")
 
                 # Handle response
                 print(res)
@@ -24137,15 +24140,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.governance.documents.visibilityoverrides.list()
+                res = glean.client.governance.documents.visibilityoverrides.list()
 
                 # Handle response
                 print(res)
@@ -24248,15 +24251,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean
+            from glean.api_client import Glean
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.governance.documents.visibilityoverrides.create()
+                res = glean.client.governance.documents.visibilityoverrides.create()
 
                 # Handle response
                 print(res)
@@ -24477,15 +24480,15 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean import Glean, models
+            from glean.api_client import Glean, models
             import os
 
 
             with Glean(
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as g_client:
+            ) as glean:
 
-                res = g_client.client.chat.create_stream(messages=[
+                res = glean.client.chat.create_stream(messages=[
                     {
                         "fragments": [
                             models.ChatMessageFragment(
@@ -28536,6 +28539,11 @@ components:
             $ref: "#/components/schemas/Message"
           title: Messages
           description: The messages to pass an input to the agent.
+        metadata:
+          type: object
+          title: Metadata
+          description: The metadata to pass to the agent.
+          additionalProperties: true
     AgentExecutionStatus:
       description: The status of the run. One of 'error', 'success'.
       type: string
