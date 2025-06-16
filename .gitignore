@@ -8,3 +8,4 @@ yarn.lock
 .speakeasy/temp
 .speakeasy/reports
 .speakeasy/logs
+/reports/
