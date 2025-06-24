@@ -4868,7 +4868,8 @@ components:
           example: From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.
         boardId:
           type: integer
-          description: The parent board ID of this Answer, or 0 if it's a floating Answer.
+          description: The parent board ID of this Answer, or 0 if it's a floating Answer. Adding Answers to Answer Boards is no longer permitted.
+          deprecated: true
         audienceFilters:
           type: array
           description: Filters which restrict who should see the answer. Values are taken from the corresponding filters in people search.
