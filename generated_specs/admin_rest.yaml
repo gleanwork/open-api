@@ -315,6 +315,10 @@ components:
           type: string
           description: end time of the time range, applicable for the CUSTOM type.
           format: date-time
+        lastNDaysValue:
+          type: integer
+          description: The number of days to look back from the current time, applicable for the LAST_N_DAYS type.
+          format: int64
     InputOptions:
       description: Controls which data-sources and what time-range to include in scans.
       properties:
@@ -349,6 +353,7 @@ components:
             - PAST_YEAR
             - PAST_DAY
             - CUSTOM
+            - LAST_N_DAYS
         customTimeRange:
           $ref: "#/components/schemas/TimeRange"
     SharingOptions:
