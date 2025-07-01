@@ -1,0 +1,28 @@
+overlay: 1.0.0
+x-speakeasy-jsonpath: rfc9535
+info:
+  title: fix known issues overlay
+  version: 0.0.0
+actions:
+  # Related documents can come back with lower-case values depending on the
+  # source.  Add the lower-case cases to avoid runtime validation issues.
+  - target: $["components"]["schemas"]["RelatedDocuments"]["properties"]["relation"]["enum"][*]
+    remove: true
+  - target: $["components"]["schemas"]["RelatedDocuments"]["properties"]["relation"]["enum"]
+    update:
+      - ATTACHMENT
+      - CANONICAL
+      - CASE
+      - contact
+      - CONTACT
+      - CONVERSATION_MESSAGES
+      - EXPERT
+      - FROM
+      - HIGHLIGHT
+      - opportunity
+      - OPPORTUNITY
+      - RECENT
+      - SOURCE
+      - TICKET
+      - TRANSCRIPT
+      - WITH
