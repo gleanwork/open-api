@@ -7524,6 +7524,7 @@ components:
           type: string
           title: Role
           description: The role of the message.
+          example: USER
         content:
           title: Content
           description: The content of the message.
