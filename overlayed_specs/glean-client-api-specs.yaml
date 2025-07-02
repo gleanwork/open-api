@@ -4669,11 +4669,13 @@ components:
             - ATTACHMENT
             - CANONICAL
             - CASE
+            - contact
             - CONTACT
             - CONVERSATION_MESSAGES
             - EXPERT
             - FROM
             - HIGHLIGHT
+            - opportunity
             - OPPORTUNITY
             - RECENT
             - SOURCE

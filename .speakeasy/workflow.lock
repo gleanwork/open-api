@@ -1,8 +1,8 @@
-speakeasyVersion: 1.573.0
+speakeasyVersion: 1.574.1
 sources:
     glean-api-specs:
         sourceNamespace: glean-api-specs
-        sourceRevisionDigest: sha256:e84347f8e1eaa5f45e3a114bafa1e72e783de9b22da92398b06150cb2365a0b4
+        sourceRevisionDigest: sha256:7d455de509886b27186c042922ff7b5d2c522676e4ccb53f20d079d2e44e2ec7
         sourceBlobDigest: sha256:58d4b519b3243731e0b2fcc6e64e31d56ddaa741c47f62e21c4fd11110bfb909
         tags:
             - latest
@@ -77,6 +77,7 @@ workflow:
                 - location: overlays/client-modifications-overlay.yaml
                 - location: overlays/agent-modifications-overlay.yaml
                 - location: overlays/admin-modifications-overlay.yaml
+                - location: overlays/corrections.yaml
             output: overlayed_specs/glean-client-api-specs.yaml
         glean-client-merged-code-samples-spec:
             inputs:
