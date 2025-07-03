@@ -14,6 +14,7 @@ sources:
             - location: overlays/indexing-modifications-overlay.yaml
             - location: overlays/agent-modifications-overlay.yaml
             - location: overlays/admin-modifications-overlay.yaml
+            - location: overlays/corrections.yaml
         output: overlayed_specs/glean-merged-spec.yaml
         registry:
             location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs
