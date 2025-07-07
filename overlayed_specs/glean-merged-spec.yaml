@@ -1795,7 +1795,7 @@ paths:
       tags:
         - Entities
       summary: List entities
-      description: List some set of details for all entities that fit the given criteria and return in the requested order. Does not support negation in filters, assumes relation type EQUALS. There is a limit of 10000 entities that can be retrieved via this endpoint.
+      description: List some set of details for all entities that fit the given criteria and return in the requested order. Does not support negation in filters, assumes relation type EQUALS. There is a limit of 10000 entities that can be retrieved via this endpoint, except when using FULL_DIRECTORY request type for people entities.
       operationId: listentities
       x-visibility: Public
       x-codegen-request-body-name: payload
@@ -9636,6 +9636,16 @@ components:
         source:
           type: string
           description: A string denoting the search surface from which the endpoint is called.
+        requestType:
+          type: string
+          default: STANDARD
+          description: The type of request being made.
+          x-enumDescriptions:
+            STANDARD: Used by default for all requests and satisfies all standard use cases for list requests. Limited to 10000 entities.
+            FULL_DIRECTORY: Used exclusively to return a comprehensive list of all people entities in the organization, typically for audit like purposes. The recommended approach is to sort by FIRST_NAME or LAST_NAME, and use pagination for large organizations.
+          enum:
+            - STANDARD
+            - FULL_DIRECTORY
     EntitiesSortOrder:
       type: string
       description: Different ways of sorting entities
