@@ -1,9 +1,9 @@
-speakeasyVersion: 1.575.5
+speakeasyVersion: 1.576.1
 sources:
     glean-api-specs:
         sourceNamespace: glean-api-specs
-        sourceRevisionDigest: sha256:39ba49b281507940085c7e22ffb77d668499725bb8252bd11f4ef03d3e48fd50
-        sourceBlobDigest: sha256:2b1686825d8d46fd99e3d7b925698b955c84f9fda6b6b8c5dc475927a2094de3
+        sourceRevisionDigest: sha256:d9bd4da8dfcd42ca33e1ac9e888d294d7f21235a7ae86c5c7afc5c51f8e54d78
+        sourceBlobDigest: sha256:1b934d1ce60e14792c338596f0de17969efd6974240076cb88ce59bb7217e04c
         tags:
             - latest
             - main
@@ -63,6 +63,7 @@ workflow:
                 - location: overlays/indexing-modifications-overlay.yaml
                 - location: overlays/agent-modifications-overlay.yaml
                 - location: overlays/admin-modifications-overlay.yaml
+                - location: overlays/corrections.yaml
             output: overlayed_specs/glean-merged-spec.yaml
             registry:
                 location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs
