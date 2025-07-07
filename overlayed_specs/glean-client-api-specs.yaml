@@ -3148,6 +3148,7 @@ components:
             - ID_EQUALS
             - LT
             - GT
+            - NOT_EQUALS
           example: EQUALS
         isNegated:
           type: boolean
