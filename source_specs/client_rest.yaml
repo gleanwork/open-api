@@ -5601,6 +5601,15 @@ components:
           type: string
           format: date-time
           description: The time the tool was last authorized in ISO format (ISO 8601).
+    BackgroundExecutionSupport:
+      type: string
+      description: |
+        Indicates whether an action supports background execution and what the default behaviour should be when the caller does not override it.
+      enum:
+        - NOT_SUPPORTED
+        - SUPPORTED_DEFAULT_OFF
+        - SUPPORTED_DEFAULT_ON
+      default: SUPPORTED_DEFAULT_OFF
     ToolMetadata:
       description: The manifest for a tool that can be used to augment Glean Assistant.
       required:
@@ -5679,6 +5688,8 @@ components:
         usageInstructions:
           description: Usage instructions for the LLM to use this action.
           type: string
+        backgroundExecutionSupport:
+          $ref: '#/components/schemas/BackgroundExecutionSupport'
         isSetupFinished:
           type: boolean
           description: Whether this action has been fully configured and validated.
