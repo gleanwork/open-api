@@ -160,8 +160,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     Activity req = Activity.builder()
@@ -292,8 +291,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     FeedbackResponse res = sdk.client().activity().feedback()
@@ -4075,8 +4073,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     CreateAnnouncementRequest req = CreateAnnouncementRequest.builder()
@@ -5211,8 +5208,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     DeleteAnnouncementRequest req = DeleteAnnouncementRequest.builder()
@@ -10212,8 +10208,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     UpdateAnnouncementRequest req = UpdateAnnouncementRequest.builder()
@@ -11459,8 +11454,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     CreateAnswerRequest req = CreateAnswerRequest.builder()
@@ -11602,8 +11596,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     DeleteAnswerRequest req = DeleteAnswerRequest.builder()
@@ -11816,8 +11809,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     EditAnswerRequest req = EditAnswerRequest.builder()
@@ -11965,8 +11957,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     GetAnswerRequest req = GetAnswerRequest.builder()
@@ -12069,8 +12060,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     ListAnswersRequest req = ListAnswersRequest.builder()
@@ -12166,8 +12156,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     CreateauthtokenResponse res = sdk.client().authentication().createToken()
@@ -12388,8 +12377,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     ChatResponse res = sdk.client().chat().create()
@@ -12481,8 +12469,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     DeleteallchatsResponse res = sdk.client().chat().deleteAll()
@@ -12576,8 +12563,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     DeletechatsResponse res = sdk.client().chat().delete()
@@ -12679,8 +12665,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     GetchatResponse res = sdk.client().chat().retrieve()
@@ -12772,8 +12757,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     ListchatsResponse res = sdk.client().chat().list()
@@ -12872,8 +12856,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     GetchatapplicationResponse res = sdk.client().chat().retrieveApplication()
@@ -12983,8 +12966,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     UploadchatfilesResponse res = sdk.client().chat().uploadFiles()
@@ -13092,8 +13074,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     GetchatfilesResponse res = sdk.client().chat().retrieveFiles()
@@ -13199,8 +13180,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     DeletechatfilesResponse res = sdk.client().chat().deleteFiles()
@@ -13306,8 +13286,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     GetAgentResponse res = sdk.client().agents().retrieve()
@@ -13416,8 +13395,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     GetAgentSchemasResponse res = sdk.client().agents().retrieveSchemas()
@@ -13525,8 +13503,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     SearchAgentsRequest req = SearchAgentsRequest.builder()
@@ -13619,7 +13596,11 @@ paths:
                 instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as glean:
 
-                res = glean.client.agents.run_stream(agent_id="<id>")
+                res = glean.client.agents.run_stream(agent_id="<id>", messages=[
+                    {
+                        "role": "USER",
+                    },
+                ])
 
                 # Handle response
                 print(res)
@@ -13636,6 +13617,17 @@ paths:
             async function run() {
               const result = await glean.client.agents.runStream({
                 agentId: "<id>",
+                messages: [
+                  {
+                    role: "USER",
+                  },
+                  {
+                    role: "USER",
+                  },
+                  {
+                    role: "USER",
+                  },
+                ],
               });
 
               // Handle the result
@@ -13645,15 +13637,17 @@ paths:
             run();
         - lang: go
           label: Go (API Client)
-          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Client.Agents.RunStream(ctx, components.AgentRunCreate{\n        AgentID: \"<id>\",\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.Res != nil {\n        // handle response\n    }\n}"
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Client.Agents.RunStream(ctx, components.AgentRunCreate{\n        AgentID: \"<id>\",\n        Messages: []components.Message{\n            components.Message{\n                Role: apiclientgo.String(\"USER\"),\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.Res != nil {\n        // handle response\n    }\n}"
         - lang: java
           label: Java (API Client)
           source: |-
             package hello.world;
 
             import java.lang.Exception;
+            import java.util.List;
             import org.openapis.openapi.Glean;
             import org.openapis.openapi.models.components.AgentRunCreate;
+            import org.openapis.openapi.models.components.Message;
             import org.openapis.openapi.models.operations.CreateAndStreamRunResponse;
 
             public class Application {
@@ -13661,12 +13655,15 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     AgentRunCreate req = AgentRunCreate.builder()
                             .agentId("<id>")
+                            .messages(List.of(
+                                Message.builder()
+                                    .role("USER")
+                                    .build()))
                             .build();
 
                     CreateAndStreamRunResponse res = sdk.client().agents().runStream()
@@ -13726,7 +13723,11 @@ paths:
                 instance=os.getenv("GLEAN_INSTANCE", ""),
             ) as glean:
 
-                res = glean.client.agents.run(agent_id="<id>")
+                res = glean.client.agents.run(agent_id="<id>", messages=[
+                    {
+                        "role": "USER",
+                    },
+                ])
 
                 # Handle response
                 print(res)
@@ -13743,6 +13744,11 @@ paths:
             async function run() {
               const result = await glean.client.agents.run({
                 agentId: "<id>",
+                messages: [
+                  {
+                    role: "USER",
+                  },
+                ],
               });
 
               // Handle the result
@@ -13752,15 +13758,17 @@ paths:
             run();
         - lang: go
           label: Go (API Client)
-          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Client.Agents.Run(ctx, components.AgentRunCreate{\n        AgentID: \"<id>\",\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.AgentRunWaitResponse != nil {\n        // handle response\n    }\n}"
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithInstance(os.Getenv(\"GLEAN_INSTANCE\")),\n    )\n\n    res, err := s.Client.Agents.Run(ctx, components.AgentRunCreate{\n        AgentID: \"<id>\",\n        Messages: []components.Message{\n            components.Message{\n                Role: apiclientgo.String(\"USER\"),\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.AgentRunWaitResponse != nil {\n        // handle response\n    }\n}"
         - lang: java
           label: Java (API Client)
           source: |-
             package hello.world;
 
             import java.lang.Exception;
+            import java.util.List;
             import org.openapis.openapi.Glean;
             import org.openapis.openapi.models.components.AgentRunCreate;
+            import org.openapis.openapi.models.components.Message;
             import org.openapis.openapi.models.operations.CreateAndWaitRunResponse;
 
             public class Application {
@@ -13768,12 +13776,15 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     AgentRunCreate req = AgentRunCreate.builder()
                             .agentId("<id>")
+                            .messages(List.of(
+                                Message.builder()
+                                    .role("USER")
+                                    .build()))
                             .build();
 
                     CreateAndWaitRunResponse res = sdk.client().agents().run()
@@ -13873,8 +13884,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     AddCollectionItemsRequest req = AddCollectionItemsRequest.builder()
@@ -14063,8 +14073,7 @@ paths:
                 public static void main(String[] args) throws CollectionError, Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     CreateCollectionRequest req = CreateCollectionRequest.builder()
@@ -14207,8 +14216,7 @@ paths:
                 public static void main(String[] args) throws CollectionError, Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     DeleteCollectionRequest req = DeleteCollectionRequest.builder()
@@ -14316,8 +14324,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     DeleteCollectionItemRequest req = DeleteCollectionItemRequest.builder()
@@ -14501,8 +14508,7 @@ paths:
                 public static void main(String[] args) throws CollectionError, Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     EditCollectionRequest req = EditCollectionRequest.builder()
@@ -14637,8 +14643,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     EditCollectionItemRequest req = EditCollectionItemRequest.builder()
@@ -14743,8 +14748,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     GetCollectionRequest req = GetCollectionRequest.builder()
@@ -14846,8 +14850,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     ListCollectionsRequest req = ListCollectionsRequest.builder()
@@ -14950,8 +14953,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     GetDocPermissionsRequest req = GetDocPermissionsRequest.builder()
@@ -15051,8 +15053,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     GetdocumentsResponse res = sdk.client().documents().retrieve()
@@ -15207,8 +15208,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     GetDocumentsByFacetsRequest req = GetDocumentsByFacetsRequest.builder()
@@ -15335,8 +15335,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     InsightsRequest req = InsightsRequest.builder()
@@ -15443,8 +15442,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     MessagesRequest req = MessagesRequest.builder()
@@ -15578,8 +15576,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     EditPinRequest req = EditPinRequest.builder()
@@ -15693,8 +15690,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     GetPinRequest req = GetPinRequest.builder()
@@ -15795,8 +15791,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     ListpinsRequest req = ListpinsRequest.builder()
@@ -15928,8 +15923,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     PinRequest req = PinRequest.builder()
@@ -16039,8 +16033,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     Unpin req = Unpin.builder()
@@ -16289,8 +16282,7 @@ paths:
                 public static void main(String[] args) throws GleanDataError, Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     SearchRequest req = SearchRequest.builder()
@@ -16431,8 +16423,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     AutocompleteRequest req = AutocompleteRequest.builder()
@@ -16541,8 +16532,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     FeedRequest req = FeedRequest.builder()
@@ -16891,8 +16881,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     RecommendationsRequest req = RecommendationsRequest.builder()
@@ -17303,8 +17292,7 @@ paths:
                 public static void main(String[] args) throws GleanDataError, Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     SearchRequest req = SearchRequest.builder()
@@ -17351,7 +17339,7 @@ paths:
       tags:
         - Entities
       summary: List entities
-      description: List some set of details for all entities that fit the given criteria and return in the requested order. Does not support negation in filters, assumes relation type EQUALS. There is a limit of 10000 entities that can be retrieved via this endpoint.
+      description: List some set of details for all entities that fit the given criteria and return in the requested order. Does not support negation in filters, assumes relation type EQUALS. There is a limit of 10000 entities that can be retrieved via this endpoint, except when using FULL_DIRECTORY request type for people entities.
       operationId: listentities
       x-visibility: Public
       x-codegen-request-body-name: payload
@@ -17406,7 +17394,7 @@ paths:
                             },
                         ],
                     },
-                ], entity_type=models.ListEntitiesRequestEntityType.PEOPLE, page_size=100)
+                ], entity_type=models.ListEntitiesRequestEntityType.PEOPLE, page_size=100, request_type=models.RequestType.STANDARD)
 
                 # Handle response
                 print(res)
@@ -17464,8 +17452,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     ListEntitiesRequest req = ListEntitiesRequest.builder()
@@ -17589,8 +17576,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     PeopleRequest req = PeopleRequest.builder()
@@ -17763,8 +17749,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     CreateShortcutRequest req = CreateShortcutRequest.builder()
@@ -17879,8 +17864,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     DeleteShortcutRequest req = DeleteShortcutRequest.builder()
@@ -17985,8 +17969,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     GetShortcutRequestUnion req = GetShortcutRequestUnion.of(GetShortcutRequest.builder()
@@ -18120,8 +18103,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     ListShortcutsPaginatedRequest req = ListShortcutsPaginatedRequest.builder()
@@ -18287,8 +18269,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     UpdateShortcutRequest req = UpdateShortcutRequest.builder()
@@ -18415,8 +18396,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     SummarizeRequest req = SummarizeRequest.builder()
@@ -18524,8 +18504,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     ReminderRequest req = ReminderRequest.builder()
@@ -18624,8 +18603,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     ListverificationsResponse res = sdk.client().verification().list()
@@ -18726,8 +18704,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     VerifyRequest req = VerifyRequest.builder()
@@ -18830,8 +18807,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     GetRestApiV1ToolsListResponse res = sdk.client().tools().list()
@@ -18936,8 +18912,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     ToolsCallRequest req = ToolsCallRequest.builder()
@@ -19042,8 +19017,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     GetpolicyResponse res = sdk.client().governance().data().policies().retrieve()
@@ -19140,8 +19114,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     UpdatepolicyResponse res = sdk.client().governance().data().policies().update()
@@ -19241,8 +19214,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     ListpoliciesResponse res = sdk.client().governance().data().policies().list()
@@ -19332,8 +19304,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     CreateDlpReportRequest req = CreateDlpReportRequest.builder()
@@ -19429,8 +19400,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     DownloadpolicycsvResponse res = sdk.client().governance().data().policies().download()
@@ -19522,8 +19492,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     UpdateDlpConfigRequest req = UpdateDlpConfigRequest.builder()
@@ -19619,8 +19588,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     DownloadreportcsvResponse res = sdk.client().governance().data().reports().download()
@@ -19712,8 +19680,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     GetreportstatusResponse res = sdk.client().governance().data().reports().status()
@@ -19806,8 +19773,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     GetdocvisibilityResponse res = sdk.client().governance().documents().visibilityoverrides().list()
@@ -19897,8 +19863,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     UpdateDocumentVisibilityOverridesRequest req = UpdateDocumentVisibilityOverridesRequest.builder()
@@ -20123,8 +20088,7 @@ paths:
                 public static void main(String[] args) throws Exception {
 
                     Glean sdk = Glean.builder()
-                            .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                            .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
                         .build();
 
                     ChatStreamResponse res = sdk.client().chat().createStream()
@@ -20643,6 +20607,7 @@ components:
             - ID_EQUALS
             - LT
             - GT
+            - NOT_EQUALS
           example: EQUALS
         isNegated:
           type: boolean
@@ -21391,7 +21356,8 @@ components:
           example: From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.
         boardId:
           type: integer
-          description: The parent board ID of this Answer, or 0 if it's a floating Answer.
+          description: The parent board ID of this Answer, or 0 if it's a floating Answer. Adding Answers to Answer Boards is no longer permitted.
+          deprecated: true
         audienceFilters:
           type: array
           description: Filters which restrict who should see the answer. Values are taken from the corresponding filters in people search.
@@ -22163,11 +22129,13 @@ components:
             - ATTACHMENT
             - CANONICAL
             - CASE
+            - contact
             - CONTACT
             - CONVERSATION_MESSAGES
             - EXPERT
             - FROM
             - HIGHLIGHT
+            - opportunity
             - OPPORTUNITY
             - RECENT
             - SOURCE
@@ -24046,6 +24014,7 @@ components:
           type: string
           title: Role
           description: The role of the message.
+          example: USER
         content:
           title: Content
           description: The content of the message.
@@ -24938,6 +24907,7 @@ components:
             - COPYPASTED_QUOTES
             - INVALID_OPERATOR
             - MAYBE_INVALID_FACET_QUERY
+            - TOO_MANY_DATASOURCE_GROUPS
           description: The type of the warning.
         lastUsedTerm:
           type: string
@@ -25581,6 +25551,7 @@ components:
               - DISPLAYABLE_LIST
               - SOCIAL_LINK
               - EXTERNAL_TASKS
+              - WORKFLOW_COLLECTIONS
               - ZERO_STATE_CHAT_SUGGESTION
               - ZERO_STATE_CHAT_TOOL_SUGGESTION
               - ZERO_STATE_WORKFLOW_CREATED_BY_ME
@@ -26155,6 +26126,16 @@ components:
         source:
           type: string
           description: A string denoting the search surface from which the endpoint is called.
+        requestType:
+          type: string
+          default: STANDARD
+          description: The type of request being made.
+          x-enumDescriptions:
+            STANDARD: Used by default for all requests and satisfies all standard use cases for list requests. Limited to 10000 entities.
+            FULL_DIRECTORY: Used exclusively to return a comprehensive list of all people entities in the organization, typically for audit like purposes. The recommended approach is to sort by FIRST_NAME or LAST_NAME, and use pagination for large organizations.
+          enum:
+            - STANDARD
+            - FULL_DIRECTORY
     EntitiesSortOrder:
       type: string
       description: Different ways of sorting entities
@@ -26596,6 +26577,10 @@ components:
           type: string
           description: end time of the time range, applicable for the CUSTOM type.
           format: date-time
+        lastNDaysValue:
+          type: integer
+          description: The number of days to look back from the current time, applicable for the LAST_N_DAYS type.
+          format: int64
     InputOptions:
       description: Controls which data-sources and what time-range to include in scans.
       properties:
@@ -26630,6 +26615,7 @@ components:
             - PAST_YEAR
             - PAST_DAY
             - CUSTOM
+            - LAST_N_DAYS
         customTimeRange:
           $ref: "#/components/schemas/TimeRange"
     SharingOptions:
