@@ -8510,6 +8510,9 @@ components:
         searchedQuery:
           type: string
           description: The actual query used to perform search and return results.
+        searchedQueryWithoutNegation:
+          type: string
+          description: The query used to perform search and return results, with negated terms and facets removed.
         searchedQueryRanges:
           type: array
           items:
