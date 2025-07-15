@@ -2245,7 +2245,7 @@ paths:
   /api/index/v1/indexdocuments:
     post:
       summary: Index documents
-      description: Adds or updates multiple documents in the index. Please refer to the [bulk indexing](https://developers.glean.com/docs/indexing_api_bulk_indexing/#choosing-indexdocuments-vs-bulkindexdocuments) documentation for an explanation of when to use this endpoint.
+      description: Adds or updates multiple documents in the index. Please refer to the [bulk indexing](https://developers.glean.com/api-info/indexing/documents/bulk-indexing#choosing-indexdocuments-vs-bulkindexdocuments) documentation for an explanation of when to use this endpoint.
       tags:
         - Documents
       requestBody:
@@ -2271,7 +2271,7 @@ paths:
   /api/index/v1/bulkindexdocuments:
     post:
       summary: Bulk index documents
-      description: Replaces the documents in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/docs/indexing_api_bulk_indexing/#bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
+      description: Replaces the documents in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/api-info/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
       tags:
         - Documents
       requestBody:
@@ -2403,7 +2403,7 @@ paths:
   /api/index/v1/bulkindexusers:
     post:
       summary: Bulk index users
-      description: Replaces the users in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/docs/indexing_api_bulk_indexing/#bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
+      description: Replaces the users in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/api-info/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
       tags:
         - Permissions
       requestBody:
@@ -2451,7 +2451,7 @@ paths:
   /api/index/v1/bulkindexgroups:
     post:
       summary: Bulk index groups
-      description: Replaces the groups in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/docs/indexing_api_bulk_indexing/#bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
+      description: Replaces the groups in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/api-info/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
       tags:
         - Permissions
       requestBody:
@@ -2499,7 +2499,7 @@ paths:
   /api/index/v1/bulkindexmemberships:
     post:
       summary: Bulk index memberships for a group
-      description: Replaces the memberships for a group in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/docs/indexing_api_bulk_indexing/#bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
+      description: Replaces the memberships for a group in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/api-info/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
       tags:
         - Permissions
       requestBody:
@@ -2797,7 +2797,7 @@ paths:
       description: |
         Intended for debugging/validation. Fetches the current upload and indexing status of documents.
 
-        Tip: Use [/debug/{datasource}/document](https://developers.glean.com/docs/indexing_api/indexing_api_troubleshooting/#debug-datasource-document) for richer information.
+        Tip: Use [/debug/{datasource}/document](https://developers.glean.com/api-info/indexing/debugging/datasource-document) for richer information.
       tags:
         - Troubleshooting
       requestBody:
@@ -2829,7 +2829,7 @@ paths:
       description: |
         Fetches document count for the specified custom datasource.
 
-        Tip: Use [/debug/{datasource}/status](https://developers.glean.com/docs/indexing_api/indexing_api_troubleshooting/#debug-datasource-status) for richer information.
+        Tip: Use [/debug/{datasource}/status](https://developers.glean.com/api-info/indexing/debugging/datasource-status) for richer information.
       tags:
         - Troubleshooting
       requestBody:
@@ -2861,7 +2861,7 @@ paths:
       description: |
         Fetches user count for the specified custom datasource.
 
-        Tip: Use [/debug/{datasource}/status](https://developers.glean.com/docs/indexing_api/indexing_api_troubleshooting/#debug-datasource-status) for richer information.
+        Tip: Use [/debug/{datasource}/status](https://developers.glean.com/api-info/indexing/debugging/datasource-status) for richer information.
       tags:
         - Troubleshooting
       requestBody:
@@ -3006,7 +3006,7 @@ paths:
   /api/index/v1/bulkindexemployees:
     post:
       summary: Bulk index employees
-      description: Replaces all the currently indexed employees using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/docs/indexing_api_bulk_indexing/#bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
+      description: Replaces all the currently indexed employees using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/api-info/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
       tags:
         - People
       requestBody:
@@ -3121,7 +3121,7 @@ paths:
   /api/index/v1/bulkindexteams:
     post:
       summary: Bulk index teams
-      description: Replaces all the currently indexed teams using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/docs/indexing_api_bulk_indexing/#bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
+      description: Replaces all the currently indexed teams using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/api-info/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
       tags:
         - People
       requestBody:
