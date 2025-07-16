@@ -58,7 +58,7 @@ paths:
   /api/index/v1/indexdocuments:
     post:
       summary: Index documents
-      description: Adds or updates multiple documents in the index. Please refer to the [bulk indexing](https://developers.glean.com/api-info/indexing/documents/bulk-indexing#choosing-indexdocuments-vs-bulkindexdocuments) documentation for an explanation of when to use this endpoint.
+      description: Adds or updates multiple documents in the index. Please refer to the [bulk indexing](https://developers.glean.com/indexing/documents/bulk-indexing/choosing-indexdocuments-vs-bulkindexdocuments) documentation for an explanation of when to use this endpoint.
       tags:
         - Documents
       requestBody:
@@ -82,7 +82,7 @@ paths:
   /api/index/v1/bulkindexdocuments:
     post:
       summary: Bulk index documents
-      description: Replaces the documents in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/api-info/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
+      description: Replaces the documents in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
       tags:
         - Documents
       requestBody:
@@ -204,7 +204,7 @@ paths:
   /api/index/v1/bulkindexusers:
     post:
       summary: Bulk index users
-      description: Replaces the users in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/api-info/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
+      description: Replaces the users in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
       tags:
         - Permissions
       requestBody:
@@ -248,7 +248,7 @@ paths:
   /api/index/v1/bulkindexgroups:
     post:
       summary: Bulk index groups
-      description: Replaces the groups in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/api-info/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
+      description: Replaces the groups in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
       tags:
         - Permissions
       requestBody:
@@ -292,7 +292,7 @@ paths:
   /api/index/v1/bulkindexmemberships:
     post:
       summary: Bulk index memberships for a group
-      description: Replaces the memberships for a group in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/api-info/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
+      description: Replaces the memberships for a group in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
       tags:
         - Permissions
       requestBody:
@@ -405,7 +405,7 @@ paths:
       description: |
         Gather information about the datasource's overall status. Currently in beta, might undergo breaking changes without prior notice.
 
-        Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/docs/indexing_api/indexing_api_troubleshooting/) for more information.
+        Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/indexing/debugging/datasource-config) for more information.
       tags:
         - Troubleshooting
       parameters:
@@ -434,7 +434,7 @@ paths:
       description: |
         Gives various information that would help in debugging related to a particular document. Currently in beta, might undergo breaking changes without prior notice.
 
-        Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/docs/indexing_api/indexing_api_troubleshooting/) for more information.
+        Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/indexing/debugging/datasource-config) for more information.
       tags:
         - Troubleshooting
       parameters:
@@ -470,7 +470,7 @@ paths:
       description: |
         Gives various information that would help in debugging related to a batch of documents. Currently in beta, might undergo breaking changes without prior notice.
 
-        Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/docs/indexing_api/indexing_api_troubleshooting/) for more information.
+        Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/indexing/debugging/datasource-config) for more information.
       tags:
         - Troubleshooting
       parameters:
@@ -506,7 +506,7 @@ paths:
       description: |
         Gives various information that would help in debugging related to a particular user. Currently in beta, might undergo breaking changes without prior notice.
 
-        Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/docs/indexing_api/indexing_api_troubleshooting/) for more information.
+        Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/indexing/debugging/datasource-config) for more information.
       tags:
         - Troubleshooting
       parameters:
@@ -540,7 +540,7 @@ paths:
       description: |
         Check if a given user has access to access a document in a custom datasource
 
-        Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/docs/indexing_api/indexing_api_troubleshooting/) for more information.
+        Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/indexing/debugging/datasource-config) for more information.
       tags:
         - Troubleshooting
       requestBody:
@@ -570,7 +570,7 @@ paths:
       description: |
         Intended for debugging/validation. Fetches the current upload and indexing status of documents.
 
-        Tip: Use [/debug/{datasource}/document](https://developers.glean.com/api-info/indexing/debugging/datasource-document) for richer information.
+        Tip: Use [/debug/{datasource}/document](https://developers.glean.com/indexing/debugging/datasource-document) for richer information.
       tags:
         - Troubleshooting
       requestBody:
@@ -600,7 +600,7 @@ paths:
       description: |
         Fetches document count for the specified custom datasource.
 
-        Tip: Use [/debug/{datasource}/status](https://developers.glean.com/api-info/indexing/debugging/datasource-status) for richer information.
+        Tip: Use [/debug/{datasource}/status](https://developers.glean.com/indexing/debugging/datasource-status) for richer information.
       tags:
         - Troubleshooting
       requestBody:
@@ -630,7 +630,7 @@ paths:
       description: |
         Fetches user count for the specified custom datasource.
 
-        Tip: Use [/debug/{datasource}/status](https://developers.glean.com/api-info/indexing/debugging/datasource-status) for richer information.
+        Tip: Use [/debug/{datasource}/status](https://developers.glean.com/indexing/debugging/datasource-status) for richer information.
       tags:
         - Troubleshooting
       requestBody:
@@ -724,7 +724,7 @@ paths:
   /api/index/v1/rotatetoken:
     post:
       summary: Rotate token
-      description: Rotates the secret value inside the Indexing API token and returns the new raw secret. All other properties of the token are unchanged. In order to rotate the secret value, include the token as the bearer token in the `/rotatetoken` request. Please refer to [Token rotation](https://developers.glean.com/docs/indexing_api_token_rotation/) documentation for more information.
+      description: Rotates the secret value inside the Indexing API token and returns the new raw secret. All other properties of the token are unchanged. In order to rotate the secret value, include the token as the bearer token in the `/rotatetoken` request. Please refer to [Token rotation](https://developers.glean.com/indexing/authentication/token-rotation) documentation for more information.
       tags:
         - Authentication
       responses:
@@ -763,7 +763,7 @@ paths:
   /api/index/v1/bulkindexemployees:
     post:
       summary: Bulk index employees
-      description: Replaces all the currently indexed employees using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/api-info/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
+      description: Replaces all the currently indexed employees using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
       tags:
         - People
       requestBody:
@@ -890,7 +890,7 @@ paths:
   /api/index/v1/bulkindexteams:
     post:
       summary: Bulk index teams
-      description: Replaces all the currently indexed teams using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/api-info/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
+      description: Replaces all the currently indexed teams using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
       tags:
         - People
       requestBody:
@@ -1008,7 +1008,7 @@ components:
             The permalink for viewing the document. **Note: viewURL is a required field if id was not set when uploading the document.**'
         permissions:
           $ref: "#/components/schemas/DocumentPermissionsDefinition"
-          description: The permissions that define who can view this document in the search results. Please refer to [this](https://developers.glean.com/docs/indexing_api_permissions/) for more details.
+          description: The permissions that define who can view this document in the search results. Please refer to [this](https://developers.glean.com/indexing/documents/permissions) for more details.
       required:
         - permissions
         - datasource
@@ -1510,7 +1510,7 @@ components:
           description: The current owner of the document, if not the author.
         permissions:
           $ref: "#/components/schemas/DocumentPermissionsDefinition"
-          description: The permissions that define who can view this document in the search results. Please refer to [this](https://developers.glean.com/docs/indexing_api_permissions/) for more details.
+          description: The permissions that define who can view this document in the search results. Please refer to [this](https://developers.glean.com/indexing/documents/permissions) for more details.
         createdAt:
           type: integer
           format: int64
@@ -1544,7 +1544,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/CustomProperty"
-          description: Additional metadata properties of the document. These can surface as [facets and operators](https://developers.glean.com/docs/facets_and_operators_for_custom_datasources/).
+          description: Additional metadata properties of the document. These can surface as [facets and operators](https://developers.glean.com/indexing/datasource/custom-properties/operators_and_facets).
       required:
         - datasource
     CommentDefinition:
