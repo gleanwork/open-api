@@ -7097,6 +7097,7 @@ components:
         searchedQueryWithoutNegation:
           type: string
           description: The query used to perform search and return results, with negated terms and facets removed.
+          x-includeEmpty: true
         searchedQueryRanges:
           type: array
           items:
