@@ -7652,16 +7652,6 @@ components:
           properties:
             status:
               $ref: "#/components/schemas/AgentExecutionStatus"
-    AgentResponseMetadata:
-      type: object
-      description: Metadata associated with the agent response that supplements the main messages.
-      properties:
-        citations:
-          type: array
-          items:
-            $ref: "#/components/schemas/ChatMessageCitation"
-          title: Citations
-          description: Citations referencing source documents, files, or people that were used to generate the response.
     AgentRunWaitResponse:
       type: object
       properties:
@@ -7675,10 +7665,6 @@ components:
             $ref: "#/components/schemas/Message"
           title: Messages
           description: The messages returned by the run.
-        metadata:
-          $ref: "#/components/schemas/AgentResponseMetadata"
-          title: Metadata
-          description: Additional metadata associated with the agent response, including citations.
     CollectionItemDescriptor:
       allOf:
         - $ref: "#/components/schemas/CollectionItemMutableProperties"
