@@ -6091,6 +6091,7 @@ components:
           enum:
             - AWAITING_AUTH
             - AUTHORIZED
+            - AUTH_DISABLED
         client_url:
           type: string
           format: url
