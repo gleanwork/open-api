@@ -5817,6 +5817,9 @@ components:
             action:
               description: Basic information about an action. This can be used to construct rich-text messages with action references.
               $ref: '#/components/schemas/ToolInfo'
+            citation:
+              description: Inline citation.
+              $ref: '#/components/schemas/ChatMessageCitation'
     ChatMessage:
       description: A message that is rendered as one coherent unit with one given sender.
       properties:
