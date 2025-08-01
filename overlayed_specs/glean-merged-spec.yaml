@@ -5464,6 +5464,68 @@ components:
               description: The document's document_category(.proto).
             sourceDocument:
               $ref: "#/components/schemas/Document"
+    FollowupAction:
+      description: A follow-up action that can be invoked by the user after a response. The action parameters are not included and need to be predicted/filled separately.
+      properties:
+        actionRunId:
+          type: string
+          description: Unique identifier for this actionRun recommendation event.
+        actionInstanceId:
+          type: string
+          description: The ID of the action instance that will be invoked.
+        actionId:
+          type: string
+          description: The ID of the associated action.
+        recommendationText:
+          type: string
+          description: Text to be displayed to the user when recommending the action instance.
+        actionLabel:
+          type: string
+          description: The label to be used when displaying a button to execute this action instance.
+        userConfirmationRequired:
+          type: boolean
+          description: Whether user confirmation is needed before executing this action instance.
+    GeneratedQna:
+      properties:
+        question:
+          type: string
+          description: Search query rephrased into a question.
+        answer:
+          type: string
+          description: Answer generated for the given query or the generated question.
+        followUpPrompts:
+          type: array
+          items:
+            type: string
+          description: List of all follow-up prompts generated for the given query or the generated question.
+        followupActions:
+          description: List of follow-up actions generated for the given query or the generated question.
+          type: array
+          items:
+            $ref: "#/components/schemas/FollowupAction"
+        ranges:
+          type: array
+          items:
+            $ref: "#/components/schemas/TextRange"
+          description: Answer subsections to mark with special formatting (citations, bolding etc)
+        status:
+          type: string
+          enum:
+            - COMPUTING
+            - DISABLED
+            - FAILED
+            - NO_ANSWER
+            - SKIPPED
+            - STREAMING
+            - SUCCEEDED
+            - TIMEOUT
+          description: Status of backend generating the answer
+        cursor:
+          type: string
+          description: An opaque cursor representing the search request
+        trackingToken:
+          type: string
+          description: An opaque token that represents this particular result in this particular query. To be used for /feedback reporting.
     SearchResult:
       required:
         - url
@@ -5817,6 +5879,8 @@ components:
           $ref: "#/components/schemas/CustomEntity"
         answer:
           $ref: "#/components/schemas/Answer"
+        generatedQna:
+          $ref: "#/components/schemas/GeneratedQna"
         extractedQnA:
           $ref: "#/components/schemas/ExtractedQnA"
         meeting:
@@ -8352,68 +8416,6 @@ components:
         datasourceInstanceDisplayName:
           type: string
           description: The datasource instance display name from which the document was extracted. This is used for appinstance facet filter for datasources that support multiple instances.
-    FollowupAction:
-      description: A follow-up action that can be invoked by the user after a response. The action parameters are not included and need to be predicted/filled separately.
-      properties:
-        actionRunId:
-          type: string
-          description: Unique identifier for this actionRun recommendation event.
-        actionInstanceId:
-          type: string
-          description: The ID of the action instance that will be invoked.
-        actionId:
-          type: string
-          description: The ID of the associated action.
-        recommendationText:
-          type: string
-          description: Text to be displayed to the user when recommending the action instance.
-        actionLabel:
-          type: string
-          description: The label to be used when displaying a button to execute this action instance.
-        userConfirmationRequired:
-          type: boolean
-          description: Whether user confirmation is needed before executing this action instance.
-    GeneratedQna:
-      properties:
-        question:
-          type: string
-          description: Search query rephrased into a question.
-        answer:
-          type: string
-          description: Answer generated for the given query or the generated question.
-        followUpPrompts:
-          type: array
-          items:
-            type: string
-          description: List of all follow-up prompts generated for the given query or the generated question.
-        followupActions:
-          description: List of follow-up actions generated for the given query or the generated question.
-          type: array
-          items:
-            $ref: "#/components/schemas/FollowupAction"
-        ranges:
-          type: array
-          items:
-            $ref: "#/components/schemas/TextRange"
-          description: Answer subsections to mark with special formatting (citations, bolding etc)
-        status:
-          type: string
-          enum:
-            - COMPUTING
-            - DISABLED
-            - FAILED
-            - NO_ANSWER
-            - SKIPPED
-            - STREAMING
-            - SUCCEEDED
-            - TIMEOUT
-          description: Status of backend generating the answer
-        cursor:
-          type: string
-          description: An opaque cursor representing the search request
-        trackingToken:
-          type: string
-          description: An opaque token that represents this particular result in this particular query. To be used for /feedback reporting.
     InvalidOperatorValueError:
       properties:
         key:
