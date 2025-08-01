@@ -5490,12 +5490,12 @@ components:
             DEFAULT: Integrates with your company's knowledge.
             GPT: Communicates directly with the LLM.
             UNIVERSAL: Uses both company and web knowledge.
-            SEARCH_DISABLED: Both web search and company search are disabled.
+            GPT_NO_WEB: Communicates directly with the LLM and does not use web search.
           enum:
             - DEFAULT
             - GPT
             - UNIVERSAL
-            - SEARCH_DISABLED
+            - GPT_NO_WEB
         mode:
           type: string
           description: Top level modes to run GleanChat in.
