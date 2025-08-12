@@ -7428,11 +7428,6 @@ components:
               type: integer
               description: Timeout in milliseconds for the request. A `408` error will be returned if handling the request takes longer.
               example: 5000
-            people:
-              type: array
-              description: People associated with the search request. Hints to the server to fetch additional information for these people. Note that in this request, an email may be used as a person's obfuscatedId value.
-              items:
-                $ref: '#/components/schemas/Person'
             disableSpellcheck:
               type: boolean
               description: Whether or not to disable spellcheck.
