@@ -7730,6 +7730,7 @@ components:
               - ZERO_STATE_WORKFLOW_FAVORITES
               - ZERO_STATE_WORKFLOW_POPULAR
               - ZERO_STATE_WORKFLOW_SUGGESTION
+              - PERSONALIZED_CHAT_SUGGESTION
           description: Categories of content requested. An allowlist gives flexibility to request content separately or together.
         requestOptions:
           $ref: "#/components/schemas/FeedRequestOptions"
@@ -7885,6 +7886,14 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/GeneratedAttachment"
+    ChatSuggestion:
+      properties:
+        query:
+          type: string
+          description: The actionable chat query to run when the user selects this suggestion.
+        feature:
+          type: string
+          description: Targeted Glean Chat feature for the suggestion.
     PromptTemplateMutableProperties:
       required:
         - template
@@ -8098,6 +8107,7 @@ components:
             - ZERO_STATE_PROMPT_TEMPLATE_SUGGESTION
             - ZERO_STATE_STATIC_WORKFLOW_SUGGESTION
             - ZERO_STATE_AGENT_SUGGESTION
+            - PERSONALIZED_CHAT_SUGGESTION
           description: Type of the justification.
         justification:
           type: string
@@ -8122,6 +8132,8 @@ components:
           $ref: "#/components/schemas/Person"
         app:
           $ref: "#/components/schemas/AppResult"
+        chatSuggestion:
+          $ref: "#/components/schemas/ChatSuggestion"
         promptTemplate:
           $ref: "#/components/schemas/PromptTemplateResult"
         workflow:
@@ -8163,6 +8175,7 @@ components:
             - ZERO_STATE_WORKFLOW_FAVORITES
             - ZERO_STATE_WORKFLOW_POPULAR
             - ZERO_STATE_WORKFLOW_SUGGESTION
+            - PERSONALIZED_CHAT_SUGGESTION
           description: Category of the result, one of the requested categories in incoming request.
         primaryEntry:
           $ref: "#/components/schemas/FeedEntry"
