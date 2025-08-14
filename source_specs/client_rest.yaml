@@ -2359,6 +2359,7 @@ components:
         email:
           type: string
           description: The email address of the user who submitted the Feedback.event.MANUAL_FEEDBACK event.
+          deprecated: true
         source:
           type: string
           description: The source associated with the Feedback.event.MANUAL_FEEDBACK event.
