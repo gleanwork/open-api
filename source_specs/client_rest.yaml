@@ -5892,7 +5892,7 @@ components:
           $ref: '#/components/schemas/AgentConfig'
           description: Describes the agent config that generated this message. Populated on responses and not required on requests.
         author:
-          default: GLEAN_AI
+          default: USER
           enum:
             - USER
             - GLEAN_AI
