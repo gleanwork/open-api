@@ -4983,6 +4983,8 @@ components:
         - THREAD_ROOT
         - PREFIX
         - SUFFIX
+        - AUTHOR_PREFIX
+        - AUTHOR_SUFFIX
     ClusterGroup:
       required:
         - visibleCountHint
