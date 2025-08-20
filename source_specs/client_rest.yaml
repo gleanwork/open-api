@@ -4427,9 +4427,6 @@ components:
       required:
         - snippet
       properties:
-        snippet:
-          type: string
-          description: A matching snippet from the document. Query term matches are marked by the unicode characters uE006 and uE007.
         mimeType:
           type: string
           description: The mime type of the snippets, currently either text/plain or text/html.
@@ -4447,6 +4444,10 @@ components:
         url:
           type: string
           description: A URL, generated based on availability, that links to the position of the snippet text or to the nearest header above the snippet text.
+        snippet:
+          type: string
+          deprecated: true
+          description: A matching snippet from the document. Query term matches are marked by the unicode characters uE006 and uE007. Use 'text' field instead.
       example:
         snippet: snippet
         mimeType: mimeType
