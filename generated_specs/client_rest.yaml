@@ -6074,12 +6074,18 @@ components:
       description: A historical representation of a series of chat messages a user had with Glean Assistant.
       allOf:
         - $ref: "#/components/schemas/ChatMetadata"
+        - $ref: "#/components/schemas/PermissionedObject"
       properties:
         messages:
           type: array
           items:
             $ref: "#/components/schemas/ChatMessage"
           description: The chat messages within a Chat.
+        roles:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserRoleSpecification"
+          description: A list of roles for this chat session explicitly granted.
     ChatResult:
       properties:
         chat:
