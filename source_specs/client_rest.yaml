@@ -6085,7 +6085,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserRoleSpecification'
-          description: A list of roles for this chat session explicitly granted.
+          description: A list of roles for this Chat.
     ChatResult:
       properties:
         chat:
