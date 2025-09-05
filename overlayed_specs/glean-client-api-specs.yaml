@@ -8187,6 +8187,7 @@ components:
               - ZERO_STATE_WORKFLOW_POPULAR
               - ZERO_STATE_WORKFLOW_SUGGESTION
               - PERSONALIZED_CHAT_SUGGESTION
+              - DAILY_DIGEST
           description: Categories of content requested. An allowlist gives flexibility to request content separately or together.
         requestOptions:
           $ref: "#/components/schemas/FeedRequestOptions"
@@ -8342,6 +8343,84 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/GeneratedAttachment"
+    SectionType:
+      type: string
+      description: Type of the section. This defines how the section should be interpreted and rendered in the digest.
+      x-enumDescriptions:
+        CHANNEL: A standard section for channel-based digests (e.g. from Slack, Teams).
+        MENTIONS: A dedicated section that surfaces user mentions (actionable, informative, or all).
+        TOPIC: A section driven by a generic topic, not tied to any specific channel or instance.
+      enum:
+        - CHANNEL
+        - MENTIONS
+        - TOPIC
+    UpdateType:
+      type: string
+      description: Optional type classification for the update.
+      x-enumDescriptions:
+        ACTIONABLE: Updates that require user attention or action
+        INFORMATIVE: Updates that are purely informational
+      enum:
+        - ACTIONABLE
+        - INFORMATIVE
+    DigestUpdate:
+      type: object
+      properties:
+        url:
+          type: string
+          description: URL link to the content or document.
+        title:
+          type: string
+          description: Title or headline of the update.
+        datasource:
+          type: string
+          description: Name or identifier of the data source (e.g., slack, confluence, etc.).
+        summary:
+          type: string
+          description: Brief summary or description of the update content.
+        type:
+          $ref: "#/components/schemas/UpdateType"
+    DigestSection:
+      type: object
+      required:
+        - id
+        - type
+        - updates
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the digest section.
+        type:
+          $ref: "#/components/schemas/SectionType"
+        displayName:
+          type: string
+          description: Human-readable name for the digest section.
+        channelName:
+          type: string
+          description: Name of the channel (applicable for CHANNEL type sections). Used to display in the frontend.
+        instanceId:
+          type: string
+          description: Instance identifier for the channel or workspace. Used for constructing channel URLs to display in the frontend.
+        updates:
+          type: array
+          items:
+            $ref: "#/components/schemas/DigestUpdate"
+          description: List of updates within this digest section.
+    Digest:
+      type: object
+      properties:
+        podcastFileId:
+          type: string
+          description: Identifier for the podcast file generated from this digest content.
+        digestDate:
+          type: string
+          description: The date this digest covers, in YYYY-MM-DD format. Represents the specific day for which the digest content and updates were compiled. This can be empty if the digest is not yet available.
+          example: "2025-09-03"
+        sections:
+          type: array
+          items:
+            $ref: "#/components/schemas/DigestSection"
+          description: Array of digest sections from which the podcast was created.
     ChatSuggestion:
       properties:
         query:
@@ -8564,6 +8643,7 @@ components:
             - ZERO_STATE_STATIC_WORKFLOW_SUGGESTION
             - ZERO_STATE_AGENT_SUGGESTION
             - PERSONALIZED_CHAT_SUGGESTION
+            - DAILY_DIGEST
           description: Type of the justification.
         justification:
           type: string
@@ -8580,6 +8660,8 @@ components:
           $ref: "#/components/schemas/CalendarEvent"
         announcement:
           $ref: "#/components/schemas/Announcement"
+        digest:
+          $ref: "#/components/schemas/Digest"
         collection:
           $ref: "#/components/schemas/Collection"
         collectionItem:
@@ -8632,6 +8714,7 @@ components:
             - ZERO_STATE_WORKFLOW_POPULAR
             - ZERO_STATE_WORKFLOW_SUGGESTION
             - PERSONALIZED_CHAT_SUGGESTION
+            - DAILY_DIGEST
           description: Category of the result, one of the requested categories in incoming request.
         primaryEntry:
           $ref: "#/components/schemas/FeedEntry"
