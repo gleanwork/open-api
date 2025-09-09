@@ -7354,6 +7354,7 @@ components:
             ERROR: A message that describes an error while processing the request.
             HEADING: A heading message used to distinguish different sections of the holistic response.
             WARNING: A warning message to be shown to the user.
+            SERVER_TOOL_REQUEST: A message used to request server-side tool auth/use.
           enum:
             - UPDATE
             - CONTENT
@@ -7363,6 +7364,7 @@ components:
             - ERROR
             - HEADING
             - WARNING
+            - SERVER_TOOL_REQUEST
         hasMoreFragments:
           deprecated: true
           type: boolean
