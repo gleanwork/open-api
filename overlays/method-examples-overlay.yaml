@@ -1,0 +1,194 @@
+overlay: 1.0.0
+x-speakeasy-jsonpath: rfc9535
+info:
+  title: Apply explicit examples for requests bodies
+  version: 0.1.2
+actions:
+  - target: $.paths.*.[?@.operationId =='createshortcut']
+    update:
+      requestBody:
+        content:
+          'application/json':
+            example:
+              {
+                'data':
+                  {
+                    'addedRoles':
+                      [
+                        {
+                          'group':
+                            {
+                              'type': 'DEPARTMENT',
+                              'id': 'string',
+                              'name': 'string',
+                            },
+                          'person':
+                            {
+                              'name': 'George Clooney',
+                              'obfuscatedId': 'abc123',
+                            },
+                          'role': 'OWNER',
+                          'sourceDocumentSpec': { 'url': 'string' },
+                        },
+                      ],
+                    'description': 'string',
+                    'destinationDocumentId': 'string',
+                    'destinationUrl': 'string',
+                    'inputAlias': 'string',
+                    'removedRoles':
+                      [
+                        {
+                          'group':
+                            {
+                              'type': 'DEPARTMENT',
+                              'id': 'string',
+                              'name': 'string',
+                            },
+                          'person':
+                            {
+                              'name': 'George Clooney',
+                              'obfuscatedId': 'abc123',
+                            },
+                          'role': 'OWNER',
+                          'sourceDocumentSpec': { 'url': 'string' },
+                        },
+                      ],
+                    'unlisted': true,
+                    'urlTemplate': 'string',
+                  },
+              }
+
+  - target: $.paths.*.[?@.operationId == 'updateshortcut']
+    update:
+      requestBody:
+        content:
+          'application/json':
+            example:
+              {
+                'id': 0,
+                'addedRoles':
+                  [
+                    {
+                      'group':
+                        {
+                          'type': 'DEPARTMENT',
+                          'id': 'string',
+                          'name': 'string',
+                        },
+                      'person':
+                        { 'name': 'George Clooney', 'obfuscatedId': 'abc123' },
+                      'role': 'OWNER',
+                      'sourceDocumentSpec': { 'url': 'string' },
+                    },
+                  ],
+                'description': 'string',
+                'destinationDocumentId': 'string',
+                'destinationUrl': 'string',
+                'inputAlias': 'string',
+                'removedRoles':
+                  [
+                    {
+                      'group':
+                        {
+                          'type': 'DEPARTMENT',
+                          'id': 'string',
+                          'name': 'string',
+                        },
+                      'person':
+                        { 'name': 'George Clooney', 'obfuscatedId': 'abc123' },
+                      'role': 'OWNER',
+                      'sourceDocumentSpec': { 'url': 'string' },
+                    },
+                  ],
+                'unlisted': true,
+                'urlTemplate': 'string',
+              }
+
+  - target: $.paths.*.[?@.operationId == 'createannouncement']
+    update:
+      requestBody:
+        content:
+          'application/json':
+            example:
+              {
+                'startTime': '2024-07-29T15:51:28.071Z',
+                'endTime': '2024-07-29T15:51:28.071Z',
+                'title': 'string',
+                'body':
+                  {
+                    'structuredList':
+                      [
+                        {
+                          'document': {},
+                          'link': 'https://en.wikipedia.org/wiki/Diffuse_sky_radiation',
+                          'structuredResult': {},
+                          'text': 'Because its wavelengths are shorter, blue light is more strongly scattered than the longer-wavelength lights, red or green. Hence the result that when looking at the sky away from the direct incident sunlight, the human eye perceives the sky to be blue.',
+                        },
+                      ],
+                  },
+                'emoji': 'string',
+                'thumbnail': { 'photoId': 'string', 'url': 'string' },
+                'banner': { 'photoId': 'string', 'url': 'string' },
+                'audienceFilters':
+                  [
+                    {
+                      'fieldName': 'type',
+                      'values':
+                        [
+                          { 'value': 'Spreadsheet', 'relationType': 'EQUALS' },
+                          { 'value': 'Presentation', 'relationType': 'EQUALS' },
+                        ],
+                    },
+                  ],
+                'sourceDocumentId': 'string',
+                'hideAttribution': true,
+                'channel': 'MAIN',
+                'postType': 'TEXT',
+                'isPrioritized': true,
+                'viewUrl': 'string',
+              }
+
+  - target: $.paths.*.[?@.operationId == 'updateannouncement']
+    update:
+      requestBody:
+        content:
+          'application/json':
+            example:
+              {
+                'startTime': '2024-07-29T15:51:28.071Z',
+                'endTime': '2024-07-29T15:51:28.071Z',
+                'title': 'string',
+                'body':
+                  {
+                    'structuredList':
+                      [
+                        {
+                          'document': {},
+                          'link': 'https://en.wikipedia.org/wiki/Diffuse_sky_radiation',
+                          'structuredResult': {},
+                          'text': 'Because its wavelengths are shorter, blue light is more strongly scattered than the longer-wavelength lights, red or green. Hence the result that when looking at the sky away from the direct incident sunlight, the human eye perceives the sky to be blue.',
+                        },
+                      ],
+                  },
+                'emoji': 'string',
+                'thumbnail': { 'photoId': 'string', 'url': 'string' },
+                'banner': { 'photoId': 'string', 'url': 'string' },
+                'audienceFilters':
+                  [
+                    {
+                      'fieldName': 'type',
+                      'values':
+                        [
+                          { 'value': 'Spreadsheet', 'relationType': 'EQUALS' },
+                          { 'value': 'Presentation', 'relationType': 'EQUALS' },
+                        ],
+                    },
+                  ],
+                'sourceDocumentId': 'string',
+                'hideAttribution': true,
+                'channel': 'MAIN',
+                'postType': 'TEXT',
+                'isPrioritized': true,
+                'viewUrl': 'string',
+                'id': 0,
+              }
