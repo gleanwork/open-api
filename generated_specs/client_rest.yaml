@@ -2846,18 +2846,28 @@ components:
         tokenType: Bearer
         authUser: "1"
     DocumentSpec:
+      x-multiple-discriminators: true
       oneOf:
         - type: object
+          required:
+            - url
           properties:
             url:
               type: string
+              x-discriminator: true
               description: The URL of the document.
         - type: object
+          required:
+            - id
           properties:
             id:
               type: string
+              x-discriminator: true
               description: The ID of the document.
         - type: object
+          required:
+            - contentId
+            - ugcType
           properties:
             ugcType:
               type: string
@@ -2869,6 +2879,7 @@ components:
               description: The type of the user generated content (UGC datasource).
             contentId:
               type: integer
+              x-discriminator: true
               description: The id for user generated content.
             docType:
               type: string
