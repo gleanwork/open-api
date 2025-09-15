@@ -6855,9 +6855,12 @@ components:
             - NO_PERMISSIONS
     CreateCollectionResponse:
       allOf:
-        - $ref: "#/components/schemas/Collection"
-        - $ref: "#/components/schemas/CollectionError"
         - type: object
+          anyOf:
+            - required:
+                - collection
+            - required:
+                - error
           properties:
             collection:
               $ref: "#/components/schemas/Collection"
