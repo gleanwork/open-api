@@ -3317,11 +3317,33 @@ components:
                 - ANSWERS
                 - COLLECTIONS
                 - SHORTCUTS
+                - CHATS
               description: The type of the user generated content (UGC datasource).
             contentId:
               type: integer
               x-discriminator: true
-              description: The id for user generated content.
+              description: The numeric id for user generated content. Used for ANNOUNCEMENTS, ANSWERS, COLLECTIONS, SHORTCUTS.
+            docType:
+              type: string
+              description: The specific type of the user generated content type.
+        - type: object
+          required:
+            - ugcType
+            - ugcId
+          properties:
+            ugcType:
+              type: string
+              enum:
+                - ANNOUNCEMENTS
+                - ANSWERS
+                - COLLECTIONS
+                - SHORTCUTS
+                - CHATS
+              description: The type of the user generated content (UGC datasource).
+            ugcId:
+              type: string
+              x-discriminator: true
+              description: The string id for user generated content. Used for CHATS.
             docType:
               type: string
               description: The specific type of the user generated content type.
