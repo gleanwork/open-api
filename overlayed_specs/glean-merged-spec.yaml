@@ -4901,6 +4901,9 @@ components:
         datasourceInstance:
           type: string
           description: Datasource instance if the group belongs to one e.g. external groups.
+        provisioningId:
+          type: string
+          description: identifier for greenlist provisioning, aka sciokey
     UserRole:
       type: string
       description: A user's role with respect to a specific document.
