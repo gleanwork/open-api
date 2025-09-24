@@ -3087,14 +3087,14 @@ paths:
 
                 res, err := s.Indexing.Datasources.Add(ctx, components.CustomDatasourceConfig{
                     Name: "<value>",
-                    URLRegex: apiclientgo.String("https://example-company.datasource.com/.*"),
+                    URLRegex: apiclientgo.Pointer("https://example-company.datasource.com/.*"),
                     Quicklinks: []components.Quicklink{
                         components.Quicklink{
                             IconConfig: &components.IconConfig{
-                                Color: apiclientgo.String("#343CED"),
-                                Key: apiclientgo.String("person_icon"),
+                                Color: apiclientgo.Pointer("#343CED"),
+                                Key: apiclientgo.Pointer("person_icon"),
                                 IconType: components.IconTypeGlyph.ToPointer(),
-                                Name: apiclientgo.String("user"),
+                                Name: apiclientgo.Pointer("user"),
                             },
                         },
                     },
@@ -6182,6 +6182,7 @@ components:
             - EXTERNAL_SHORTCUT
             - ENTITY
             - CALENDAR
+            - AGENTS
           description: The document category of this object type.
         propertyDefinitions:
           type: array
@@ -6317,6 +6318,7 @@ components:
             - EXTERNAL_SHORTCUT
             - ENTITY
             - CALENDAR
+            - AGENTS
           default: UNCATEGORIZED
           description: The type of this datasource. It is an important signal for relevance and must be specified and cannot be UNCATEGORIZED. Please refer to [this](https://developers.glean.com/docs/indexing_api_datasource_category/) for more details.
         urlRegex:
