@@ -5587,6 +5587,16 @@ components:
           description: Unix timestamp for when this token expires (in seconds since epoch UTC).
           type: integer
           format: int64
+    ToolSets:
+      type: object
+      description: The types of tools that the agent is allowed to use. Only works with FAST and ADVANCED `agent` values
+      properties:
+        enableWebSearch:
+          type: boolean
+          description: "Whether the agent is allowed to use web search (default: true)."
+        enableCompanyTools:
+          type: boolean
+          description: "Whether the agent is allowed to search internal company resources (default: true)."
     AgentConfig:
       description: Describes the agent that executes the request.
       properties:
@@ -5594,13 +5604,19 @@ components:
           type: string
           description: Name of the agent.
           x-enumDescriptions:
-            DEFAULT: Integrates with your company's knowledge.
-            GPT: Communicates directly with the LLM.
-            UNIVERSAL: Uses both company and web knowledge.
+            DEFAULT: Integrates with your company's knowledge. This will soon be deprecated in favor of the FAST and ADVANCED `agent` values
+            GPT: Communicates directly with the LLM. This will soon be deprecated in favor of the FAST and ADVANCED `agent` values
+            UNIVERSAL: Uses both company and web knowledge. This will soon be deprecated in favor of the FAST and ADVANCED `agent` values
+            FAST: Uses an agent powered by the agentic engine that responds faster but may have lower quality results. Requires the agentic engine to be enabled in the deployment.
+            ADVANCED: Uses an agent powered by the agentic engine that thinks for longer and potentially makes more LLM calls to return higher quality results. Requires the agentic engine to be enabled in the deployment.
           enum:
             - DEFAULT
             - GPT
             - UNIVERSAL
+            - FAST
+            - ADVANCED
+        toolSets:
+          $ref: "#/components/schemas/ToolSets"
         mode:
           type: string
           description: Top level modes to run GleanChat in.
