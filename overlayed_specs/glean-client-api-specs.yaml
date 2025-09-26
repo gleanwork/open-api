@@ -7133,6 +7133,9 @@ components:
             type: string
             enum:
               - AGENTS
+              - AGENT_USERS
+              - TOP_AGENTS
+              - AGENTS_USAGE_BY_DEPARTMENT
               - AI
               - AI_APPS
               - ANNOUNCEMENTS
