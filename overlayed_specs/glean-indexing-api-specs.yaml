@@ -1016,6 +1016,7 @@ paths:
           description: Conflict
       x-speakeasy-name-override: upload
       x-speakeasy-group: indexing.shortcuts
+  /api/index/v1/debug/{datasource}/document/events: {}
 components:
   securitySchemes:
     APIToken:

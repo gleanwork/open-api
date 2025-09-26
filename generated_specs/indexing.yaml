@@ -953,6 +953,7 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+  /api/index/v1/debug/{datasource}/document/events: {}
 components:
   securitySchemes:
     APIToken:
