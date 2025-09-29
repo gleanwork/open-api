@@ -1366,8 +1366,8 @@ paths:
     post:
       tags:
         - Insights
-      summary: Read insights
-      description: Reads the aggregate information for each user, query, and content.
+      summary: Get insights
+      description: Gets the aggregate usage insights data displayed in the Insights Dashboards.
       operationId: insights
       x-visibility: Public
       x-codegen-request-body-name: payload
@@ -1379,7 +1379,7 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/InsightsRequest"
-        description: Includes request params for insights dashboard data.
+        description: Includes request parameters for insights requests.
         required: true
         x-exportParamName: InsightsRequest
       responses:
@@ -6664,6 +6664,41 @@ components:
         cursor:
           type: string
           description: Cursor that indicates the start of the next page of results. To be passed in "more" requests for this query.
+    InsightsOverviewRequest:
+      properties:
+        departments:
+          type: array
+          items:
+            type: string
+          description: Departments for which Insights are requested.
+        dayRange:
+          $ref: "#/components/schemas/Period"
+          description: Time period for which Insights are requested.
+    InsightsAssistantRequest:
+      properties:
+        departments:
+          type: array
+          items:
+            type: string
+          description: Departments for which Insights are requested.
+        dayRange:
+          $ref: "#/components/schemas/Period"
+          description: Time period for which Insights are requested.
+    AgentsInsightsV2Request:
+      properties:
+        agentIds:
+          type: array
+          items:
+            type: string
+          description: IDs of the Agents for which Insights should be returned. An empty array signifies all.
+        departments:
+          type: array
+          items:
+            type: string
+          description: Departments for which Insights are requested.
+        dayRange:
+          $ref: "#/components/schemas/Period"
+          description: Time period for which Insights are requested.
     InsightsAiAppRequestOptions:
       type: object
       properties:
@@ -6680,11 +6715,25 @@ components:
           items:
             type: string
           description: IDs of the Agents for which Insights should be returned. An empty array signifies all.
-    DownloadInsightsRequest:
-      required:
-        - categories
+    InsightsRequest:
       properties:
+        overviewRequest:
+          $ref: "#/components/schemas/InsightsOverviewRequest"
+          x-visibility: Public
+          description: If specified, will return data for the Overview section of the Insights Dashboard.
+        assistantRequest:
+          $ref: "#/components/schemas/InsightsAssistantRequest"
+          x-visibility: Public
+          description: If specified, will return data for the Assistant section of the Insights Dashboard.
+        agentsRequest:
+          $ref: "#/components/schemas/AgentsInsightsV2Request"
+          x-visibility: Public
+          description: If specified, will return data for the Agents section of the Insights Dashboard.
+        disablePerUserInsights:
+          type: boolean
+          description: If true, suppresses the generation of per-user Insights in the response. Default is false.
         categories:
+          deprecated: true
           type: array
           items:
             type: string
@@ -6705,34 +6754,31 @@ components:
               - USERS
           description: Categories of data requested. Request can include single or multiple types.
         departments:
+          deprecated: true
           type: array
           items:
             type: string
           description: Departments that the data is requested for. If this is empty, corresponds to whole company.
         dayRange:
+          deprecated: true
           $ref: "#/components/schemas/Period"
         aiAppRequestOptions:
+          deprecated: true
           $ref: "#/components/schemas/InsightsAiAppRequestOptions"
         agentsRequestOptions:
+          deprecated: true
           $ref: "#/components/schemas/InsightsAgentsRequestOptions"
-    InsightsRequest:
-      allOf:
-        - $ref: "#/components/schemas/DownloadInsightsRequest"
-        - type: object
-          properties:
-            assistantActivityTypes:
-              type: array
-              items:
-                type: string
-                enum:
-                  - GLEAN_CHAT
-                  - AI_SUMMARY
-                  - AI_ANSWER
-                  - GLEANBOT_RESPONSE
-              description: Types of activity that should count in the definition of an Assistant Active User. Affects only insights for AI category.
-            disablePerUserInsights:
-              type: boolean
-              description: If true, suppresses the generation of per-user Insights in the response. Default is false.
+        assistantActivityTypes:
+          deprecated: true
+          type: array
+          items:
+            type: string
+            enum:
+              - GLEAN_CHAT
+              - AI_SUMMARY
+              - AI_ANSWER
+              - GLEANBOT_RESPONSE
+          description: Types of activity that should count in the definition of an Assistant Active User. Affects only insights for AI category.
     LabeledCountInfo:
       required:
         - label
