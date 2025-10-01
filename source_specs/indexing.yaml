@@ -721,8 +721,6 @@ paths:
           description: Not Authorized
         '409':
           description: Conflict
-  /update/{datasource}/resolvedeletionpaused: {}
-  /update/{datasource}/extenddeletionpaused: {}
   /rotatetoken:
     post:
       summary: Rotate token
@@ -955,7 +953,6 @@ paths:
           description: Not Authorized
         '409':
           description: Conflict
-  /debug/{datasource}/document/events: {}
 components:
   securitySchemes:
     BearerAuth:
