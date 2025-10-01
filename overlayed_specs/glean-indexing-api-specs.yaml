@@ -786,6 +786,8 @@ paths:
           description: Conflict
       x-speakeasy-name-override: retrieveConfig
       x-speakeasy-group: indexing.datasources
+  /api/index/v1/update/{datasource}/resolvedeletionpaused: {}
+  /api/index/v1/update/{datasource}/extenddeletionpaused: {}
   /api/index/v1/rotatetoken:
     post:
       summary: Rotate token

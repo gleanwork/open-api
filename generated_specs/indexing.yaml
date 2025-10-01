@@ -721,6 +721,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+  /api/index/v1/update/{datasource}/resolvedeletionpaused: {}
+  /api/index/v1/update/{datasource}/extenddeletionpaused: {}
   /api/index/v1/rotatetoken:
     post:
       summary: Rotate token
