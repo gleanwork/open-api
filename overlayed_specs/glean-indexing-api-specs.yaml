@@ -786,8 +786,6 @@ paths:
           description: Conflict
       x-speakeasy-name-override: retrieveConfig
       x-speakeasy-group: indexing.datasources
-  /api/index/v1/update/{datasource}/resolvedeletionpaused: {}
-  /api/index/v1/update/{datasource}/extenddeletionpaused: {}
   /api/index/v1/rotatetoken:
     post:
       summary: Rotate token
@@ -1018,7 +1016,6 @@ paths:
           description: Conflict
       x-speakeasy-name-override: upload
       x-speakeasy-group: indexing.shortcuts
-  /api/index/v1/debug/{datasource}/document/events: {}
 components:
   securitySchemes:
     APIToken:
