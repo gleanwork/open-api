@@ -14478,7 +14478,7 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as glean:
 
-                res = glean.client.messages.retrieve(id_type=models.IDType.CONVERSATION_ID, id="<id>")
+                res = glean.client.messages.retrieve(id_type=models.IDType.CONVERSATION_ID, id="<id>", datasource=models.Datasource.SLACK)
 
                 # Handle response
                 print(res)
@@ -14495,6 +14495,7 @@ paths:
               const result = await glean.client.messages.retrieve({
                 idType: "CONVERSATION_ID",
                 id: "<id>",
+                datasource: "SLACK",
               });
 
               console.log(result);
@@ -14524,6 +14525,7 @@ paths:
                 res, err := s.Client.Messages.Retrieve(ctx, components.MessagesRequest{
                     IDType: components.IDTypeConversationID,
                     ID: "<id>",
+                    Datasource: components.DatasourceSlack,
                 })
                 if err != nil {
                     log.Fatal(err)
@@ -14539,8 +14541,7 @@ paths:
 
             import java.lang.Exception;
             import org.openapis.openapi.Glean;
-            import org.openapis.openapi.models.components.IdType;
-            import org.openapis.openapi.models.components.MessagesRequest;
+            import org.openapis.openapi.models.components.*;
             import org.openapis.openapi.models.operations.MessagesResponse;
 
             public class Application {
@@ -14554,6 +14555,7 @@ paths:
                     MessagesRequest req = MessagesRequest.builder()
                             .idType(IdType.CONVERSATION_ID)
                             .id("<id>")
+                            .datasource(Datasource.SLACK)
                             .build();
 
                     MessagesResponse res = sdk.client().messages().retrieve()
@@ -25540,6 +25542,7 @@ components:
       required:
         - id
         - idType
+        - datasource
       properties:
         idType:
           type: string
@@ -25571,9 +25574,11 @@ components:
           type: string
           enum:
             - SLACK
+            - SLACKENTGRID
             - MICROSOFTTEAMS
+            - GCHAT
             - FACEBOOKWORKPLACE
-          description: The type of the data source. Missing field defaults to SLACK.
+          description: The type of the data source.
         datasourceInstanceDisplayName:
           type: string
           description: The datasource instance display name from which the document was extracted. This is used for appinstance facet filter for datasources that support multiple instances.
@@ -26489,6 +26494,11 @@ components:
     DigestUpdate:
       type: object
       properties:
+        urls:
+          type: array
+          description: List of URLs for similar updates that are grouped together and rendered as a single update.
+          items:
+            type: string
         url:
           type: string
           description: URL link to the content or document.
