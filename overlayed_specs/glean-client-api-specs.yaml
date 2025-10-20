@@ -6075,6 +6075,9 @@ components:
           enum:
             - DEFAULT
             - QUICK
+        useImageGeneration:
+          type: boolean
+          description: Whether the agent should create an image.
     ChatFileStatus:
       type: string
       description: Current status of the file.
