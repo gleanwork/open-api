@@ -3791,6 +3791,7 @@ components:
             - GENERATED_Q_AND_A
             - INLINE_MENU
             - NATIVE_RESULT
+            - PRISM
             - Q_AND_A
             - RELATED_QUESTIONS
             - REPORT_ISSUE
@@ -3982,6 +3983,7 @@ components:
             - WORKFLOWS
             - SUMMARY
             - GENERAL
+            - PRISM
             - PROMPTS
         trackingTokens:
           type: array
