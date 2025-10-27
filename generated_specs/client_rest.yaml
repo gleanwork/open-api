@@ -6642,6 +6642,8 @@ components:
       oneOf:
         - $ref: "#/components/schemas/Document"
         - type: object
+          required:
+            - error
           properties:
             error:
               type: string
