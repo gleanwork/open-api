@@ -1483,6 +1483,18 @@ paths:
                                         obfuscated_id="abc123",
                                     ),
                                 ),
+                                chat=models.ChatMetadata(
+                                    created_by=models.Person(
+                                        name="George Clooney",
+                                        obfuscated_id="abc123",
+                                    ),
+                                    icon=models.IconConfig(
+                                        color="#343CED",
+                                        key="person_icon",
+                                        icon_type=models.IconType.GLYPH,
+                                        name="user",
+                                    ),
+                                ),
                                 related_documents=[
                                     models.RelatedDocuments(
                                         query_suggestion=models.QuerySuggestion(
@@ -2600,6 +2612,18 @@ paths:
                           person: {
                             name: "George Clooney",
                             obfuscatedId: "abc123",
+                          },
+                        },
+                        chat: {
+                          createdBy: {
+                            name: "George Clooney",
+                            obfuscatedId: "abc123",
+                          },
+                          icon: {
+                            color: "#343CED",
+                            key: "person_icon",
+                            iconType: "GLYPH",
+                            name: "user",
                           },
                         },
                         relatedDocuments: [
@@ -3738,6 +3762,18 @@ paths:
                                             ObfuscatedID: "abc123",
                                         },
                                     },
+                                    Chat: &components.ChatMetadata{
+                                        CreatedBy: &components.Person{
+                                            Name: "George Clooney",
+                                            ObfuscatedID: "abc123",
+                                        },
+                                        Icon: &components.IconConfig{
+                                            Color: apiclientgo.Pointer("#343CED"),
+                                            Key: apiclientgo.Pointer("person_icon"),
+                                            IconType: components.IconTypeGlyph.ToPointer(),
+                                            Name: apiclientgo.Pointer("user"),
+                                        },
+                                    },
                                     RelatedDocuments: []components.RelatedDocuments{
                                         components.RelatedDocuments{
                                             QuerySuggestion: &components.QuerySuggestion{
@@ -4811,6 +4847,18 @@ paths:
                                                 .person(Person.builder()
                                                     .name("George Clooney")
                                                     .obfuscatedId("abc123")
+                                                    .build())
+                                                .build())
+                                            .chat(ChatMetadata.builder()
+                                                .createdBy(Person.builder()
+                                                    .name("George Clooney")
+                                                    .obfuscatedId("abc123")
+                                                    .build())
+                                                .icon(IconConfig.builder()
+                                                    .color("#343CED")
+                                                    .key("person_icon")
+                                                    .iconType(IconType.GLYPH)
+                                                    .name("user")
                                                     .build())
                                                 .build())
                                             .relatedDocuments(List.of(
@@ -6089,6 +6137,18 @@ paths:
                                         obfuscated_id="abc123",
                                     ),
                                 ),
+                                chat=models.ChatMetadata(
+                                    created_by=models.Person(
+                                        name="George Clooney",
+                                        obfuscated_id="abc123",
+                                    ),
+                                    icon=models.IconConfig(
+                                        color="#343CED",
+                                        key="person_icon",
+                                        icon_type=models.IconType.GLYPH,
+                                        name="user",
+                                    ),
+                                ),
                                 related_documents=[
                                     models.RelatedDocuments(
                                         query_suggestion=models.QuerySuggestion(
@@ -7206,6 +7266,18 @@ paths:
                           person: {
                             name: "George Clooney",
                             obfuscatedId: "abc123",
+                          },
+                        },
+                        chat: {
+                          createdBy: {
+                            name: "George Clooney",
+                            obfuscatedId: "abc123",
+                          },
+                          icon: {
+                            color: "#343CED",
+                            key: "person_icon",
+                            iconType: "GLYPH",
+                            name: "user",
                           },
                         },
                         relatedDocuments: [
@@ -8345,6 +8417,18 @@ paths:
                                             ObfuscatedID: "abc123",
                                         },
                                     },
+                                    Chat: &components.ChatMetadata{
+                                        CreatedBy: &components.Person{
+                                            Name: "George Clooney",
+                                            ObfuscatedID: "abc123",
+                                        },
+                                        Icon: &components.IconConfig{
+                                            Color: apiclientgo.Pointer("#343CED"),
+                                            Key: apiclientgo.Pointer("person_icon"),
+                                            IconType: components.IconTypeGlyph.ToPointer(),
+                                            Name: apiclientgo.Pointer("user"),
+                                        },
+                                    },
                                     RelatedDocuments: []components.RelatedDocuments{
                                         components.RelatedDocuments{
                                             QuerySuggestion: &components.QuerySuggestion{
@@ -9420,6 +9504,18 @@ paths:
                                                 .person(Person.builder()
                                                     .name("George Clooney")
                                                     .obfuscatedId("abc123")
+                                                    .build())
+                                                .build())
+                                            .chat(ChatMetadata.builder()
+                                                .createdBy(Person.builder()
+                                                    .name("George Clooney")
+                                                    .obfuscatedId("abc123")
+                                                    .build())
+                                                .icon(IconConfig.builder()
+                                                    .color("#343CED")
+                                                    .key("person_icon")
+                                                    .iconType(IconType.GLYPH)
+                                                    .name("user")
                                                     .build())
                                                 .build())
                                             .relatedDocuments(List.of(
@@ -20557,6 +20653,7 @@ components:
             - GENERATED_Q_AND_A
             - INLINE_MENU
             - NATIVE_RESULT
+            - PRISM
             - Q_AND_A
             - RELATED_QUESTIONS
             - REPORT_ISSUE
@@ -20748,6 +20845,7 @@ components:
             - WORKFLOWS
             - SUMMARY
             - GENERAL
+            - PRISM
             - PROMPTS
         trackingTokens:
           type: array
@@ -22578,6 +22676,72 @@ components:
             $ref: "#/components/schemas/QuerySuggestion"
         person:
           $ref: "#/components/schemas/Person"
+    IconConfig:
+      description: Defines how to render an icon
+      properties:
+        generatedBackgroundColorKey:
+          type: string
+        backgroundColor:
+          type: string
+        color:
+          type: string
+        key:
+          type: string
+        iconType:
+          enum:
+            - COLLECTION
+            - CUSTOM
+            - DATASOURCE
+            - DATASOURCE_INSTANCE
+            - FAVICON
+            - FILE_TYPE
+            - GENERATED_BACKGROUND
+            - GLYPH
+            - MIME_TYPE
+            - NO_ICON
+            - PERSON
+            - REACTIONS
+            - URL
+        masked:
+          type: boolean
+          description: Whether the icon should be masked based on current theme.
+        name:
+          type: string
+          description: The name of the icon if applicable, e.g. the glyph name for `IconType.GLYPH` icons.
+        url:
+          type: string
+          description: The URL to an image to be displayed if applicable, e.g. the URL for `iconType.URL` icons.
+      example:
+        color: "#343CED"
+        key: person_icon
+        iconType: GLYPH
+        name: user
+    ChatMetadata:
+      description: Metadata of a Chat a user had with Glean Assistant. This contains no actual conversational content.
+      properties:
+        id:
+          type: string
+          description: The opaque id of the Chat.
+        createTime:
+          type: integer
+          description: Server Unix timestamp of the creation time (in seconds since epoch UTC).
+        createdBy:
+          $ref: "#/components/schemas/Person"
+          description: The user who created this Chat.
+        updateTime:
+          type: integer
+          description: Server Unix timestamp of the update time (in seconds since epoch UTC).
+        name:
+          type: string
+          description: The name of the Chat.
+        applicationId:
+          type: string
+          description: The ID of the AI App that this Chat is associated to.
+        applicationName:
+          type: string
+          description: The display name of the AI App that this Chat is associated to.
+        icon:
+          $ref: "#/components/schemas/IconConfig"
     RelatedDocuments:
       properties:
         relation:
@@ -22712,6 +22876,8 @@ components:
           $ref: "#/components/schemas/Shortcut"
         querySuggestions:
           $ref: "#/components/schemas/QuerySuggestionList"
+        chat:
+          $ref: "#/components/schemas/ChatMetadata"
         relatedDocuments:
           type: array
           items:
@@ -23059,46 +23225,6 @@ components:
           enum:
             - DEFAULT
             - OUT_OF_OFFICE
-    IconConfig:
-      description: Defines how to render an icon
-      properties:
-        generatedBackgroundColorKey:
-          type: string
-        backgroundColor:
-          type: string
-        color:
-          type: string
-        key:
-          type: string
-        iconType:
-          enum:
-            - COLLECTION
-            - CUSTOM
-            - DATASOURCE
-            - DATASOURCE_INSTANCE
-            - FAVICON
-            - FILE_TYPE
-            - GENERATED_BACKGROUND
-            - GLYPH
-            - MIME_TYPE
-            - NO_ICON
-            - PERSON
-            - REACTIONS
-            - URL
-        masked:
-          type: boolean
-          description: Whether the icon should be masked based on current theme.
-        name:
-          type: string
-          description: The name of the icon if applicable, e.g. the glyph name for `IconType.GLYPH` icons.
-        url:
-          type: string
-          description: The URL to an image to be displayed if applicable, e.g. the URL for `iconType.URL` icons.
-      example:
-        color: "#343CED"
-        key: person_icon
-        iconType: GLYPH
-        name: user
     Badge:
       type: object
       description: Displays a user's accomplishment or milestone
@@ -23815,6 +23941,9 @@ components:
           enum:
             - DEFAULT
             - QUICK
+        useImageGeneration:
+          type: boolean
+          description: Whether the agent should create an image.
     ChatFileStatus:
       type: string
       description: Current status of the file.
@@ -24195,6 +24324,19 @@ components:
           deprecated: true
           type: boolean
           description: Signals there are additional response fragments incoming.
+    ChatRequestBase:
+      required:
+        - messages
+      description: The minimal set of fields that form a chat request.
+      properties:
+        messages:
+          type: array
+          description: A list of chat messages, from most recent to least recent. At least one message must specify a USER author.
+          items:
+            $ref: "#/components/schemas/ChatMessage"
+        sessionInfo:
+          description: Optional object for tracking the session used by the client and for debugging purposes.
+          $ref: "#/components/schemas/SessionInfo"
     ChatRestrictionFilters:
       allOf:
         - $ref: "#/components/schemas/RestrictionFilters"
@@ -24209,45 +24351,38 @@ components:
               items:
                 type: string
     ChatRequest:
-      required:
-        - messages
-      properties:
-        saveChat:
-          type: boolean
-          description: Save the current interaction as a Chat for the user to access and potentially continue later.
-        chatId:
-          type: string
-          description: The id of the Chat that context should be retrieved from and messages added to. An empty id starts a new Chat, and the Chat is saved if saveChat is true.
-        messages:
-          type: array
-          description: A list of chat messages, from most recent to least recent. At least one message must specify a USER author.
-          items:
-            $ref: "#/components/schemas/ChatMessage"
-        agentConfig:
-          $ref: "#/components/schemas/AgentConfig"
-          description: Describes the agent that will execute the request.
-        inclusions:
-          $ref: "#/components/schemas/ChatRestrictionFilters"
-          description: A list of filters which only allows chat to access certain content.
-        exclusions:
-          $ref: "#/components/schemas/ChatRestrictionFilters"
-          description: A list of filters which disallows chat from accessing certain content. If content is in both inclusions and exclusions, it'll be excluded.
-        timeoutMillis:
-          type: integer
-          description: Timeout in milliseconds for the request. A `408` error will be returned if handling the request takes longer.
-          example: 30000
-        sessionInfo:
-          description: Optional object for tracking the session used by the client and for debugging purposes.
-          $ref: "#/components/schemas/SessionInfo"
-        applicationId:
-          type: string
-          description: The ID of the application this request originates from, used to determine the configuration of underlying chat processes. This should correspond to the ID set during admin setup. If not specified, the default chat experience will be used.
-        agentId:
-          type: string
-          description: The ID of the Agent that should process this chat request. Only Agents with trigger set to 'User chat message' are invokable through this API. If not specified, the default chat experience will be used.
-        stream:
-          type: boolean
-          description: If set, response lines will be streamed one-by-one as they become available. Each will be a ChatResponse, formatted as JSON, and separated by a new line. If false, the entire response will be returned at once. Note that if this is set and the model being used does not support streaming, the model's response will not be streamed, but other messages from the endpoint still will be.
+      allOf:
+        - $ref: "#/components/schemas/ChatRequestBase"
+        - type: object
+          properties:
+            saveChat:
+              type: boolean
+              description: Save the current interaction as a Chat for the user to access and potentially continue later.
+            chatId:
+              type: string
+              description: The id of the Chat that context should be retrieved from and messages added to. An empty id starts a new Chat, and the Chat is saved if saveChat is true.
+            agentConfig:
+              $ref: "#/components/schemas/AgentConfig"
+              description: Describes the agent that will execute the request.
+            inclusions:
+              $ref: "#/components/schemas/ChatRestrictionFilters"
+              description: A list of filters which only allows chat to access certain content.
+            exclusions:
+              $ref: "#/components/schemas/ChatRestrictionFilters"
+              description: A list of filters which disallows chat from accessing certain content. If content is in both inclusions and exclusions, it'll be excluded.
+            timeoutMillis:
+              type: integer
+              description: Timeout in milliseconds for the request. A `408` error will be returned if handling the request takes longer.
+              example: 30000
+            applicationId:
+              type: string
+              description: The ID of the application this request originates from, used to determine the configuration of underlying chat processes. This should correspond to the ID set during admin setup. If not specified, the default chat experience will be used.
+            agentId:
+              type: string
+              description: The ID of the Agent that should process this chat request. Only Agents with trigger set to 'User chat message' are invokable through this API. If not specified, the default chat experience will be used.
+            stream:
+              type: boolean
+              description: If set, response lines will be streamed one-by-one as they become available. Each will be a ChatResponse, formatted as JSON, and separated by a new line. If false, the entire response will be returned at once. Note that if this is set and the model being used does not support streaming, the model's response will not be streamed, but other messages from the endpoint still will be.
     ChatResponse:
       description: A single response from the /chat backend.
       properties:
@@ -24287,32 +24422,6 @@ components:
         id:
           type: string
           description: The id of the Chat to be retrieved.
-    ChatMetadata:
-      description: Metadata of a Chat a user had with Glean Assistant. This contains no actual conversational content.
-      properties:
-        id:
-          type: string
-          description: The opaque id of the Chat.
-        createTime:
-          type: integer
-          description: Server Unix timestamp of the creation time (in seconds since epoch UTC).
-        createdBy:
-          $ref: "#/components/schemas/Person"
-          description: The user who created this Chat.
-        updateTime:
-          type: integer
-          description: Server Unix timestamp of the update time (in seconds since epoch UTC).
-        name:
-          type: string
-          description: The name of the Chat.
-        applicationId:
-          type: string
-          description: The ID of the AI App that this Chat is associated to.
-        applicationName:
-          type: string
-          description: The display name of the AI App that this Chat is associated to.
-        icon:
-          $ref: "#/components/schemas/IconConfig"
     Chat:
       description: A historical representation of a series of chat messages a user had with Glean Assistant.
       allOf:
@@ -24812,6 +24921,8 @@ components:
       oneOf:
         - $ref: "#/components/schemas/Document"
         - type: object
+          required:
+            - error
           properties:
             error:
               type: string
@@ -26064,6 +26175,7 @@ components:
               - ENTITY
               - GOLINK
               - HISTORY
+              - CHAT_HISTORY
               - NEW_CHAT
               - OPERATOR
               - OPERATOR_VALUE
@@ -26177,6 +26289,7 @@ components:
             - ENTITY
             - GOLINK
             - HISTORY
+            - CHAT_HISTORY
             - NEW_CHAT
             - OPERATOR
             - OPERATOR_VALUE
