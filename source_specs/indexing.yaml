@@ -204,7 +204,9 @@ paths:
   /bulkindexusers:
     post:
       summary: Bulk index users
-      description: Replaces the users in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
+      description: |
+        Replaces the users in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
+        Note: Any users deleted from the existing set will have their associated memberships deleted as well.
       tags:
         - Permissions
       requestBody:
@@ -248,7 +250,9 @@ paths:
   /bulkindexgroups:
     post:
       summary: Bulk index groups
-      description: Replaces the groups in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
+      description: |
+        Replaces the groups in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
+        Note: Any groups deleted from the existing set will have their associated memberships deleted as well.
       tags:
         - Permissions
       requestBody:
@@ -334,7 +338,9 @@ paths:
   /deleteuser:
     post:
       summary: Delete user
-      description: Delete the user from the datasource. Silently succeeds if user is not present.
+      description: |
+        Delete the user from the datasource. Silently succeeds if user is not present.
+        Note: All memberships associated with the deleted user will also be deleted.
       tags:
         - Permissions
       requestBody:
@@ -356,7 +362,9 @@ paths:
   /deletegroup:
     post:
       summary: Delete group
-      description: Delete group from the datasource. Silently succeeds if group is not present.
+      description: |
+        Delete group from the datasource. Silently succeeds if group is not present.
+        Note: All memberships associated with the deleted group will also be deleted.
       tags:
         - Permissions
       requestBody:
@@ -2698,7 +2706,7 @@ components:
           properties:
             identityDatasourceName:
               type: string
-              description: If the datasource uses another datasource for identity info, then the name of the datasource. The identity datasource must exist already.
+              description: If the datasource uses another datasource for identity info, then the name of the datasource. The identity datasource must exist already and the datasource with identity info should have its visibility enabled for search results.
             productAccessGroup:
               type: string
               description: If the datasource uses a specific product access group, then the name of that group.
