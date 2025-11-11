@@ -8,6 +8,7 @@ import {
   transformShortcutComponent,
   transformBearerAuthToAPIToken,
   transformServerVariables,
+  transformEnumDescriptions,
 } from '../src/source-spec-transformer.js';
 
 function readFixture(filename) {
@@ -251,5 +252,109 @@ describe('OpenAPI YAML Transformer', () => {
     expect(transformedSpec.servers[0].variables.instance.description).toContain(
       'instance name',
     );
+  });
+
+  test('transformEnumDescriptions converts x-enumDescriptions to x-speakeasy-enum-descriptions', () => {
+    const testSpec = {
+      components: {
+        schemas: {
+          TestEnum: {
+            type: 'string',
+            enum: ['VALUE1', 'VALUE2', 'VALUE3'],
+            'x-enumDescriptions': {
+              VALUE1: 'Description for value 1',
+              VALUE2: 'Description for value 2',
+              VALUE3: 'Description for value 3',
+            },
+          },
+          NestedSchema: {
+            properties: {
+              status: {
+                type: 'string',
+                enum: ['PENDING', 'ACTIVE', 'COMPLETED'],
+                'x-enumDescriptions': {
+                  PENDING: 'Task is pending',
+                  ACTIVE: 'Task is active',
+                  COMPLETED: 'Task is completed',
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformEnumDescriptions(testSpec);
+
+    expect(transformedSpec).toMatchInlineSnapshot(`
+      {
+        "components": {
+          "schemas": {
+            "NestedSchema": {
+              "properties": {
+                "status": {
+                  "enum": [
+                    "PENDING",
+                    "ACTIVE",
+                    "COMPLETED",
+                  ],
+                  "type": "string",
+                  "x-speakeasy-enum-descriptions": {
+                    "ACTIVE": "Task is active",
+                    "COMPLETED": "Task is completed",
+                    "PENDING": "Task is pending",
+                  },
+                },
+              },
+            },
+            "TestEnum": {
+              "enum": [
+                "VALUE1",
+                "VALUE2",
+                "VALUE3",
+              ],
+              "type": "string",
+              "x-speakeasy-enum-descriptions": {
+                "VALUE1": "Description for value 1",
+                "VALUE2": "Description for value 2",
+                "VALUE3": "Description for value 3",
+              },
+            },
+          },
+        },
+      }
+    `);
+  });
+
+  test('transformEnumDescriptions handles specs without x-enumDescriptions', () => {
+    const testSpec = {
+      components: {
+        schemas: {
+          SimpleEnum: {
+            type: 'string',
+            enum: ['A', 'B', 'C'],
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformEnumDescriptions(testSpec);
+
+    expect(transformedSpec).toMatchInlineSnapshot(`
+      {
+        "components": {
+          "schemas": {
+            "SimpleEnum": {
+              "enum": [
+                "A",
+                "B",
+                "C",
+              ],
+              "type": "string",
+            },
+          },
+        },
+      }
+    `);
   });
 });
