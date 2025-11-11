@@ -140,13 +140,22 @@ The processing follows this sequence:
 The transformation script processes OpenAPI YAML specification files by:
 
 1. Reading files from the `source_specs/` directory
-2. Moving the server URL subpath to each individual API path
+2. Applying various transformations to prepare specs for Speakeasy SDK generation
 3. Writing the transformed files to the `generated_specs/` directory
 
 This script performs the following transformations:
 
-- **Before**: `servers.url = "https://{domain}-be.glean.com/rest/api/v1"`, `path = "/activity"`
-- **After**: `servers.url = "https://{domain}-be.glean.com/"`, `path = "/rest/api/v1/activity"`
+- **Path normalization**: Moves server URL subpaths to individual API paths
+  - **Before**: `servers.url = "https://{domain}-be.glean.com/rest/api/v1"`, `path = "/activity"`
+  - **After**: `servers.url = "https://{domain}-be.glean.com/"`, `path = "/rest/api/v1/activity"`
+
+- **Server variables**: Renames `{domain}` to `{instance}` in server URLs and variables
+
+- **Security schemes**: Transforms `BearerAuth` to `APIToken` for consistency
+
+- **Enum descriptions**: Converts `x-enumDescriptions` to `x-speakeasy-enum-descriptions` for Speakeasy compatibility
+
+- **Component renaming**: Renames `Shortcut` to `IndexingShortcut` in indexing.yaml to avoid conflicts
 
 ## Output
 

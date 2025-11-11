@@ -220,6 +220,43 @@ export function transformServerVariables(spec) {
 }
 
 /**
+ * Converts x-enumDescriptions to x-speakeasy-enum-descriptions format
+ * Speakeasy uses x-speakeasy-enum-descriptions instead of x-enumDescriptions
+ * @param {Object} spec The OpenAPI spec object
+ * @returns {Object} Transformed spec object
+ */
+export function transformEnumDescriptions(spec) {
+  const processObject = (obj) => {
+    if (!obj || typeof obj !== 'object') return;
+
+    // Process arrays
+    if (Array.isArray(obj)) {
+      obj.forEach(processObject);
+      return;
+    }
+
+    // Check if this object has x-enumDescriptions
+    if (obj['x-enumDescriptions']) {
+      // Copy to x-speakeasy-enum-descriptions (same format - object map)
+      obj['x-speakeasy-enum-descriptions'] = obj['x-enumDescriptions'];
+
+      // Remove the original x-enumDescriptions
+      delete obj['x-enumDescriptions'];
+    }
+
+    // Recursively process all properties
+    Object.values(obj).forEach((value) => {
+      if (value && typeof value === 'object') {
+        processObject(value);
+      }
+    });
+  };
+
+  processObject(spec);
+  return spec;
+}
+
+/**
  * Transforms OpenAPI YAML by adjusting server URLs and paths
  * @param {string} content The OpenAPI YAML content
  * @param {string} filename The name of the file being processed
@@ -274,6 +311,9 @@ export function transform(content, filename) {
 
   // Apply domain -> instance transformation for all files
   transformServerVariables(spec);
+
+  // Apply x-enumDescriptions -> x-speakeasy-enum-descriptions transformation for all files
+  transformEnumDescriptions(spec);
 
   // Apply admin duplicate operationId fix
   if (filename === 'admin_rest.yaml') {
