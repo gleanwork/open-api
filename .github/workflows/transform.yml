@@ -33,6 +33,8 @@ jobs:
 
       - name: Transform OpenAPI spec paths
         run: pnpm run transform:source_specs
+        env:
+          GITHUB_SHA: ${{ github.sha }}
 
       - name: Generate OpenAPI specs
         run: speakeasy run -s glean-api-specs

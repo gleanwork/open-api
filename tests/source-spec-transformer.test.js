@@ -9,6 +9,7 @@ import {
   transformBearerAuthToAPIToken,
   transformServerVariables,
   transformEnumDescriptions,
+  injectOpenApiCommitSha,
 } from '../src/source-spec-transformer.js';
 
 function readFixture(filename) {
@@ -356,5 +357,70 @@ describe('OpenAPI YAML Transformer', () => {
         },
       }
     `);
+  });
+
+  test('injectOpenApiCommitSha adds x-open-api-commit-sha to info section', () => {
+    const testSpec = {
+      info: {
+        version: '1.0.0',
+        title: 'Test API',
+        'x-source-commit-sha': 'abc123',
+      },
+    };
+
+    const commitSha = 'def456';
+    const transformedSpec = injectOpenApiCommitSha(testSpec, commitSha);
+
+    expect(transformedSpec.info['x-open-api-commit-sha']).toBe(commitSha);
+    expect(transformedSpec.info['x-source-commit-sha']).toBe('abc123');
+    expect(transformedSpec.info.version).toBe('1.0.0');
+  });
+
+  test('injectOpenApiCommitSha handles spec without info section', () => {
+    const testSpec = {
+      paths: {},
+    };
+
+    const commitSha = 'xyz789';
+    const transformedSpec = injectOpenApiCommitSha(testSpec, commitSha);
+
+    expect(transformedSpec.info).toBeDefined();
+    expect(transformedSpec.info['x-open-api-commit-sha']).toBe(commitSha);
+  });
+
+  test('injectOpenApiCommitSha does nothing when commitSha is not provided', () => {
+    const testSpec = {
+      info: {
+        version: '1.0.0',
+        title: 'Test API',
+      },
+    };
+
+    const transformedSpec = injectOpenApiCommitSha(testSpec, null);
+
+    expect(transformedSpec.info['x-open-api-commit-sha']).toBeUndefined();
+    expect(transformedSpec.info.version).toBe('1.0.0');
+  });
+
+  test('transform includes x-open-api-commit-sha when commitSha is provided', () => {
+    const clientYaml = readFixture('client_rest.yaml');
+    const commitSha = 'test-commit-sha-123';
+    const transformedContent = transform(
+      clientYaml,
+      'client_rest.yaml',
+      commitSha,
+    );
+    const transformedSpec = yaml.load(transformedContent);
+
+    expect(transformedSpec.info['x-open-api-commit-sha']).toBe(commitSha);
+    expect(transformedSpec.info['x-source-commit-sha']).toBeDefined();
+  });
+
+  test('transform does not include x-open-api-commit-sha when commitSha is not provided', () => {
+    const clientYaml = readFixture('client_rest.yaml');
+    const transformedContent = transform(clientYaml, 'client_rest.yaml');
+    const transformedSpec = yaml.load(transformedContent);
+
+    expect(transformedSpec.info['x-open-api-commit-sha']).toBeUndefined();
   });
 });
