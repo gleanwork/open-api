@@ -17,6 +17,7 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
+    "check-client-releases": "node src/check-client-releases.js",
     "diff-source-specs": "node src/diff-source-specs.js",
     "lint": "prettier --check . --ignore-unknown",
     "lint:fix": "prettier --write . --ignore-unknown",
