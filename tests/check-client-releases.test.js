@@ -5,7 +5,6 @@ import {
   getSpecFromBranch,
 } from '../src/check-client-releases.js';
 
-// Mock execa
 vi.mock('execa');
 
 describe('check-client-releases', () => {
