@@ -45,6 +45,17 @@ export async function transformSourceSpecs() {
 
     await ensureDirectoryExists(outputDir);
 
+    // Get the commit SHA from environment variable (set by GitHub Actions)
+    const commitSha = process.env.GITHUB_SHA || process.env.OPEN_API_COMMIT_SHA;
+
+    if (commitSha) {
+      console.log(`Injecting open-api commit SHA: ${commitSha}`);
+    } else {
+      console.log(
+        'No commit SHA provided (GITHUB_SHA or OPEN_API_COMMIT_SHA environment variable not set)',
+      );
+    }
+
     for (const specFile of specFiles) {
       const sourceFilePath = path.join(sourceDir, specFile);
       const outputFilePath = path.join(outputDir, specFile);
@@ -56,6 +67,7 @@ export async function transformSourceSpecs() {
       const transformedYaml = sourceSpecTransformer.transform(
         yamlContent,
         specFile,
+        commitSha,
       );
 
       fs.writeFileSync(outputFilePath, transformedYaml, 'utf8');

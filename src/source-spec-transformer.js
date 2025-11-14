@@ -257,12 +257,31 @@ export function transformEnumDescriptions(spec) {
 }
 
 /**
+ * Injects the open-api repository commit SHA into the spec info section
+ * @param {Object} spec The OpenAPI spec object
+ * @param {string} commitSha The commit SHA from the open-api repository
+ * @returns {Object} Transformed spec object
+ */
+export function injectOpenApiCommitSha(spec, commitSha) {
+  if (!spec.info) {
+    spec.info = {};
+  }
+
+  if (commitSha) {
+    spec.info['x-open-api-commit-sha'] = commitSha;
+  }
+
+  return spec;
+}
+
+/**
  * Transforms OpenAPI YAML by adjusting server URLs and paths
  * @param {string} content The OpenAPI YAML content
  * @param {string} filename The name of the file being processed
+ * @param {string} [commitSha] Optional commit SHA from the open-api repository
  * @returns {string} Transformed YAML content
  */
-export function transform(content, filename) {
+export function transform(content, filename, commitSha) {
   const spec = yaml.load(content);
 
   if (!spec.servers || spec.servers.length === 0) {
@@ -318,6 +337,11 @@ export function transform(content, filename) {
   // Apply admin duplicate operationId fix
   if (filename === 'admin_rest.yaml') {
     transformActAsBearerTokenToAPIToken(spec);
+  }
+
+  // Inject open-api commit SHA if provided
+  if (commitSha) {
+    injectOpenApiCommitSha(spec, commitSha);
   }
 
   return yaml.dump(spec, {
