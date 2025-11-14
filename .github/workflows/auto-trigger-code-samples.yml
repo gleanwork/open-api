@@ -41,6 +41,8 @@ jobs:
           else
             echo "ready=false" >> $GITHUB_OUTPUT
           fi
+        env:
+          GH_TOKEN: ${{ github.token }}
 
       - name: Trigger generate-code-samples workflow
         if: steps.check.outputs.ready == 'true'
@@ -48,7 +50,7 @@ jobs:
           gh workflow run generate-code-samples.yml
           echo "✅ Successfully triggered generate-code-samples.yml workflow"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
 
       - name: Log status when not ready
         if: steps.check.outputs.ready != 'true'
