@@ -1,0 +1,57 @@
+name: Auto-trigger Code Samples Generation
+
+on:
+  # Allow manual trigger for testing
+  workflow_dispatch:
+
+  # Triggered by client repos after they release
+  repository_dispatch:
+    types: [client-released]
+
+concurrency:
+  group: auto-trigger-code-samples
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  check-and-trigger:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up mise
+        uses: jdx/mise-action@v2
+        with:
+          cache: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Check if all client releases have matching SHAs
+        id: check
+        run: |
+          if pnpm run check-client-releases; then
+            echo "ready=true" >> $GITHUB_OUTPUT
+          else
+            echo "ready=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger generate-code-samples workflow
+        if: steps.check.outputs.ready == 'true'
+        run: |
+          gh workflow run generate-code-samples.yml
+          echo "✅ Successfully triggered generate-code-samples.yml workflow"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log status when not ready
+        if: steps.check.outputs.ready != 'true'
+        run: |
+          echo "⏳ Waiting for all API client releases to sync"
+          echo "Workflow will trigger generate-code-samples.yml automatically when all releases are ready"
