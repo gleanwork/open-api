@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 00f103d2f317c5ad09b3e244870d0a16cf4fec71
+  x-open-api-commit-sha: 61082f69f94bd5f396ff2d255649149203fd8e16
 servers:
   - url: https://{instance}-be.glean.com
     variables:
