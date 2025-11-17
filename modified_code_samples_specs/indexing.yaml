@@ -2,6 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
+  x-source-commit-sha: b5872601010b8f84df37db25ba81242032ef53c3
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -21,6 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
+  x-open-api-commit-sha: 33b38078e848b63b0eaf2a15f649ce663e0210c3
   x-speakeasy-name: Glean API
 servers:
   - url: https://{instance}-be.glean.com
@@ -4190,7 +4192,8 @@ components:
             The permalink for viewing the document. **Note: viewURL is a required field for non-entity datasources, but not required if the datasource is used to push custom entities (ie. datasources where isEntityDatasource is false).**'
         id:
           type: string
-          description: The datasource specific id for the document. This field is case insensitive and should not be more than 200 characters in length.
+          description: |
+            The datasource specific id for the document. This field is case insensitive and should not be more than 200 characters in length. Note: id is a required field for datasources created after 1st March 2025
         summary:
           $ref: "#/components/schemas/ContentDefinition"
         body:
