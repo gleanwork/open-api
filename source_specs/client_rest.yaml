@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 5e711835c640fa99b23ea54983044e75ee4a11fc
+  x-source-commit-sha: fa812d06cf10daacc0779c60abbbf776a1aeb6ca
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -7249,6 +7249,9 @@ components:
         icon:
           $ref: '#/components/schemas/IconConfig'
           description: Agent icon configuration
+        isDeleted:
+          type: boolean
+          description: Indicates whether the agent has been deleted
         userCount:
           type: integer
           description: Total number of users for this agent over the specified time period.
