@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: bc6cb0f72053c006e6c98cb85b1ac153b85dda02
+  x-source-commit-sha: f46f5346b6baa3b54071a0beedeee1145cd24f14
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 02d577744b904fccbb779b0078a9f325baea3b7a
+  x-open-api-commit-sha: d64225fa9c11752701379e94e54b98ad0a770f35
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -7139,6 +7139,15 @@ components:
         numChats:
           type: integer
           description: Total number of chats by this user over the specified time period.
+        numActiveSessions:
+          type: integer
+          description: Total number of active sessions by this user in a Glean client over the specified time period.
+        numGleanbotUsefulResponses:
+          type: integer
+          description: Total number of Gleanbot responses marked useful by this user over the specified time period.
+        numDaysActive:
+          type: integer
+          description: Total number of days this user was an Active User over the specified time period.
     InsightsOverviewResponse:
       allOf:
         - $ref: "#/components/schemas/InsightsDepartmentsSummary"
@@ -7171,22 +7180,7 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/PerUserInsight"
-              description: Top power users, over the specified time period in the specified departments.
-            engagementBreakdown:
-              type: object
-              properties:
-                nonUsers:
-                  type: integer
-                  description: Number of non-user employees in the specified departments.
-                dormantUsers:
-                  type: integer
-                  description: Number of currently dormant users in the specified departments.
-                regularUsers:
-                  type: integer
-                  description: Number of currently regular users in the specified departments.
-                powerUsers:
-                  type: integer
-                  description: Number of currently power users in the specified departments.
+              description: Per-user insights, over the specified time period in the specified departments. All current users in the organization who have signed into Glean at least once are included.
     PerUserAssistantInsight:
       properties:
         person:
@@ -7202,10 +7196,10 @@ components:
           description: Total number of AI Answers interacted with by this user over the specified time period.
         numGleanbotInteractions:
           type: integer
-          description: Total number of Gleanbot interacted with by this user over the specified time period.
+          description: Total number of Gleanbot responses marked useful by this user over the specified time period.
         numDaysActive:
           type: integer
-          description: Total number of days this user was active over the specified time period.
+          description: Total number of days this user was active on the Assistant over the specified time period.
     AssistantInsightsResponse:
       allOf:
         - $ref: "#/components/schemas/CurrentActiveUsers"
