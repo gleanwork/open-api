@@ -12,7 +12,7 @@ info:
     with a 6-month sunset period for anything that requires developers to adopt the new versions.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: a6e1a3f300afc9de55c5840d81509c358f474d33
+  x-open-api-commit-sha: 3e1ccd6aeaf806d5b30ad965d1a3c216d9056866
 servers:
   - url: https://{instance}-be.glean.com
     variables:
