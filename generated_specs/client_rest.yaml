@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 573f14a830259ebb1a6d04bddc1c342b5ef05f7e
+  x-source-commit-sha: 71173b21fcc614fe3479a7e0a801ce8261ff547f
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: f159abef4e0c5eda405d1a48b21d57830f186a42
+  x-open-api-commit-sha: 532090d151296f783eda07c9a54753ad164cf5d7
 servers:
   - url: https://{instance}-be.glean.com
     variables:
