@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: d4d79ba516ae8948107e3d728de885ffb8fe81d5
+  x-open-api-commit-sha: f159abef4e0c5eda405d1a48b21d57830f186a42
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
