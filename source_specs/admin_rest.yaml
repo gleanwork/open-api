@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: 9f5f4e6c3d36bcee31fe976617d8f59070276515
+  x-source-commit-sha: 15d78a1571b3afa707212424e336ad3148a30907
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
@@ -421,24 +421,69 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Hotword'
+    CustomSensitiveRuleType:
+      type: string
+      description: Type of the custom sensitive rule.
+      enum:
+        - REGEX
+        - TERM
+        - INFO_TYPE
+    CustomSensitiveRule:
+      properties:
+        id:
+          description: Identifier for the custom sensitive expression.
+          type: string
+        value:
+          type: string
+          description: The value of the custom sensitive rule. For REGEX type, this is the regex pattern; for TERM type, it is the term to match; and for INFO_TYPE type, it refers to predefined categories of sensitive content. See https://cloud.google.com/dlp/docs/infotypes-reference for available options.
+        type:
+          $ref: '#/components/schemas/CustomSensitiveRuleType'
+        likelihoodThreshold:
+          description: Likelihood threshold for BUILT_IN infotypes (e.g., LIKELY, VERY_LIKELY). Only applicable for BUILT_IN type.
+          type: string
+          enum:
+            - LIKELY
+            - VERY_LIKELY
+            - POSSIBLE
+            - UNLIKELY
+            - VERY_UNLIKELY
+    CustomSensitiveExpression:
+      properties:
+        id:
+          description: Identifier for the custom sensitive expression.
+          type: string
+        keyword:
+          description: The keyword to match against.
+          $ref: '#/components/schemas/CustomSensitiveRule'
+        evaluationExpression:
+          description: The expression to evaluate the keyword match.
+          type: string
     SensitiveContentOptions:
       description: Options for defining sensitive content within scanned documents.
       properties:
         sensitiveInfoTypes:
-          description: Predefined categories of terms to consider as sensitive content. See https://cloud.google.com/dlp/docs/infotypes-reference for available types.
+          deprecated: true
+          description: DEPRECATED - use 'customSensitiveExpressions' instead.
           type: array
           items:
             $ref: '#/components/schemas/SensitiveInfoType'
         sensitiveTerms:
-          description: list of words and phrases to consider as sensitive content
+          deprecated: true
+          description: DEPRECATED - use 'customSensitiveExpressions' instead.
           type: array
           items:
             $ref: '#/components/schemas/SensitiveExpression'
         sensitiveRegexes:
-          description: list of regular expressions to consider as sensitive content
+          deprecated: true
+          description: DEPRECATED - use 'customSensitiveExpressions' instead.
           type: array
           items:
             $ref: '#/components/schemas/SensitiveExpression'
+        customSensitiveExpressions:
+          description: list of custom sensitive expressions to consider as sensitive content
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomSensitiveExpression'
     DlpPersonMetadata:
       properties:
         firstName:
