@@ -9,7 +9,7 @@ info:
     operations. These offer limited exposure to the admin APIs through rest endpoints.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 5854318229094fd9c93058311087c6ee41cb5864
+  x-open-api-commit-sha: 57f1bc493b98335ed5f5ace53245f6d69513351a
 servers:
   - url: https://{instance}-be.glean.com
     variables:
