@@ -28,7 +28,7 @@
     "transform:merged_code_samples_specs": "node src/index.js --merged_code_samples_specs"
   },
   "dependencies": {
-    "execa": "^9.6.0",
+    "execa": "^9.6.1",
     "js-yaml": "^4.1.1"
   },
   "devDependencies": {
