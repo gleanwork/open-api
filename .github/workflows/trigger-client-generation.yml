@@ -20,19 +20,53 @@ permissions:
   contents: read
 
 jobs:
-  trigger-clients:
+  check:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    outputs:
+      should_trigger: ${{ steps.determine.outputs.should_trigger }}
 
     steps:
-      - name: Log trigger reason
+      # When triggered by workflow_run, check if transform.yml actually committed changes.
+      # We detect this by looking for the "Generated-by:" identifier in the commit body.
+      # NOTE: This identifier is defined in transform.yml - if you change it there,
+      # update the check here accordingly.
+      - name: Determine if client generation should run
+        id: determine
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "Manually triggered: ${{ github.event.inputs.reason }}"
-          else
-            echo "Automatically triggered after successful Transform OpenAPI Specs workflow"
+            echo "should_trigger=true" >> $GITHUB_OUTPUT
+            exit 0
           fi
 
+          echo "Automatically triggered after successful Transform OpenAPI Specs workflow"
+
+          EXPECTED_IDENTIFIER="Generated-by: .github/workflows/transform.yml"
+          LAST_COMMIT=$(gh api repos/${{ github.repository }}/commits/main --jq '.commit.message')
+
+          echo "::group::Commit check details"
+          echo "Expected identifier: $EXPECTED_IDENTIFIER"
+          echo "Last commit message:"
+          echo "$LAST_COMMIT"
+          echo "::endgroup::"
+
+          if [[ "$LAST_COMMIT" == *"$EXPECTED_IDENTIFIER"* ]]; then
+            echo "should_trigger=true" >> $GITHUB_OUTPUT
+            echo "Transform committed changes, proceeding with client generation"
+          else
+            echo "should_trigger=false" >> $GITHUB_OUTPUT
+            echo "::notice::Skipping client generation - no meaningful spec changes were committed"
+          fi
+
+  trigger-clients:
+    runs-on: ubuntu-latest
+    needs: check
+    if: needs.check.outputs.should_trigger == 'true'
+
+    steps:
       - name: Trigger Python Client SDK Generation
         uses: actions/github-script@v7
         with:
