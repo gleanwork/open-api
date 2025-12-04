@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: f3d2bcb9477aa671f66d65f824d43dcec51ce787
+  x-source-commit-sha: 366aee602a3bd7adf9b8170c65d7a396b3f38451
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 2b748aed66a802cc3cec30f550755039f124037b
+  x-open-api-commit-sha: 223079619d0e9d31aed1a918f1369f2965f8c631
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -12096,28 +12096,6 @@ components:
           description: List of lifecycle events corresponding to the document
           items:
             $ref: "#/components/schemas/LifeCycleEvent"
-    CustomMetadataPutRequest:
-      type: object
-      description: Request body for adding or updating custom metadata on a document
-      properties:
-        customMetadata:
-          type: array
-          description: Array of custom metadata key-value pairs
-          items:
-            $ref: "#/components/schemas/CustomProperty"
-      required:
-        - customMetadata
-    CustomMetadataSchema:
-      type: object
-      description: Schema for custom metadata containing metadata key definitions
-      properties:
-        metadataKeys:
-          type: array
-          description: Array of metadata key definitions
-          items:
-            $ref: "#/components/schemas/PropertyDefinition"
-      required:
-        - metadataKeys
     SuccessResponse:
       type: object
       description: Success response for custom metadata operations
