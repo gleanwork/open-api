@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Indexing API
-  x-source-commit-sha: ea94156815658414991b1895786ad4f5050f9d82
+  x-source-commit-sha: f3d2bcb9477aa671f66d65f824d43dcec51ce787
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -12,7 +12,7 @@ info:
     with a 6-month sunset period for anything that requires developers to adopt the new versions.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 6d6fb5ee64512247d3d3e0744ffa68e22a3847c2
+  x-open-api-commit-sha: 2b748aed66a802cc3cec30f550755039f124037b
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -963,40 +963,6 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
-  /api/index/v1/document/{docId}/custom-metadata/{groupName}:
-    servers:
-      - url: https://{domain}-be.glean.com/rest/api/index
-        variables:
-          domain:
-            default: domain
-            description: Email domain (without extension) that determines the deployment backend.
-    parameters:
-      - name: docId
-        in: path
-        description: Unique Glean identifier of the document
-        required: true
-        schema:
-          type: string
-      - name: groupName
-        in: path
-        description: Name of the metadata group as specified while adding schema
-        required: true
-        schema:
-          type: string
-  /api/index/v1/custom-metadata/schema/{groupName}:
-    servers:
-      - url: https://{domain}-be.glean.com/rest/api/index
-        variables:
-          domain:
-            default: domain
-            description: Email domain (without extension) that determines the deployment backend.
-    parameters:
-      - name: groupName
-        in: path
-        description: Name of the metadata group schema
-        required: true
-        schema:
-          type: string
 components:
   securitySchemes:
     APIToken:
