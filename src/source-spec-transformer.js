@@ -257,6 +257,46 @@ export function transformEnumDescriptions(spec) {
 }
 
 /**
+ * Transforms x-glean-deprecated annotations to Speakeasy-compatible deprecation format
+ * Adds deprecated: true and x-speakeasy-deprecation-message fields while preserving the original annotation
+ * @param {Object} spec The OpenAPI spec object
+ * @returns {Object} Transformed spec object
+ */
+export function transformGleanDeprecated(spec) {
+  const processObject = (obj) => {
+    if (!obj || typeof obj !== 'object') return;
+
+    // Process arrays
+    if (Array.isArray(obj)) {
+      obj.forEach(processObject);
+      return;
+    }
+
+    // Check if this object has x-glean-deprecated
+    if (obj['x-glean-deprecated']) {
+      const deprecation = obj['x-glean-deprecated'];
+
+      // Add deprecated: true
+      obj.deprecated = true;
+
+      // Build the deprecation message with dates
+      const message = `Deprecated on ${deprecation.introduced}, removal scheduled for ${deprecation.removal}${deprecation.message ? `: ${deprecation.message}` : ''}`;
+      obj['x-speakeasy-deprecation-message'] = message;
+    }
+
+    // Recursively process all properties
+    Object.values(obj).forEach((value) => {
+      if (value && typeof value === 'object') {
+        processObject(value);
+      }
+    });
+  };
+
+  processObject(spec);
+  return spec;
+}
+
+/**
  * Injects the open-api repository commit SHA into the spec info section
  * @param {Object} spec The OpenAPI spec object
  * @param {string} commitSha The commit SHA from the open-api repository
@@ -333,6 +373,9 @@ export function transform(content, filename, commitSha) {
 
   // Apply x-enumDescriptions -> x-speakeasy-enum-descriptions transformation for all files
   transformEnumDescriptions(spec);
+
+  // Apply x-glean-deprecated -> Speakeasy deprecation format transformation for all files
+  transformGleanDeprecated(spec);
 
   // Apply admin duplicate operationId fix
   if (filename === 'admin_rest.yaml') {
