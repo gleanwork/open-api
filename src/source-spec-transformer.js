@@ -260,7 +260,7 @@ export function transformEnumDescriptions(spec) {
  * Transforms x-glean-deprecated annotations to Speakeasy-compatible deprecation format
  * Adds `deprecated: true` and `x-speakeasy-deprecation-message` fields while preserving the original annotation.
  * More information about the deprecation format can be found at: https://www.speakeasy.com/docs/sdks/customize/deprecations
- * 
+ *
  * @param {Object} spec The OpenAPI spec object
  * @returns {Object} Transformed spec object
  */
