@@ -258,7 +258,9 @@ export function transformEnumDescriptions(spec) {
 
 /**
  * Transforms x-glean-deprecated annotations to Speakeasy-compatible deprecation format
- * Adds deprecated: true and x-speakeasy-deprecation-message fields while preserving the original annotation
+ * Adds `deprecated: true` and `x-speakeasy-deprecation-message` fields while preserving the original annotation.
+ * More information about the deprecation format can be found at: https://www.speakeasy.com/docs/sdks/customize/deprecations
+ * 
  * @param {Object} spec The OpenAPI spec object
  * @returns {Object} Transformed spec object
  */
@@ -266,25 +268,20 @@ export function transformGleanDeprecated(spec) {
   const processObject = (obj) => {
     if (!obj || typeof obj !== 'object') return;
 
-    // Process arrays
     if (Array.isArray(obj)) {
       obj.forEach(processObject);
       return;
     }
 
-    // Check if this object has x-glean-deprecated
     if (obj['x-glean-deprecated']) {
       const deprecation = obj['x-glean-deprecated'];
 
-      // Add deprecated: true
       obj.deprecated = true;
 
-      // Build the deprecation message with dates
       const message = `Deprecated on ${deprecation.introduced}, removal scheduled for ${deprecation.removal}${deprecation.message ? `: ${deprecation.message}` : ''}`;
       obj['x-speakeasy-deprecation-message'] = message;
     }
 
-    // Recursively process all properties
     Object.values(obj).forEach((value) => {
       if (value && typeof value === 'object') {
         processObject(value);
