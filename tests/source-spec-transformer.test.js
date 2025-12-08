@@ -9,6 +9,7 @@ import {
   transformBearerAuthToAPIToken,
   transformServerVariables,
   transformEnumDescriptions,
+  transformGleanDeprecated,
   injectOpenApiCommitSha,
 } from '../src/source-spec-transformer.js';
 
@@ -422,5 +423,194 @@ describe('OpenAPI YAML Transformer', () => {
     const transformedSpec = yaml.load(transformedContent);
 
     expect(transformedSpec.info['x-open-api-commit-sha']).toBeUndefined();
+  });
+
+  test('transformGleanDeprecated adds Speakeasy deprecation fields to operations', () => {
+    const testSpec = {
+      paths: {
+        '/test': {
+          get: {
+            operationId: 'getTest',
+            'x-glean-deprecated': {
+              id: 'uuid-123',
+              message: 'Use /v2/test instead',
+              introduced: '2024-01-15',
+              removal: '2024-07-15',
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformGleanDeprecated(testSpec);
+
+    expect(transformedSpec.paths['/test'].get.deprecated).toBe(true);
+    expect(
+      transformedSpec.paths['/test'].get['x-speakeasy-deprecation-message'],
+    ).toBe(
+      'Deprecated on 2024-01-15, removal scheduled for 2024-07-15: Use /v2/test instead',
+    );
+    // Verify original annotation is preserved
+    expect(
+      transformedSpec.paths['/test'].get['x-glean-deprecated'],
+    ).toBeDefined();
+    expect(transformedSpec.paths['/test'].get['x-glean-deprecated'].id).toBe(
+      'uuid-123',
+    );
+  });
+
+  test('transformGleanDeprecated adds Speakeasy deprecation fields to parameters', () => {
+    const testSpec = {
+      paths: {
+        '/test': {
+          get: {
+            parameters: [
+              {
+                name: 'oldParam',
+                in: 'query',
+                'x-glean-deprecated': {
+                  id: 'param-uuid',
+                  message: 'Use newParam instead',
+                  introduced: '2024-02-01',
+                  removal: '2024-08-01',
+                },
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformGleanDeprecated(testSpec);
+
+    const param = transformedSpec.paths['/test'].get.parameters[0];
+    expect(param.deprecated).toBe(true);
+    expect(param['x-speakeasy-deprecation-message']).toBe(
+      'Deprecated on 2024-02-01, removal scheduled for 2024-08-01: Use newParam instead',
+    );
+    expect(param['x-glean-deprecated']).toBeDefined();
+  });
+
+  test('transformGleanDeprecated adds Speakeasy deprecation fields to schema properties', () => {
+    const testSpec = {
+      components: {
+        schemas: {
+          TestSchema: {
+            type: 'object',
+            properties: {
+              oldField: {
+                type: 'string',
+                'x-glean-deprecated': {
+                  id: 'schema-uuid',
+                  message: 'Field renamed to newField',
+                  introduced: '2024-03-01',
+                  removal: '2024-09-01',
+                  docs: 'https://docs.example.com/migration',
+                },
+              },
+              newField: {
+                type: 'string',
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformGleanDeprecated(testSpec);
+
+    const oldField =
+      transformedSpec.components.schemas.TestSchema.properties.oldField;
+    expect(oldField.deprecated).toBe(true);
+    expect(oldField['x-speakeasy-deprecation-message']).toBe(
+      'Deprecated on 2024-03-01, removal scheduled for 2024-09-01: Field renamed to newField',
+    );
+    expect(oldField['x-glean-deprecated']).toBeDefined();
+    expect(oldField['x-glean-deprecated'].docs).toBe(
+      'https://docs.example.com/migration',
+    );
+
+    // Verify non-deprecated field is unchanged
+    const newField =
+      transformedSpec.components.schemas.TestSchema.properties.newField;
+    expect(newField.deprecated).toBeUndefined();
+    expect(newField['x-speakeasy-deprecation-message']).toBeUndefined();
+  });
+
+  test('transformGleanDeprecated handles specs without x-glean-deprecated', () => {
+    const testSpec = {
+      paths: {
+        '/test': {
+          get: {
+            operationId: 'getTest',
+            summary: 'Test endpoint',
+          },
+        },
+      },
+      components: {
+        schemas: {
+          TestSchema: {
+            type: 'object',
+            properties: {
+              field: {
+                type: 'string',
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformGleanDeprecated(testSpec);
+
+    // Verify no deprecated fields were added
+    expect(transformedSpec.paths['/test'].get.deprecated).toBeUndefined();
+    expect(
+      transformedSpec.paths['/test'].get['x-speakeasy-deprecation-message'],
+    ).toBeUndefined();
+    expect(
+      transformedSpec.components.schemas.TestSchema.properties.field.deprecated,
+    ).toBeUndefined();
+  });
+
+  test('transformGleanDeprecated handles nested deprecations', () => {
+    const testSpec = {
+      paths: {
+        '/test': {
+          post: {
+            requestBody: {
+              content: {
+                'application/json': {
+                  schema: {
+                    properties: {
+                      deprecatedField: {
+                        type: 'string',
+                        'x-glean-deprecated': {
+                          id: 'nested-uuid',
+                          message: 'This field is deprecated',
+                          introduced: '2024-04-01',
+                          removal: '2024-10-01',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformGleanDeprecated(testSpec);
+
+    const deprecatedField =
+      transformedSpec.paths['/test'].post.requestBody.content[
+        'application/json'
+      ].schema.properties.deprecatedField;
+    expect(deprecatedField.deprecated).toBe(true);
+    expect(deprecatedField['x-speakeasy-deprecation-message']).toBe(
+      'Deprecated on 2024-04-01, removal scheduled for 2024-10-01: This field is deprecated',
+    );
   });
 });
