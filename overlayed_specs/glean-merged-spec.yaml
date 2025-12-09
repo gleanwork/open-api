@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 2744ae48756972f280bdbfb6f80e9ba6ed21fdaf
+  x-source-commit-sha: 536312b6ae0803f69bb9f2a50a43c07b697d1bb6
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: bddeb0634f0236cf15670f291a9a8a27094b269f
+  x-open-api-commit-sha: 5498abcb77a67baf1ab3ab57804b376fb0286c19
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -3495,6 +3495,98 @@ paths:
           description: Internal error
       x-speakeasy-group: client.governance.documents.visibilityoverrides
       x-speakeasy-name-override: create
+  /rest/api/v1/governance/data/findings/exports:
+    post:
+      description: Creates a new DLP findings export job.
+      summary: Creates findings export
+      operationId: createfindingsexport
+      x-visibility: Private
+      tags:
+        - Governance
+      requestBody:
+        content:
+          application/json; charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/DlpExportFindingsRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExportInfo"
+        "403":
+          description: Permissions error
+        "500":
+          description: Internal error
+    get:
+      description: Lists all DLP findings exports.
+      summary: Lists findings exports
+      operationId: listfindingsexports
+      x-visibility: Private
+      tags:
+        - Governance
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListDlpFindingsExportsResponse"
+        "403":
+          description: Permissions error
+        "500":
+          description: Internal error
+  /rest/api/v1/governance/data/findings/exports/{id}:
+    get:
+      description: Downloads a DLP findings export as a CSV file.
+      summary: Downloads findings export
+      operationId: downloadfindingsexport
+      x-visibility: Private
+      tags:
+        - Governance
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the export to download.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Downloads CSV of exported findings.
+          content:
+            text/csv; charset=UTF-8:
+              schema:
+                description: CSV of all the exported findings.
+                type: string
+        "403":
+          description: Permissions error
+        "500":
+          description: Internal error
+    delete:
+      description: Deletes a DLP findings export.
+      summary: Deletes findings export
+      operationId: deletefindingsexport
+      x-visibility: Private
+      tags:
+        - Governance
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the export to delete.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Permissions error
+        "500":
+          description: Internal error
   /rest/api/v1/chat#stream:
     post:
       tags:
@@ -12892,6 +12984,112 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/DocumentVisibilityUpdateResult"
+    DlpSeverity:
+      type: string
+      description: Severity levels for DLP findings and analyses.
+      x-include-enum-class-prefix: true
+      enum:
+        - UNSPECIFIED
+        - LOW
+        - MEDIUM
+        - HIGH
+    TimeRangeFilter:
+      properties:
+        timePeriodType:
+          type: string
+          description: The type of time period for which to filter findings.
+          enum:
+            - PAST_DAY
+            - PAST_WEEK
+            - PAST_MONTH
+            - PAST_YEAR
+            - CUSTOM
+        customTimeRange:
+          $ref: "#/components/schemas/TimeRange"
+    DlpFindingFilter:
+      properties:
+        infoType:
+          type: string
+        regexId:
+          type: string
+        reportId:
+          type: string
+        datasource:
+          type: string
+        visibility:
+          type: string
+        documentIds:
+          type: array
+          items:
+            type: string
+        severity:
+          $ref: "#/components/schemas/DlpSeverity"
+        documentSeverity:
+          type: array
+          items:
+            $ref: "#/components/schemas/DlpSeverity"
+        timeRange:
+          $ref: "#/components/schemas/TimeRangeFilter"
+    ExportInfo:
+      properties:
+        createdBy:
+          description: person who triggered this export
+          $ref: "#/components/schemas/DlpPerson"
+        startTime:
+          description: Timestamp at which this export started.
+          type: string
+          format: iso-date-time
+        endTime:
+          description: Timestamp at which this export completed.
+          type: string
+          format: iso-date-time
+        exportId:
+          type: string
+          description: The ID of the export
+        fileName:
+          type: string
+          description: The name of the file to export the findings to
+        filter:
+          $ref: "#/components/schemas/DlpFindingFilter"
+          description: The filters used to export the findings
+        status:
+          type: string
+          description: The status of the export
+          enum:
+            - PENDING
+            - COMPLETED
+            - FAILED
+    ListDlpFindingsExportsResponse:
+      properties:
+        exports:
+          type: array
+          items:
+            $ref: "#/components/schemas/ExportInfo"
+    DlpExportFindingsRequest:
+      properties:
+        exportType:
+          type: string
+          description: The type of export to perform
+          enum:
+            - FINDINGS
+            - DOCUMENTS
+        filter:
+          $ref: "#/components/schemas/DlpFindingFilter"
+        fileName:
+          type: string
+          description: The name of the file to export the findings to
+        fieldScope:
+          type: string
+          description: Controls which fields to include in the export
+          enum:
+            - ALL
+            - EXCLUDE_SENSITIVE
+            - CUSTOM
+        fieldsToExclude:
+          type: array
+          items:
+            type: string
+          description: List of field names to exclude from the export
     ChatRequestStream:
       required:
         - messages
