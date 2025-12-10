@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 536312b6ae0803f69bb9f2a50a43c07b697d1bb6
+  x-source-commit-sha: e98f46531ea7973d89d5976390f4fe210f2e4c16
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 5498abcb77a67baf1ab3ab57804b376fb0286c19
+  x-open-api-commit-sha: 3cec64c96d952d84c0420ef0ec8ad4558bedd984
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -7170,6 +7170,15 @@ components:
         numDaysActive:
           type: integer
           description: Total number of days this user was an Active User over the specified time period.
+        numSummarizations:
+          type: integer
+          description: Total number of summarized items by this user over the specified time period.
+        numAiAnswers:
+          type: integer
+          description: Total number of AI Answers interacted with by this user over the specified time period.
+        numAgentRuns:
+          type: integer
+          description: Total number of agent runs for this user over the specified time period.
     InsightsOverviewResponse:
       allOf:
         - $ref: "#/components/schemas/InsightsDepartmentsSummary"
