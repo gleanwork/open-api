@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 8ab89689efa39d0c6efe05263c599d7d24a61634
+  x-source-commit-sha: e98f46531ea7973d89d5976390f4fe210f2e4c16
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -7169,6 +7169,15 @@ components:
         numDaysActive:
           type: integer
           description: Total number of days this user was an Active User over the specified time period.
+        numSummarizations:
+          type: integer
+          description: Total number of summarized items by this user over the specified time period.
+        numAiAnswers:
+          type: integer
+          description: Total number of AI Answers interacted with by this user over the specified time period.
+        numAgentRuns:
+          type: integer
+          description: Total number of agent runs for this user over the specified time period.
     InsightsOverviewResponse:
       allOf:
         - $ref: '#/components/schemas/InsightsDepartmentsSummary'
