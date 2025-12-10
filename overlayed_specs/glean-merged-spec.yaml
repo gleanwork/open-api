@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: e98f46531ea7973d89d5976390f4fe210f2e4c16
+  x-source-commit-sha: 397a0701af5f340da7a06b45f633c3c57b384fea
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 3cec64c96d952d84c0420ef0ec8ad4558bedd984
+  x-open-api-commit-sha: bc1165e832e3f7968e30ff79a391b67755ff6f35
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -7605,6 +7605,12 @@ components:
         sessionInfo:
           description: Optional object for tracking the session used by the client and for debugging purposes.
           $ref: "#/components/schemas/SessionInfo"
+        saveChat:
+          type: boolean
+          description: Save the current interaction as a Chat for the user to access and potentially continue later.
+        chatId:
+          type: string
+          description: The id of the Chat that context should be retrieved from and messages added to. An empty id starts a new Chat, and the Chat is saved if saveChat is true.
     ChatRestrictionFilters:
       allOf:
         - $ref: "#/components/schemas/RestrictionFilters"
@@ -7623,12 +7629,6 @@ components:
         - $ref: "#/components/schemas/ChatRequestBase"
         - type: object
           properties:
-            saveChat:
-              type: boolean
-              description: Save the current interaction as a Chat for the user to access and potentially continue later.
-            chatId:
-              type: string
-              description: The id of the Chat that context should be retrieved from and messages added to. An empty id starts a new Chat, and the Chat is saved if saveChat is true.
             agentConfig:
               $ref: "#/components/schemas/AgentConfig"
               description: Describes the agent that will execute the request.
