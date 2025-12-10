@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 199aad5236069e33a5ace0bb3d3f6df5baf7eb56
+  x-source-commit-sha: 397a0701af5f340da7a06b45f633c3c57b384fea
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -6089,6 +6089,12 @@ components:
         sessionInfo:
           description: Optional object for tracking the session used by the client and for debugging purposes.
           $ref: '#/components/schemas/SessionInfo'
+        saveChat:
+          type: boolean
+          description: Save the current interaction as a Chat for the user to access and potentially continue later.
+        chatId:
+          type: string
+          description: The id of the Chat that context should be retrieved from and messages added to. An empty id starts a new Chat, and the Chat is saved if saveChat is true.
     ChatRestrictionFilters:
       allOf:
         - $ref: '#/components/schemas/RestrictionFilters'
@@ -6107,12 +6113,6 @@ components:
         - $ref: '#/components/schemas/ChatRequestBase'
         - type: object
           properties:
-            saveChat:
-              type: boolean
-              description: Save the current interaction as a Chat for the user to access and potentially continue later.
-            chatId:
-              type: string
-              description: The id of the Chat that context should be retrieved from and messages added to. An empty id starts a new Chat, and the Chat is saved if saveChat is true.
             agentConfig:
               $ref: '#/components/schemas/AgentConfig'
               description: Describes the agent that will execute the request.
