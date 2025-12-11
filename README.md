@@ -122,11 +122,13 @@ flowchart TD
 
 This repository uses several GitHub Actions workflows to process the OpenAPI specifications:
 
-| Workflow                    | Purpose                                                                                        | Trigger                                               |
-| --------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| `transform.yml`             | Transforms source specs and runs the `glean-api-specs` Speakeasy source to generate API specs. | Push to main (source_specs changes), schedule, manual |
-| `generate-code-samples.yml` | Runs Speakeasy to generate merged code samples specs.                                          | Manual only                                           |
-| `deploy-pages.yml`          | Deploys specs to GitHub Pages.                                                                 | After generate-code-samples completes, manual         |
+| Workflow                        | Purpose                                                                                        | Trigger                                               |
+| ------------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `transform.yml`                 | Transforms source specs and runs the `glean-api-specs` Speakeasy source to generate API specs. | Push to main (source_specs changes), schedule, manual |
+| `trigger-client-generation.yml` | Triggers SDK generation workflows in all 4 API client repos.                                   | After transform.yml completes, manual                 |
+| `auto-trigger-code-samples.yml` | Checks if all client releases are ready and triggers code sample generation.                   | Every 4 hours, repository_dispatch, manual            |
+| `generate-code-samples.yml`     | Runs Speakeasy to generate merged code samples specs.                                          | Triggered by auto-trigger-code-samples, manual        |
+| `deploy-pages.yml`              | Deploys specs to GitHub Pages.                                                                 | After generate-code-samples completes, manual         |
 
 The processing follows this sequence:
 
@@ -211,7 +213,7 @@ In order to roll out changes from the upstream original source repo all the way 
    - [gleanwork/api-client-typescript](https://github.com/gleanwork/api-client-typescript)
    - [gleanwork/api-client-go](https://github.com/gleanwork/api-client-go)
 7. 🤖CI in each of the API Client repos releases to their respective package managers
-8. 👷Once all 4 API Clients are merged and released, manually trigger [generate-code-samples.yml](https://github.com/gleanwork/open-api/actions/workflows/generate-code-samples.yml) workflow
+8. 🤖[auto-trigger-code-samples.yml](https://github.com/gleanwork/open-api/actions/workflows/auto-trigger-code-samples.yml) checks every 4 hours if all API Client releases match the expected SHA, and triggers [generate-code-samples.yml](https://github.com/gleanwork/open-api/actions/workflows/generate-code-samples.yml) when ready
 9. 🤖CI in this repo runs the [deploy-pages.yml](https://github.com/gleanwork/open-api/actions/workflows/deploy-pages.yml) workflow to deploy the final specs to GitHub Pages
 10. 🤖CI in this repo runs [trigger-developer-site-redeploy.yml](https://github.com/gleanwork/open-api/actions/workflows/trigger-developer-site-redeploy.yml)
 11. 🤖CI in [gleanwork/glean-developer-site](https://github.com/gleanwork/glean-developer-site) pushes a commit to trigger deployment
