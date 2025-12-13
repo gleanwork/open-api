@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 6c18cdaa8da169e191cc66885c326e2ea6d13644
+  x-source-commit-sha: 769a3e49b4897e1b7438a73a1b5bef0220827acb
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: c7a6190b989a16d24b879348f08e27efcb304566
+  x-open-api-commit-sha: 4006b190963732c924aac50ba958b0cbe6e435e0
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -6637,6 +6637,9 @@ components:
         chatId:
           type: string
           description: The id of the Chat that context should be retrieved from and messages added to. An empty id starts a new Chat, and the Chat is saved if saveChat is true.
+        agentConfig:
+          $ref: "#/components/schemas/AgentConfig"
+          description: Describes the agent that will execute the request.
     ChatRestrictionFilters:
       allOf:
         - $ref: "#/components/schemas/RestrictionFilters"
@@ -6655,9 +6658,6 @@ components:
         - $ref: "#/components/schemas/ChatRequestBase"
         - type: object
           properties:
-            agentConfig:
-              $ref: "#/components/schemas/AgentConfig"
-              description: Describes the agent that will execute the request.
             inclusions:
               $ref: "#/components/schemas/ChatRestrictionFilters"
               description: A list of filters which only allows chat to access certain content.
