@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 769a3e49b4897e1b7438a73a1b5bef0220827acb
+  x-source-commit-sha: 6c9a08e40e3a14e89ef3b695260a5919140f29ee
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 4006b190963732c924aac50ba958b0cbe6e435e0
+  x-open-api-commit-sha: f7c9aef10205b9387545e3d26a937e140aaefff6
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -7202,6 +7202,30 @@ components:
             weeklyActiveUserTimeseries:
               $ref: "#/components/schemas/LabeledCountInfo"
             dailyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            searchMonthlyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            searchWeeklyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            searchDailyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            assistantMonthlyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            assistantWeeklyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            assistantDailyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            agentsMonthlyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            agentsWeeklyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            agentsDailyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            searchesTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            assistantInteractionsTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            agentRunsTimeseries:
               $ref: "#/components/schemas/LabeledCountInfo"
             searchDatasourceCounts:
               type: object
