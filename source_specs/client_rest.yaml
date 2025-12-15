@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: cb4812fbcef95177c51f41d36a1fe037dc5e4626
+  x-source-commit-sha: 6c9a08e40e3a14e89ef3b695260a5919140f29ee
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -7201,6 +7201,30 @@ components:
             weeklyActiveUserTimeseries:
               $ref: '#/components/schemas/LabeledCountInfo'
             dailyActiveUserTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            searchMonthlyActiveUserTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            searchWeeklyActiveUserTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            searchDailyActiveUserTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            assistantMonthlyActiveUserTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            assistantWeeklyActiveUserTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            assistantDailyActiveUserTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            agentsMonthlyActiveUserTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            agentsWeeklyActiveUserTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            agentsDailyActiveUserTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            searchesTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            assistantInteractionsTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            agentRunsTimeseries:
               $ref: '#/components/schemas/LabeledCountInfo'
             searchDatasourceCounts:
               type: object
