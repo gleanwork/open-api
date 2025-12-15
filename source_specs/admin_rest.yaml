@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: 8210e71b145baa6e24018235b66176a969f4af55
+  x-source-commit-sha: 569c24122ffc84afc4f78a5f4b01594f18c22b61
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
@@ -886,6 +886,8 @@ components:
             $ref: '#/components/schemas/DlpSeverity'
         timeRange:
           $ref: '#/components/schemas/TimeRangeFilter'
+        archived:
+          type: boolean
     ExportInfo:
       properties:
         createdBy:
