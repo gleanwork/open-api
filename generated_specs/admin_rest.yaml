@@ -2,14 +2,14 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: 569c24122ffc84afc4f78a5f4b01594f18c22b61
+  x-source-commit-sha: bd0e7b945285f41a4b8ba76ce7755fb0dd5d67fc
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
     operations. These offer limited exposure to the admin APIs through rest endpoints.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 060ed338d55f852a0ae8b55466109024ba4f0f28
+  x-open-api-commit-sha: 4044709b69fe5207c3efbe5eb50ab4facad07ba4
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -161,6 +161,8 @@ paths:
               schema:
                 description: CSV of all the violations found for this policy.
                 type: string
+        "400":
+          description: Bad request error (e.g., continuous policies are not supported).
         "403":
           description: Permissions error
         "500":
