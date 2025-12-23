@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: e381c500ad5ea7c2e4675b0825f2ae15cd348271
+  x-source-commit-sha: ec68ddd63c62956ad003ba588e97201165abbfb1
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -4359,6 +4359,21 @@ components:
         attendees:
           $ref: '#/components/schemas/CalendarAttendees'
           description: The attendee list, including their response status
+        isCancelled:
+          type: boolean
+          description: Whether the meeting has been cancelled
+        location:
+          type: string
+          description: The location/venue of the meeting
+        responseStatus:
+          type: string
+          description: The current user's response status (accepted, declined, tentativelyAccepted, none)
+        conferenceUri:
+          type: string
+          description: The meeting join link (Teams, Zoom, etc.)
+        conferenceProvider:
+          type: string
+          description: The conference provider (e.g., "Microsoft Teams", "Zoom")
     AppResult:
       required:
         - datasource
