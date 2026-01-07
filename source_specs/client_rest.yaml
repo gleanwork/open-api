@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: adfd685673617f4e45de97f6222e7594e5608348
+  x-source-commit-sha: 01ef519a8f095d8a06b212fb5712684cfe81da14
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -3779,39 +3779,6 @@ components:
           items:
             $ref: '#/components/schemas/FacetFilter'
           description: Filters which restrict who should see this Collection. Values are taken from the corresponding filters in people search.
-    AnswerBoardMutableProperties:
-      allOf:
-        - $ref: '#/components/schemas/CollectionBaseMutableProperties'
-    AnswerBoard:
-      allOf:
-        - $ref: '#/components/schemas/AnswerBoardMutableProperties'
-        - $ref: '#/components/schemas/PermissionedObject'
-        - type: object
-          required:
-            - id
-            - description
-          properties:
-            id:
-              type: integer
-              description: The unique ID of the Answer Board.
-            createTime:
-              type: string
-              format: date-time
-            updateTime:
-              type: string
-              format: date-time
-            creator:
-              $ref: '#/components/schemas/Person'
-            updatedBy:
-              $ref: '#/components/schemas/Person'
-            itemCount:
-              type: integer
-              description: The number of items currently in the Answer Board. Separated from the actual items so we can grab the count without items.
-            roles:
-              type: array
-              description: A list of user roles for the Answer Board.
-              items:
-                $ref: '#/components/schemas/UserRoleSpecification'
     Thumbnail:
       properties:
         photoId:
@@ -4108,9 +4075,6 @@ components:
               $ref: '#/components/schemas/Person'
             verification:
               $ref: '#/components/schemas/Verification'
-            board:
-              $ref: '#/components/schemas/AnswerBoard'
-              description: The parent board this answer is in.
             collections:
               type: array
               description: The collections to which the answer belongs.
@@ -4631,8 +4595,6 @@ components:
           $ref: '#/components/schemas/AppResult'
         collection:
           $ref: '#/components/schemas/Collection'
-        answerBoard:
-          $ref: '#/components/schemas/AnswerBoard'
         code:
           $ref: '#/components/schemas/Code'
         shortcut:
