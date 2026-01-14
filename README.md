@@ -216,5 +216,6 @@ In order to roll out changes from the upstream original source repo all the way 
 8. 🤖[auto-trigger-code-samples.yml](https://github.com/gleanwork/open-api/actions/workflows/auto-trigger-code-samples.yml) checks every 4 hours if all API Client releases match the expected SHA, and triggers [generate-code-samples.yml](https://github.com/gleanwork/open-api/actions/workflows/generate-code-samples.yml) when ready
 9. 🤖CI in this repo runs the [deploy-pages.yml](https://github.com/gleanwork/open-api/actions/workflows/deploy-pages.yml) workflow to deploy the final specs to GitHub Pages
 10. 🤖CI in this repo runs [trigger-developer-site-redeploy.yml](https://github.com/gleanwork/open-api/actions/workflows/trigger-developer-site-redeploy.yml)
-11. 🤖CI in [gleanwork/glean-developer-site](https://github.com/gleanwork/glean-developer-site) pushes a commit to trigger deployment
-12. 🤖Mintlify Deployment updates [developers.glean.com](https://developers.glean.com)
+11. 🤖CI in [gleanwork/glean-developer-site](https://github.com/gleanwork/glean-developer-site) publishes a PR to update the developer site
+12. 👷Merge the [gleanwork/glean-developer-site](https://github.com/gleanwork/glean-developer-site) PR from step 11
+13. 🤖Vercel [redeploys developers.glean.com](https://vercel.com/glean-developers/glean-developer-site)
