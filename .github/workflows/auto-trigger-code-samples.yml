@@ -4,10 +4,6 @@ on:
   # Allow manual trigger for testing
   workflow_dispatch:
 
-  # Triggered by client repos after they release
-  repository_dispatch:
-    types: [client-released]
-
   # Run every 4 hours to check if all client releases are ready
   schedule:
     - cron: '0 */4 * * *'
