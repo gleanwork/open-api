@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 2716d99b958fa0dbf1a48290203cb28f43c37a92
+  x-source-commit-sha: 73720c10eb41436b03f8f69b30c5f1eaebe83136
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: ecce1959afb4701947e853c482ed77ed6743e643
+  x-open-api-commit-sha: ef6741a4fcd031636396dc0ab0e89af1f1fba258
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -430,7 +430,7 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as glean:
 
-                res = glean.client.announcements.create(start_time=parse_datetime("2023-05-01T12:02:10.816Z"), end_time=parse_datetime("2024-03-17T14:19:30.278Z"), title="<value>", body={
+                res = glean.client.announcements.create(start_time=parse_datetime("2024-04-30T12:02:10.816Z"), end_time=parse_datetime("2025-03-17T14:19:30.278Z"), title="<value>", body={
                     "text": "From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
                     "structured_list": [
                         models.StructuredTextItem(
@@ -827,38 +827,10 @@ paths:
                                             ],
                                         ),
                                     ),
-                                    board=models.AnswerBoard(
-                                        name="<value>",
-                                        description="actual even swift curse while puppet outlandish since urgently",
-                                        audience_filters=[
-                                            models.FacetFilter(
-                                                field_name="type",
-                                                values=[
-                                                    models.FacetFilterValue(
-                                                        value="Spreadsheet",
-                                                        relation_type=models.RelationType.EQUALS,
-                                                    ),
-                                                    models.FacetFilterValue(
-                                                        value="Presentation",
-                                                        relation_type=models.RelationType.EQUALS,
-                                                    ),
-                                                ],
-                                            ),
-                                        ],
-                                        id=812610,
-                                        creator=models.Person(
-                                            name="George Clooney",
-                                            obfuscated_id="abc123",
-                                        ),
-                                        updated_by=models.Person(
-                                            name="George Clooney",
-                                            obfuscated_id="abc123",
-                                        ),
-                                    ),
                                     collections=[
                                         models.Collection(
                                             name="<value>",
-                                            description="minus mindless prudent better elderly",
+                                            description="actual even swift curse while puppet outlandish since urgently",
                                             audience_filters=[
                                                 models.FacetFilter(
                                                     field_name="type",
@@ -874,7 +846,7 @@ paths:
                                                     ],
                                                 ),
                                             ],
-                                            id=953622,
+                                            id=812610,
                                             creator=models.Person(
                                                 name="George Clooney",
                                                 obfuscated_id="abc123",
@@ -885,7 +857,7 @@ paths:
                                             ),
                                             items=[
                                                 models.CollectionItem(
-                                                    collection_id=164413,
+                                                    collection_id=339054,
                                                     created_by=models.Person(
                                                         name="George Clooney",
                                                         obfuscated_id="abc123",
@@ -1047,7 +1019,7 @@ paths:
                                                     ),
                                                     collection=models.Collection(
                                                         name="<value>",
-                                                        description="instead calmly after ick headline inasmuch forenenst westernize grouper amidst",
+                                                        description="since well-lit everlasting unto",
                                                         audience_filters=[
                                                             models.FacetFilter(
                                                                 field_name="type",
@@ -1063,7 +1035,7 @@ paths:
                                                                 ],
                                                             ),
                                                         ],
-                                                        id=345597,
+                                                        id=990046,
                                                         creator=models.Person(
                                                             name="George Clooney",
                                                             obfuscated_id="abc123",
@@ -1075,7 +1047,7 @@ paths:
                                                         children=[
                                                             models.Collection(
                                                                 name="<value>",
-                                                                description="boulevard pale collaborate pertinent comparison drat yum rejigger nor finding",
+                                                                description="youthfully instead calmly after ick headline inasmuch forenenst",
                                                                 audience_filters=[
                                                                     models.FacetFilter(
                                                                         field_name="type",
@@ -1091,7 +1063,7 @@ paths:
                                                                         ],
                                                                     ),
                                                                 ],
-                                                                id=654575,
+                                                                id=398757,
                                                                 creator=models.Person(
                                                                     name="George Clooney",
                                                                     obfuscated_id="abc123",
@@ -1184,7 +1156,7 @@ paths:
                                 generated_qna=models.GeneratedQna(
                                     ranges=[
                                         models.TextRange(
-                                            start_index=186459,
+                                            start_index=793437,
                                             document=models.Document(
                                                 container_document=models.Document(
                                                     metadata=models.DocumentMetadata(
@@ -1308,7 +1280,7 @@ paths:
                                 ),
                                 collection=models.Collection(
                                     name="<value>",
-                                    description="instead calmly after ick headline inasmuch forenenst westernize grouper amidst",
+                                    description="since well-lit everlasting unto",
                                     audience_filters=[
                                         models.FacetFilter(
                                             field_name="type",
@@ -1324,7 +1296,7 @@ paths:
                                             ],
                                         ),
                                     ],
-                                    id=345597,
+                                    id=990046,
                                     creator=models.Person(
                                         name="George Clooney",
                                         obfuscated_id="abc123",
@@ -1336,7 +1308,7 @@ paths:
                                     children=[
                                         models.Collection(
                                             name="<value>",
-                                            description="boulevard pale collaborate pertinent comparison drat yum rejigger nor finding",
+                                            description="youthfully instead calmly after ick headline inasmuch forenenst",
                                             audience_filters=[
                                                 models.FacetFilter(
                                                     field_name="type",
@@ -1352,7 +1324,7 @@ paths:
                                                     ],
                                                 ),
                                             ],
-                                            id=654575,
+                                            id=398757,
                                             creator=models.Person(
                                                 name="George Clooney",
                                                 obfuscated_id="abc123",
@@ -1363,34 +1335,6 @@ paths:
                                             ),
                                         ),
                                     ],
-                                ),
-                                answer_board=models.AnswerBoard(
-                                    name="<value>",
-                                    description="after hm including who",
-                                    audience_filters=[
-                                        models.FacetFilter(
-                                            field_name="type",
-                                            values=[
-                                                models.FacetFilterValue(
-                                                    value="Spreadsheet",
-                                                    relation_type=models.RelationType.EQUALS,
-                                                ),
-                                                models.FacetFilterValue(
-                                                    value="Presentation",
-                                                    relation_type=models.RelationType.EQUALS,
-                                                ),
-                                            ],
-                                        ),
-                                    ],
-                                    id=254608,
-                                    creator=models.Person(
-                                        name="George Clooney",
-                                        obfuscated_id="abc123",
-                                    ),
-                                    updated_by=models.Person(
-                                        name="George Clooney",
-                                        obfuscated_id="abc123",
-                                    ),
                                 ),
                                 code=models.Code(
                                     repo_name="scio",
@@ -1558,8 +1502,8 @@ paths:
 
             async function run() {
               const result = await glean.client.announcements.create({
-                startTime: new Date("2023-05-01T12:02:10.816Z"),
-                endTime: new Date("2024-03-17T14:19:30.278Z"),
+                startTime: new Date("2024-04-30T12:02:10.816Z"),
+                endTime: new Date("2025-03-17T14:19:30.278Z"),
                 title: "<value>",
                 body: {
                   text: "From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
@@ -1958,38 +1902,10 @@ paths:
                               ],
                             },
                           },
-                          board: {
-                            name: "<value>",
-                            description: "actual even swift curse while puppet outlandish since urgently",
-                            audienceFilters: [
-                              {
-                                fieldName: "type",
-                                values: [
-                                  {
-                                    value: "Spreadsheet",
-                                    relationType: "EQUALS",
-                                  },
-                                  {
-                                    value: "Presentation",
-                                    relationType: "EQUALS",
-                                  },
-                                ],
-                              },
-                            ],
-                            id: 812610,
-                            creator: {
-                              name: "George Clooney",
-                              obfuscatedId: "abc123",
-                            },
-                            updatedBy: {
-                              name: "George Clooney",
-                              obfuscatedId: "abc123",
-                            },
-                          },
                           collections: [
                             {
                               name: "<value>",
-                              description: "minus mindless prudent better elderly",
+                              description: "actual even swift curse while puppet outlandish since urgently",
                               audienceFilters: [
                                 {
                                   fieldName: "type",
@@ -2005,7 +1921,7 @@ paths:
                                   ],
                                 },
                               ],
-                              id: 953622,
+                              id: 812610,
                               creator: {
                                 name: "George Clooney",
                                 obfuscatedId: "abc123",
@@ -2016,7 +1932,7 @@ paths:
                               },
                               items: [
                                 {
-                                  collectionId: 164413,
+                                  collectionId: 339054,
                                   createdBy: {
                                     name: "George Clooney",
                                     obfuscatedId: "abc123",
@@ -2178,7 +2094,7 @@ paths:
                                   },
                                   collection: {
                                     name: "<value>",
-                                    description: "instead calmly after ick headline inasmuch forenenst westernize grouper amidst",
+                                    description: "since well-lit everlasting unto",
                                     audienceFilters: [
                                       {
                                         fieldName: "type",
@@ -2194,7 +2110,7 @@ paths:
                                         ],
                                       },
                                     ],
-                                    id: 345597,
+                                    id: 990046,
                                     creator: {
                                       name: "George Clooney",
                                       obfuscatedId: "abc123",
@@ -2206,7 +2122,7 @@ paths:
                                     children: [
                                       {
                                         name: "<value>",
-                                        description: "boulevard pale collaborate pertinent comparison drat yum rejigger nor finding",
+                                        description: "youthfully instead calmly after ick headline inasmuch forenenst",
                                         audienceFilters: [
                                           {
                                             fieldName: "type",
@@ -2222,7 +2138,7 @@ paths:
                                             ],
                                           },
                                         ],
-                                        id: 654575,
+                                        id: 398757,
                                         creator: {
                                           name: "George Clooney",
                                           obfuscatedId: "abc123",
@@ -2315,7 +2231,7 @@ paths:
                         generatedQna: {
                           ranges: [
                             {
-                              startIndex: 186459,
+                              startIndex: 793437,
                               document: {
                                 containerDocument: {
                                   metadata: {
@@ -2439,7 +2355,7 @@ paths:
                         },
                         collection: {
                           name: "<value>",
-                          description: "instead calmly after ick headline inasmuch forenenst westernize grouper amidst",
+                          description: "since well-lit everlasting unto",
                           audienceFilters: [
                             {
                               fieldName: "type",
@@ -2455,7 +2371,7 @@ paths:
                               ],
                             },
                           ],
-                          id: 345597,
+                          id: 990046,
                           creator: {
                             name: "George Clooney",
                             obfuscatedId: "abc123",
@@ -2467,7 +2383,7 @@ paths:
                           children: [
                             {
                               name: "<value>",
-                              description: "boulevard pale collaborate pertinent comparison drat yum rejigger nor finding",
+                              description: "youthfully instead calmly after ick headline inasmuch forenenst",
                               audienceFilters: [
                                 {
                                   fieldName: "type",
@@ -2483,7 +2399,7 @@ paths:
                                   ],
                                 },
                               ],
-                              id: 654575,
+                              id: 398757,
                               creator: {
                                 name: "George Clooney",
                                 obfuscatedId: "abc123",
@@ -2494,34 +2410,6 @@ paths:
                               },
                             },
                           ],
-                        },
-                        answerBoard: {
-                          name: "<value>",
-                          description: "after hm including who",
-                          audienceFilters: [
-                            {
-                              fieldName: "type",
-                              values: [
-                                {
-                                  value: "Spreadsheet",
-                                  relationType: "EQUALS",
-                                },
-                                {
-                                  value: "Presentation",
-                                  relationType: "EQUALS",
-                                },
-                              ],
-                            },
-                          ],
-                          id: 254608,
-                          creator: {
-                            name: "George Clooney",
-                            obfuscatedId: "abc123",
-                          },
-                          updatedBy: {
-                            name: "George Clooney",
-                            obfuscatedId: "abc123",
-                          },
                         },
                         code: {
                           repoName: "scio",
@@ -2704,8 +2592,8 @@ paths:
                 )
 
                 res, err := s.Client.Announcements.Create(ctx, components.CreateAnnouncementRequest{
-                    StartTime: types.MustTimeFromString("2023-05-01T12:02:10.816Z"),
-                    EndTime: types.MustTimeFromString("2024-03-17T14:19:30.278Z"),
+                    StartTime: types.MustTimeFromString("2024-04-30T12:02:10.816Z"),
+                    EndTime: types.MustTimeFromString("2025-03-17T14:19:30.278Z"),
                     Title: "<value>",
                     Body: &components.StructuredText{
                         Text: "From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
@@ -3106,38 +2994,10 @@ paths:
                                                 },
                                             },
                                         },
-                                        Board: &components.AnswerBoard{
-                                            Name: "<value>",
-                                            Description: "actual even swift curse while puppet outlandish since urgently",
-                                            AudienceFilters: []components.FacetFilter{
-                                                components.FacetFilter{
-                                                    FieldName: apiclientgo.Pointer("type"),
-                                                    Values: []components.FacetFilterValue{
-                                                        components.FacetFilterValue{
-                                                            Value: apiclientgo.Pointer("Spreadsheet"),
-                                                            RelationType: components.RelationTypeEquals.ToPointer(),
-                                                        },
-                                                        components.FacetFilterValue{
-                                                            Value: apiclientgo.Pointer("Presentation"),
-                                                            RelationType: components.RelationTypeEquals.ToPointer(),
-                                                        },
-                                                    },
-                                                },
-                                            },
-                                            ID: 812610,
-                                            Creator: &components.Person{
-                                                Name: "George Clooney",
-                                                ObfuscatedID: "abc123",
-                                            },
-                                            UpdatedBy: &components.Person{
-                                                Name: "George Clooney",
-                                                ObfuscatedID: "abc123",
-                                            },
-                                        },
                                         Collections: []components.Collection{
                                             components.Collection{
                                                 Name: "<value>",
-                                                Description: "minus mindless prudent better elderly",
+                                                Description: "actual even swift curse while puppet outlandish since urgently",
                                                 AudienceFilters: []components.FacetFilter{
                                                     components.FacetFilter{
                                                         FieldName: apiclientgo.Pointer("type"),
@@ -3153,7 +3013,7 @@ paths:
                                                         },
                                                     },
                                                 },
-                                                ID: 953622,
+                                                ID: 812610,
                                                 Creator: &components.Person{
                                                     Name: "George Clooney",
                                                     ObfuscatedID: "abc123",
@@ -3164,7 +3024,7 @@ paths:
                                                 },
                                                 Items: []components.CollectionItem{
                                                     components.CollectionItem{
-                                                        CollectionID: 164413,
+                                                        CollectionID: 339054,
                                                         CreatedBy: &components.Person{
                                                             Name: "George Clooney",
                                                             ObfuscatedID: "abc123",
@@ -3326,7 +3186,7 @@ paths:
                                                         },
                                                         Collection: &components.Collection{
                                                             Name: "<value>",
-                                                            Description: "instead calmly after ick headline inasmuch forenenst westernize grouper amidst",
+                                                            Description: "since well-lit everlasting unto",
                                                             AudienceFilters: []components.FacetFilter{
                                                                 components.FacetFilter{
                                                                     FieldName: apiclientgo.Pointer("type"),
@@ -3342,7 +3202,7 @@ paths:
                                                                     },
                                                                 },
                                                             },
-                                                            ID: 345597,
+                                                            ID: 990046,
                                                             Creator: &components.Person{
                                                                 Name: "George Clooney",
                                                                 ObfuscatedID: "abc123",
@@ -3354,7 +3214,7 @@ paths:
                                                             Children: []components.Collection{
                                                                 components.Collection{
                                                                     Name: "<value>",
-                                                                    Description: "boulevard pale collaborate pertinent comparison drat yum rejigger nor finding",
+                                                                    Description: "youthfully instead calmly after ick headline inasmuch forenenst",
                                                                     AudienceFilters: []components.FacetFilter{
                                                                         components.FacetFilter{
                                                                             FieldName: apiclientgo.Pointer("type"),
@@ -3370,7 +3230,7 @@ paths:
                                                                             },
                                                                         },
                                                                     },
-                                                                    ID: 654575,
+                                                                    ID: 398757,
                                                                     Creator: &components.Person{
                                                                         Name: "George Clooney",
                                                                         ObfuscatedID: "abc123",
@@ -3463,7 +3323,7 @@ paths:
                                     GeneratedQna: &components.GeneratedQna{
                                         Ranges: []components.TextRange{
                                             components.TextRange{
-                                                StartIndex: 186459,
+                                                StartIndex: 793437,
                                                 Document: &components.Document{
                                                     ContainerDocument: &components.Document{
                                                         Metadata: &components.DocumentMetadata{
@@ -3587,7 +3447,7 @@ paths:
                                     },
                                     Collection: &components.Collection{
                                         Name: "<value>",
-                                        Description: "instead calmly after ick headline inasmuch forenenst westernize grouper amidst",
+                                        Description: "since well-lit everlasting unto",
                                         AudienceFilters: []components.FacetFilter{
                                             components.FacetFilter{
                                                 FieldName: apiclientgo.Pointer("type"),
@@ -3603,7 +3463,7 @@ paths:
                                                 },
                                             },
                                         },
-                                        ID: 345597,
+                                        ID: 990046,
                                         Creator: &components.Person{
                                             Name: "George Clooney",
                                             ObfuscatedID: "abc123",
@@ -3615,7 +3475,7 @@ paths:
                                         Children: []components.Collection{
                                             components.Collection{
                                                 Name: "<value>",
-                                                Description: "boulevard pale collaborate pertinent comparison drat yum rejigger nor finding",
+                                                Description: "youthfully instead calmly after ick headline inasmuch forenenst",
                                                 AudienceFilters: []components.FacetFilter{
                                                     components.FacetFilter{
                                                         FieldName: apiclientgo.Pointer("type"),
@@ -3631,7 +3491,7 @@ paths:
                                                         },
                                                     },
                                                 },
-                                                ID: 654575,
+                                                ID: 398757,
                                                 Creator: &components.Person{
                                                     Name: "George Clooney",
                                                     ObfuscatedID: "abc123",
@@ -3641,34 +3501,6 @@ paths:
                                                     ObfuscatedID: "abc123",
                                                 },
                                             },
-                                        },
-                                    },
-                                    AnswerBoard: &components.AnswerBoard{
-                                        Name: "<value>",
-                                        Description: "after hm including who",
-                                        AudienceFilters: []components.FacetFilter{
-                                            components.FacetFilter{
-                                                FieldName: apiclientgo.Pointer("type"),
-                                                Values: []components.FacetFilterValue{
-                                                    components.FacetFilterValue{
-                                                        Value: apiclientgo.Pointer("Spreadsheet"),
-                                                        RelationType: components.RelationTypeEquals.ToPointer(),
-                                                    },
-                                                    components.FacetFilterValue{
-                                                        Value: apiclientgo.Pointer("Presentation"),
-                                                        RelationType: components.RelationTypeEquals.ToPointer(),
-                                                    },
-                                                },
-                                            },
-                                        },
-                                        ID: 254608,
-                                        Creator: &components.Person{
-                                            Name: "George Clooney",
-                                            ObfuscatedID: "abc123",
-                                        },
-                                        UpdatedBy: &components.Person{
-                                            Name: "George Clooney",
-                                            ObfuscatedID: "abc123",
                                         },
                                     },
                                     Code: &components.Code{
@@ -3854,8 +3686,8 @@ paths:
                         .build();
 
                     CreateAnnouncementRequest req = CreateAnnouncementRequest.builder()
-                            .startTime(OffsetDateTime.parse("2023-05-01T12:02:10.816Z"))
-                            .endTime(OffsetDateTime.parse("2024-03-17T14:19:30.278Z"))
+                            .startTime(OffsetDateTime.parse("2024-04-30T12:02:10.816Z"))
+                            .endTime(OffsetDateTime.parse("2025-03-17T14:19:30.278Z"))
                             .title("<value>")
                             .body(StructuredText.builder()
                                 .text("From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.")
@@ -4231,37 +4063,11 @@ paths:
                                                                 .build()))
                                                         .build())
                                                     .build())
-                                                .board(AnswerBoard.builder()
-                                                    .name("<value>")
-                                                    .description("actual even swift curse while puppet outlandish since urgently")
-                                                    .id(812610L)
-                                                    .audienceFilters(List.of(
-                                                        FacetFilter.builder()
-                                                            .fieldName("type")
-                                                            .values(List.of(
-                                                                FacetFilterValue.builder()
-                                                                    .value("Spreadsheet")
-                                                                    .relationType(RelationType.EQUALS)
-                                                                    .build(),
-                                                                FacetFilterValue.builder()
-                                                                    .value("Presentation")
-                                                                    .relationType(RelationType.EQUALS)
-                                                                    .build()))
-                                                            .build()))
-                                                    .creator(Person.builder()
-                                                        .name("George Clooney")
-                                                        .obfuscatedId("abc123")
-                                                        .build())
-                                                    .updatedBy(Person.builder()
-                                                        .name("George Clooney")
-                                                        .obfuscatedId("abc123")
-                                                        .build())
-                                                    .build())
                                                 .collections(List.of(
                                                     Collection.builder()
                                                         .name("<value>")
-                                                        .description("minus mindless prudent better elderly")
-                                                        .id(953622L)
+                                                        .description("actual even swift curse while puppet outlandish since urgently")
+                                                        .id(812610L)
                                                         .audienceFilters(List.of(
                                                             FacetFilter.builder()
                                                                 .fieldName("type")
@@ -4285,7 +4091,7 @@ paths:
                                                             .build())
                                                         .items(List.of(
                                                             CollectionItem.builder()
-                                                                .collectionId(164413L)
+                                                                .collectionId(339054L)
                                                                 .itemType(CollectionItemItemType.DOCUMENT)
                                                                 .createdBy(Person.builder()
                                                                     .name("George Clooney")
@@ -4442,8 +4248,8 @@ paths:
                                                                     .build())
                                                                 .collection(Collection.builder()
                                                                     .name("<value>")
-                                                                    .description("instead calmly after ick headline inasmuch forenenst westernize grouper amidst")
-                                                                    .id(345597L)
+                                                                    .description("since well-lit everlasting unto")
+                                                                    .id(990046L)
                                                                     .audienceFilters(List.of(
                                                                         FacetFilter.builder()
                                                                             .fieldName("type")
@@ -4468,8 +4274,8 @@ paths:
                                                                     .children(List.of(
                                                                         Collection.builder()
                                                                             .name("<value>")
-                                                                            .description("boulevard pale collaborate pertinent comparison drat yum rejigger nor finding")
-                                                                            .id(654575L)
+                                                                            .description("youthfully instead calmly after ick headline inasmuch forenenst")
+                                                                            .id(398757L)
                                                                             .audienceFilters(List.of(
                                                                                 FacetFilter.builder()
                                                                                     .fieldName("type")
@@ -4568,7 +4374,7 @@ paths:
                                             .generatedQna(GeneratedQna.builder()
                                                 .ranges(List.of(
                                                     TextRange.builder()
-                                                        .startIndex(186459L)
+                                                        .startIndex(793437L)
                                                         .document(Document.builder()
                                                             .containerDocument(Document.builder()
                                                                 .metadata(DocumentMetadata.builder()
@@ -4684,8 +4490,8 @@ paths:
                                                 .build())
                                             .collection(Collection.builder()
                                                 .name("<value>")
-                                                .description("instead calmly after ick headline inasmuch forenenst westernize grouper amidst")
-                                                .id(345597L)
+                                                .description("since well-lit everlasting unto")
+                                                .id(990046L)
                                                 .audienceFilters(List.of(
                                                     FacetFilter.builder()
                                                         .fieldName("type")
@@ -4710,8 +4516,8 @@ paths:
                                                 .children(List.of(
                                                     Collection.builder()
                                                         .name("<value>")
-                                                        .description("boulevard pale collaborate pertinent comparison drat yum rejigger nor finding")
-                                                        .id(654575L)
+                                                        .description("youthfully instead calmly after ick headline inasmuch forenenst")
+                                                        .id(398757L)
                                                         .audienceFilters(List.of(
                                                             FacetFilter.builder()
                                                                 .fieldName("type")
@@ -4734,32 +4540,6 @@ paths:
                                                             .obfuscatedId("abc123")
                                                             .build())
                                                         .build()))
-                                                .build())
-                                            .answerBoard(AnswerBoard.builder()
-                                                .name("<value>")
-                                                .description("after hm including who")
-                                                .id(254608L)
-                                                .audienceFilters(List.of(
-                                                    FacetFilter.builder()
-                                                        .fieldName("type")
-                                                        .values(List.of(
-                                                            FacetFilterValue.builder()
-                                                                .value("Spreadsheet")
-                                                                .relationType(RelationType.EQUALS)
-                                                                .build(),
-                                                            FacetFilterValue.builder()
-                                                                .value("Presentation")
-                                                                .relationType(RelationType.EQUALS)
-                                                                .build()))
-                                                        .build()))
-                                                .creator(Person.builder()
-                                                    .name("George Clooney")
-                                                    .obfuscatedId("abc123")
-                                                    .build())
-                                                .updatedBy(Person.builder()
-                                                    .name("George Clooney")
-                                                    .obfuscatedId("abc123")
-                                                    .build())
                                                 .build())
                                             .code(Code.builder()
                                                 .repoName("scio")
@@ -5084,7 +4864,7 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as glean:
 
-                res = glean.client.announcements.update(start_time=parse_datetime("2023-10-24T01:53:24.440Z"), end_time=parse_datetime("2024-10-30T07:24:12.087Z"), title="<value>", id=247496, body={
+                res = glean.client.announcements.update(start_time=parse_datetime("2024-10-23T01:53:24.440Z"), end_time=parse_datetime("2025-10-30T07:24:12.087Z"), title="<value>", id=266264, body={
                     "text": "From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
                     "structured_list": [
                         models.StructuredTextItem(
@@ -5481,38 +5261,10 @@ paths:
                                             ],
                                         ),
                                     ),
-                                    board=models.AnswerBoard(
-                                        name="<value>",
-                                        description="litter anenst happy probable birdcage till",
-                                        audience_filters=[
-                                            models.FacetFilter(
-                                                field_name="type",
-                                                values=[
-                                                    models.FacetFilterValue(
-                                                        value="Spreadsheet",
-                                                        relation_type=models.RelationType.EQUALS,
-                                                    ),
-                                                    models.FacetFilterValue(
-                                                        value="Presentation",
-                                                        relation_type=models.RelationType.EQUALS,
-                                                    ),
-                                                ],
-                                            ),
-                                        ],
-                                        id=34422,
-                                        creator=models.Person(
-                                            name="George Clooney",
-                                            obfuscated_id="abc123",
-                                        ),
-                                        updated_by=models.Person(
-                                            name="George Clooney",
-                                            obfuscated_id="abc123",
-                                        ),
-                                    ),
                                     collections=[
                                         models.Collection(
                                             name="<value>",
-                                            description="ew or every verbally",
+                                            description="litter anenst happy probable birdcage till",
                                             audience_filters=[
                                                 models.FacetFilter(
                                                     field_name="type",
@@ -5528,7 +5280,7 @@ paths:
                                                     ],
                                                 ),
                                             ],
-                                            id=297273,
+                                            id=34422,
                                             creator=models.Person(
                                                 name="George Clooney",
                                                 obfuscated_id="abc123",
@@ -5539,7 +5291,7 @@ paths:
                                             ),
                                             items=[
                                                 models.CollectionItem(
-                                                    collection_id=896121,
+                                                    collection_id=145693,
                                                     created_by=models.Person(
                                                         name="George Clooney",
                                                         obfuscated_id="abc123",
@@ -5701,7 +5453,7 @@ paths:
                                                     ),
                                                     collection=models.Collection(
                                                         name="<value>",
-                                                        description="shy versus chunder monocle",
+                                                        description="exactly fooey why beneath",
                                                         audience_filters=[
                                                             models.FacetFilter(
                                                                 field_name="type",
@@ -5717,7 +5469,7 @@ paths:
                                                                 ],
                                                             ),
                                                         ],
-                                                        id=455912,
+                                                        id=896121,
                                                         creator=models.Person(
                                                             name="George Clooney",
                                                             obfuscated_id="abc123",
@@ -5729,7 +5481,7 @@ paths:
                                                         children=[
                                                             models.Collection(
                                                                 name="<value>",
-                                                                description="though mismatch noisily jive worth meh following hmph analyse guidance",
+                                                                description="shy versus chunder monocle",
                                                                 audience_filters=[
                                                                     models.FacetFilter(
                                                                         field_name="type",
@@ -5745,7 +5497,7 @@ paths:
                                                                         ],
                                                                     ),
                                                                 ],
-                                                                id=432713,
+                                                                id=455912,
                                                                 creator=models.Person(
                                                                     name="George Clooney",
                                                                     obfuscated_id="abc123",
@@ -5757,7 +5509,7 @@ paths:
                                                             ),
                                                         ],
                                                     ),
-                                                    item_type=models.CollectionItemItemType.URL,
+                                                    item_type=models.CollectionItemItemType.COLLECTION,
                                                 ),
                                             ],
                                         ),
@@ -5838,7 +5590,7 @@ paths:
                                 generated_qna=models.GeneratedQna(
                                     ranges=[
                                         models.TextRange(
-                                            start_index=14047,
+                                            start_index=502327,
                                             document=models.Document(
                                                 container_document=models.Document(
                                                     metadata=models.DocumentMetadata(
@@ -5962,7 +5714,7 @@ paths:
                                 ),
                                 collection=models.Collection(
                                     name="<value>",
-                                    description="shy versus chunder monocle",
+                                    description="exactly fooey why beneath",
                                     audience_filters=[
                                         models.FacetFilter(
                                             field_name="type",
@@ -5978,7 +5730,7 @@ paths:
                                             ],
                                         ),
                                     ],
-                                    id=455912,
+                                    id=896121,
                                     creator=models.Person(
                                         name="George Clooney",
                                         obfuscated_id="abc123",
@@ -5990,7 +5742,7 @@ paths:
                                     children=[
                                         models.Collection(
                                             name="<value>",
-                                            description="though mismatch noisily jive worth meh following hmph analyse guidance",
+                                            description="shy versus chunder monocle",
                                             audience_filters=[
                                                 models.FacetFilter(
                                                     field_name="type",
@@ -6006,7 +5758,7 @@ paths:
                                                     ],
                                                 ),
                                             ],
-                                            id=432713,
+                                            id=455912,
                                             creator=models.Person(
                                                 name="George Clooney",
                                                 obfuscated_id="abc123",
@@ -6017,34 +5769,6 @@ paths:
                                             ),
                                         ),
                                     ],
-                                ),
-                                answer_board=models.AnswerBoard(
-                                    name="<value>",
-                                    description="phrase rebound whopping whereas shakily not",
-                                    audience_filters=[
-                                        models.FacetFilter(
-                                            field_name="type",
-                                            values=[
-                                                models.FacetFilterValue(
-                                                    value="Spreadsheet",
-                                                    relation_type=models.RelationType.EQUALS,
-                                                ),
-                                                models.FacetFilterValue(
-                                                    value="Presentation",
-                                                    relation_type=models.RelationType.EQUALS,
-                                                ),
-                                            ],
-                                        ),
-                                    ],
-                                    id=675033,
-                                    creator=models.Person(
-                                        name="George Clooney",
-                                        obfuscated_id="abc123",
-                                    ),
-                                    updated_by=models.Person(
-                                        name="George Clooney",
-                                        obfuscated_id="abc123",
-                                    ),
                                 ),
                                 code=models.Code(
                                     repo_name="scio",
@@ -6212,8 +5936,8 @@ paths:
 
             async function run() {
               const result = await glean.client.announcements.update({
-                startTime: new Date("2023-10-24T01:53:24.440Z"),
-                endTime: new Date("2024-10-30T07:24:12.087Z"),
+                startTime: new Date("2024-10-23T01:53:24.440Z"),
+                endTime: new Date("2025-10-30T07:24:12.087Z"),
                 title: "<value>",
                 body: {
                   text: "From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
@@ -6612,38 +6336,10 @@ paths:
                               ],
                             },
                           },
-                          board: {
-                            name: "<value>",
-                            description: "litter anenst happy probable birdcage till",
-                            audienceFilters: [
-                              {
-                                fieldName: "type",
-                                values: [
-                                  {
-                                    value: "Spreadsheet",
-                                    relationType: "EQUALS",
-                                  },
-                                  {
-                                    value: "Presentation",
-                                    relationType: "EQUALS",
-                                  },
-                                ],
-                              },
-                            ],
-                            id: 34422,
-                            creator: {
-                              name: "George Clooney",
-                              obfuscatedId: "abc123",
-                            },
-                            updatedBy: {
-                              name: "George Clooney",
-                              obfuscatedId: "abc123",
-                            },
-                          },
                           collections: [
                             {
                               name: "<value>",
-                              description: "ew or every verbally",
+                              description: "litter anenst happy probable birdcage till",
                               audienceFilters: [
                                 {
                                   fieldName: "type",
@@ -6659,7 +6355,7 @@ paths:
                                   ],
                                 },
                               ],
-                              id: 297273,
+                              id: 34422,
                               creator: {
                                 name: "George Clooney",
                                 obfuscatedId: "abc123",
@@ -6670,7 +6366,7 @@ paths:
                               },
                               items: [
                                 {
-                                  collectionId: 896121,
+                                  collectionId: 145693,
                                   createdBy: {
                                     name: "George Clooney",
                                     obfuscatedId: "abc123",
@@ -6832,7 +6528,7 @@ paths:
                                   },
                                   collection: {
                                     name: "<value>",
-                                    description: "shy versus chunder monocle",
+                                    description: "exactly fooey why beneath",
                                     audienceFilters: [
                                       {
                                         fieldName: "type",
@@ -6848,7 +6544,7 @@ paths:
                                         ],
                                       },
                                     ],
-                                    id: 455912,
+                                    id: 896121,
                                     creator: {
                                       name: "George Clooney",
                                       obfuscatedId: "abc123",
@@ -6860,7 +6556,7 @@ paths:
                                     children: [
                                       {
                                         name: "<value>",
-                                        description: "though mismatch noisily jive worth meh following hmph analyse guidance",
+                                        description: "shy versus chunder monocle",
                                         audienceFilters: [
                                           {
                                             fieldName: "type",
@@ -6876,7 +6572,7 @@ paths:
                                             ],
                                           },
                                         ],
-                                        id: 432713,
+                                        id: 455912,
                                         creator: {
                                           name: "George Clooney",
                                           obfuscatedId: "abc123",
@@ -6888,7 +6584,7 @@ paths:
                                       },
                                     ],
                                   },
-                                  itemType: "URL",
+                                  itemType: "COLLECTION",
                                 },
                               ],
                             },
@@ -6969,7 +6665,7 @@ paths:
                         generatedQna: {
                           ranges: [
                             {
-                              startIndex: 14047,
+                              startIndex: 502327,
                               document: {
                                 containerDocument: {
                                   metadata: {
@@ -7093,7 +6789,7 @@ paths:
                         },
                         collection: {
                           name: "<value>",
-                          description: "shy versus chunder monocle",
+                          description: "exactly fooey why beneath",
                           audienceFilters: [
                             {
                               fieldName: "type",
@@ -7109,7 +6805,7 @@ paths:
                               ],
                             },
                           ],
-                          id: 455912,
+                          id: 896121,
                           creator: {
                             name: "George Clooney",
                             obfuscatedId: "abc123",
@@ -7121,7 +6817,7 @@ paths:
                           children: [
                             {
                               name: "<value>",
-                              description: "though mismatch noisily jive worth meh following hmph analyse guidance",
+                              description: "shy versus chunder monocle",
                               audienceFilters: [
                                 {
                                   fieldName: "type",
@@ -7137,7 +6833,7 @@ paths:
                                   ],
                                 },
                               ],
-                              id: 432713,
+                              id: 455912,
                               creator: {
                                 name: "George Clooney",
                                 obfuscatedId: "abc123",
@@ -7148,34 +6844,6 @@ paths:
                               },
                             },
                           ],
-                        },
-                        answerBoard: {
-                          name: "<value>",
-                          description: "phrase rebound whopping whereas shakily not",
-                          audienceFilters: [
-                            {
-                              fieldName: "type",
-                              values: [
-                                {
-                                  value: "Spreadsheet",
-                                  relationType: "EQUALS",
-                                },
-                                {
-                                  value: "Presentation",
-                                  relationType: "EQUALS",
-                                },
-                              ],
-                            },
-                          ],
-                          id: 675033,
-                          creator: {
-                            name: "George Clooney",
-                            obfuscatedId: "abc123",
-                          },
-                          updatedBy: {
-                            name: "George Clooney",
-                            obfuscatedId: "abc123",
-                          },
                         },
                         code: {
                           repoName: "scio",
@@ -7330,7 +6998,7 @@ paths:
                     ],
                   },
                 ],
-                id: 247496,
+                id: 266264,
               });
 
               console.log(result);
@@ -7359,8 +7027,8 @@ paths:
                 )
 
                 res, err := s.Client.Announcements.Update(ctx, components.UpdateAnnouncementRequest{
-                    StartTime: types.MustTimeFromString("2023-10-24T01:53:24.440Z"),
-                    EndTime: types.MustTimeFromString("2024-10-30T07:24:12.087Z"),
+                    StartTime: types.MustTimeFromString("2024-10-23T01:53:24.440Z"),
+                    EndTime: types.MustTimeFromString("2025-10-30T07:24:12.087Z"),
                     Title: "<value>",
                     Body: &components.StructuredText{
                         Text: "From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
@@ -7761,38 +7429,10 @@ paths:
                                                 },
                                             },
                                         },
-                                        Board: &components.AnswerBoard{
-                                            Name: "<value>",
-                                            Description: "litter anenst happy probable birdcage till",
-                                            AudienceFilters: []components.FacetFilter{
-                                                components.FacetFilter{
-                                                    FieldName: apiclientgo.Pointer("type"),
-                                                    Values: []components.FacetFilterValue{
-                                                        components.FacetFilterValue{
-                                                            Value: apiclientgo.Pointer("Spreadsheet"),
-                                                            RelationType: components.RelationTypeEquals.ToPointer(),
-                                                        },
-                                                        components.FacetFilterValue{
-                                                            Value: apiclientgo.Pointer("Presentation"),
-                                                            RelationType: components.RelationTypeEquals.ToPointer(),
-                                                        },
-                                                    },
-                                                },
-                                            },
-                                            ID: 34422,
-                                            Creator: &components.Person{
-                                                Name: "George Clooney",
-                                                ObfuscatedID: "abc123",
-                                            },
-                                            UpdatedBy: &components.Person{
-                                                Name: "George Clooney",
-                                                ObfuscatedID: "abc123",
-                                            },
-                                        },
                                         Collections: []components.Collection{
                                             components.Collection{
                                                 Name: "<value>",
-                                                Description: "ew or every verbally",
+                                                Description: "litter anenst happy probable birdcage till",
                                                 AudienceFilters: []components.FacetFilter{
                                                     components.FacetFilter{
                                                         FieldName: apiclientgo.Pointer("type"),
@@ -7808,7 +7448,7 @@ paths:
                                                         },
                                                     },
                                                 },
-                                                ID: 297273,
+                                                ID: 34422,
                                                 Creator: &components.Person{
                                                     Name: "George Clooney",
                                                     ObfuscatedID: "abc123",
@@ -7819,7 +7459,7 @@ paths:
                                                 },
                                                 Items: []components.CollectionItem{
                                                     components.CollectionItem{
-                                                        CollectionID: 896121,
+                                                        CollectionID: 145693,
                                                         CreatedBy: &components.Person{
                                                             Name: "George Clooney",
                                                             ObfuscatedID: "abc123",
@@ -7981,7 +7621,7 @@ paths:
                                                         },
                                                         Collection: &components.Collection{
                                                             Name: "<value>",
-                                                            Description: "shy versus chunder monocle",
+                                                            Description: "exactly fooey why beneath",
                                                             AudienceFilters: []components.FacetFilter{
                                                                 components.FacetFilter{
                                                                     FieldName: apiclientgo.Pointer("type"),
@@ -7997,7 +7637,7 @@ paths:
                                                                     },
                                                                 },
                                                             },
-                                                            ID: 455912,
+                                                            ID: 896121,
                                                             Creator: &components.Person{
                                                                 Name: "George Clooney",
                                                                 ObfuscatedID: "abc123",
@@ -8009,7 +7649,7 @@ paths:
                                                             Children: []components.Collection{
                                                                 components.Collection{
                                                                     Name: "<value>",
-                                                                    Description: "though mismatch noisily jive worth meh following hmph analyse guidance",
+                                                                    Description: "shy versus chunder monocle",
                                                                     AudienceFilters: []components.FacetFilter{
                                                                         components.FacetFilter{
                                                                             FieldName: apiclientgo.Pointer("type"),
@@ -8025,7 +7665,7 @@ paths:
                                                                             },
                                                                         },
                                                                     },
-                                                                    ID: 432713,
+                                                                    ID: 455912,
                                                                     Creator: &components.Person{
                                                                         Name: "George Clooney",
                                                                         ObfuscatedID: "abc123",
@@ -8037,7 +7677,7 @@ paths:
                                                                 },
                                                             },
                                                         },
-                                                        ItemType: components.CollectionItemItemTypeURL,
+                                                        ItemType: components.CollectionItemItemTypeCollection,
                                                     },
                                                 },
                                             },
@@ -8118,7 +7758,7 @@ paths:
                                     GeneratedQna: &components.GeneratedQna{
                                         Ranges: []components.TextRange{
                                             components.TextRange{
-                                                StartIndex: 14047,
+                                                StartIndex: 502327,
                                                 Document: &components.Document{
                                                     ContainerDocument: &components.Document{
                                                         Metadata: &components.DocumentMetadata{
@@ -8242,7 +7882,7 @@ paths:
                                     },
                                     Collection: &components.Collection{
                                         Name: "<value>",
-                                        Description: "shy versus chunder monocle",
+                                        Description: "exactly fooey why beneath",
                                         AudienceFilters: []components.FacetFilter{
                                             components.FacetFilter{
                                                 FieldName: apiclientgo.Pointer("type"),
@@ -8258,7 +7898,7 @@ paths:
                                                 },
                                             },
                                         },
-                                        ID: 455912,
+                                        ID: 896121,
                                         Creator: &components.Person{
                                             Name: "George Clooney",
                                             ObfuscatedID: "abc123",
@@ -8270,7 +7910,7 @@ paths:
                                         Children: []components.Collection{
                                             components.Collection{
                                                 Name: "<value>",
-                                                Description: "though mismatch noisily jive worth meh following hmph analyse guidance",
+                                                Description: "shy versus chunder monocle",
                                                 AudienceFilters: []components.FacetFilter{
                                                     components.FacetFilter{
                                                         FieldName: apiclientgo.Pointer("type"),
@@ -8286,7 +7926,7 @@ paths:
                                                         },
                                                     },
                                                 },
-                                                ID: 432713,
+                                                ID: 455912,
                                                 Creator: &components.Person{
                                                     Name: "George Clooney",
                                                     ObfuscatedID: "abc123",
@@ -8296,34 +7936,6 @@ paths:
                                                     ObfuscatedID: "abc123",
                                                 },
                                             },
-                                        },
-                                    },
-                                    AnswerBoard: &components.AnswerBoard{
-                                        Name: "<value>",
-                                        Description: "phrase rebound whopping whereas shakily not",
-                                        AudienceFilters: []components.FacetFilter{
-                                            components.FacetFilter{
-                                                FieldName: apiclientgo.Pointer("type"),
-                                                Values: []components.FacetFilterValue{
-                                                    components.FacetFilterValue{
-                                                        Value: apiclientgo.Pointer("Spreadsheet"),
-                                                        RelationType: components.RelationTypeEquals.ToPointer(),
-                                                    },
-                                                    components.FacetFilterValue{
-                                                        Value: apiclientgo.Pointer("Presentation"),
-                                                        RelationType: components.RelationTypeEquals.ToPointer(),
-                                                    },
-                                                },
-                                            },
-                                        },
-                                        ID: 675033,
-                                        Creator: &components.Person{
-                                            Name: "George Clooney",
-                                            ObfuscatedID: "abc123",
-                                        },
-                                        UpdatedBy: &components.Person{
-                                            Name: "George Clooney",
-                                            ObfuscatedID: "abc123",
                                         },
                                     },
                                     Code: &components.Code{
@@ -8479,7 +8091,7 @@ paths:
                             },
                         },
                     },
-                    ID: 247496,
+                    ID: 266264,
                 })
                 if err != nil {
                     log.Fatal(err)
@@ -8510,10 +8122,10 @@ paths:
                         .build();
 
                     UpdateAnnouncementRequest req = UpdateAnnouncementRequest.builder()
-                            .startTime(OffsetDateTime.parse("2023-10-24T01:53:24.440Z"))
-                            .endTime(OffsetDateTime.parse("2024-10-30T07:24:12.087Z"))
+                            .startTime(OffsetDateTime.parse("2024-10-23T01:53:24.440Z"))
+                            .endTime(OffsetDateTime.parse("2025-10-30T07:24:12.087Z"))
                             .title("<value>")
-                            .id(247496L)
+                            .id(266264L)
                             .body(StructuredText.builder()
                                 .text("From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.")
                                 .structuredList(List.of(
@@ -8888,37 +8500,11 @@ paths:
                                                                 .build()))
                                                         .build())
                                                     .build())
-                                                .board(AnswerBoard.builder()
-                                                    .name("<value>")
-                                                    .description("litter anenst happy probable birdcage till")
-                                                    .id(34422L)
-                                                    .audienceFilters(List.of(
-                                                        FacetFilter.builder()
-                                                            .fieldName("type")
-                                                            .values(List.of(
-                                                                FacetFilterValue.builder()
-                                                                    .value("Spreadsheet")
-                                                                    .relationType(RelationType.EQUALS)
-                                                                    .build(),
-                                                                FacetFilterValue.builder()
-                                                                    .value("Presentation")
-                                                                    .relationType(RelationType.EQUALS)
-                                                                    .build()))
-                                                            .build()))
-                                                    .creator(Person.builder()
-                                                        .name("George Clooney")
-                                                        .obfuscatedId("abc123")
-                                                        .build())
-                                                    .updatedBy(Person.builder()
-                                                        .name("George Clooney")
-                                                        .obfuscatedId("abc123")
-                                                        .build())
-                                                    .build())
                                                 .collections(List.of(
                                                     Collection.builder()
                                                         .name("<value>")
-                                                        .description("ew or every verbally")
-                                                        .id(297273L)
+                                                        .description("litter anenst happy probable birdcage till")
+                                                        .id(34422L)
                                                         .audienceFilters(List.of(
                                                             FacetFilter.builder()
                                                                 .fieldName("type")
@@ -8942,8 +8528,8 @@ paths:
                                                             .build())
                                                         .items(List.of(
                                                             CollectionItem.builder()
-                                                                .collectionId(896121L)
-                                                                .itemType(CollectionItemItemType.URL)
+                                                                .collectionId(145693L)
+                                                                .itemType(CollectionItemItemType.COLLECTION)
                                                                 .createdBy(Person.builder()
                                                                     .name("George Clooney")
                                                                     .obfuscatedId("abc123")
@@ -9099,8 +8685,8 @@ paths:
                                                                     .build())
                                                                 .collection(Collection.builder()
                                                                     .name("<value>")
-                                                                    .description("shy versus chunder monocle")
-                                                                    .id(455912L)
+                                                                    .description("exactly fooey why beneath")
+                                                                    .id(896121L)
                                                                     .audienceFilters(List.of(
                                                                         FacetFilter.builder()
                                                                             .fieldName("type")
@@ -9125,8 +8711,8 @@ paths:
                                                                     .children(List.of(
                                                                         Collection.builder()
                                                                             .name("<value>")
-                                                                            .description("though mismatch noisily jive worth meh following hmph analyse guidance")
-                                                                            .id(432713L)
+                                                                            .description("shy versus chunder monocle")
+                                                                            .id(455912L)
                                                                             .audienceFilters(List.of(
                                                                                 FacetFilter.builder()
                                                                                     .fieldName("type")
@@ -9225,7 +8811,7 @@ paths:
                                             .generatedQna(GeneratedQna.builder()
                                                 .ranges(List.of(
                                                     TextRange.builder()
-                                                        .startIndex(14047L)
+                                                        .startIndex(502327L)
                                                         .document(Document.builder()
                                                             .containerDocument(Document.builder()
                                                                 .metadata(DocumentMetadata.builder()
@@ -9341,8 +8927,8 @@ paths:
                                                 .build())
                                             .collection(Collection.builder()
                                                 .name("<value>")
-                                                .description("shy versus chunder monocle")
-                                                .id(455912L)
+                                                .description("exactly fooey why beneath")
+                                                .id(896121L)
                                                 .audienceFilters(List.of(
                                                     FacetFilter.builder()
                                                         .fieldName("type")
@@ -9367,8 +8953,8 @@ paths:
                                                 .children(List.of(
                                                     Collection.builder()
                                                         .name("<value>")
-                                                        .description("though mismatch noisily jive worth meh following hmph analyse guidance")
-                                                        .id(432713L)
+                                                        .description("shy versus chunder monocle")
+                                                        .id(455912L)
                                                         .audienceFilters(List.of(
                                                             FacetFilter.builder()
                                                                 .fieldName("type")
@@ -9391,32 +8977,6 @@ paths:
                                                             .obfuscatedId("abc123")
                                                             .build())
                                                         .build()))
-                                                .build())
-                                            .answerBoard(AnswerBoard.builder()
-                                                .name("<value>")
-                                                .description("phrase rebound whopping whereas shakily not")
-                                                .id(675033L)
-                                                .audienceFilters(List.of(
-                                                    FacetFilter.builder()
-                                                        .fieldName("type")
-                                                        .values(List.of(
-                                                            FacetFilterValue.builder()
-                                                                .value("Spreadsheet")
-                                                                .relationType(RelationType.EQUALS)
-                                                                .build(),
-                                                            FacetFilterValue.builder()
-                                                                .value("Presentation")
-                                                                .relationType(RelationType.EQUALS)
-                                                                .build()))
-                                                        .build()))
-                                                .creator(Person.builder()
-                                                    .name("George Clooney")
-                                                    .obfuscatedId("abc123")
-                                                    .build())
-                                                .updatedBy(Person.builder()
-                                                    .name("George Clooney")
-                                                    .obfuscatedId("abc123")
-                                                    .build())
                                                 .build())
                                             .code(Code.builder()
                                                 .repoName("scio")
@@ -10460,6 +10020,7 @@ paths:
       summary: List Answers
       description: List Answers created by the current user.
       operationId: listanswers
+      deprecated: true
       x-visibility: Public
       x-codegen-request-body-name: payload
       parameters: []
@@ -10486,96 +10047,6 @@ paths:
           description: Too Many Requests
       x-speakeasy-name-override: list
       x-speakeasy-group: client.answers
-      x-codeSamples:
-        - lang: python
-          label: Python (API Client)
-          source: |-
-            from glean.api_client import Glean
-            import os
-
-
-            with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as glean:
-
-                res = glean.client.answers.list()
-
-                # Handle response
-                print(res)
-        - lang: typescript
-          label: Typescript (API Client)
-          source: |-
-            import { Glean } from "@gleanwork/api-client";
-
-            const glean = new Glean({
-              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
-            });
-
-            async function run() {
-              const result = await glean.client.answers.list({});
-
-              console.log(result);
-            }
-
-            run();
-        - lang: go
-          label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Client.Answers.List(ctx, components.ListAnswersRequest{})
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res.ListAnswersResponse != nil {
-                    // handle response
-                }
-            }
-        - lang: java
-          label: Java (API Client)
-          source: |-
-            package hello.world;
-
-            import java.lang.Exception;
-            import org.openapis.openapi.Glean;
-            import org.openapis.openapi.models.components.ListAnswersRequest;
-            import org.openapis.openapi.models.operations.ListanswersResponse;
-
-            public class Application {
-
-                public static void main(String[] args) throws Exception {
-
-                    Glean sdk = Glean.builder()
-                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
-                        .build();
-
-                    ListAnswersRequest req = ListAnswersRequest.builder()
-                            .build();
-
-                    ListanswersResponse res = sdk.client().answers().list()
-                            .request(req)
-                            .call();
-
-                    if (res.listAnswersResponse().isPresent()) {
-                        // handle response
-                    }
-                }
-            }
   /rest/api/v1/createauthtoken:
     post:
       tags:
@@ -19561,6 +19032,8 @@ paths:
               schema:
                 description: CSV of all the violations found for this policy.
                 type: string
+        "400":
+          description: Bad request error (e.g., continuous policies are not supported).
         "403":
           description: Permissions error
         "500":
@@ -22490,39 +21963,6 @@ components:
           items:
             $ref: "#/components/schemas/FacetFilter"
           description: Filters which restrict who should see this Collection. Values are taken from the corresponding filters in people search.
-    AnswerBoardMutableProperties:
-      allOf:
-        - $ref: "#/components/schemas/CollectionBaseMutableProperties"
-    AnswerBoard:
-      allOf:
-        - $ref: "#/components/schemas/AnswerBoardMutableProperties"
-        - $ref: "#/components/schemas/PermissionedObject"
-        - type: object
-          required:
-            - id
-            - description
-          properties:
-            id:
-              type: integer
-              description: The unique ID of the Answer Board.
-            createTime:
-              type: string
-              format: date-time
-            updateTime:
-              type: string
-              format: date-time
-            creator:
-              $ref: "#/components/schemas/Person"
-            updatedBy:
-              $ref: "#/components/schemas/Person"
-            itemCount:
-              type: integer
-              description: The number of items currently in the Answer Board. Separated from the actual items so we can grab the count without items.
-            roles:
-              type: array
-              description: A list of user roles for the Answer Board.
-              items:
-                $ref: "#/components/schemas/UserRoleSpecification"
     Thumbnail:
       properties:
         photoId:
@@ -22819,9 +22259,6 @@ components:
               $ref: "#/components/schemas/Person"
             verification:
               $ref: "#/components/schemas/Verification"
-            board:
-              $ref: "#/components/schemas/AnswerBoard"
-              description: The parent board this answer is in.
             collections:
               type: array
               description: The collections to which the answer belongs.
@@ -23070,6 +22507,21 @@ components:
         attendees:
           $ref: "#/components/schemas/CalendarAttendees"
           description: The attendee list, including their response status
+        isCancelled:
+          type: boolean
+          description: Whether the meeting has been cancelled
+        location:
+          type: string
+          description: The location/venue of the meeting
+        responseStatus:
+          type: string
+          description: The current user's response status (accepted, declined, tentativelyAccepted, none)
+        conferenceUri:
+          type: string
+          description: The meeting join link (Teams, Zoom, etc.)
+        conferenceProvider:
+          type: string
+          description: The conference provider (e.g., "Microsoft Teams", "Zoom")
     AppResult:
       required:
         - datasource
@@ -23329,8 +22781,6 @@ components:
           $ref: "#/components/schemas/AppResult"
         collection:
           $ref: "#/components/schemas/Collection"
-        answerBoard:
-          $ref: "#/components/schemas/AnswerBoard"
         code:
           $ref: "#/components/schemas/Code"
         shortcut:
@@ -24814,6 +24264,9 @@ components:
         chatId:
           type: string
           description: The id of the Chat that context should be retrieved from and messages added to. An empty id starts a new Chat, and the Chat is saved if saveChat is true.
+        agentConfig:
+          $ref: "#/components/schemas/AgentConfig"
+          description: Describes the agent that will execute the request.
     ChatRestrictionFilters:
       allOf:
         - $ref: "#/components/schemas/RestrictionFilters"
@@ -24832,9 +24285,6 @@ components:
         - $ref: "#/components/schemas/ChatRequestBase"
         - type: object
           properties:
-            agentConfig:
-              $ref: "#/components/schemas/AgentConfig"
-              description: Describes the agent that will execute the request.
             inclusions:
               $ref: "#/components/schemas/ChatRestrictionFilters"
               description: A list of filters which only allows chat to access certain content.
@@ -25387,6 +24837,7 @@ components:
               - DOCUMENT_CONTENT
               - CUSTOM_METADATA
     DocumentOrError:
+      x-omit-error-on-success: true
       oneOf:
         - $ref: "#/components/schemas/Document"
         - type: object
@@ -25396,6 +24847,7 @@ components:
             error:
               type: string
               description: The text for error, reason.
+              x-is-error-field: true
     GetDocumentsResponse:
       properties:
         documents:
@@ -25914,6 +25366,30 @@ components:
             weeklyActiveUserTimeseries:
               $ref: "#/components/schemas/LabeledCountInfo"
             dailyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            searchMonthlyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            searchWeeklyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            searchDailyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            assistantMonthlyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            assistantWeeklyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            assistantDailyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            agentsMonthlyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            agentsWeeklyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            agentsDailyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            searchesTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            assistantInteractionsTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            agentRunsTimeseries:
               $ref: "#/components/schemas/LabeledCountInfo"
             searchDatasourceCounts:
               type: object
@@ -28514,6 +27990,8 @@ components:
             $ref: "#/components/schemas/DlpSeverity"
         timeRange:
           $ref: "#/components/schemas/TimeRangeFilter"
+        archived:
+          type: boolean
     ExportInfo:
       properties:
         createdBy:
@@ -28543,6 +28021,10 @@ components:
             - PENDING
             - COMPLETED
             - FAILED
+        exportSize:
+          type: integer
+          format: int64
+          description: The size of the exported file in bytes
     ListDlpFindingsExportsResponse:
       properties:
         exports:
