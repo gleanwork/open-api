@@ -40,29 +40,29 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
       - name: Generate client code samples
-        if: steps.check.outputs.clients_ready == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.check.outputs.clients_ready == 'true'
         run: speakeasy run -s glean-client-merged-code-samples-spec
         env:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
 
       - name: Generate indexing code samples
-        if: steps.check.outputs.clients_ready == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.check.outputs.clients_ready == 'true'
         run: speakeasy run -s glean-index-merged-code-samples-spec
         env:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
 
       - name: Running code sample transformers
-        if: steps.check.outputs.clients_ready == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.check.outputs.clients_ready == 'true'
         run: pnpm transform:merged_code_samples_specs
 
       - name: Copy specs into final_specs
-        if: steps.check.outputs.clients_ready == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.check.outputs.clients_ready == 'true'
         run: |
           cp -r ./modified_code_samples_specs/client_rest.yaml ./final_specs/client_rest.yaml
           cp -r ./modified_code_samples_specs/indexing.yaml ./final_specs/indexing.yaml
 
       - name: Commit changes
-        if: steps.check.outputs.clients_ready == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.check.outputs.clients_ready == 'true'
         uses: ./.github/actions/git-commit
         with:
           commit_message: 'Update code samples'
