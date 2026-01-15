@@ -148,6 +148,7 @@ The transformation script processes OpenAPI YAML specification files by:
 This script performs the following transformations:
 
 - **Path normalization**: Moves server URL subpaths to individual API paths
+
   - **Before**: `servers.url = "https://{domain}-be.glean.com/rest/api/v1"`, `path = "/activity"`
   - **After**: `servers.url = "https://{domain}-be.glean.com/"`, `path = "/rest/api/v1/activity"`
 
@@ -213,9 +214,10 @@ In order to roll out changes from the upstream original source repo all the way 
    - [gleanwork/api-client-typescript](https://github.com/gleanwork/api-client-typescript)
    - [gleanwork/api-client-go](https://github.com/gleanwork/api-client-go)
 7. 🤖CI in each of the API Client repos releases to their respective package managers
-8. 🤖[auto-trigger-code-samples.yml](https://github.com/gleanwork/open-api/actions/workflows/auto-trigger-code-samples.yml) checks every 4 hours if all API Client releases match the expected SHA, and triggers [generate-code-samples.yml](https://github.com/gleanwork/open-api/actions/workflows/generate-code-samples.yml) when ready
+8. 🤖[generate-code-samples.yml](https://github.com/gleanwork/open-api/actions/workflows/generate-code-samples.yml) checks every 4 hours if all API Client releases match the expected SHA and regenerates code samples if they do
 9. 🤖CI in this repo runs the [deploy-pages.yml](https://github.com/gleanwork/open-api/actions/workflows/deploy-pages.yml) workflow to deploy the final specs to GitHub Pages
 10. 🤖CI in this repo runs [trigger-developer-site-redeploy.yml](https://github.com/gleanwork/open-api/actions/workflows/trigger-developer-site-redeploy.yml)
-11. 🤖CI in [gleanwork/glean-developer-site](https://github.com/gleanwork/glean-developer-site) publishes a PR to update the developer site
-12. 👷Merge the [gleanwork/glean-developer-site](https://github.com/gleanwork/glean-developer-site) PR from step 11
-13. 🤖Vercel [redeploys developers.glean.com](https://vercel.com/glean-developers/glean-developer-site)
+    - `trigger-developer-site-redeploy` checks for changes and aborts early if there are none
+    - otherwise it publishes a PR to [gleanwork/glean-developer-site](https://github.com/gleanwork/glean-developer-site)
+11. 👷Merge the [gleanwork/glean-developer-site](https://github.com/gleanwork/glean-developer-site) PR from step 11
+12. 🤖Vercel [redeploys developers.glean.com](https://vercel.com/glean-developers/glean-developer-site)
