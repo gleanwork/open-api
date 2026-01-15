@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 1f8216f8ec995e664289cce3a8c08e6cde058b30
+  x-source-commit-sha: 0eeca6a18e2e89ac3fac3c6f0b4763fb1e34e3a8
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
