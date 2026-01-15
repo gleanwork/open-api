@@ -3,10 +3,14 @@ name: Generate Code Samples
 on:
   workflow_dispatch:
 
+  # Run every 4 hours to check if all client releases are ready
+  schedule:
+    - cron: '0 */4 * * *'
+
 permissions:
   contents: write
 jobs:
-  generate-samples:
+  check-and-generate-samples:
     runs-on: macos-latest
 
     steps:
@@ -24,25 +28,41 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Check if all client releases have matching SHAs
+        id: check
+        run: |
+          if pnpm run check-client-releases; then
+            echo "clients_ready=true" >> $GITHUB_OUTPUT
+          else
+            echo "clients_ready=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       - name: Generate client code samples
+        if: github.event_name == 'workflow_dispatch' || steps.check.outputs.clients_ready == 'true'
         run: speakeasy run -s glean-client-merged-code-samples-spec
         env:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
 
       - name: Generate indexing code samples
+        if: github.event_name == 'workflow_dispatch' || steps.check.outputs.clients_ready == 'true'
         run: speakeasy run -s glean-index-merged-code-samples-spec
         env:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
 
       - name: Running code sample transformers
+        if: github.event_name == 'workflow_dispatch' || steps.check.outputs.clients_ready == 'true'
         run: pnpm transform:merged_code_samples_specs
 
       - name: Copy specs into final_specs
+        if: github.event_name == 'workflow_dispatch' || steps.check.outputs.clients_ready == 'true'
         run: |
           cp -r ./modified_code_samples_specs/client_rest.yaml ./final_specs/client_rest.yaml
           cp -r ./modified_code_samples_specs/indexing.yaml ./final_specs/indexing.yaml
 
       - name: Commit changes
+        if: github.event_name == 'workflow_dispatch' || steps.check.outputs.clients_ready == 'true'
         uses: ./.github/actions/git-commit
         with:
           commit_message: 'Update code samples'
