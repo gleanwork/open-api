@@ -148,7 +148,6 @@ The transformation script processes OpenAPI YAML specification files by:
 This script performs the following transformations:
 
 - **Path normalization**: Moves server URL subpaths to individual API paths
-
   - **Before**: `servers.url = "https://{domain}-be.glean.com/rest/api/v1"`, `path = "/activity"`
   - **After**: `servers.url = "https://{domain}-be.glean.com/"`, `path = "/rest/api/v1/activity"`
 
