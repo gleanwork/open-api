@@ -14,16 +14,24 @@ jobs:
     runs-on: macos-latest
 
     steps:
+      - name: Generate App Token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Set up mise
         uses: jdx/mise-action@v2
         with:
           cache: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -67,4 +75,4 @@ jobs:
         with:
           commit_message: 'Update code samples'
           file_patterns: 'merged_code_samples_specs/* modified_code_samples_specs/* final_specs/* .speakeasy/*'
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ steps.app-token.outputs.token }}
