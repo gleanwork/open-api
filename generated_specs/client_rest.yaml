@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 73720c10eb41436b03f8f69b30c5f1eaebe83136
+  x-source-commit-sha: d4f2fa72a23a5da96d1ac7baaee268890c9e5b22
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: ef6741a4fcd031636396dc0ab0e89af1f1fba258
+  x-open-api-commit-sha: 45b2188fe1c63b00dea76e7623d58f7a3b89bbf2
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -7508,6 +7508,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ErrorMessage"
+        federatedSearchRateLimitError:
+          type: boolean
+          description: Indicates the federated search results could not be fetched due to rate limiting.
     ResultsResponse:
       properties:
         trackingToken:
