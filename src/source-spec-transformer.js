@@ -238,10 +238,8 @@ export function transformEnumDescriptions(spec) {
     // Check if this object has x-enumDescriptions
     if (obj['x-enumDescriptions']) {
       // Copy to x-speakeasy-enum-descriptions (same format - object map)
+      // Keep both keys: x-enumDescriptions for Docusaurus docs, x-speakeasy-enum-descriptions for SDK generation
       obj['x-speakeasy-enum-descriptions'] = obj['x-enumDescriptions'];
-
-      // Remove the original x-enumDescriptions
-      delete obj['x-enumDescriptions'];
     }
 
     // Recursively process all properties
