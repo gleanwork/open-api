@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 9b92a452d9f41446219e81671670dbc36eef11d8
+  x-source-commit-sha: a9cf4ddf30f3d5876a2474eefd93030ad295e367
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -110,6 +110,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -143,6 +144,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -172,6 +174,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -205,6 +208,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -238,6 +242,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -267,6 +272,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -300,6 +306,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -334,6 +341,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -401,6 +409,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
         - $ref: '#/components/parameters/timezoneOffset'
       requestBody:
         content:
@@ -538,6 +547,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
         - $ref: '#/components/parameters/timezoneOffset'
       responses:
         '200':
@@ -560,6 +570,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
         - $ref: '#/components/parameters/timezoneOffset'
       requestBody:
         content:
@@ -591,6 +602,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
         - $ref: '#/components/parameters/timezoneOffset'
       requestBody:
         content:
@@ -626,6 +638,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
         - $ref: '#/components/parameters/timezoneOffset'
       responses:
         '200':
@@ -652,6 +665,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
         - $ref: '#/components/parameters/timezoneOffset'
       requestBody:
         content:
@@ -684,6 +698,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
         - $ref: '#/components/parameters/timezoneOffset'
       requestBody:
         required: true
@@ -718,6 +733,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
         - $ref: '#/components/parameters/timezoneOffset'
       requestBody:
         required: true
@@ -752,6 +768,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
         - $ref: '#/components/parameters/timezoneOffset'
       requestBody:
         required: true
@@ -781,6 +798,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
         - $ref: '#/components/parameters/timezoneOffset'
         - description: The ID of the agent.
           required: true
@@ -820,6 +838,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
         - $ref: '#/components/parameters/timezoneOffset'
         - description: The ID of the agent.
           required: true
@@ -1000,6 +1019,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1033,6 +1053,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1072,6 +1093,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1107,6 +1129,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1142,6 +1165,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1181,6 +1205,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1214,6 +1239,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1247,6 +1273,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1280,6 +1307,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1315,6 +1343,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1348,6 +1377,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1381,6 +1411,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1414,6 +1445,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1447,6 +1479,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1480,6 +1513,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1513,6 +1547,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1546,6 +1581,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1579,6 +1615,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1610,6 +1647,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1655,6 +1693,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1688,6 +1727,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1723,6 +1763,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1762,6 +1803,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1809,6 +1851,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1842,6 +1885,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1875,6 +1919,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1908,6 +1953,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1937,6 +1983,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -1970,6 +2017,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -2003,6 +2051,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -2036,6 +2085,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -2069,6 +2119,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -2110,6 +2161,7 @@ paths:
           required: false
           schema:
             type: integer
+        - $ref: '#/components/parameters/locale'
       responses:
         '200':
           description: OK
@@ -2135,6 +2187,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/xGleanActAsHeader'
         - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
       requestBody:
         content:
           application/json:
@@ -9328,6 +9381,13 @@ components:
       name: X-Glean-Auth-Type
       in: header
       description: Auth type being used to access the endpoint (should be non-empty only for global tokens).
+      required: false
+      schema:
+        type: string
+    locale:
+      name: locale
+      in: query
+      description: The client's preferred locale in rfc5646 format (e.g. `en`, `ja`, `pt-BR`). If omitted, the `Accept-Language` will be used. If not present or not supported, defaults to the closest match or `en`.
       required: false
       schema:
         type: string
