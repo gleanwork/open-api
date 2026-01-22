@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: 65e2d3947ce847df637a2c97feaa1164358eda4e
+  x-source-commit-sha: ef516436a6f2f6812cc04caebe003109a36085fa
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
@@ -455,6 +455,11 @@ components:
             - LAST_N_DAYS
         customTimeRange:
           $ref: '#/components/schemas/TimeRange'
+        subsetDocIdsToScan:
+          type: array
+          description: Subset of document IDs to scan. If empty, all documents matching other scope criteria will be scanned.
+          items:
+            type: string
     SharingOptions:
       description: Controls how "shared" a document must be to get picked for scans.
       properties:
