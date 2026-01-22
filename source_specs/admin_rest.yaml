@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: 32d11d5a278a2bd084186949b4d19149283d7067
+  x-source-commit-sha: fbe07efa69fe3d2aef0668a8f0c2197cf5b3c446
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
@@ -301,7 +301,7 @@ paths:
       description: Creates a new DLP findings export job.
       summary: Creates findings export
       operationId: createfindingsexport
-      x-visibility: Private
+      x-visibility: Public
       tags:
         - Governance
       requestBody:
@@ -325,7 +325,7 @@ paths:
       description: Lists all DLP findings exports.
       summary: Lists findings exports
       operationId: listfindingsexports
-      x-visibility: Private
+      x-visibility: Public
       tags:
         - Governance
       responses:
@@ -344,7 +344,7 @@ paths:
       description: Downloads a DLP findings export as a CSV file.
       summary: Downloads findings export
       operationId: downloadfindingsexport
-      x-visibility: Private
+      x-visibility: Public
       tags:
         - Governance
       parameters:
@@ -370,7 +370,7 @@ paths:
       description: Deletes a DLP findings export.
       summary: Deletes findings export
       operationId: deletefindingsexport
-      x-visibility: Private
+      x-visibility: Public
       tags:
         - Governance
       parameters:
