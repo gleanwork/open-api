@@ -2,14 +2,14 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: ce91b3b8218e19c8fb221f88ec068759922b9b71
+  x-source-commit-sha: fbe07efa69fe3d2aef0668a8f0c2197cf5b3c446
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
     operations. These offer limited exposure to the admin APIs through rest endpoints.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 2d9990173384f1cbfaab2bc25fa4b1bc54a353ac
+  x-open-api-commit-sha: 3c68c105de7984675175aaa6975257db11549248
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -301,7 +301,7 @@ paths:
       description: Creates a new DLP findings export job.
       summary: Creates findings export
       operationId: createfindingsexport
-      x-visibility: Private
+      x-visibility: Public
       tags:
         - Governance
       requestBody:
@@ -325,7 +325,7 @@ paths:
       description: Lists all DLP findings exports.
       summary: Lists findings exports
       operationId: listfindingsexports
-      x-visibility: Private
+      x-visibility: Public
       tags:
         - Governance
       responses:
@@ -344,7 +344,7 @@ paths:
       description: Downloads a DLP findings export as a CSV file.
       summary: Downloads findings export
       operationId: downloadfindingsexport
-      x-visibility: Private
+      x-visibility: Public
       tags:
         - Governance
       parameters:
@@ -370,7 +370,7 @@ paths:
       description: Deletes a DLP findings export.
       summary: Deletes findings export
       operationId: deletefindingsexport
-      x-visibility: Private
+      x-visibility: Public
       tags:
         - Governance
       parameters:
