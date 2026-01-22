@@ -301,6 +301,11 @@ describe('OpenAPI YAML Transformer', () => {
                     "COMPLETED",
                   ],
                   "type": "string",
+                  "x-enumDescriptions": {
+                    "ACTIVE": "Task is active",
+                    "COMPLETED": "Task is completed",
+                    "PENDING": "Task is pending",
+                  },
                   "x-speakeasy-enum-descriptions": {
                     "ACTIVE": "Task is active",
                     "COMPLETED": "Task is completed",
@@ -316,6 +321,11 @@ describe('OpenAPI YAML Transformer', () => {
                 "VALUE3",
               ],
               "type": "string",
+              "x-enumDescriptions": {
+                "VALUE1": "Description for value 1",
+                "VALUE2": "Description for value 2",
+                "VALUE3": "Description for value 3",
+              },
               "x-speakeasy-enum-descriptions": {
                 "VALUE1": "Description for value 1",
                 "VALUE2": "Description for value 2",
