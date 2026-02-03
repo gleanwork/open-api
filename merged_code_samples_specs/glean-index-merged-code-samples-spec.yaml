@@ -972,14 +972,6 @@ paths:
                     email: "Ivory_Cummerata@hotmail.com",
                     name: "<value>",
                   },
-                  {
-                    email: "Ivory_Cummerata@hotmail.com",
-                    name: "<value>",
-                  },
-                  {
-                    email: "Ivory_Cummerata@hotmail.com",
-                    name: "<value>",
-                  },
                 ],
               });
 
@@ -1251,9 +1243,6 @@ paths:
                   {
                     name: "<value>",
                   },
-                  {
-                    name: "<value>",
-                  },
                 ],
               });
 
@@ -1516,8 +1505,6 @@ paths:
                 uploadId: "<id>",
                 datasource: "<value>",
                 memberships: [
-                  {},
-                  {},
                   {},
                 ],
               });
@@ -2127,7 +2114,6 @@ paths:
             async function run() {
               const result = await glean.indexing.datasource.status("<value>");
 
-              // Handle the result
               console.log(result);
             }
 
@@ -2254,7 +2240,6 @@ paths:
                 docId: "art123",
               }, "<value>");
 
-              // Handle the result
               console.log(result);
             }
 
@@ -2386,15 +2371,9 @@ paths:
 
             async function run() {
               const result = await glean.indexing.documents.debugMany({
-                debugDocuments: [
-                  {
-                    objectType: "Article",
-                    docId: "art123",
-                  },
-                ],
+                debugDocuments: [],
               }, "<value>");
 
-              // Handle the result
               console.log(result);
             }
 
@@ -2528,7 +2507,6 @@ paths:
                 email: "u1@foo.com",
               }, "<value>");
 
-              // Handle the result
               console.log(result);
             }
 
@@ -2657,7 +2635,6 @@ paths:
                 userEmail: "<value>",
               });
 
-              // Handle the result
               console.log(result);
             }
 
@@ -3174,7 +3151,6 @@ paths:
                 datasource: "<value>",
               });
 
-              // Handle the result
               console.log(result);
             }
 
@@ -3287,7 +3263,6 @@ paths:
             async function run() {
               const result = await glean.indexing.authentication.rotateToken();
 
-              // Handle the result
               console.log(result);
             }
 
@@ -3559,26 +3534,6 @@ paths:
               await glean.indexing.people.bulkIndex({
                 uploadId: "<id>",
                 employees: [
-                  {
-                    email: "Robin.Stoltenberg@yahoo.com",
-                    department: "<value>",
-                    datasourceProfiles: [
-                      {
-                        datasource: "github",
-                        handle: "<value>",
-                      },
-                    ],
-                  },
-                  {
-                    email: "Robin.Stoltenberg@yahoo.com",
-                    department: "<value>",
-                    datasourceProfiles: [
-                      {
-                        datasource: "github",
-                        handle: "<value>",
-                      },
-                    ],
-                  },
                   {
                     email: "Robin.Stoltenberg@yahoo.com",
                     department: "<value>",
@@ -3966,18 +3921,10 @@ paths:
                       datasource: "github",
                       handle: "<value>",
                     },
-                    {
-                      datasource: "github",
-                      handle: "<value>",
-                    },
-                    {
-                      datasource: "github",
-                      handle: "<value>",
-                    },
                   ],
                   members: [
                     {
-                      email: "Nasir.Hilll73@hotmail.com",
+                      email: "Valerie9@gmail.com",
                     },
                   ],
                 },
@@ -4265,42 +4212,12 @@ paths:
                         datasource: "github",
                         handle: "<value>",
                       },
+                    ],
+                    members: [
                       {
-                        datasource: "github",
-                        handle: "<value>",
+                        email: "Nina_Erdman16@gmail.com",
                       },
                     ],
-                    members: [],
-                  },
-                  {
-                    id: "<id>",
-                    name: "<value>",
-                    datasourceProfiles: [
-                      {
-                        datasource: "github",
-                        handle: "<value>",
-                      },
-                      {
-                        datasource: "github",
-                        handle: "<value>",
-                      },
-                    ],
-                    members: [],
-                  },
-                  {
-                    id: "<id>",
-                    name: "<value>",
-                    datasourceProfiles: [
-                      {
-                        datasource: "github",
-                        handle: "<value>",
-                      },
-                      {
-                        datasource: "github",
-                        handle: "<value>",
-                      },
-                    ],
-                    members: [],
                   },
                 ],
               });
@@ -4465,12 +4382,6 @@ paths:
                     createdBy: "<value>",
                     intermediateUrl: "https://lean-sightseeing.net",
                   },
-                  {
-                    inputAlias: "<value>",
-                    destinationUrl: "https://plump-tune-up.biz/",
-                    createdBy: "<value>",
-                    intermediateUrl: "https://lean-sightseeing.net",
-                  },
                 ],
               });
 
@@ -4612,16 +4523,6 @@ paths:
               await glean.indexing.shortcuts.upload({
                 uploadId: "<id>",
                 shortcuts: [
-                  {
-                    inputAlias: "<value>",
-                    destinationUrl: "https://majestic-pharmacopoeia.info/",
-                    createdBy: "<value>",
-                  },
-                  {
-                    inputAlias: "<value>",
-                    destinationUrl: "https://majestic-pharmacopoeia.info/",
-                    createdBy: "<value>",
-                  },
                   {
                     inputAlias: "<value>",
                     destinationUrl: "https://majestic-pharmacopoeia.info/",
