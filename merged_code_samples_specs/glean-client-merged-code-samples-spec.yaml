@@ -3657,7 +3657,7 @@ paths:
                             },
                         },
                     },
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -4781,7 +4781,7 @@ paths:
 
                 res, err := s.Client.Announcements.Delete(ctx, components.DeleteAnnouncementRequest{
                     ID: 458809,
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -8091,7 +8091,7 @@ paths:
                         },
                     },
                     ID: 266264,
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -9365,7 +9365,7 @@ paths:
                             Text: "From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
                         },
                     },
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -9533,7 +9533,7 @@ paths:
                 res, err := s.Client.Answers.Delete(ctx, components.DeleteAnswerRequest{
                     ID: 3,
                     DocID: apiclientgo.Pointer("ANSWERS_answer_3"),
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -9795,7 +9795,7 @@ paths:
                     CombinedAnswerText: &components.StructuredTextMutableProperties{
                         Text: "From https://en.wikipedia.org/wiki/Diffuse_sky_radiation, the sky is blue because blue light is more strongly scattered than longer-wavelength light.",
                     },
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -9968,7 +9968,7 @@ paths:
                 res, err := s.Client.Answers.Retrieve(ctx, components.GetAnswerRequest{
                     ID: apiclientgo.Pointer[int64](3),
                     DocID: apiclientgo.Pointer("ANSWERS_answer_3"),
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -10379,7 +10379,7 @@ paths:
                             },
                         },
                     },
-                }, nil)
+                }, nil, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -10496,7 +10496,7 @@ paths:
                     apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Client.Chat.DeleteAll(ctx, nil)
+                res, err := s.Client.Chat.DeleteAll(ctx, nil, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -10614,7 +10614,7 @@ paths:
 
                 res, err := s.Client.Chat.Delete(ctx, components.DeleteChatsRequest{
                     Ids: []string{},
-                }, nil)
+                }, nil, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -10742,7 +10742,7 @@ paths:
 
                 res, err := s.Client.Chat.Retrieve(ctx, components.GetChatRequest{
                     ID: "<id>",
-                }, nil)
+                }, nil, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -10857,7 +10857,7 @@ paths:
                     apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Client.Chat.List(ctx, nil)
+                res, err := s.Client.Chat.List(ctx, nil, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -10980,7 +10980,7 @@ paths:
 
                 res, err := s.Client.Chat.RetrieveApplication(ctx, components.GetChatApplicationRequest{
                     ID: "<id>",
-                }, nil)
+                }, nil, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -11108,7 +11108,7 @@ paths:
 
                 res, err := s.Client.Chat.UploadFiles(ctx, components.UploadChatFilesRequest{
                     Files: []components.File{},
-                }, nil)
+                }, nil, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -11240,7 +11240,7 @@ paths:
                     FileIds: []string{
                         "<value 1>",
                     },
-                }, nil)
+                }, nil, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -11376,7 +11376,7 @@ paths:
                         "<value 2>",
                         "<value 3>",
                     },
-                }, nil)
+                }, nil, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -11506,7 +11506,7 @@ paths:
                     apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Client.Agents.Retrieve(ctx, "<id>", nil)
+                res, err := s.Client.Agents.Retrieve(ctx, "<id>", nil, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -11637,7 +11637,7 @@ paths:
                     apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Client.Agents.RetrieveSchemas(ctx, "<id>", nil)
+                res, err := s.Client.Agents.RetrieveSchemas(ctx, "<id>", nil, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -12226,7 +12226,7 @@ paths:
 
                 res, err := s.Client.Collections.AddItems(ctx, components.AddCollectionItemsRequest{
                     CollectionID: 7742.68,
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -12455,7 +12455,7 @@ paths:
                             },
                         },
                     },
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -12626,7 +12626,7 @@ paths:
                         156719,
                         25102,
                     },
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -12760,7 +12760,7 @@ paths:
                 res, err := s.Client.Collections.DeleteItem(ctx, components.DeleteCollectionItemRequest{
                     CollectionID: 6980.49,
                     ItemID: "<id>",
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -12992,7 +12992,7 @@ paths:
                         },
                     },
                     ID: 347152,
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -13153,7 +13153,7 @@ paths:
                 res, err := s.Client.Collections.UpdateItem(ctx, components.EditCollectionItemRequest{
                     CollectionID: 142375,
                     ItemID: "<id>",
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -13281,7 +13281,7 @@ paths:
 
                 res, err := s.Client.Collections.Retrieve(ctx, components.GetCollectionRequest{
                     ID: 425335,
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -13404,7 +13404,7 @@ paths:
                     apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Client.Collections.List(ctx, components.ListCollectionsRequest{})
+                res, err := s.Client.Collections.List(ctx, components.ListCollectionsRequest{}, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -13528,7 +13528,7 @@ paths:
                     apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Client.Documents.RetrievePermissions(ctx, components.GetDocPermissionsRequest{})
+                res, err := s.Client.Documents.RetrievePermissions(ctx, components.GetDocPermissionsRequest{}, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -13649,7 +13649,7 @@ paths:
                     apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Client.Documents.Retrieve(ctx, nil)
+                res, err := s.Client.Documents.Retrieve(ctx, nil, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -13808,7 +13808,7 @@ paths:
                     apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Client.Documents.RetrieveByFacets(ctx, &components.GetDocumentsByFacetsRequest{
+                res, err := s.Client.Documents.RetrieveByFacets(ctx, nil, &components.GetDocumentsByFacetsRequest{
                     FilterSets: []components.FacetFilterSet{
                         components.FacetFilterSet{
                             Filters: []components.FacetFilter{
@@ -13967,7 +13967,7 @@ paths:
                     apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Client.Insights.Retrieve(ctx, components.InsightsRequest{})
+                res, err := s.Client.Insights.Retrieve(ctx, components.InsightsRequest{}, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -14097,7 +14097,7 @@ paths:
                     IDType: components.IDTypeConversationID,
                     ID: "<id>",
                     Datasource: components.DatasourceSlack,
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -14268,7 +14268,7 @@ paths:
                             },
                         },
                     },
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -14404,7 +14404,7 @@ paths:
                     apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Client.Pins.Retrieve(ctx, components.GetPinRequest{})
+                res, err := s.Client.Pins.Retrieve(ctx, components.GetPinRequest{}, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -14526,7 +14526,7 @@ paths:
                     apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Client.Pins.List(ctx, operations.ListpinsRequest{})
+                res, err := s.Client.Pins.List(ctx, operations.ListpinsRequestBody{}, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -14694,7 +14694,7 @@ paths:
                             },
                         },
                     },
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -14827,7 +14827,7 @@ paths:
                     apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Client.Pins.Remove(ctx, components.Unpin{})
+                res, err := s.Client.Pins.Remove(ctx, components.Unpin{}, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -15121,7 +15121,7 @@ paths:
                         },
                         FacetBucketSize: 723824,
                     },
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -15290,7 +15290,7 @@ paths:
                     Query: apiclientgo.Pointer("what is a que"),
                     Datasource: apiclientgo.Pointer("GDRIVE"),
                     ResultSize: apiclientgo.Pointer[int64](10),
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -15422,7 +15422,7 @@ paths:
 
                 res, err := s.Client.Search.RetrieveFeed(ctx, components.FeedRequest{
                     TimeoutMillis: apiclientgo.Pointer[int64](5000),
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -16054,7 +16054,7 @@ paths:
                             },
                         },
                     },
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -16513,7 +16513,7 @@ paths:
                         },
                         FacetBucketSize: 939520,
                     },
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -16712,7 +16712,7 @@ paths:
                         },
                     },
                     PageSize: apiclientgo.Pointer[int64](100),
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -16862,7 +16862,7 @@ paths:
                         "abc123",
                         "abc456",
                     },
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -17049,7 +17049,7 @@ paths:
                             },
                         },
                     },
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -17189,7 +17189,7 @@ paths:
 
                 res, err := s.Client.Shortcuts.Delete(ctx, components.DeleteShortcutRequest{
                     ID: 975862,
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -17318,7 +17318,7 @@ paths:
                     components.GetShortcutRequest{
                         Alias: "<value>",
                     },
-                ))
+                ), nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -17490,7 +17490,7 @@ paths:
                             },
                         },
                     },
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -17683,7 +17683,7 @@ paths:
                             Role: components.UserRoleAnswerModerator,
                         },
                     },
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -17844,7 +17844,7 @@ paths:
                             },
                         ),
                     },
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -17978,7 +17978,7 @@ paths:
 
                 res, err := s.Client.Verification.AddReminder(ctx, components.ReminderRequest{
                     DocumentID: "<id>",
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -18098,7 +18098,7 @@ paths:
                     apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Client.Verification.List(ctx, nil)
+                res, err := s.Client.Verification.List(ctx, nil, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -18223,7 +18223,7 @@ paths:
 
                 res, err := s.Client.Verification.Verify(ctx, components.VerifyRequest{
                     DocumentID: "<id>",
-                })
+                }, nil)
                 if err != nil {
                     log.Fatal(err)
                 }
