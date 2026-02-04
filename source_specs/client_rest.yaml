@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 8bd7f9e6b08c765430625e2e75546d07598e65da
+  x-source-commit-sha: f776288f52c7c0f55daa257c5617c9eeb561ff50
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -5713,12 +5713,14 @@ components:
             UNIVERSAL: Uses both company and web knowledge. This will soon be deprecated in favor of the FAST and ADVANCED `agent` values
             FAST: Uses an agent powered by the agentic engine that responds faster but may have lower quality results. Requires the agentic engine to be enabled in the deployment.
             ADVANCED: Uses an agent powered by the agentic engine that thinks for longer and potentially makes more LLM calls to return higher quality results. Requires the agentic engine to be enabled in the deployment.
+            AUTO: Uses an agent powered by the agentic engine that routes between reasoning efforts based on the question and context.
           enum:
             - DEFAULT
             - GPT
             - UNIVERSAL
             - FAST
             - ADVANCED
+            - AUTO
         toolSets:
           $ref: '#/components/schemas/ToolSets'
         mode:
