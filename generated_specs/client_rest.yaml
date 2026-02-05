@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: f776288f52c7c0f55daa257c5617c9eeb561ff50
+  x-source-commit-sha: 4660e1d13796aee48a5919592ae48262f3d0c362
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 14086499099307e83aa6c664fda16c200692dc91
+  x-open-api-commit-sha: 58c0bb5b78aca7ee9979b66c6ff97c216e5de33a
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -7263,6 +7263,12 @@ components:
         gleanAssist:
           deprecated: true
           $ref: "#/components/schemas/GleanAssistInsightsResponse"
+          x-glean-deprecated:
+            id: 15850758-4d95-4d98-8d57-39c50663a796
+            introduced: "2026-02-05"
+            message: Field is deprecated
+            removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
         overviewResponse:
           $ref: "#/components/schemas/InsightsOverviewResponse"
         assistantResponse:
