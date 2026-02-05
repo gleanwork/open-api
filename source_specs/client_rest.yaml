@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 97f396d4c70827772857509c55e03e0a5be268f1
+  x-source-commit-sha: 4660e1d13796aee48a5919592ae48262f3d0c362
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -7168,6 +7168,11 @@ components:
         gleanAssist:
           deprecated: true
           $ref: '#/components/schemas/GleanAssistInsightsResponse'
+          x-glean-deprecated:
+            id: 15850758-4d95-4d98-8d57-39c50663a796
+            introduced: '2026-02-05'
+            message: Field is deprecated
+            removal: '2026-10-15'
         overviewResponse:
           $ref: '#/components/schemas/InsightsOverviewResponse'
         assistantResponse:
