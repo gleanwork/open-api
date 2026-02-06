@@ -33,6 +33,6 @@
   },
   "devDependencies": {
     "prettier": "^3.8.1",
-    "vitest": "^4.0.17"
+    "vitest": "^4.0.18"
   }
 }
