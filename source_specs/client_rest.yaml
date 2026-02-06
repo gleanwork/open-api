@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 2f605c855ab85cbabeb24829499a9d202e68f8cd
+  x-source-commit-sha: 2a745f932cc47169f6ceb0e7b3e9869d02726cea
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -917,7 +917,7 @@ paths:
       tags:
         - Agents
       summary: Create an agent run and stream the response
-      description: Executes an [agent](https://developers.glean.com/agents/agents-api) run and returns the result as a stream of server-sent events (SSE).
+      description: 'Executes an [agent](https://developers.glean.com/agents/agents-api) run and returns the result as a stream of server-sent events (SSE). **Note**: If the agent uses an input form trigger, all form fields (including optional fields) must be included in the `input` object.'
       operationId: createAndStreamRun
       x-visibility: Preview
       requestBody:
@@ -979,7 +979,7 @@ paths:
       tags:
         - Agents
       summary: Create an agent run and wait for the response
-      description: Executes an [agent](https://developers.glean.com/agents/agents-api) run and returns the final response.
+      description: 'Executes an [agent](https://developers.glean.com/agents/agents-api) run and returns the final response. **Note**: If the agent uses an input form trigger, all form fields (including optional fields) must be included in the `input` object.'
       operationId: createAndWaitRun
       x-visibility: Preview
       requestBody:
@@ -6427,7 +6427,7 @@ components:
               - type
             title: MessageTextBlock
     AgentRunCreate:
-      description: Payload for creating a run.
+      description: 'Payload for creating a run. **Important**: If the agent uses an input form trigger, the `input` field is required and must include all fields defined in the form schema. Even fields marked as optional in the UI must be included in the request—use an empty string (`""`) for optional fields without values. Omitting required form fields will result in a 500 error.'
       type: object
       required:
         - agent_id
@@ -6439,7 +6439,7 @@ components:
         input:
           type: object
           title: Input
-          description: The input to the agent.
+          description: The input to the agent. Required when the agent uses an input form trigger.
           additionalProperties: true
         messages:
           type: array
