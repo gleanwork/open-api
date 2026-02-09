@@ -365,7 +365,10 @@ export function transformGleanDeprecated(spec) {
         continue;
       }
       const deprecationText = `@deprecated ${text}${item.docs ? ` See ${item.docs}` : ''}`;
-      descriptions[value] = mergeEnumDescription(descriptions[value], deprecationText);
+      descriptions[value] = mergeEnumDescription(
+        descriptions[value],
+        deprecationText,
+      );
     }
 
     if (Object.keys(descriptions).length > 0) {

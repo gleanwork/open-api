@@ -636,7 +636,9 @@ describe('OpenAPI YAML Transformer', () => {
     expect(statusField['x-speakeasy-enum-descriptions'].LEGACY).toContain(
       'Use STANDARD instead',
     );
-    expect(statusField['x-speakeasy-enum-descriptions'].STANDARD).toBeUndefined();
+    expect(
+      statusField['x-speakeasy-enum-descriptions'].STANDARD,
+    ).toBeUndefined();
   });
 
   test('transformGleanDeprecated prefers property entry for mixed array deprecations', () => {
