@@ -290,6 +290,89 @@ export function transformGleanDeprecated(spec) {
     return text;
   };
 
+  const toEnumDescriptionsMap = (existing, enumValues) => {
+    if (!existing) {
+      return {};
+    }
+    if (Array.isArray(existing)) {
+      if (!Array.isArray(enumValues)) {
+        return {};
+      }
+      const out = {};
+      for (let i = 0; i < enumValues.length; i++) {
+        const key = enumValues[i];
+        const value = existing[i];
+        if (typeof key === 'string' && typeof value === 'string' && value) {
+          out[key] = value;
+        }
+      }
+      return out;
+    }
+    if (typeof existing === 'object') {
+      return { ...existing };
+    }
+    return {};
+  };
+
+  const mergeEnumDescription = (existing, addition) => {
+    if (!addition) {
+      return existing || '';
+    }
+    if (!existing) {
+      return addition;
+    }
+    if (existing.includes('@deprecated')) {
+      return existing;
+    }
+    return `${existing}\n\n${addition}`;
+  };
+
+  const addEnumValueDeprecationsToDescriptions = (obj, deprecation) => {
+    if (!Array.isArray(deprecation) || !Array.isArray(obj.enum)) {
+      return;
+    }
+
+    const enumValueDeprecations = deprecation.filter(
+      (item) =>
+        item &&
+        typeof item === 'object' &&
+        !Array.isArray(item) &&
+        item.kind === 'enum-value' &&
+        typeof item['enum-value'] === 'string',
+    );
+
+    if (enumValueDeprecations.length === 0) {
+      return;
+    }
+
+    const enumValues = obj.enum.filter((v) => typeof v === 'string');
+    if (enumValues.length === 0) {
+      return;
+    }
+
+    const descriptions = toEnumDescriptionsMap(
+      obj['x-speakeasy-enum-descriptions'],
+      enumValues,
+    );
+
+    for (const item of enumValueDeprecations) {
+      const value = item['enum-value'];
+      if (!enumValues.includes(value)) {
+        continue;
+      }
+      const text = buildMessageFrom(item);
+      if (!text) {
+        continue;
+      }
+      const deprecationText = `@deprecated ${text}${item.docs ? ` See ${item.docs}` : ''}`;
+      descriptions[value] = mergeEnumDescription(descriptions[value], deprecationText);
+    }
+
+    if (Object.keys(descriptions).length > 0) {
+      obj['x-speakeasy-enum-descriptions'] = descriptions;
+    }
+  };
+
   const selectDeprecationSource = (deprecation) => {
     if (!deprecation || typeof deprecation !== 'object') {
       return null;
@@ -311,11 +394,7 @@ export function transformGleanDeprecated(spec) {
       return propertyDeprecation;
     }
 
-    return (
-      deprecation.find(
-        (item) => item && typeof item === 'object' && !Array.isArray(item),
-      ) || null
-    );
+    return null;
   };
 
   const processObject = (obj) => {
@@ -327,9 +406,10 @@ export function transformGleanDeprecated(spec) {
     }
 
     if (obj['x-glean-deprecated']) {
-      const deprecationSource = selectDeprecationSource(
-        obj['x-glean-deprecated'],
-      );
+      const rawDeprecation = obj['x-glean-deprecated'];
+      addEnumValueDeprecationsToDescriptions(obj, rawDeprecation);
+
+      const deprecationSource = selectDeprecationSource(rawDeprecation);
       const message = buildMessageFrom(deprecationSource);
 
       if (message) {

@@ -625,13 +625,17 @@ describe('OpenAPI YAML Transformer', () => {
     const statusField =
       transformedSpec.components.schemas.TestSchema.properties.status;
 
-    expect(statusField.deprecated).toBe(true);
-    expect(statusField['x-speakeasy-deprecation-message']).toBe(
-      'Deprecated on 2025-12-01, removal scheduled for 2026-07-15: Use STANDARD instead',
+    expect(statusField.deprecated).toBeUndefined();
+    expect(statusField['x-speakeasy-deprecation-message']).toBeUndefined();
+    expect(Array.isArray(statusField['x-glean-deprecated'])).toBe(true);
+    expect(statusField['x-speakeasy-enum-descriptions']).toBeDefined();
+    expect(statusField['x-speakeasy-enum-descriptions'].LEGACY).toContain(
+      '@deprecated',
     );
-    expect(statusField['x-speakeasy-deprecation-message']).not.toContain(
-      'undefined',
+    expect(statusField['x-speakeasy-enum-descriptions'].LEGACY).toContain(
+      'Use STANDARD instead',
     );
+    expect(statusField['x-speakeasy-enum-descriptions'].STANDARD).toBeUndefined();
   });
 
   test('transformGleanDeprecated prefers property entry for mixed array deprecations', () => {
@@ -678,6 +682,64 @@ describe('OpenAPI YAML Transformer', () => {
     );
     expect(clusterType['x-speakeasy-deprecation-message']).not.toContain(
       'undefined',
+    );
+    expect(clusterType['x-speakeasy-enum-descriptions']).toBeDefined();
+    expect(clusterType['x-speakeasy-enum-descriptions'].NONE).toContain(
+      '@deprecated',
+    );
+    expect(clusterType['x-speakeasy-enum-descriptions'].NONE).toContain(
+      'The NONE cluster type is deprecated',
+    );
+  });
+
+  test('transformGleanDeprecated merges enum value deprecations with existing enum descriptions', () => {
+    const testSpec = {
+      components: {
+        schemas: {
+          TestSchema: {
+            type: 'object',
+            properties: {
+              status: {
+                type: 'string',
+                enum: ['LEGACY', 'STANDARD'],
+                'x-speakeasy-enum-descriptions': {
+                  LEGACY: 'Legacy status (kept for backwards compatibility)',
+                  STANDARD: 'Standard status',
+                },
+                'x-glean-deprecated': [
+                  {
+                    id: 'enum-uuid-1',
+                    kind: 'enum-value',
+                    'enum-value': 'LEGACY',
+                    message: 'Use STANDARD instead',
+                    introduced: '2025-12-01',
+                    removal: '2026-07-15',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformGleanDeprecated(testSpec);
+    const statusField =
+      transformedSpec.components.schemas.TestSchema.properties.status;
+
+    expect(statusField.deprecated).toBeUndefined();
+    expect(statusField['x-speakeasy-deprecation-message']).toBeUndefined();
+    expect(statusField['x-speakeasy-enum-descriptions'].STANDARD).toBe(
+      'Standard status',
+    );
+    expect(statusField['x-speakeasy-enum-descriptions'].LEGACY).toContain(
+      'Legacy status (kept for backwards compatibility)',
+    );
+    expect(statusField['x-speakeasy-enum-descriptions'].LEGACY).toContain(
+      '@deprecated',
+    );
+    expect(statusField['x-speakeasy-enum-descriptions'].LEGACY).toContain(
+      'Use STANDARD instead',
     );
   });
 
