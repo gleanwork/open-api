@@ -547,6 +547,300 @@ describe('OpenAPI YAML Transformer', () => {
     expect(newField['x-speakeasy-deprecation-message']).toBeUndefined();
   });
 
+  test('transformGleanDeprecated handles property-only array deprecations', () => {
+    const testSpec = {
+      components: {
+        schemas: {
+          TestSchema: {
+            type: 'object',
+            properties: {
+              oldField: {
+                type: 'string',
+                'x-glean-deprecated': [
+                  {
+                    id: 'property-only-uuid',
+                    kind: 'property',
+                    message: 'Field is deprecated',
+                    introduced: '2026-02-05',
+                    removal: '2026-10-15',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformGleanDeprecated(testSpec);
+    const oldField = transformedSpec.components.schemas.TestSchema.properties.oldField;
+
+    expect(oldField.deprecated).toBe(true);
+    expect(oldField['x-speakeasy-deprecation-message']).toBe(
+      'Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated',
+    );
+    expect(oldField['x-speakeasy-deprecation-message']).not.toContain('undefined');
+    expect(Array.isArray(oldField['x-glean-deprecated'])).toBe(true);
+  });
+
+  test('transformGleanDeprecated handles enum-value-only array deprecations', () => {
+    const testSpec = {
+      components: {
+        schemas: {
+          TestSchema: {
+            type: 'object',
+            properties: {
+              status: {
+                type: 'string',
+                enum: ['LEGACY', 'STANDARD'],
+                'x-glean-deprecated': [
+                  {
+                    id: 'enum-uuid-1',
+                    kind: 'enum-value',
+                    'enum-value': 'LEGACY',
+                    message: 'Use STANDARD instead',
+                    introduced: '2025-12-01',
+                    removal: '2026-07-15',
+                  },
+                  {
+                    id: 'enum-uuid-2',
+                    kind: 'enum-value',
+                    'enum-value': 'OLD',
+                    message: 'Use STANDARD instead',
+                    introduced: '2025-12-02',
+                    removal: '2026-07-16',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformGleanDeprecated(testSpec);
+    const statusField = transformedSpec.components.schemas.TestSchema.properties.status;
+
+    expect(statusField.deprecated).toBe(true);
+    expect(statusField['x-speakeasy-deprecation-message']).toBe(
+      'Deprecated on 2025-12-01, removal scheduled for 2026-07-15: Use STANDARD instead',
+    );
+    expect(statusField['x-speakeasy-deprecation-message']).not.toContain('undefined');
+  });
+
+  test('transformGleanDeprecated prefers property entry for mixed array deprecations', () => {
+    const testSpec = {
+      components: {
+        schemas: {
+          TestSchema: {
+            type: 'object',
+            properties: {
+              clusterType: {
+                type: 'string',
+                enum: ['NONE', 'DOMAIN', 'DATASOURCE'],
+                'x-glean-deprecated': [
+                  {
+                    id: 'enum-uuid',
+                    kind: 'enum-value',
+                    'enum-value': 'NONE',
+                    message: 'The NONE cluster type is deprecated',
+                    introduced: '2025-02-01',
+                    removal: '2026-10-15',
+                  },
+                  {
+                    id: 'property-uuid',
+                    kind: 'property',
+                    message: 'The clusterType field is deprecated',
+                    introduced: '2025-02-01',
+                    removal: '2026-10-15',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformGleanDeprecated(testSpec);
+    const clusterType =
+      transformedSpec.components.schemas.TestSchema.properties.clusterType;
+
+    expect(clusterType.deprecated).toBe(true);
+    expect(clusterType['x-speakeasy-deprecation-message']).toBe(
+      'Deprecated on 2025-02-01, removal scheduled for 2026-10-15: The clusterType field is deprecated',
+    );
+    expect(clusterType['x-speakeasy-deprecation-message']).not.toContain('undefined');
+  });
+
+  test('transformGleanDeprecated handles missing deprecation fields without undefined', () => {
+    const testSpec = {
+      components: {
+        schemas: {
+          TestSchema: {
+            type: 'object',
+            properties: {
+              messageOnly: {
+                type: 'string',
+                'x-glean-deprecated': {
+                  id: 'message-only',
+                  message: 'Some message',
+                },
+              },
+              introducedOnly: {
+                type: 'string',
+                'x-glean-deprecated': {
+                  id: 'introduced-only',
+                  introduced: '2025-04-01',
+                },
+              },
+              removalOnly: {
+                type: 'string',
+                'x-glean-deprecated': {
+                  id: 'removal-only',
+                  removal: '2025-10-15',
+                },
+              },
+              emptyDeprecation: {
+                type: 'string',
+                'x-glean-deprecated': {
+                  id: 'empty',
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformGleanDeprecated(testSpec);
+    const props = transformedSpec.components.schemas.TestSchema.properties;
+
+    expect(props.messageOnly['x-speakeasy-deprecation-message']).toBe('Some message');
+    expect(props.messageOnly['x-speakeasy-deprecation-message']).not.toContain(
+      'undefined',
+    );
+    expect(props.messageOnly.deprecated).toBe(true);
+
+    expect(props.introducedOnly['x-speakeasy-deprecation-message']).toBe(
+      'Deprecated on 2025-04-01',
+    );
+    expect(props.introducedOnly['x-speakeasy-deprecation-message']).not.toContain(
+      'undefined',
+    );
+    expect(props.introducedOnly.deprecated).toBe(true);
+
+    expect(props.removalOnly['x-speakeasy-deprecation-message']).toBe(
+      'Removal scheduled for 2025-10-15',
+    );
+    expect(props.removalOnly['x-speakeasy-deprecation-message']).not.toContain(
+      'undefined',
+    );
+    expect(props.removalOnly.deprecated).toBe(true);
+
+    expect(props.emptyDeprecation['x-speakeasy-deprecation-message']).toBeUndefined();
+    expect(props.emptyDeprecation.deprecated).toBeUndefined();
+  });
+
+  test('transformGleanDeprecated clears stale Speakeasy message but preserves deprecated when message is empty', () => {
+    const testSpec = {
+      components: {
+        schemas: {
+          TestSchema: {
+            type: 'object',
+            properties: {
+              staleField: {
+                type: 'string',
+                deprecated: true,
+                'x-speakeasy-deprecation-message': 'old message',
+                'x-glean-deprecated': {
+                  id: 'empty',
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformGleanDeprecated(testSpec);
+    const staleField = transformedSpec.components.schemas.TestSchema.properties.staleField;
+
+    expect(staleField.deprecated).toBe(true);
+    expect(staleField['x-speakeasy-deprecation-message']).toBeUndefined();
+  });
+
+  test('transformGleanDeprecated ignores empty deprecation arrays', () => {
+    const testSpec = {
+      components: {
+        schemas: {
+          TestSchema: {
+            type: 'object',
+            properties: {
+              emptyArrayField: {
+                type: 'string',
+                'x-glean-deprecated': [],
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformGleanDeprecated(testSpec);
+    const emptyArrayField =
+      transformedSpec.components.schemas.TestSchema.properties.emptyArrayField;
+
+    expect(emptyArrayField.deprecated).toBeUndefined();
+    expect(emptyArrayField['x-speakeasy-deprecation-message']).toBeUndefined();
+  });
+
+  test('transformGleanDeprecated handles malformed array entries safely', () => {
+    const testSpec = {
+      components: {
+        schemas: {
+          TestSchema: {
+            type: 'object',
+            properties: {
+              malformedOnly: {
+                type: 'string',
+                'x-glean-deprecated': ['bad', null, 123, []],
+              },
+              mixedArray: {
+                type: 'string',
+                'x-glean-deprecated': [
+                  'bad',
+                  null,
+                  {
+                    id: 'valid',
+                    kind: 'property',
+                    message: 'Use newerField instead',
+                    introduced: '2026-01-01',
+                    removal: '2026-10-15',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformGleanDeprecated(testSpec);
+    const props = transformedSpec.components.schemas.TestSchema.properties;
+
+    expect(props.malformedOnly.deprecated).toBeUndefined();
+    expect(props.malformedOnly['x-speakeasy-deprecation-message']).toBeUndefined();
+
+    expect(props.mixedArray.deprecated).toBe(true);
+    expect(props.mixedArray['x-speakeasy-deprecation-message']).toBe(
+      'Deprecated on 2026-01-01, removal scheduled for 2026-10-15: Use newerField instead',
+    );
+    expect(props.mixedArray['x-speakeasy-deprecation-message']).not.toContain(
+      'undefined',
+    );
+  });
+
   test('transformGleanDeprecated handles specs without x-glean-deprecated', () => {
     const testSpec = {
       paths: {

@@ -263,6 +263,58 @@ export function transformEnumDescriptions(spec) {
  * @returns {Object} Transformed spec object
  */
 export function transformGleanDeprecated(spec) {
+  const buildMessageFrom = (src) => {
+    if (!src || typeof src !== 'object' || Array.isArray(src)) {
+      return '';
+    }
+
+    const parts = [];
+
+    if (src.introduced) {
+      parts.push(`Deprecated on ${src.introduced}`);
+    }
+
+    if (src.removal) {
+      parts.push(
+        parts.length > 0
+          ? `, removal scheduled for ${src.removal}`
+          : `Removal scheduled for ${src.removal}`,
+      );
+    }
+
+    let text = parts.join('');
+    if (src.message) {
+      text += `${text ? ': ' : ''}${src.message}`;
+    }
+
+    return text;
+  };
+
+  const selectDeprecationSource = (deprecation) => {
+    if (!deprecation || typeof deprecation !== 'object') {
+      return null;
+    }
+
+    if (!Array.isArray(deprecation)) {
+      return deprecation;
+    }
+
+    // Prefer property-level deprecation when both property and enum-value entries are present.
+    const propertyDeprecation = deprecation.find(
+      (item) =>
+        item && typeof item === 'object' && !Array.isArray(item) && item.kind === 'property',
+    );
+    if (propertyDeprecation) {
+      return propertyDeprecation;
+    }
+
+    return (
+      deprecation.find(
+        (item) => item && typeof item === 'object' && !Array.isArray(item),
+      ) || null
+    );
+  };
+
   const processObject = (obj) => {
     if (!obj || typeof obj !== 'object') return;
 
@@ -272,12 +324,15 @@ export function transformGleanDeprecated(spec) {
     }
 
     if (obj['x-glean-deprecated']) {
-      const deprecation = obj['x-glean-deprecated'];
+      const deprecationSource = selectDeprecationSource(obj['x-glean-deprecated']);
+      const message = buildMessageFrom(deprecationSource);
 
-      obj.deprecated = true;
-
-      const message = `Deprecated on ${deprecation.introduced}, removal scheduled for ${deprecation.removal}${deprecation.message ? `: ${deprecation.message}` : ''}`;
-      obj['x-speakeasy-deprecation-message'] = message;
+      if (message) {
+        obj.deprecated = true;
+        obj['x-speakeasy-deprecation-message'] = message;
+      } else {
+        delete obj['x-speakeasy-deprecation-message'];
+      }
     }
 
     Object.values(obj).forEach((value) => {
