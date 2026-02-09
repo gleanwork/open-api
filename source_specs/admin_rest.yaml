@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: c5acfe1f2fef9ba7e18e13b9cf85af54a8b862e5
+  x-source-commit-sha: b909c25b9d5cf09a104244083b68d7954786bdca
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
@@ -401,6 +401,12 @@ components:
             - POSSIBLE
             - UNLIKELY
             - VERY_UNLIKELY
+          x-glean-deprecated:
+            - id: d45039ec-d6f6-47ba-93b7-ab2307b07f84
+              introduced: '2026-02-05'
+              kind: property
+              message: Field is deprecated
+              removal: '2026-10-15'
         infoType:
           description: Text representation of an info-type to scan for.
           type: string
@@ -427,6 +433,11 @@ components:
           description: list of url regex matching documents excluded from report
           items:
             type: string
+          x-glean-deprecated:
+            id: e022aaa5-56e6-4b57-bca3-b11943da76a0
+            introduced: '2026-02-05'
+            message: Field is deprecated
+            removal: '2026-10-15'
         datasourcesType:
           type: string
           description: The types of datasource for which to run the report/policy.
@@ -439,6 +450,11 @@ components:
           description: List of datasources to consider for report. DEPRECATED - use datasourceInstances instead.
           items:
             type: string
+          x-glean-deprecated:
+            id: 97e35970-e0ed-4248-be13-2af8c22e7894
+            introduced: '2026-02-05'
+            message: Use datasourceInstances instead
+            removal: '2026-10-15'
         datasourceInstances:
           type: array
           description: List of datasource instances to consider for report/policy.
@@ -466,6 +482,11 @@ components:
         enabled:
           deprecated: true
           type: boolean
+          x-glean-deprecated:
+            id: e9260be6-209b-4ce2-a4b3-f7f22879dd86
+            introduced: '2026-02-05'
+            message: Field is deprecated
+            removal: '2026-10-15'
         threshold:
           description: The minimum number of users the document is shared with.
           type: integer
@@ -475,6 +496,11 @@ components:
         anyoneWithLinkEnabled:
           deprecated: true
           type: boolean
+          x-glean-deprecated:
+            id: 30646ced-e0db-43ef-8412-64a67c5d0f53
+            introduced: '2026-02-05'
+            message: Field is deprecated
+            removal: '2026-10-15'
         anyoneInternalEnabled:
           description: Only users within the organization can access the document.
           type: boolean
@@ -491,6 +517,11 @@ components:
             type: string
     ExternalSharingOptions:
       deprecated: true
+      x-glean-deprecated:
+        id: 7c9e4a1d-3f8b-4e2c-9a5d-6b0f1c8e2d4a
+        introduced: '2026-02-05'
+        message: Use broadSharingOptions instead
+        removal: '2026-10-15'
       allOf:
         - description: DEPRECATED - use `broadSharingOptions` instead.
         - $ref: '#/components/schemas/SharingOptions'
@@ -566,18 +597,33 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SensitiveInfoType'
+          x-glean-deprecated:
+            id: 3497cb1c-f7aa-42d8-81b8-309c3adeed84
+            introduced: '2026-02-05'
+            message: Use customSensitiveExpressions instead
+            removal: '2026-10-15'
         sensitiveTerms:
           deprecated: true
           description: DEPRECATED - use 'customSensitiveExpressions' instead.
           type: array
           items:
             $ref: '#/components/schemas/SensitiveExpression'
+          x-glean-deprecated:
+            id: b0713b37-472e-4c29-80ba-6f5d6f2b449c
+            introduced: '2026-02-05'
+            message: Use customSensitiveExpressions instead
+            removal: '2026-10-15'
         sensitiveRegexes:
           deprecated: true
           description: DEPRECATED - use 'customSensitiveExpressions' instead.
           type: array
           items:
             $ref: '#/components/schemas/SensitiveExpression'
+          x-glean-deprecated:
+            id: a26e1920-36b6-4c0f-981f-57b09a9ebce3
+            introduced: '2026-02-05'
+            message: Use customSensitiveExpressions instead
+            removal: '2026-10-15'
         customSensitiveExpressions:
           description: list of custom sensitive expressions to consider as sensitive content
           type: array
@@ -626,6 +672,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SensitiveInfoType'
+          x-glean-deprecated:
+            id: 60d6d182-e9d0-448d-af75-137f68bbdcbf
+            introduced: '2026-02-05'
+            message: Use sensitiveContentOptions instead
+            removal: '2026-10-15'
         inputOptions:
           description: Options for documents to include or exclude in a report
           $ref: '#/components/schemas/InputOptions'
@@ -633,6 +684,11 @@ components:
           deprecated: true
           description: DEPRECATED - use `broadSharingOptions` instead.
           $ref: '#/components/schemas/ExternalSharingOptions'
+          x-glean-deprecated:
+            id: 6484ec17-a133-4176-b2ce-28e25b0e9065
+            introduced: '2026-02-05'
+            message: Use broadSharingOptions instead
+            removal: '2026-10-15'
         broadSharingOptions:
           description: Options for defining documents to scan for sensitive content.
           $ref: '#/components/schemas/SharingOptions'

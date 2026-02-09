@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: c5acfe1f2fef9ba7e18e13b9cf85af54a8b862e5
+  x-source-commit-sha: b909c25b9d5cf09a104244083b68d7954786bdca
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -3656,6 +3656,11 @@ components:
           type: integer
           description: The parent board ID of this Answer, or 0 if it's a floating Answer. Adding Answers to Answer Boards is no longer permitted.
           deprecated: true
+          x-glean-deprecated:
+            id: 3729bc64-8859-4159-b93c-ce2d5f0e7304
+            introduced: '2026-02-05'
+            message: Answer Boards no longer supported
+            removal: '2026-10-15'
         audienceFilters:
           type: array
           description: Filters which restrict who should see the answer. Values are taken from the corresponding filters in people search.
