@@ -408,9 +408,17 @@ export function transformGleanDeprecated(spec) {
     if (obj['x-glean-deprecated']) {
       const rawDeprecation = obj['x-glean-deprecated'];
       if (Array.isArray(rawDeprecation)) {
-        if (Array.isArray(obj.enum)) {
-          addEnumValueDeprecationsToDescriptions(obj, rawDeprecation);
+        if (!Array.isArray(obj.enum)) {
+          delete obj['x-speakeasy-deprecation-message'];
+          Object.values(obj).forEach((value) => {
+            if (value && typeof value === 'object') {
+              processObject(value);
+            }
+          });
+          return;
         }
+
+        addEnumValueDeprecationsToDescriptions(obj, rawDeprecation);
       } else if (
         rawDeprecation &&
         typeof rawDeprecation === 'object' &&

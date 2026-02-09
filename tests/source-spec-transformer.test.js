@@ -556,6 +556,7 @@ describe('OpenAPI YAML Transformer', () => {
             properties: {
               oldField: {
                 type: 'string',
+                enum: ['LEGACY', 'STANDARD'],
                 'x-glean-deprecated': [
                   {
                     id: 'property-only-uuid',
@@ -953,6 +954,7 @@ describe('OpenAPI YAML Transformer', () => {
               },
               mixedArray: {
                 type: 'string',
+                enum: ['LEGACY', 'STANDARD'],
                 'x-glean-deprecated': [
                   'bad',
                   null,
