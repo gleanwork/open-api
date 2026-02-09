@@ -255,8 +255,12 @@ export function transformEnumDescriptions(spec) {
 }
 
 /**
- * Transforms x-glean-deprecated annotations to Speakeasy-compatible deprecation format
- * Adds `deprecated: true` and `x-speakeasy-deprecation-message` fields while preserving the original annotation.
+ * Transforms x-glean-deprecated annotations to Speakeasy-compatible deprecation format.
+ *
+ * For property-level deprecations: sets `deprecated: true` and `x-speakeasy-deprecation-message`.
+ * For enum-value deprecations: merges per-value `@deprecated` text into `x-speakeasy-enum-descriptions`.
+ * Preserves the original `x-glean-deprecated` annotation in all cases.
+ *
  * More information about the deprecation format can be found at: https://www.speakeasy.com/docs/sdks/customize/deprecations
  *
  * @param {Object} spec The OpenAPI spec object
@@ -376,28 +380,31 @@ export function transformGleanDeprecated(spec) {
     }
   };
 
-  const selectDeprecationSource = (deprecation) => {
+  const selectDeprecationSource = (deprecation, hasEnum) => {
     if (!deprecation || typeof deprecation !== 'object') {
       return null;
     }
 
     if (!Array.isArray(deprecation)) {
+      if (deprecation.kind === 'enum-value' || 'enum-value' in deprecation) {
+        return null;
+      }
       return deprecation;
     }
 
-    // Prefer property-level deprecation when both property and enum-value entries are present.
-    const propertyDeprecation = deprecation.find(
-      (item) =>
-        item &&
-        typeof item === 'object' &&
-        !Array.isArray(item) &&
-        item.kind === 'property',
-    );
-    if (propertyDeprecation) {
-      return propertyDeprecation;
+    if (!hasEnum) {
+      return null;
     }
 
-    return null;
+    return (
+      deprecation.find(
+        (item) =>
+          item &&
+          typeof item === 'object' &&
+          !Array.isArray(item) &&
+          item.kind === 'property',
+      ) || null
+    );
   };
 
   const processObject = (obj) => {
@@ -409,36 +416,14 @@ export function transformGleanDeprecated(spec) {
     }
 
     if (obj['x-glean-deprecated']) {
-      const rawDeprecation = obj['x-glean-deprecated'];
-      if (Array.isArray(rawDeprecation)) {
-        if (!Array.isArray(obj.enum)) {
-          delete obj['x-speakeasy-deprecation-message'];
-          Object.values(obj).forEach((value) => {
-            if (value && typeof value === 'object') {
-              processObject(value);
-            }
-          });
-          return;
-        }
+      const raw = obj['x-glean-deprecated'];
 
-        addEnumValueDeprecationsToDescriptions(obj, rawDeprecation);
-      } else if (
-        rawDeprecation &&
-        typeof rawDeprecation === 'object' &&
-        !Array.isArray(rawDeprecation) &&
-        (rawDeprecation.kind === 'enum-value' || 'enum-value' in rawDeprecation)
-      ) {
-        delete obj['x-speakeasy-deprecation-message'];
-        Object.values(obj).forEach((value) => {
-          if (value && typeof value === 'object') {
-            processObject(value);
-          }
-        });
-        return;
+      if (Array.isArray(raw) && Array.isArray(obj.enum)) {
+        addEnumValueDeprecationsToDescriptions(obj, raw);
       }
 
-      const deprecationSource = selectDeprecationSource(rawDeprecation);
-      const message = buildMessageFrom(deprecationSource);
+      const source = selectDeprecationSource(raw, Array.isArray(obj.enum));
+      const message = buildMessageFrom(source);
 
       if (message) {
         obj.deprecated = true;
