@@ -743,6 +743,76 @@ describe('OpenAPI YAML Transformer', () => {
     );
   });
 
+  test('transformGleanDeprecated ignores enum-value arrays when field is not an enum', () => {
+    const testSpec = {
+      components: {
+        schemas: {
+          TestSchema: {
+            type: 'object',
+            properties: {
+              notAnEnum: {
+                type: 'string',
+                'x-glean-deprecated': [
+                  {
+                    id: 'enum-uuid-1',
+                    kind: 'enum-value',
+                    'enum-value': 'LEGACY',
+                    message: 'Some enum-only deprecation',
+                    introduced: '2025-12-01',
+                    removal: '2026-07-15',
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformGleanDeprecated(testSpec);
+    const field =
+      transformedSpec.components.schemas.TestSchema.properties.notAnEnum;
+
+    expect(field.deprecated).toBeUndefined();
+    expect(field['x-speakeasy-deprecation-message']).toBeUndefined();
+    expect(field['x-speakeasy-enum-descriptions']).toBeUndefined();
+    expect(Array.isArray(field['x-glean-deprecated'])).toBe(true);
+  });
+
+  test('transformGleanDeprecated ignores object-form enum-value deprecations', () => {
+    const testSpec = {
+      components: {
+        schemas: {
+          TestSchema: {
+            type: 'object',
+            properties: {
+              status: {
+                type: 'string',
+                enum: ['LEGACY', 'STANDARD'],
+                'x-glean-deprecated': {
+                  id: 'enum-uuid-1',
+                  kind: 'enum-value',
+                  'enum-value': 'LEGACY',
+                  message: 'Use STANDARD instead',
+                  introduced: '2025-12-01',
+                  removal: '2026-07-15',
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformGleanDeprecated(testSpec);
+    const statusField =
+      transformedSpec.components.schemas.TestSchema.properties.status;
+
+    expect(statusField.deprecated).toBeUndefined();
+    expect(statusField['x-speakeasy-deprecation-message']).toBeUndefined();
+    expect(statusField['x-speakeasy-enum-descriptions']).toBeUndefined();
+  });
+
   test('transformGleanDeprecated handles missing deprecation fields without undefined', () => {
     const testSpec = {
       components: {
