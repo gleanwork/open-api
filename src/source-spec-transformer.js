@@ -267,6 +267,13 @@ export function transformEnumDescriptions(spec) {
  * @returns {Object} Transformed spec object
  */
 export function transformGleanDeprecated(spec) {
+  /**
+   * Builds a human-readable deprecation message from a single x-glean-deprecated entry.
+   * Handles missing fields gracefully to avoid "Deprecated on undefined" in SDK output.
+   *
+   * @param {Object|null} src A single deprecation object with optional introduced, removal, message
+   * @returns {string} Formatted message, or empty string if src is invalid
+   */
   const buildMessageFrom = (src) => {
     if (!src || typeof src !== 'object' || Array.isArray(src)) {
       return '';
@@ -294,6 +301,15 @@ export function transformGleanDeprecated(spec) {
     return text;
   };
 
+  /**
+   * Normalizes x-speakeasy-enum-descriptions into a { enumValue: description } object map.
+   * Speakeasy accepts both array-indexed and object-map forms; this ensures we always
+   * work with the object-map form so we can merge deprecation text by enum value name.
+   *
+   * @param {Object|Array|undefined} existing Current x-speakeasy-enum-descriptions value
+   * @param {string[]} enumValues The enum values from the schema, used for array→map index alignment
+   * @returns {Object} Normalized { enumValue: description } map
+   */
   const toEnumDescriptionsMap = (existing, enumValues) => {
     if (!existing) {
       return {};
@@ -318,6 +334,14 @@ export function transformGleanDeprecated(spec) {
     return {};
   };
 
+  /**
+   * Appends a deprecation annotation to an enum value's description, skipping if
+   * the description already contains an @deprecated tag to avoid duplicate annotations.
+   *
+   * @param {string|undefined} existing Current description for this enum value
+   * @param {string|undefined} addition The @deprecated text to append
+   * @returns {string} Merged description
+   */
   const mergeEnumDescription = (existing, addition) => {
     if (!addition) {
       return existing || '';
@@ -331,6 +355,14 @@ export function transformGleanDeprecated(spec) {
     return `${existing}\n\n${addition}`;
   };
 
+  /**
+   * Processes kind: enum-value entries from an array-form x-glean-deprecated and merges
+   * their deprecation text into x-speakeasy-enum-descriptions. This is how Speakeasy
+   * surfaces per-value deprecation info in generated SDK code.
+   *
+   * @param {Object} obj The schema node (must have an enum array)
+   * @param {Array} deprecation The array-form x-glean-deprecated value
+   */
   const addEnumValueDeprecationsToDescriptions = (obj, deprecation) => {
     if (!Array.isArray(deprecation) || !Array.isArray(obj.enum)) {
       return;
@@ -380,6 +412,23 @@ export function transformGleanDeprecated(spec) {
     }
   };
 
+  /**
+   * Determines whether a property-level deprecation should be set, and returns the
+   * source object to build the message from (or null to skip).
+   *
+   * x-glean-deprecated has two forms (see DEPRECATIONS.md in glean-developer-site):
+   *   - Object form: simple property/endpoint deprecation (no kind field)
+   *   - Array form: used on enum fields, entries have kind: property | enum-value
+   *
+   * Returns null (skip property deprecation) when:
+   *   - Single object is an enum-value-only deprecation
+   *   - Array form on a non-enum field (array form is only valid on enums per spec)
+   *   - Array has no kind: property entry (only enum values are deprecated, not the property)
+   *
+   * @param {Object|Array} deprecation Raw x-glean-deprecated value
+   * @param {boolean} hasEnum Whether the schema node has an enum array
+   * @returns {Object|null} Source object for buildMessageFrom, or null to skip
+   */
   const selectDeprecationSource = (deprecation, hasEnum) => {
     if (!deprecation || typeof deprecation !== 'object') {
       return null;
