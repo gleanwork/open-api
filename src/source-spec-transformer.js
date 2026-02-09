@@ -302,7 +302,10 @@ export function transformGleanDeprecated(spec) {
     // Prefer property-level deprecation when both property and enum-value entries are present.
     const propertyDeprecation = deprecation.find(
       (item) =>
-        item && typeof item === 'object' && !Array.isArray(item) && item.kind === 'property',
+        item &&
+        typeof item === 'object' &&
+        !Array.isArray(item) &&
+        item.kind === 'property',
     );
     if (propertyDeprecation) {
       return propertyDeprecation;
@@ -324,7 +327,9 @@ export function transformGleanDeprecated(spec) {
     }
 
     if (obj['x-glean-deprecated']) {
-      const deprecationSource = selectDeprecationSource(obj['x-glean-deprecated']);
+      const deprecationSource = selectDeprecationSource(
+        obj['x-glean-deprecated'],
+      );
       const message = buildMessageFrom(deprecationSource);
 
       if (message) {

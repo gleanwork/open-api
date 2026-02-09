@@ -573,13 +573,16 @@ describe('OpenAPI YAML Transformer', () => {
     };
 
     const transformedSpec = transformGleanDeprecated(testSpec);
-    const oldField = transformedSpec.components.schemas.TestSchema.properties.oldField;
+    const oldField =
+      transformedSpec.components.schemas.TestSchema.properties.oldField;
 
     expect(oldField.deprecated).toBe(true);
     expect(oldField['x-speakeasy-deprecation-message']).toBe(
       'Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated',
     );
-    expect(oldField['x-speakeasy-deprecation-message']).not.toContain('undefined');
+    expect(oldField['x-speakeasy-deprecation-message']).not.toContain(
+      'undefined',
+    );
     expect(Array.isArray(oldField['x-glean-deprecated'])).toBe(true);
   });
 
@@ -619,13 +622,16 @@ describe('OpenAPI YAML Transformer', () => {
     };
 
     const transformedSpec = transformGleanDeprecated(testSpec);
-    const statusField = transformedSpec.components.schemas.TestSchema.properties.status;
+    const statusField =
+      transformedSpec.components.schemas.TestSchema.properties.status;
 
     expect(statusField.deprecated).toBe(true);
     expect(statusField['x-speakeasy-deprecation-message']).toBe(
       'Deprecated on 2025-12-01, removal scheduled for 2026-07-15: Use STANDARD instead',
     );
-    expect(statusField['x-speakeasy-deprecation-message']).not.toContain('undefined');
+    expect(statusField['x-speakeasy-deprecation-message']).not.toContain(
+      'undefined',
+    );
   });
 
   test('transformGleanDeprecated prefers property entry for mixed array deprecations', () => {
@@ -670,7 +676,9 @@ describe('OpenAPI YAML Transformer', () => {
     expect(clusterType['x-speakeasy-deprecation-message']).toBe(
       'Deprecated on 2025-02-01, removal scheduled for 2026-10-15: The clusterType field is deprecated',
     );
-    expect(clusterType['x-speakeasy-deprecation-message']).not.toContain('undefined');
+    expect(clusterType['x-speakeasy-deprecation-message']).not.toContain(
+      'undefined',
+    );
   });
 
   test('transformGleanDeprecated handles missing deprecation fields without undefined', () => {
@@ -716,7 +724,9 @@ describe('OpenAPI YAML Transformer', () => {
     const transformedSpec = transformGleanDeprecated(testSpec);
     const props = transformedSpec.components.schemas.TestSchema.properties;
 
-    expect(props.messageOnly['x-speakeasy-deprecation-message']).toBe('Some message');
+    expect(props.messageOnly['x-speakeasy-deprecation-message']).toBe(
+      'Some message',
+    );
     expect(props.messageOnly['x-speakeasy-deprecation-message']).not.toContain(
       'undefined',
     );
@@ -725,9 +735,9 @@ describe('OpenAPI YAML Transformer', () => {
     expect(props.introducedOnly['x-speakeasy-deprecation-message']).toBe(
       'Deprecated on 2025-04-01',
     );
-    expect(props.introducedOnly['x-speakeasy-deprecation-message']).not.toContain(
-      'undefined',
-    );
+    expect(
+      props.introducedOnly['x-speakeasy-deprecation-message'],
+    ).not.toContain('undefined');
     expect(props.introducedOnly.deprecated).toBe(true);
 
     expect(props.removalOnly['x-speakeasy-deprecation-message']).toBe(
@@ -738,7 +748,9 @@ describe('OpenAPI YAML Transformer', () => {
     );
     expect(props.removalOnly.deprecated).toBe(true);
 
-    expect(props.emptyDeprecation['x-speakeasy-deprecation-message']).toBeUndefined();
+    expect(
+      props.emptyDeprecation['x-speakeasy-deprecation-message'],
+    ).toBeUndefined();
     expect(props.emptyDeprecation.deprecated).toBeUndefined();
   });
 
@@ -764,7 +776,8 @@ describe('OpenAPI YAML Transformer', () => {
     };
 
     const transformedSpec = transformGleanDeprecated(testSpec);
-    const staleField = transformedSpec.components.schemas.TestSchema.properties.staleField;
+    const staleField =
+      transformedSpec.components.schemas.TestSchema.properties.staleField;
 
     expect(staleField.deprecated).toBe(true);
     expect(staleField['x-speakeasy-deprecation-message']).toBeUndefined();
@@ -830,7 +843,9 @@ describe('OpenAPI YAML Transformer', () => {
     const props = transformedSpec.components.schemas.TestSchema.properties;
 
     expect(props.malformedOnly.deprecated).toBeUndefined();
-    expect(props.malformedOnly['x-speakeasy-deprecation-message']).toBeUndefined();
+    expect(
+      props.malformedOnly['x-speakeasy-deprecation-message'],
+    ).toBeUndefined();
 
     expect(props.mixedArray.deprecated).toBe(true);
     expect(props.mixedArray['x-speakeasy-deprecation-message']).toBe(
