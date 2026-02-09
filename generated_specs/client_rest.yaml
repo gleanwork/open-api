@@ -5396,7 +5396,7 @@ components:
               kind: property
               message: Use permissions instead
               removal: "2026-10-15"
-          x-speakeasy-deprecation-message: Deprecated on undefined, removal scheduled for undefined
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use permissions instead"
         lastViewedTime:
           type: string
           format: date-time
