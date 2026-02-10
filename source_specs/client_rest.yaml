@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: d5533b74d2d0c948e0c13508ff2d02881a9ecfe6
+  x-source-commit-sha: a5d2a702581526883a6fe20b3c746e55050ec6b2
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -2654,6 +2654,7 @@ components:
             LAST_TOKEN: The final token of a streaming response is received.
             MANUAL_FEEDBACK: The user submitted textual manual feedback regarding the object.
             MANUAL_FEEDBACK_SIDE_BY_SIDE: The user submitted comparative feedback for multiple side-by-side implementations.
+            FEEDBACK_TIME_SAVED: The user submitted feedback about time saved by an agent or workflow.
             MARK_AS_READ: The user explicitly marked the content as read.
             MESSAGE: The user attempted to send a message using their default messaing app.
             MIDDLE_CLICK: The user middle clicked the object's primary link with the intent to open its full representation in a new tab.
@@ -2685,6 +2686,7 @@ components:
             - LAST_TOKEN
             - MANUAL_FEEDBACK
             - MANUAL_FEEDBACK_SIDE_BY_SIDE
+            - FEEDBACK_TIME_SAVED
             - MARK_AS_READ
             - MESSAGE
             - MIDDLE_CLICK
