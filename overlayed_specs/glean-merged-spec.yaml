@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 9935ea178347cc05e8957017f5c329698c4e1c58
+  x-source-commit-sha: a5d2a702581526883a6fe20b3c746e55050ec6b2
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: a76091ecbfea5b0b652d0a677b9e4a5ce65b5095
+  x-open-api-commit-sha: 2899bfb15cd0159fbf1e4b28a915e8a9ec1c6de3
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -4181,6 +4181,7 @@ components:
             LAST_TOKEN: The final token of a streaming response is received.
             MANUAL_FEEDBACK: The user submitted textual manual feedback regarding the object.
             MANUAL_FEEDBACK_SIDE_BY_SIDE: The user submitted comparative feedback for multiple side-by-side implementations.
+            FEEDBACK_TIME_SAVED: The user submitted feedback about time saved by an agent or workflow.
             MARK_AS_READ: The user explicitly marked the content as read.
             MESSAGE: The user attempted to send a message using their default messaing app.
             MIDDLE_CLICK: The user middle clicked the object's primary link with the intent to open its full representation in a new tab.
@@ -4212,6 +4213,7 @@ components:
             - LAST_TOKEN
             - MANUAL_FEEDBACK
             - MANUAL_FEEDBACK_SIDE_BY_SIDE
+            - FEEDBACK_TIME_SAVED
             - MARK_AS_READ
             - MESSAGE
             - MIDDLE_CLICK
@@ -4244,6 +4246,7 @@ components:
             LAST_TOKEN: The final token of a streaming response is received.
             MANUAL_FEEDBACK: The user submitted textual manual feedback regarding the object.
             MANUAL_FEEDBACK_SIDE_BY_SIDE: The user submitted comparative feedback for multiple side-by-side implementations.
+            FEEDBACK_TIME_SAVED: The user submitted feedback about time saved by an agent or workflow.
             MARK_AS_READ: The user explicitly marked the content as read.
             MESSAGE: The user attempted to send a message using their default messaing app.
             MIDDLE_CLICK: The user middle clicked the object's primary link with the intent to open its full representation in a new tab.
