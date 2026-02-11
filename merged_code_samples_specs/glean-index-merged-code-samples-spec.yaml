@@ -972,6 +972,14 @@ paths:
                     email: "Ivory_Cummerata@hotmail.com",
                     name: "<value>",
                   },
+                  {
+                    email: "Ivory_Cummerata@hotmail.com",
+                    name: "<value>",
+                  },
+                  {
+                    email: "Ivory_Cummerata@hotmail.com",
+                    name: "<value>",
+                  },
                 ],
               });
 
@@ -1040,6 +1048,14 @@ paths:
                     UploadID: "<id>",
                     Datasource: "<value>",
                     Users: []components.DatasourceUserDefinition{
+                        components.DatasourceUserDefinition{
+                            Email: "Ivory_Cummerata@hotmail.com",
+                            Name: "<value>",
+                        },
+                        components.DatasourceUserDefinition{
+                            Email: "Ivory_Cummerata@hotmail.com",
+                            Name: "<value>",
+                        },
                         components.DatasourceUserDefinition{
                             Email: "Ivory_Cummerata@hotmail.com",
                             Name: "<value>",
@@ -1243,6 +1259,9 @@ paths:
                   {
                     name: "<value>",
                   },
+                  {
+                    name: "<value>",
+                  },
                 ],
               });
 
@@ -1310,6 +1329,9 @@ paths:
                     UploadID: "<id>",
                     Datasource: "<value>",
                     Groups: []components.DatasourceGroupDefinition{
+                        components.DatasourceGroupDefinition{
+                            Name: "<value>",
+                        },
                         components.DatasourceGroupDefinition{
                             Name: "<value>",
                         },
@@ -1506,6 +1528,8 @@ paths:
                 datasource: "<value>",
                 memberships: [
                   {},
+                  {},
+                  {},
                 ],
               });
 
@@ -1572,6 +1596,8 @@ paths:
                     UploadID: "<id>",
                     Datasource: "<value>",
                     Memberships: []components.DatasourceBulkMembershipDefinition{
+                        components.DatasourceBulkMembershipDefinition{},
+                        components.DatasourceBulkMembershipDefinition{},
                         components.DatasourceBulkMembershipDefinition{},
                     },
                 })
@@ -2371,7 +2397,12 @@ paths:
 
             async function run() {
               const result = await glean.indexing.documents.debugMany({
-                debugDocuments: [],
+                debugDocuments: [
+                  {
+                    objectType: "Article",
+                    docId: "art123",
+                  },
+                ],
               }, "<value>");
 
               console.log(result);
@@ -2430,7 +2461,12 @@ paths:
                 )
 
                 res, err := s.Indexing.Documents.DebugMany(ctx, "<value>", components.DebugDocumentsRequest{
-                    DebugDocuments: []components.DebugDocumentRequest{},
+                    DebugDocuments: []components.DebugDocumentRequest{
+                        components.DebugDocumentRequest{
+                            ObjectType: "Article",
+                            DocID: "art123",
+                        },
+                    },
                 })
                 if err != nil {
                     log.Fatal(err)
@@ -3544,6 +3580,26 @@ paths:
                       },
                     ],
                   },
+                  {
+                    email: "Robin.Stoltenberg@yahoo.com",
+                    department: "<value>",
+                    datasourceProfiles: [
+                      {
+                        datasource: "github",
+                        handle: "<value>",
+                      },
+                    ],
+                  },
+                  {
+                    email: "Robin.Stoltenberg@yahoo.com",
+                    department: "<value>",
+                    datasourceProfiles: [
+                      {
+                        datasource: "github",
+                        handle: "<value>",
+                      },
+                    ],
+                  },
                 ],
               });
 
@@ -3614,6 +3670,26 @@ paths:
                 res, err := s.Indexing.People.BulkIndex(ctx, components.BulkIndexEmployeesRequest{
                     UploadID: "<id>",
                     Employees: []components.EmployeeInfoDefinition{
+                        components.EmployeeInfoDefinition{
+                            Email: "Robin.Stoltenberg@yahoo.com",
+                            Department: "<value>",
+                            DatasourceProfiles: []components.DatasourceProfile{
+                                components.DatasourceProfile{
+                                    Datasource: "github",
+                                    Handle: "<value>",
+                                },
+                            },
+                        },
+                        components.EmployeeInfoDefinition{
+                            Email: "Robin.Stoltenberg@yahoo.com",
+                            Department: "<value>",
+                            DatasourceProfiles: []components.DatasourceProfile{
+                                components.DatasourceProfile{
+                                    Datasource: "github",
+                                    Handle: "<value>",
+                                },
+                            },
+                        },
                         components.EmployeeInfoDefinition{
                             Email: "Robin.Stoltenberg@yahoo.com",
                             Department: "<value>",
@@ -3921,10 +3997,18 @@ paths:
                       datasource: "github",
                       handle: "<value>",
                     },
+                    {
+                      datasource: "github",
+                      handle: "<value>",
+                    },
+                    {
+                      datasource: "github",
+                      handle: "<value>",
+                    },
                   ],
                   members: [
                     {
-                      email: "Valerie9@gmail.com",
+                      email: "Nasir.Hilll73@hotmail.com",
                     },
                   ],
                 },
@@ -4005,10 +4089,18 @@ paths:
                                 Datasource: "github",
                                 Handle: "<value>",
                             },
+                            components.DatasourceProfile{
+                                Datasource: "github",
+                                Handle: "<value>",
+                            },
+                            components.DatasourceProfile{
+                                Datasource: "github",
+                                Handle: "<value>",
+                            },
                         },
                         Members: []components.TeamMember{
                             components.TeamMember{
-                                Email: "Valerie9@gmail.com",
+                                Email: "Nasir.Hilll73@hotmail.com",
                             },
                         },
                     },
@@ -4212,12 +4304,42 @@ paths:
                         datasource: "github",
                         handle: "<value>",
                       },
-                    ],
-                    members: [
                       {
-                        email: "Nina_Erdman16@gmail.com",
+                        datasource: "github",
+                        handle: "<value>",
                       },
                     ],
+                    members: [],
+                  },
+                  {
+                    id: "<id>",
+                    name: "<value>",
+                    datasourceProfiles: [
+                      {
+                        datasource: "github",
+                        handle: "<value>",
+                      },
+                      {
+                        datasource: "github",
+                        handle: "<value>",
+                      },
+                    ],
+                    members: [],
+                  },
+                  {
+                    id: "<id>",
+                    name: "<value>",
+                    datasourceProfiles: [
+                      {
+                        datasource: "github",
+                        handle: "<value>",
+                      },
+                      {
+                        datasource: "github",
+                        handle: "<value>",
+                      },
+                    ],
+                    members: [],
                   },
                 ],
               });
@@ -4301,12 +4423,42 @@ paths:
                                     Datasource: "github",
                                     Handle: "<value>",
                                 },
-                            },
-                            Members: []components.TeamMember{
-                                components.TeamMember{
-                                    Email: "Nina_Erdman16@gmail.com",
+                                components.DatasourceProfile{
+                                    Datasource: "github",
+                                    Handle: "<value>",
                                 },
                             },
+                            Members: []components.TeamMember{},
+                        },
+                        components.TeamInfoDefinition{
+                            ID: "<id>",
+                            Name: "<value>",
+                            DatasourceProfiles: []components.DatasourceProfile{
+                                components.DatasourceProfile{
+                                    Datasource: "github",
+                                    Handle: "<value>",
+                                },
+                                components.DatasourceProfile{
+                                    Datasource: "github",
+                                    Handle: "<value>",
+                                },
+                            },
+                            Members: []components.TeamMember{},
+                        },
+                        components.TeamInfoDefinition{
+                            ID: "<id>",
+                            Name: "<value>",
+                            DatasourceProfiles: []components.DatasourceProfile{
+                                components.DatasourceProfile{
+                                    Datasource: "github",
+                                    Handle: "<value>",
+                                },
+                                components.DatasourceProfile{
+                                    Datasource: "github",
+                                    Handle: "<value>",
+                                },
+                            },
+                            Members: []components.TeamMember{},
                         },
                     },
                 })
@@ -4376,6 +4528,12 @@ paths:
               await glean.indexing.shortcuts.bulkIndex({
                 uploadId: "<id>",
                 shortcuts: [
+                  {
+                    inputAlias: "<value>",
+                    destinationUrl: "https://plump-tune-up.biz/",
+                    createdBy: "<value>",
+                    intermediateUrl: "https://lean-sightseeing.net",
+                  },
                   {
                     inputAlias: "<value>",
                     destinationUrl: "https://plump-tune-up.biz/",
@@ -4456,6 +4614,12 @@ paths:
                             CreatedBy: "<value>",
                             IntermediateURL: "https://lean-sightseeing.net",
                         },
+                        components.ExternalShortcut{
+                            InputAlias: "<value>",
+                            DestinationURL: "https://plump-tune-up.biz/",
+                            CreatedBy: "<value>",
+                            IntermediateURL: "https://lean-sightseeing.net",
+                        },
                     },
                 })
                 if err != nil {
@@ -4528,6 +4692,16 @@ paths:
                     destinationUrl: "https://majestic-pharmacopoeia.info/",
                     createdBy: "<value>",
                   },
+                  {
+                    inputAlias: "<value>",
+                    destinationUrl: "https://majestic-pharmacopoeia.info/",
+                    createdBy: "<value>",
+                  },
+                  {
+                    inputAlias: "<value>",
+                    destinationUrl: "https://majestic-pharmacopoeia.info/",
+                    createdBy: "<value>",
+                  },
                 ],
               });
 
@@ -4595,6 +4769,16 @@ paths:
                 res, err := s.Indexing.Shortcuts.Upload(ctx, components.UploadShortcutsRequest{
                     UploadID: "<id>",
                     Shortcuts: []components.IndexingShortcut{
+                        components.IndexingShortcut{
+                            InputAlias: "<value>",
+                            DestinationURL: "https://majestic-pharmacopoeia.info/",
+                            CreatedBy: "<value>",
+                        },
+                        components.IndexingShortcut{
+                            InputAlias: "<value>",
+                            DestinationURL: "https://majestic-pharmacopoeia.info/",
+                            CreatedBy: "<value>",
+                        },
                         components.IndexingShortcut{
                             InputAlias: "<value>",
                             DestinationURL: "https://majestic-pharmacopoeia.info/",
