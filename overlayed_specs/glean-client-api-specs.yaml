@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 8fbf6821f2079d099f0c65e2d5f31cebaa9275e4
+  x-source-commit-sha: 8a8660c64f8e0b709e1cae89fe04be0ded24cbcd
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 431948c1e94b08a8c7bec446283d7ad8124f1a6a
+  x-open-api-commit-sha: e39252ddec5b28ba9db435b2a5eb274a1f44cb9c
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -332,8 +332,14 @@ paths:
       deprecated: true
       x-visibility: Public
       x-codegen-request-body-name: payload
+      x-glean-deprecated:
+        id: 4c0923bd-64c7-45b9-99a5-b36f2705e618
+        introduced: "2026-01-21"
+        message: Answer boards have been removed and this endpoint no longer serves a purpose
+        removal: "2026-10-15"
       parameters:
         - $ref: "#/components/parameters/locale"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-01-21, removal scheduled for 2026-10-15: Answer boards have been removed and this endpoint no longer serves a purpose"
       requestBody:
         content:
           application/json:
@@ -355,12 +361,6 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
-      x-glean-deprecated:
-        id: 4c0923bd-64c7-45b9-99a5-b36f2705e618
-        introduced: "2026-01-21"
-        message: Answer boards have been removed and this endpoint no longer serves a purpose
-        removal: "2026-10-15"
-      x-speakeasy-deprecation-message: "Deprecated on 2026-01-21, removal scheduled for 2026-10-15: Answer boards have been removed and this endpoint no longer serves a purpose"
       x-speakeasy-name-override: list
       x-speakeasy-group: client.answers
   /rest/api/v1/createauthtoken:
@@ -2280,9 +2280,10 @@ paths:
       x-speakeasy-group: client.tools
   /rest/api/v1/governance/data/policies/{id}:
     get:
-      operationId: getpolicy
-      summary: Gets specified policy
       description: Fetches the specified policy version, or the latest if no version is provided.
+      summary: Gets specified policy
+      operationId: getpolicy
+      x-visibility: Public
       tags:
         - Governance
       parameters:
@@ -2305,18 +2306,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetDlpReportResponse'
+                $ref: "#/components/schemas/GetDlpReportResponse"
         "403":
           description: Permissions error
         "500":
           description: Internal error
-      x-visibility: Public
       x-speakeasy-group: client.governance.data.policies
       x-speakeasy-name-override: retrieve
     post:
-      operationId: updatepolicy
-      summary: Updates an existing policy
       description: Updates an existing policy.
+      summary: Updates an existing policy
+      operationId: updatepolicy
       tags:
         - Governance
       parameters:
@@ -2330,7 +2330,7 @@ paths:
         content:
           application/json; charset=UTF-8:
             schema:
-              $ref: '#/components/schemas/UpdateDlpReportRequest'
+              $ref: "#/components/schemas/UpdateDlpReportRequest"
         required: true
       responses:
         "200":
@@ -2338,7 +2338,7 @@ paths:
           content:
             application/json; charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/UpdateDlpReportResponse'
+                $ref: "#/components/schemas/UpdateDlpReportResponse"
         "403":
           description: Permissions error
         "500":
@@ -2347,9 +2347,10 @@ paths:
       x-speakeasy-name-override: update
   /rest/api/v1/governance/data/policies:
     get:
-      operationId: listpolicies
-      summary: Lists policies
       description: Lists policies with filtering.
+      summary: Lists policies
+      operationId: listpolicies
+      x-visibility: Public
       tags:
         - Governance
       parameters:
@@ -2371,25 +2372,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListDlpReportsResponse'
+                $ref: "#/components/schemas/ListDlpReportsResponse"
         "403":
           description: Permissions error
         "500":
           description: Internal error
-      x-visibility: Public
       x-speakeasy-group: client.governance.data.policies
       x-speakeasy-name-override: list
     post:
-      operationId: createpolicy
-      summary: Creates new policy
       description: Creates a new policy with specified specifications and returns its id.
+      summary: Creates new policy
+      operationId: createpolicy
+      x-visibility: Public
       tags:
         - Governance
       requestBody:
         content:
           application/json; charset=UTF-8:
             schema:
-              $ref: '#/components/schemas/CreateDlpReportRequest'
+              $ref: "#/components/schemas/CreateDlpReportRequest"
         required: true
       responses:
         "200":
@@ -2397,19 +2398,19 @@ paths:
           content:
             application/json; charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/CreateDlpReportResponse'
+                $ref: "#/components/schemas/CreateDlpReportResponse"
         "403":
           description: Permissions error
         "500":
           description: Internal error
-      x-visibility: Public
       x-speakeasy-group: client.governance.data.policies
       x-speakeasy-name-override: create
   /rest/api/v1/governance/data/policies/{id}/download:
     get:
-      operationId: downloadpolicycsv
-      summary: Downloads violations CSV for policy
       description: Downloads CSV violations report for a specific policy id. This does not support continuous policies.
+      summary: Downloads violations CSV for policy
+      operationId: downloadpolicycsv
+      x-visibility: Public
       tags:
         - Governance
       parameters:
@@ -2425,29 +2426,29 @@ paths:
           content:
             text/csv; charset=UTF-8:
               schema:
-                type: string
                 description: CSV of all the violations found for this policy.
+                type: string
         "400":
           description: Bad request error (e.g., continuous policies are not supported).
         "403":
           description: Permissions error
         "500":
           description: Internal error
-      x-visibility: Public
       x-speakeasy-group: client.governance.data.policies
       x-speakeasy-name-override: download
   /rest/api/v1/governance/data/reports:
     post:
-      operationId: createreport
-      summary: Creates new one-time report
       description: Creates a new one-time report and executes its batch job.
+      summary: Creates new one-time report
+      operationId: createreport
+      x-visibility: Public
       tags:
         - Governance
       requestBody:
         content:
           application/json; charset=UTF-8:
             schema:
-              $ref: '#/components/schemas/UpdateDlpConfigRequest'
+              $ref: "#/components/schemas/UpdateDlpConfigRequest"
         required: true
       responses:
         "200":
@@ -2455,19 +2456,19 @@ paths:
           content:
             application/json; charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/UpdateDlpConfigResponse'
+                $ref: "#/components/schemas/UpdateDlpConfigResponse"
         "403":
           description: Permissions error
         "500":
           description: Internal error
-      x-visibility: Public
       x-speakeasy-group: client.governance.data.reports
       x-speakeasy-name-override: create
   /rest/api/v1/governance/data/reports/{id}/download:
     get:
-      operationId: downloadreportcsv
-      summary: Downloads violations CSV for report
       description: Downloads CSV violations report for a specific report id.
+      summary: Downloads violations CSV for report
+      operationId: downloadreportcsv
+      x-visibility: Public
       tags:
         - Governance
       parameters:
@@ -2483,20 +2484,20 @@ paths:
           content:
             text/csv; charset=UTF-8:
               schema:
-                type: string
                 description: CSV of all the violations found for this report.
+                type: string
         "403":
           description: Permissions error
         "500":
           description: Internal error
-      x-visibility: Public
       x-speakeasy-group: client.governance.data.reports
       x-speakeasy-name-override: download
   /rest/api/v1/governance/data/reports/{id}/status:
     get:
-      operationId: getreportstatus
-      summary: Fetches report run status
       description: Fetches the status of the run corresponding to the report-id.
+      summary: Fetches report run status
+      operationId: getreportstatus
+      x-visibility: Public
       tags:
         - Governance
       parameters:
@@ -2512,19 +2513,19 @@ paths:
           content:
             application/json; charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/ReportStatusResponse'
+                $ref: "#/components/schemas/ReportStatusResponse"
         "403":
           description: Permissions error
         "500":
           description: Internal error
-      x-visibility: Public
       x-speakeasy-group: client.governance.data.reports
       x-speakeasy-name-override: status
   /rest/api/v1/governance/documents/visibilityoverrides:
     get:
-      operationId: getdocvisibility
-      summary: Fetches documents visibility
       description: Fetches the visibility override status of the documents passed.
+      summary: Fetches documents visibility
+      operationId: getdocvisibility
+      x-visibility: Public
       tags:
         - Governance
       parameters:
@@ -2541,25 +2542,25 @@ paths:
           content:
             application/json; charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/GetDocumentVisibilityOverridesResponse'
+                $ref: "#/components/schemas/GetDocumentVisibilityOverridesResponse"
         "403":
           description: Permissions error
         "500":
           description: Internal error
-      x-visibility: Public
       x-speakeasy-group: client.governance.documents.visibilityoverrides
       x-speakeasy-name-override: list
     post:
-      operationId: setdocvisibility
-      summary: Hide or unhide docs
       description: Sets the visibility-override state of the documents specified, effectively hiding or un-hiding documents.
+      summary: Hide or unhide docs
+      operationId: setdocvisibility
+      x-visibility: Public
       tags:
         - Governance
       requestBody:
         content:
           application/json; charset=UTF-8:
             schema:
-              $ref: '#/components/schemas/UpdateDocumentVisibilityOverridesRequest'
+              $ref: "#/components/schemas/UpdateDocumentVisibilityOverridesRequest"
         required: true
       responses:
         "200":
@@ -2567,26 +2568,26 @@ paths:
           content:
             application/json; charset=UTF-8:
               schema:
-                $ref: '#/components/schemas/UpdateDocumentVisibilityOverridesResponse'
+                $ref: "#/components/schemas/UpdateDocumentVisibilityOverridesResponse"
         "403":
           description: Permissions error
         "500":
           description: Internal error
-      x-visibility: Public
       x-speakeasy-group: client.governance.documents.visibilityoverrides
       x-speakeasy-name-override: create
   /rest/api/v1/governance/data/findings/exports:
     post:
-      operationId: createfindingsexport
-      summary: Creates findings export
       description: Creates a new DLP findings export job.
+      summary: Creates findings export
+      operationId: createfindingsexport
+      x-visibility: Public
       tags:
         - Governance
       requestBody:
         content:
           application/json; charset=UTF-8:
             schema:
-              $ref: '#/components/schemas/DlpExportFindingsRequest'
+              $ref: "#/components/schemas/DlpExportFindingsRequest"
         required: true
       responses:
         "200":
@@ -2594,16 +2595,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ExportInfo'
+                $ref: "#/components/schemas/ExportInfo"
         "403":
           description: Permissions error
         "500":
           description: Internal error
-      x-visibility: Public
     get:
-      operationId: listfindingsexports
-      summary: Lists findings exports
       description: Lists all DLP findings exports.
+      summary: Lists findings exports
+      operationId: listfindingsexports
+      x-visibility: Public
       tags:
         - Governance
       responses:
@@ -2612,17 +2613,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListDlpFindingsExportsResponse'
+                $ref: "#/components/schemas/ListDlpFindingsExportsResponse"
         "403":
           description: Permissions error
         "500":
           description: Internal error
-      x-visibility: Public
   /rest/api/v1/governance/data/findings/exports/{id}:
     get:
-      operationId: downloadfindingsexport
-      summary: Downloads findings export
       description: Downloads a DLP findings export as a CSV file.
+      summary: Downloads findings export
+      operationId: downloadfindingsexport
+      x-visibility: Public
       tags:
         - Governance
       parameters:
@@ -2638,17 +2639,17 @@ paths:
           content:
             text/csv; charset=UTF-8:
               schema:
-                type: string
                 description: CSV of all the exported findings.
+                type: string
         "403":
           description: Permissions error
         "500":
           description: Internal error
-      x-visibility: Public
     delete:
-      operationId: deletefindingsexport
-      summary: Deletes findings export
       description: Deletes a DLP findings export.
+      summary: Deletes findings export
+      operationId: deletefindingsexport
+      x-visibility: Public
       tags:
         - Governance
       parameters:
@@ -2666,7 +2667,6 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
-      x-visibility: Public
   /rest/api/v1/chat#stream:
     post:
       tags:
@@ -2861,14 +2861,6 @@ components:
             CRAWL: Represents an explicit request to index the given `url` along with associated attributes in this payload.
             HISTORICAL_SEARCH: Represents a search performed at the given `url` as indicated by the user's history.
             HISTORICAL_VIEW: Represents a visit to the given `url` as indicated by the user's history.
-          enum:
-            - VIEW
-            - EDIT
-            - SEARCH
-            - COMMENT
-            - CRAWL
-            - HISTORICAL_SEARCH
-            - HISTORICAL_VIEW
           x-speakeasy-enum-descriptions:
             VIEW: Represents a visit to the given `url`.
             EDIT: Represents an edit of the document represented by the `url`.
@@ -2877,6 +2869,14 @@ components:
             CRAWL: Represents an explicit request to index the given `url` along with associated attributes in this payload.
             HISTORICAL_SEARCH: Represents a search performed at the given `url` as indicated by the user's history.
             HISTORICAL_VIEW: Represents a visit to the given `url` as indicated by the user's history.
+          enum:
+            - VIEW
+            - EDIT
+            - SEARCH
+            - COMMENT
+            - CRAWL
+            - HISTORICAL_SEARCH
+            - HISTORICAL_VIEW
         params:
           $ref: "#/components/schemas/ActivityEventParams"
         timestamp:
@@ -3216,6 +3216,38 @@ components:
             UPVOTE: The user gave feedback that the object was useful.
             VIEW: The object was visible within the user's viewport.
             VISIBLE: The object was visible within the user's viewport.
+          x-speakeasy-enum-descriptions:
+            CLICK: The object's primary link was clicked with the intent to view its full representation. Depending on the object type, this may imply an external navigation or navigating to a new page or view within the Glean app.
+            CONTAINER_CLICK: A link to the object's parent container (e.g. the folder in which it's located) was clicked.
+            COPY_LINK: The user copied a link to the primary link.
+            CREATE: The user creates a document.
+            DISMISS: The user dismissed the object such that it was hidden from view.
+            DOWNVOTE: The user gave feedback that the object was not useful.
+            EMAIL: The user attempted to send an email.
+            EXECUTE: The user executed the object (e.g. ran a workflow).
+            FILTER: The user applied a filter.
+            FIRST_TOKEN: The first token of a streaming response is received.
+            FOCUS_IN: The user clicked into an interactive element, e.g. the search box.
+            LAST_TOKEN: The final token of a streaming response is received.
+            MANUAL_FEEDBACK: The user submitted textual manual feedback regarding the object.
+            MANUAL_FEEDBACK_SIDE_BY_SIDE: The user submitted comparative feedback for multiple side-by-side implementations.
+            FEEDBACK_TIME_SAVED: The user submitted feedback about time saved by an agent or workflow.
+            MARK_AS_READ: The user explicitly marked the content as read.
+            MESSAGE: The user attempted to send a message using their default messaing app.
+            MIDDLE_CLICK: The user middle clicked the object's primary link with the intent to open its full representation in a new tab.
+            PAGE_BLUR: The user puts a page out of focus but keeps it in the background.
+            PAGE_FOCUS: The user puts a page in focus, meaning it is the first to receive keyboard events.
+            PAGE_LEAVE: The user leaves a page and it is unloaded (by clicking a link, closing the tab/window, etc).
+            PREVIEW: The user clicked the object's inline preview affordance.
+            RIGHT_CLICK: The user right clicked the object's primary link. This may indicate an intent to open it in a new tab or copy it.
+            SECTION_CLICK: The user clicked a link to a subsection of the primary object.
+            SEEN: The user has likely seen the object (e.g. took action to make the object visible within the user's viewport).
+            SELECT: The user explicitly selected something, eg. a chat response variant they prefer.
+            SHARE: The user shared the object with another user.
+            SHOW_MORE: The user clicked the object's show more affordance.
+            UPVOTE: The user gave feedback that the object was useful.
+            VIEW: The object was visible within the user's viewport.
+            VISIBLE: The object was visible within the user's viewport.
           enum:
             - CLICK
             - CONTAINER_CLICK
@@ -3249,38 +3281,6 @@ components:
             - UPVOTE
             - VIEW
             - VISIBLE
-          x-speakeasy-enum-descriptions:
-            CLICK: The object's primary link was clicked with the intent to view its full representation. Depending on the object type, this may imply an external navigation or navigating to a new page or view within the Glean app.
-            CONTAINER_CLICK: A link to the object's parent container (e.g. the folder in which it's located) was clicked.
-            COPY_LINK: The user copied a link to the primary link.
-            CREATE: The user creates a document.
-            DISMISS: The user dismissed the object such that it was hidden from view.
-            DOWNVOTE: The user gave feedback that the object was not useful.
-            EMAIL: The user attempted to send an email.
-            EXECUTE: The user executed the object (e.g. ran a workflow).
-            FILTER: The user applied a filter.
-            FIRST_TOKEN: The first token of a streaming response is received.
-            FOCUS_IN: The user clicked into an interactive element, e.g. the search box.
-            LAST_TOKEN: The final token of a streaming response is received.
-            MANUAL_FEEDBACK: The user submitted textual manual feedback regarding the object.
-            MANUAL_FEEDBACK_SIDE_BY_SIDE: The user submitted comparative feedback for multiple side-by-side implementations.
-            FEEDBACK_TIME_SAVED: The user submitted feedback about time saved by an agent or workflow.
-            MARK_AS_READ: The user explicitly marked the content as read.
-            MESSAGE: The user attempted to send a message using their default messaing app.
-            MIDDLE_CLICK: The user middle clicked the object's primary link with the intent to open its full representation in a new tab.
-            PAGE_BLUR: The user puts a page out of focus but keeps it in the background.
-            PAGE_FOCUS: The user puts a page in focus, meaning it is the first to receive keyboard events.
-            PAGE_LEAVE: The user leaves a page and it is unloaded (by clicking a link, closing the tab/window, etc).
-            PREVIEW: The user clicked the object's inline preview affordance.
-            RIGHT_CLICK: The user right clicked the object's primary link. This may indicate an intent to open it in a new tab or copy it.
-            SECTION_CLICK: The user clicked a link to a subsection of the primary object.
-            SEEN: The user has likely seen the object (e.g. took action to make the object visible within the user's viewport).
-            SELECT: The user explicitly selected something, eg. a chat response variant they prefer.
-            SHARE: The user shared the object with another user.
-            SHOW_MORE: The user clicked the object's show more affordance.
-            UPVOTE: The user gave feedback that the object was useful.
-            VIEW: The object was visible within the user's viewport.
-            VISIBLE: The object was visible within the user's viewport.
         position:
           type: integer
           description: Position of the element in the case that the client controls order (such as feed and autocomplete).
@@ -3443,13 +3443,13 @@ components:
             LT: The value is less than the specified value.
             GT: The value is greater than the specified value.
             NOT_EQUALS: The value is not equal to the specified value.
-          example: EQUALS
           x-speakeasy-enum-descriptions:
             EQUALS: The value is equal to the specified value.
             ID_EQUALS: The value is equal to the specified ID.
             LT: The value is less than the specified value.
             GT: The value is greater than the specified value.
             NOT_EQUALS: The value is not equal to the specified value.
+          example: EQUALS
         isNegated:
           type: boolean
           deprecated: true
@@ -3645,18 +3645,18 @@ components:
               QUERY_METADATA: Returns result counts for each result set which has non-zero results, as well as other information about the search such as suggested spelling corrections.
               RESULTS: Return search result documents.
               SPELLCHECK_METADATA: Return metadata pertaining to spellcheck results.
-            enum:
-              - ALL_RESULT_COUNTS
-              - FACET_RESULTS
-              - QUERY_METADATA
-              - RESULTS
-              - SPELLCHECK_METADATA
             x-speakeasy-enum-descriptions:
               ALL_RESULT_COUNTS: Return result counts for each result set which has non-zero results, even when the request itself is limited to a subset.
               FACET_RESULTS: Return only facet results.
               QUERY_METADATA: Returns result counts for each result set which has non-zero results, as well as other information about the search such as suggested spelling corrections.
               RESULTS: Return search result documents.
               SPELLCHECK_METADATA: Return metadata pertaining to spellcheck results.
+            enum:
+              - ALL_RESULT_COUNTS
+              - FACET_RESULTS
+              - QUERY_METADATA
+              - RESULTS
+              - SPELLCHECK_METADATA
         timezoneOffset:
           type: integer
           description: The offset of the client's timezone in minutes from UTC. e.g. PDT is -420 because it's 7 hours behind UTC.
@@ -5299,14 +5299,14 @@ components:
             HERO: A high-confidence result that should feature prominently on the page.
             PROMOTED: May not be the best result but should be given additional visual distinction.
             STANDARD: Should not be distinct from any other results.
-          enum:
-            - HERO
-            - PROMOTED
-            - STANDARD
           x-speakeasy-enum-descriptions:
             HERO: A high-confidence result that should feature prominently on the page.
             PROMOTED: May not be the best result but should be given additional visual distinction.
             STANDARD: Should not be distinct from any other results.
+          enum:
+            - HERO
+            - PROMOTED
+            - STANDARD
         source:
           type: string
           description: Source context for this result. Possible values depend on the result type.
@@ -5362,14 +5362,14 @@ components:
         HERO: A high-confidence result that should feature prominently on the page.
         PROMOTED: May not be the best result but should be given additional visual distinction.
         STANDARD: Should not be distinct from any other results.
-      enum:
-        - HERO
-        - PROMOTED
-        - STANDARD
       x-speakeasy-enum-descriptions:
         HERO: A high-confidence result that should feature prominently on the page.
         PROMOTED: May not be the best result but should be given additional visual distinction.
         STANDARD: Should not be distinct from any other results.
+      enum:
+        - HERO
+        - PROMOTED
+        - STANDARD
     PinDocumentMutableProperties:
       properties:
         queries:
@@ -5664,17 +5664,17 @@ components:
             CONTRACTOR: The person is a current contractor of the company.
             NON_EMPLOYEE: The person object represents a non-human actor such as a service or admin account.
             FORMER_EMPLOYEE: The person is a previous employee of the company.
+          x-speakeasy-enum-descriptions:
+            FULL_TIME: The person is a current full-time employee of the company.
+            CONTRACTOR: The person is a current contractor of the company.
+            NON_EMPLOYEE: The person object represents a non-human actor such as a service or admin account.
+            FORMER_EMPLOYEE: The person is a previous employee of the company.
           enum:
             - FULL_TIME
             - CONTRACTOR
             - NON_EMPLOYEE
             - FORMER_EMPLOYEE
           example: FULL_TIME
-          x-speakeasy-enum-descriptions:
-            FULL_TIME: The person is a current full-time employee of the company.
-            CONTRACTOR: The person is a current contractor of the company.
-            NON_EMPLOYEE: The person object represents a non-human actor such as a service or admin account.
-            FORMER_EMPLOYEE: The person is a previous employee of the company.
         firstName:
           type: string
           description: The first name of the person
@@ -5849,13 +5849,6 @@ components:
         DOMAIN_VISIBLE: Anyone in the domain can search for the document.
         PUBLIC_LINK: Anyone with the link can see the document.
         PUBLIC_VISIBLE: Anyone on the internet can search for the document.
-      enum:
-        - PRIVATE
-        - SPECIFIC_PEOPLE_AND_GROUPS
-        - DOMAIN_LINK
-        - DOMAIN_VISIBLE
-        - PUBLIC_LINK
-        - PUBLIC_VISIBLE
       x-speakeasy-enum-descriptions:
         PRIVATE: Only one person is able to see the document.
         SPECIFIC_PEOPLE_AND_GROUPS: Only specific people and/or groups can see the document.
@@ -5863,6 +5856,13 @@ components:
         DOMAIN_VISIBLE: Anyone in the domain can search for the document.
         PUBLIC_LINK: Anyone with the link can see the document.
         PUBLIC_VISIBLE: Anyone on the internet can search for the document.
+      enum:
+        - PRIVATE
+        - SPECIFIC_PEOPLE_AND_GROUPS
+        - DOMAIN_LINK
+        - DOMAIN_VISIBLE
+        - PUBLIC_LINK
+        - PUBLIC_VISIBLE
     Reaction:
       properties:
         type:
@@ -6360,13 +6360,6 @@ components:
             FAST: Uses an agent powered by the agentic engine that responds faster but may have lower quality results. Requires the agentic engine to be enabled in the deployment.
             ADVANCED: Uses an agent powered by the agentic engine that thinks for longer and potentially makes more LLM calls to return higher quality results. Requires the agentic engine to be enabled in the deployment.
             AUTO: Uses an agent powered by the agentic engine that routes between reasoning efforts based on the question and context.
-          enum:
-            - DEFAULT
-            - GPT
-            - UNIVERSAL
-            - FAST
-            - ADVANCED
-            - AUTO
           x-speakeasy-enum-descriptions:
             DEFAULT: Integrates with your company's knowledge. This will soon be deprecated in favor of the FAST and ADVANCED `agent` values
             GPT: Communicates directly with the LLM. This will soon be deprecated in favor of the FAST and ADVANCED `agent` values
@@ -6374,6 +6367,13 @@ components:
             FAST: Uses an agent powered by the agentic engine that responds faster but may have lower quality results. Requires the agentic engine to be enabled in the deployment.
             ADVANCED: Uses an agent powered by the agentic engine that thinks for longer and potentially makes more LLM calls to return higher quality results. Requires the agentic engine to be enabled in the deployment.
             AUTO: Uses an agent powered by the agentic engine that routes between reasoning efforts based on the question and context.
+          enum:
+            - DEFAULT
+            - GPT
+            - UNIVERSAL
+            - FAST
+            - ADVANCED
+            - AUTO
         toolSets:
           $ref: "#/components/schemas/ToolSets"
         mode:
@@ -6382,12 +6382,12 @@ components:
           x-enumDescriptions:
             DEFAULT: Used if no mode supplied.
             QUICK: Deprecated.
-          enum:
-            - DEFAULT
-            - QUICK
           x-speakeasy-enum-descriptions:
             DEFAULT: Used if no mode supplied.
             QUICK: Deprecated.
+          enum:
+            - DEFAULT
+            - QUICK
         useImageGeneration:
           type: boolean
           description: Whether the agent should create an image.
@@ -6769,16 +6769,6 @@ components:
             HEADING: A heading message used to distinguish different sections of the holistic response.
             WARNING: A warning message to be shown to the user.
             SERVER_TOOL: A message used to for server-side tool auth/use, for request and response.
-          enum:
-            - UPDATE
-            - CONTENT
-            - CONTEXT
-            - DEBUG
-            - DEBUG_EXTERNAL
-            - ERROR
-            - HEADING
-            - WARNING
-            - SERVER_TOOL
           x-speakeasy-enum-descriptions:
             UPDATE: An intermediate state message for progress updates.
             CONTENT: A user query or response message.
@@ -6789,6 +6779,16 @@ components:
             HEADING: A heading message used to distinguish different sections of the holistic response.
             WARNING: A warning message to be shown to the user.
             SERVER_TOOL: A message used to for server-side tool auth/use, for request and response.
+          enum:
+            - UPDATE
+            - CONTENT
+            - CONTEXT
+            - DEBUG
+            - DEBUG_EXTERNAL
+            - ERROR
+            - HEADING
+            - WARNING
+            - SERVER_TOOL
         hasMoreFragments:
           deprecated: true
           type: boolean
@@ -8803,26 +8803,26 @@ components:
         CHANNEL: A standard section for channel-based digests (e.g. from Slack, Teams).
         MENTIONS: A dedicated section that surfaces user mentions (actionable, informative, or all).
         TOPIC: A section driven by a generic topic, not tied to any specific channel or instance.
-      enum:
-        - CHANNEL
-        - MENTIONS
-        - TOPIC
       x-speakeasy-enum-descriptions:
         CHANNEL: A standard section for channel-based digests (e.g. from Slack, Teams).
         MENTIONS: A dedicated section that surfaces user mentions (actionable, informative, or all).
         TOPIC: A section driven by a generic topic, not tied to any specific channel or instance.
+      enum:
+        - CHANNEL
+        - MENTIONS
+        - TOPIC
     UpdateType:
       type: string
       description: Optional type classification for the update.
       x-enumDescriptions:
         ACTIONABLE: Updates that require user attention or action
         INFORMATIVE: Updates that are purely informational
-      enum:
-        - ACTIONABLE
-        - INFORMATIVE
       x-speakeasy-enum-descriptions:
         ACTIONABLE: Updates that require user attention or action
         INFORMATIVE: Updates that are purely informational
+      enum:
+        - ACTIONABLE
+        - INFORMATIVE
     DigestUpdate:
       type: object
       properties:
@@ -9336,12 +9336,12 @@ components:
           x-enumDescriptions:
             STANDARD: Used by default for all requests and satisfies all standard use cases for list requests. Limited to 10000 entities.
             FULL_DIRECTORY: Used exclusively to return a comprehensive list of all people entities in the organization, typically for audit like purposes. The recommended approach is to sort by FIRST_NAME or LAST_NAME, and use pagination for large organizations.
-          enum:
-            - STANDARD
-            - FULL_DIRECTORY
           x-speakeasy-enum-descriptions:
             STANDARD: Used by default for all requests and satisfies all standard use cases for list requests. Limited to 10000 entities.
             FULL_DIRECTORY: Used exclusively to return a comprehensive list of all people entities in the organization, typically for audit like purposes. The recommended approach is to sort by FIRST_NAME or LAST_NAME, and use pagination for large organizations.
+          enum:
+            - STANDARD
+            - FULL_DIRECTORY
     EntitiesSortOrder:
       type: string
       description: Different ways of sorting entities
@@ -9428,15 +9428,15 @@ components:
           x-enumDescriptions:
             PEOPLE_WITHOUT_MANAGER: Returns all people without a manager apart from the requested IDs.
             INVALID_ENTITIES: Includes invalid entities in the response if any of the requested IDs are invalid.
+          x-speakeasy-enum-descriptions:
+            PEOPLE_WITHOUT_MANAGER: Returns all people without a manager apart from the requested IDs.
+            INVALID_ENTITIES: Includes invalid entities in the response if any of the requested IDs are invalid.
           type: array
           items:
             type: string
             enum:
               - PEOPLE_WITHOUT_MANAGER
               - INVALID_ENTITIES
-          x-speakeasy-enum-descriptions:
-            PEOPLE_WITHOUT_MANAGER: Returns all people without a manager apart from the requested IDs.
-            INVALID_ENTITIES: Includes invalid entities in the response if any of the requested IDs are invalid.
         source:
           type: string
           description: A string denoting the search surface from which the endpoint is called.
@@ -9768,6 +9768,7 @@ components:
     SensitiveInfoType:
       properties:
         likelihoodThreshold:
+          deprecated: true
           type: string
           enum:
             - LIKELY
@@ -9775,141 +9776,140 @@ components:
             - POSSIBLE
             - UNLIKELY
             - VERY_UNLIKELY
-          deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
           x-glean-deprecated:
             - id: d45039ec-d6f6-47ba-93b7-ab2307b07f84
               introduced: "2026-02-05"
               kind: property
               message: Field is deprecated
               removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
         infoType:
-          type: string
           description: Text representation of an info-type to scan for.
+          type: string
     TimeRange:
       properties:
         startTime:
           type: string
-          format: date-time
           description: start time of the time range, applicable for the CUSTOM type.
+          format: date-time
         endTime:
           type: string
-          format: date-time
           description: end time of the time range, applicable for the CUSTOM type.
+          format: date-time
         lastNDaysValue:
           type: integer
-          format: int64
           description: The number of days to look back from the current time, applicable for the LAST_N_DAYS type.
+          format: int64
     InputOptions:
+      description: Controls which data-sources and what time-range to include in scans.
       properties:
         urlGreenlist:
+          deprecated: true
           type: array
+          description: list of url regex matching documents excluded from report
           items:
             type: string
-          description: list of url regex matching documents excluded from report
-          deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
           x-glean-deprecated:
             id: e022aaa5-56e6-4b57-bca3-b11943da76a0
             introduced: "2026-02-05"
             message: Field is deprecated
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
         datasourcesType:
           type: string
+          description: The types of datasource for which to run the report/policy.
           enum:
             - ALL
             - CUSTOM
-          description: The types of datasource for which to run the report/policy.
         datasources:
+          deprecated: true
           type: array
+          description: List of datasources to consider for report. DEPRECATED - use datasourceInstances instead.
           items:
             type: string
-          description: List of datasources to consider for report. DEPRECATED - use datasourceInstances instead.
-          deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use datasourceInstances instead"
           x-glean-deprecated:
             id: 97e35970-e0ed-4248-be13-2af8c22e7894
             introduced: "2026-02-05"
             message: Use datasourceInstances instead
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use datasourceInstances instead"
         datasourceInstances:
           type: array
+          description: List of datasource instances to consider for report/policy.
           items:
             type: string
-          description: List of datasource instances to consider for report/policy.
         timePeriodType:
           type: string
+          description: Type of time period for which to run the report/policy. PAST_DAY is deprecated.
           enum:
             - ALL_TIME
             - PAST_YEAR
             - PAST_DAY
             - CUSTOM
             - LAST_N_DAYS
-          description: Type of time period for which to run the report/policy. PAST_DAY is deprecated.
         customTimeRange:
-          $ref: '#/components/schemas/TimeRange'
+          $ref: "#/components/schemas/TimeRange"
         subsetDocIdsToScan:
           type: array
+          description: Subset of document IDs to scan. If empty, all documents matching other scope criteria will be scanned.
           items:
             type: string
-          description: Subset of document IDs to scan. If empty, all documents matching other scope criteria will be scanned.
-      description: Controls which data-sources and what time-range to include in scans.
     SharingOptions:
+      description: Controls how "shared" a document must be to get picked for scans.
       properties:
         enabled:
-          type: boolean
           deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
+          type: boolean
           x-glean-deprecated:
             id: e9260be6-209b-4ce2-a4b3-f7f22879dd86
             introduced: "2026-02-05"
             message: Field is deprecated
             removal: "2026-10-15"
-        threshold:
-          type: integer
-          description: The minimum number of users the document is shared with.
-        thresholdEnabled:
-          type: boolean
-          description: Documents will be filtered based on how many people have access to it.
-        anyoneWithLinkEnabled:
-          type: boolean
-          deprecated: true
           x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
+        threshold:
+          description: The minimum number of users the document is shared with.
+          type: integer
+        thresholdEnabled:
+          description: Documents will be filtered based on how many people have access to it.
+          type: boolean
+        anyoneWithLinkEnabled:
+          deprecated: true
+          type: boolean
           x-glean-deprecated:
             id: 30646ced-e0db-43ef-8412-64a67c5d0f53
             introduced: "2026-02-05"
             message: Field is deprecated
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
         anyoneInternalEnabled:
-          type: boolean
           description: Only users within the organization can access the document.
+          type: boolean
         anonymousAccessEnabled:
-          type: boolean
           description: Anyone on the internet can access the document.
-        userAccessEnabled:
           type: boolean
+        userAccessEnabled:
           description: Enable user access check
+          type: boolean
         userIds:
           type: array
+          description: Any one of the specified users can access the document.
           items:
             type: string
-          description: Any one of the specified users can access the document.
-      description: Controls how "shared" a document must be to get picked for scans.
     ExternalSharingOptions:
-      allOf:
-        - description: DEPRECATED - use `broadSharingOptions` instead.
-        - $ref: '#/components/schemas/SharingOptions'
-        - type: object
-          properties:
-            domainAccessEnabled:
-              type: boolean
       deprecated: true
-      x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use broadSharingOptions instead"
       x-glean-deprecated:
         id: 7c9e4a1d-3f8b-4e2c-9a5d-6b0f1c8e2d4a
         introduced: "2026-02-05"
         message: Use broadSharingOptions instead
         removal: "2026-10-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use broadSharingOptions instead"
+      allOf:
+        - description: DEPRECATED - use `broadSharingOptions` instead.
+        - $ref: "#/components/schemas/SharingOptions"
+        - type: object
+          properties:
+            domainAccessEnabled:
+              type: boolean
     HotwordProximity:
       properties:
         windowBefore:
@@ -9921,35 +9921,36 @@ components:
         regex:
           type: string
         proximity:
-          $ref: '#/components/schemas/HotwordProximity'
+          $ref: "#/components/schemas/HotwordProximity"
     SensitiveExpression:
       properties:
         expression:
-          type: string
           description: Sensitive word, phrase, or regular expression.
+          type: string
         hotwords:
+          description: Zero to three proximate regular expressions necessary to consider an expression as sensitive content.
           type: array
           items:
-            $ref: '#/components/schemas/Hotword'
-          description: Zero to three proximate regular expressions necessary to consider an expression as sensitive content.
+            $ref: "#/components/schemas/Hotword"
     CustomSensitiveRuleType:
       type: string
+      description: Type of the custom sensitive rule.
       enum:
         - REGEX
         - TERM
         - INFO_TYPE
-      description: Type of the custom sensitive rule.
     CustomSensitiveRule:
       properties:
         id:
-          type: string
           description: Identifier for the custom sensitive expression.
+          type: string
         value:
           type: string
           description: The value of the custom sensitive rule. For REGEX type, this is the regex pattern; for TERM type, it is the term to match; and for INFO_TYPE type, it refers to predefined categories of sensitive content. See https://cloud.google.com/dlp/docs/infotypes-reference for available options.
         type:
-          $ref: '#/components/schemas/CustomSensitiveRuleType'
+          $ref: "#/components/schemas/CustomSensitiveRuleType"
         likelihoodThreshold:
+          description: Likelihood threshold for BUILT_IN infotypes (e.g., LIKELY, VERY_LIKELY). Only applicable for BUILT_IN type.
           type: string
           enum:
             - LIKELY
@@ -9957,62 +9958,61 @@ components:
             - POSSIBLE
             - UNLIKELY
             - VERY_UNLIKELY
-          description: Likelihood threshold for BUILT_IN infotypes (e.g., LIKELY, VERY_LIKELY). Only applicable for BUILT_IN type.
     CustomSensitiveExpression:
       properties:
         id:
-          type: string
           description: Identifier for the custom sensitive expression.
-        keyword:
-          $ref: '#/components/schemas/CustomSensitiveRule'
-          description: The keyword to match against.
-        evaluationExpression:
           type: string
+        keyword:
+          description: The keyword to match against.
+          $ref: "#/components/schemas/CustomSensitiveRule"
+        evaluationExpression:
           description: The expression to evaluate the keyword match.
+          type: string
     SensitiveContentOptions:
+      description: Options for defining sensitive content within scanned documents.
       properties:
         sensitiveInfoTypes:
+          deprecated: true
+          description: DEPRECATED - use 'customSensitiveExpressions' instead.
           type: array
           items:
-            $ref: '#/components/schemas/SensitiveInfoType'
-          description: DEPRECATED - use 'customSensitiveExpressions' instead.
-          deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
+            $ref: "#/components/schemas/SensitiveInfoType"
           x-glean-deprecated:
             id: 3497cb1c-f7aa-42d8-81b8-309c3adeed84
             introduced: "2026-02-05"
             message: Use customSensitiveExpressions instead
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
         sensitiveTerms:
+          deprecated: true
+          description: DEPRECATED - use 'customSensitiveExpressions' instead.
           type: array
           items:
-            $ref: '#/components/schemas/SensitiveExpression'
-          description: DEPRECATED - use 'customSensitiveExpressions' instead.
-          deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
+            $ref: "#/components/schemas/SensitiveExpression"
           x-glean-deprecated:
             id: b0713b37-472e-4c29-80ba-6f5d6f2b449c
             introduced: "2026-02-05"
             message: Use customSensitiveExpressions instead
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
         sensitiveRegexes:
+          deprecated: true
+          description: DEPRECATED - use 'customSensitiveExpressions' instead.
           type: array
           items:
-            $ref: '#/components/schemas/SensitiveExpression'
-          description: DEPRECATED - use 'customSensitiveExpressions' instead.
-          deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
+            $ref: "#/components/schemas/SensitiveExpression"
           x-glean-deprecated:
             id: a26e1920-36b6-4c0f-981f-57b09a9ebce3
             introduced: "2026-02-05"
             message: Use customSensitiveExpressions instead
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
         customSensitiveExpressions:
+          description: list of custom sensitive expressions to consider as sensitive content
           type: array
           items:
-            $ref: '#/components/schemas/CustomSensitiveExpression'
-          description: list of custom sensitive expressions to consider as sensitive content
-      description: Options for defining sensitive content within scanned documents.
+            $ref: "#/components/schemas/CustomSensitiveExpression"
     DlpPersonMetadata:
       properties:
         firstName:
@@ -10022,6 +10022,10 @@ components:
           type: string
           description: The user's primary email address
     DlpPerson:
+      description: Details about the person who created this report/policy.
+      required:
+        - name
+        - obfuscatedId
       properties:
         name:
           type: string
@@ -10030,126 +10034,123 @@ components:
           type: string
           description: An opaque identifier that can be used to request metadata for a Person.
         metadata:
-          $ref: '#/components/schemas/DlpPersonMetadata'
-      required:
-        - name
-        - obfuscatedId
-      description: Details about the person who created this report/policy.
+          $ref: "#/components/schemas/DlpPersonMetadata"
     AllowlistOptions:
+      description: Terms that are allow-listed during the scans. If any finding picked up by a rule exactly matches a term in the allow-list, it will not be counted as a violation.
       properties:
         terms:
           type: array
+          description: list of words and phrases to consider as whitelisted content
           items:
             type: string
-          description: list of words and phrases to consider as whitelisted content
-      description: Terms that are allow-listed during the scans. If any finding picked up by a rule exactly matches a term in the allow-list, it will not be counted as a violation.
     DlpConfig:
+      description: Detailed configuration of what documents and sensitive content will be scanned.
       properties:
         version:
+          description: Synonymous with report/policy id.
           type: integer
           format: int64
-          description: Synonymous with report/policy id.
         sensitiveInfoTypes:
+          deprecated: true
+          description: DEPRECATED - use `sensitiveContentOptions` instead.
           type: array
           items:
-            $ref: '#/components/schemas/SensitiveInfoType'
-          description: DEPRECATED - use `sensitiveContentOptions` instead.
-          deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use sensitiveContentOptions instead"
+            $ref: "#/components/schemas/SensitiveInfoType"
           x-glean-deprecated:
             id: 60d6d182-e9d0-448d-af75-137f68bbdcbf
             introduced: "2026-02-05"
             message: Use sensitiveContentOptions instead
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use sensitiveContentOptions instead"
         inputOptions:
-          $ref: '#/components/schemas/InputOptions'
           description: Options for documents to include or exclude in a report
+          $ref: "#/components/schemas/InputOptions"
         externalSharingOptions:
-          $ref: '#/components/schemas/ExternalSharingOptions'
-          description: DEPRECATED - use `broadSharingOptions` instead.
           deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use broadSharingOptions instead"
+          description: DEPRECATED - use `broadSharingOptions` instead.
+          $ref: "#/components/schemas/ExternalSharingOptions"
           x-glean-deprecated:
             id: 6484ec17-a133-4176-b2ce-28e25b0e9065
             introduced: "2026-02-05"
             message: Use broadSharingOptions instead
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use broadSharingOptions instead"
         broadSharingOptions:
-          $ref: '#/components/schemas/SharingOptions'
           description: Options for defining documents to scan for sensitive content.
+          $ref: "#/components/schemas/SharingOptions"
         sensitiveContentOptions:
-          $ref: '#/components/schemas/SensitiveContentOptions'
           description: Options for defining sensitive content within scanned documents.
+          $ref: "#/components/schemas/SensitiveContentOptions"
         reportName:
           type: string
         frequency:
-          type: string
           description: Interval between scans.
+          type: string
         createdBy:
-          $ref: '#/components/schemas/DlpPerson'
           description: Person who created this report/policy.
+          $ref: "#/components/schemas/DlpPerson"
         createdAt:
+          description: Timestamp at which this configuration was created.
           type: string
           format: iso-date-time
-          description: Timestamp at which this configuration was created.
         redactQuote:
-          type: boolean
           description: redact quote in findings of the report
-        autoHideDocs:
           type: boolean
+        autoHideDocs:
           description: auto hide documents with findings in the report
+          type: boolean
         allowlistOptions:
-          $ref: '#/components/schemas/AllowlistOptions'
           description: Options for defining whitelisting content within scanned documents
-      description: Detailed configuration of what documents and sensitive content will be scanned.
+          $ref: "#/components/schemas/AllowlistOptions"
     DlpFrequency:
       type: string
+      description: Interval between scans. DAILY is deprecated.
+      x-include-enum-class-prefix: true
       enum:
         - ONCE
         - DAILY
         - WEEKLY
         - CONTINUOUS
         - NONE
-      description: Interval between scans. DAILY is deprecated.
-      x-include-enum-class-prefix: true
     DlpReportStatus:
       type: string
+      description: The status of the policy/report. Only ACTIVE status will be picked for scans.
+      x-include-enum-class-prefix: true
       enum:
         - ACTIVE
         - INACTIVE
         - CANCELLED
         - NONE
-      description: The status of the policy/report. Only ACTIVE status will be picked for scans.
-      x-include-enum-class-prefix: true
     DlpReport:
+      description: Full policy information that will be used for scans.
       properties:
         id:
           type: string
         name:
           type: string
         config:
-          $ref: '#/components/schemas/DlpConfig'
           description: All details of the policy that is needed for a scan.
+          $ref: "#/components/schemas/DlpConfig"
         frequency:
-          $ref: '#/components/schemas/DlpFrequency'
           description: The interval between scans.
+          $ref: "#/components/schemas/DlpFrequency"
         status:
-          $ref: '#/components/schemas/DlpReportStatus'
           description: The status of the policy.
+          $ref: "#/components/schemas/DlpReportStatus"
         createdBy:
-          $ref: '#/components/schemas/DlpPerson'
           description: Person who created this report.
+          $ref: "#/components/schemas/DlpPerson"
         createdAt:
-          type: string
-          format: iso-date-time
           description: Timestamp at which the policy was created.
-        lastUpdatedAt:
           type: string
           format: iso-date-time
+        lastUpdatedAt:
           description: Timestamp at which the policy was last updated.
+          type: string
+          format: iso-date-time
         autoHideDocs:
-          type: boolean
           description: Auto hide documents with findings in the policy.
+          type: boolean
         lastScanStatus:
           type: string
           enum:
@@ -10160,34 +10161,33 @@ components:
             - CANCELLING
             - ACTIVE
         lastScanStartTime:
+          description: The timestamp at which the report's last run/scan began.
           type: string
           format: iso-date-time
-          description: The timestamp at which the report's last run/scan began.
         updatedBy:
-          $ref: '#/components/schemas/DlpPerson'
           description: Person who last updated this report.
-      description: Full policy information that will be used for scans.
+          $ref: "#/components/schemas/DlpPerson"
     GetDlpReportResponse:
       properties:
         report:
-          $ref: '#/components/schemas/DlpReport'
+          $ref: "#/components/schemas/DlpReport"
     UpdateDlpReportRequest:
       properties:
         config:
-          $ref: '#/components/schemas/DlpConfig'
           description: The new configuration the policy will follow if provided.
+          $ref: "#/components/schemas/DlpConfig"
         frequency:
-          $ref: '#/components/schemas/DlpFrequency'
           description: The new frequency the policy will follow if provided.
+          $ref: "#/components/schemas/DlpFrequency"
         status:
-          $ref: '#/components/schemas/DlpReportStatus'
           description: The new status the policy will be updated to if provided.
+          $ref: "#/components/schemas/DlpReportStatus"
         autoHideDocs:
-          type: boolean
           description: The new autoHideDoc boolean the policy will be updated to if provided.
+          type: boolean
         reportName:
-          type: string
           description: The new name of the policy if provided.
+          type: string
     DlpSimpleResult:
       type: string
       enum:
@@ -10196,45 +10196,45 @@ components:
     UpdateDlpReportResponse:
       properties:
         result:
-          $ref: '#/components/schemas/DlpSimpleResult'
+          $ref: "#/components/schemas/DlpSimpleResult"
     ListDlpReportsResponse:
       properties:
         reports:
           type: array
           items:
-            $ref: '#/components/schemas/DlpReport'
+            $ref: "#/components/schemas/DlpReport"
     CreateDlpReportRequest:
       properties:
         name:
-          type: string
           description: Name of the policy being created.
+          type: string
         config:
-          $ref: '#/components/schemas/DlpConfig'
           description: Details on the configuration used in the scans.
+          $ref: "#/components/schemas/DlpConfig"
         frequency:
-          $ref: '#/components/schemas/DlpFrequency'
           description: Interval between scans.
+          $ref: "#/components/schemas/DlpFrequency"
         autoHideDocs:
-          type: boolean
           description: Controls whether the policy should hide documents with violations.
+          type: boolean
     CreateDlpReportResponse:
       properties:
         report:
-          $ref: '#/components/schemas/DlpReport'
+          $ref: "#/components/schemas/DlpReport"
     UpdateDlpConfigRequest:
       properties:
         config:
-          $ref: '#/components/schemas/DlpConfig'
+          $ref: "#/components/schemas/DlpConfig"
         frequency:
-          type: string
           description: Only "ONCE" is supported for reports.
+          type: string
     UpdateDlpConfigResponse:
       properties:
         result:
-          $ref: '#/components/schemas/DlpSimpleResult'
+          $ref: "#/components/schemas/DlpSimpleResult"
         reportId:
-          type: string
           description: The id of the report that was just created and run.
+          type: string
     ReportStatusResponse:
       properties:
         status:
@@ -10247,70 +10247,70 @@ components:
             - CANCELLING
             - ACTIVE
         startTime:
+          description: The timestamp at which the report's run/scan began.
           type: string
           format: iso-date-time
-          description: The timestamp at which the report's run/scan began.
     DocumentVisibilityOverride:
       properties:
         docId:
           type: string
         override:
+          description: The visibility-override state of the document.
           type: string
           enum:
             - NONE
             - HIDE_FROM_ALL
             - HIDE_FROM_GROUPS
             - HIDE_FROM_ALL_EXCEPT_OWNER
-          description: The visibility-override state of the document.
     GetDocumentVisibilityOverridesResponse:
       properties:
         visibilityOverrides:
           type: array
           items:
-            $ref: '#/components/schemas/DocumentVisibilityOverride'
+            $ref: "#/components/schemas/DocumentVisibilityOverride"
     UpdateDocumentVisibilityOverridesRequest:
       properties:
         visibilityOverrides:
           type: array
           items:
-            $ref: '#/components/schemas/DocumentVisibilityOverride'
+            $ref: "#/components/schemas/DocumentVisibilityOverride"
     DocumentVisibilityUpdateResult:
       allOf:
-        - $ref: '#/components/schemas/DocumentVisibilityOverride'
+        - $ref: "#/components/schemas/DocumentVisibilityOverride"
         - type: object
           properties:
             success:
-              type: boolean
               description: Whether this document was successfully set to its desired visibility state.
+              type: boolean
     UpdateDocumentVisibilityOverridesResponse:
       properties:
         results:
+          description: The documents and whether their visibility was successfully updated.
           type: array
           items:
-            $ref: '#/components/schemas/DocumentVisibilityUpdateResult'
-          description: The documents and whether their visibility was successfully updated.
+            $ref: "#/components/schemas/DocumentVisibilityUpdateResult"
     DlpSeverity:
       type: string
+      description: Severity levels for DLP findings and analyses.
+      x-include-enum-class-prefix: true
       enum:
         - UNSPECIFIED
         - LOW
         - MEDIUM
         - HIGH
-      description: Severity levels for DLP findings and analyses.
-      x-include-enum-class-prefix: true
     TimeRangeFilter:
       properties:
         timePeriodType:
           type: string
+          description: The type of time period for which to filter findings.
           enum:
             - PAST_DAY
             - PAST_WEEK
             - PAST_MONTH
             - PAST_YEAR
             - CUSTOM
-          description: The type of time period for which to filter findings.
         customTimeRange:
-          $ref: '#/components/schemas/TimeRange'
+          $ref: "#/components/schemas/TimeRange"
     DlpFindingFilter:
       properties:
         infoType:
@@ -10328,28 +10328,28 @@ components:
           items:
             type: string
         severity:
-          $ref: '#/components/schemas/DlpSeverity'
+          $ref: "#/components/schemas/DlpSeverity"
         documentSeverity:
           type: array
           items:
-            $ref: '#/components/schemas/DlpSeverity'
+            $ref: "#/components/schemas/DlpSeverity"
         timeRange:
-          $ref: '#/components/schemas/TimeRangeFilter'
+          $ref: "#/components/schemas/TimeRangeFilter"
         archived:
           type: boolean
     ExportInfo:
       properties:
         createdBy:
-          $ref: '#/components/schemas/DlpPerson'
           description: person who triggered this export
+          $ref: "#/components/schemas/DlpPerson"
         startTime:
-          type: string
-          format: iso-date-time
           description: Timestamp at which this export started.
-        endTime:
           type: string
           format: iso-date-time
+        endTime:
           description: Timestamp at which this export completed.
+          type: string
+          format: iso-date-time
         exportId:
           type: string
           description: The ID of the export
@@ -10357,15 +10357,15 @@ components:
           type: string
           description: The name of the file to export the findings to
         filter:
-          $ref: '#/components/schemas/DlpFindingFilter'
+          $ref: "#/components/schemas/DlpFindingFilter"
           description: The filters used to export the findings
         status:
           type: string
+          description: The status of the export
           enum:
             - PENDING
             - COMPLETED
             - FAILED
-          description: The status of the export
         exportSize:
           type: integer
           format: int64
@@ -10375,27 +10375,27 @@ components:
         exports:
           type: array
           items:
-            $ref: '#/components/schemas/ExportInfo'
+            $ref: "#/components/schemas/ExportInfo"
     DlpExportFindingsRequest:
       properties:
         exportType:
           type: string
+          description: The type of export to perform
           enum:
             - FINDINGS
             - DOCUMENTS
-          description: The type of export to perform
         filter:
-          $ref: '#/components/schemas/DlpFindingFilter'
+          $ref: "#/components/schemas/DlpFindingFilter"
         fileName:
           type: string
           description: The name of the file to export the findings to
         fieldScope:
           type: string
+          description: Controls which fields to include in the export
           enum:
             - ALL
             - EXCLUDE_SENSITIVE
             - CUSTOM
-          description: Controls which fields to include in the export
         fieldsToExclude:
           type: array
           items:
