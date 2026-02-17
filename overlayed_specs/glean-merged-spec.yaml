@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: d2e03f93b2fb98c5f5670e2d1205075305627d38
+  x-source-commit-sha: 10ac0d4f0fff32c2d93a0449ea8b28ea635f1af7
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: ae13fa261b4e2d77c4375e0db4f7aac3ad57788a
+  x-open-api-commit-sha: b78fdf9fdf90a2b143ef1e329c8c348ddcfdc050
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -7832,6 +7832,40 @@ components:
             stream:
               type: boolean
               description: If set, response lines will be streamed one-by-one as they become available. Each will be a ChatResponse, formatted as JSON, and separated by a new line. If false, the entire response will be returned at once. Note that if this is set and the model being used does not support streaming, the model's response will not be streamed, but other messages from the endpoint still will be.
+    AuthStatus:
+      type: string
+      description: The per-user authorization status for a datasource.
+      enum:
+        - DISABLED
+        - AWAITING_AUTH
+        - AUTHORIZED
+        - STALE_OAUTH
+        - SEG_MIGRATION
+      x-enum-varnames:
+        - AUTH_STATUS_DISABLED
+        - AUTH_STATUS_AWAITING_AUTH
+        - AUTH_STATUS_AUTHORIZED
+        - AUTH_STATUS_STALE_OAUTH
+        - AUTH_STATUS_SEG_MIGRATION
+    UnauthorizedDatasourceInstance:
+      description: |
+        A datasource instance that could not return results for this request because the user has not completed or has expired per-user OAuth.
+      properties:
+        datasourceInstance:
+          type: string
+          description: |
+            The instance identifier (e.g. "github", "github_enterprise_0", "slack_0"). Matches the instance names used in datasource configuration.
+          example: slack_0
+        displayName:
+          type: string
+          description: Human-readable name of the datasource instance for display.
+          example: Slack
+        authStatus:
+          $ref: "#/components/schemas/AuthStatus"
+        authUrlRelativePath:
+          type: string
+          description: |
+            Relative path to initiate or resume OAuth for the current user and instance. Clients should prepend their configured Glean backend base URL.
     ChatResponse:
       description: A single response from the /chat backend.
       properties:
@@ -7855,6 +7889,12 @@ components:
         chatSessionTrackingToken:
           type: string
           description: A token that is used to track the session.
+        unauthorizedDatasourceInstances:
+          type: array
+          description: |
+            Datasource instances that could not be queried because the user has not completed or has expired per-user OAuth, aggregated across all tools invoked in this turn.
+          items:
+            $ref: "#/components/schemas/UnauthorizedDatasourceInstance"
     DeleteChatsRequest:
       required:
         - ids
@@ -8931,6 +8971,12 @@ components:
         federatedSearchRateLimitError:
           type: boolean
           description: Indicates the federated search results could not be fetched due to rate limiting.
+        unauthorizedDatasourceInstances:
+          type: array
+          description: |
+            Datasource instances that could not be queried because the user has not completed or has expired per-user OAuth.
+          items:
+            $ref: "#/components/schemas/UnauthorizedDatasourceInstance"
       x-speakeasy-name-override: GleanDataError
     ResultsResponse:
       properties:
