@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: a5d6f40eb3d1429f1ad2fface0ef5d1a8b6d2397
+  x-source-commit-sha: 06235de7b8cebb379e5fcfad6f0d6b926421a117
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -4965,16 +4965,31 @@ components:
           deprecated: true
           description: The person that invited this person.
           $ref: '#/components/schemas/Person'
+          x-glean-deprecated:
+            id: 1d3cd23f-9085-4378-b466-9bdc2e344a71
+            introduced: '2026-02-05'
+            message: Use ChannelInviteInfo instead
+            removal: '2026-10-15'
         inviteTime:
           deprecated: true
           type: string
           format: date-time
           description: The time this person was invited in ISO format (ISO 8601).
+          x-glean-deprecated:
+            id: 2dc3f572-cded-483d-af07-fc9fc7fd0ae4
+            introduced: '2026-02-05'
+            message: Use ChannelInviteInfo instead
+            removal: '2026-10-15'
         reminderTime:
           deprecated: true
           type: string
           format: date-time
           description: The time this person was reminded in ISO format (ISO 8601) if a reminder was sent.
+          x-glean-deprecated:
+            id: d02d58cf-eb90-45d0-ab90-f7a9d707ae3c
+            introduced: '2026-02-05'
+            message: Use ChannelInviteInfo instead
+            removal: '2026-10-15'
     ReadPermission:
       description: Describes the read permission level that a user has for a specific feature
       properties:
