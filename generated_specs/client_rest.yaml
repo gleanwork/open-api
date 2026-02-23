@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: a5d6f40eb3d1429f1ad2fface0ef5d1a8b6d2397
+  x-source-commit-sha: 06235de7b8cebb379e5fcfad6f0d6b926421a117
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: d22cf810f1deafda212bf9e20b5be1980c6dfd23
+  x-open-api-commit-sha: 6b197553c0e3440146fc74c25ec4f575dadb1fad
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -5032,16 +5032,34 @@ components:
           deprecated: true
           description: The person that invited this person.
           $ref: "#/components/schemas/Person"
+          x-glean-deprecated:
+            id: 1d3cd23f-9085-4378-b466-9bdc2e344a71
+            introduced: "2026-02-05"
+            message: Use ChannelInviteInfo instead
+            removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use ChannelInviteInfo instead"
         inviteTime:
           deprecated: true
           type: string
           format: date-time
           description: The time this person was invited in ISO format (ISO 8601).
+          x-glean-deprecated:
+            id: 2dc3f572-cded-483d-af07-fc9fc7fd0ae4
+            introduced: "2026-02-05"
+            message: Use ChannelInviteInfo instead
+            removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use ChannelInviteInfo instead"
         reminderTime:
           deprecated: true
           type: string
           format: date-time
           description: The time this person was reminded in ISO format (ISO 8601) if a reminder was sent.
+          x-glean-deprecated:
+            id: d02d58cf-eb90-45d0-ab90-f7a9d707ae3c
+            introduced: "2026-02-05"
+            message: Use ChannelInviteInfo instead
+            removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use ChannelInviteInfo instead"
     ReadPermission:
       description: Describes the read permission level that a user has for a specific feature
       properties:
