@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: 32a20618c3b814f21bb041d98d527cc43b79bb1d
+  x-source-commit-sha: 48b30f65e7fe1ce4405e3aa0cd19b1ec7796a37e
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
@@ -388,6 +388,65 @@ paths:
           description: Permissions error
         '500':
           description: Internal error
+  /configure/datasources/{datasourceId}/instances/{instanceId}:
+    get:
+      description: |
+        Gets the greenlisted configuration values for a datasource instance. Returns only configuration keys that are exposed via the public API greenlist.
+      summary: Get datasource instance configuration
+      operationId: getDatasourceInstanceConfiguration
+      x-visibility: Preview
+      tags:
+        - Datasources
+      parameters:
+        - $ref: '#/components/parameters/datasourceId'
+        - $ref: '#/components/parameters/instanceId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasourceConfigurationResponse'
+        '400':
+          description: Invalid request
+        '401':
+          description: Not authorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Datasource instance not found
+    patch:
+      description: |
+        Updates the greenlisted configuration values for a datasource instance. Only configuration keys that are exposed via the public API greenlist may be set. Returns the full greenlisted configuration after the update is applied.
+      summary: Update datasource instance configuration
+      operationId: updateDatasourceInstanceConfiguration
+      x-visibility: Preview
+      tags:
+        - Datasources
+      parameters:
+        - $ref: '#/components/parameters/datasourceId'
+        - $ref: '#/components/parameters/instanceId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDatasourceConfigurationRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasourceConfigurationResponse'
+        '400':
+          description: Invalid request
+        '401':
+          description: Not authorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Datasource instance not found
 components:
   schemas:
     SensitiveInfoType:
@@ -1015,3 +1074,63 @@ components:
           items:
             type: string
           description: List of field names to exclude from the export
+    ConfigurationValue:
+      description: A single configuration value, either a scalar or a list
+      type: object
+      properties:
+        value:
+          description: The configuration value as a string. Only one of value or valueList should be populated.
+          type: string
+        valueList:
+          description: The configuration value as a list of strings. Only one of value or valueList should be populated.
+          type: array
+          items:
+            type: string
+    ConfigurationValues:
+      description: A map from configuration key names to their values
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/ConfigurationValue'
+    DatasourceInstanceConfiguration:
+      description: Configuration for a datasource instance
+      type: object
+      required:
+        - values
+      properties:
+        values:
+          $ref: '#/components/schemas/ConfigurationValues'
+    DatasourceConfigurationResponse:
+      description: |
+        The greenlisted configuration values for a datasource instance. Only keys that are exposed via the public API greenlist are included.
+      type: object
+      required:
+        - configuration
+      properties:
+        configuration:
+          $ref: '#/components/schemas/DatasourceInstanceConfiguration'
+    UpdateDatasourceConfigurationRequest:
+      description: |
+        Request to update greenlisted configuration values for a datasource instance. Only keys that are exposed via the public API greenlist may be set.
+      type: object
+      required:
+        - configuration
+      properties:
+        configuration:
+          $ref: '#/components/schemas/DatasourceInstanceConfiguration'
+  parameters:
+    datasourceId:
+      name: datasourceId
+      in: path
+      description: The datasource type identifier (e.g. o365sharepoint)
+      required: true
+      schema:
+        type: string
+        example: o365sharepoint
+    instanceId:
+      name: instanceId
+      in: path
+      description: The datasource instance identifier
+      required: true
+      schema:
+        type: string
+        example: o365sharepoint_abc123
