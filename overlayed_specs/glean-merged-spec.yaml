@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 48b30f65e7fe1ce4405e3aa0cd19b1ec7796a37e
+  x-source-commit-sha: 71f6f010ec8460f560090a540dab0a65536891e5
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 85b45753a0740d39c83253703e7b97ad027d2c2c
+  x-open-api-commit-sha: cea6dc858e444cf80623f1b987244690fce6be9e
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -3703,12 +3703,24 @@ paths:
                 $ref: '#/components/schemas/DatasourceConfigurationResponse'
         "400":
           description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         "401":
           description: Not authorized
         "403":
           description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         "404":
           description: Datasource instance not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       x-visibility: Preview
     patch:
       operationId: updateDatasourceInstanceConfiguration
@@ -3735,12 +3747,24 @@ paths:
                 $ref: '#/components/schemas/DatasourceConfigurationResponse'
         "400":
           description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         "401":
           description: Not authorized
         "403":
           description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         "404":
           description: Datasource instance not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       x-visibility: Preview
   /rest/api/v1/chat#stream:
     post:
@@ -8191,9 +8215,12 @@ components:
               description: Whether the agent supports streaming output. If true, you you can stream agent ouput. All agents currently support streaming.
           additionalProperties: true
     ErrorResponse:
-      type: string
-      title: ErrorResponse
-      description: Error message returned from the server
+      type: object
+      description: Error response returned for failed requests
+      properties:
+        message:
+          type: string
+          description: Client-facing error message describing what went wrong
     ActionSummary:
       type: object
       description: Represents a minimal summary of an action.

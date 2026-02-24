@@ -2,14 +2,14 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: 48b30f65e7fe1ce4405e3aa0cd19b1ec7796a37e
+  x-source-commit-sha: 71f6f010ec8460f560090a540dab0a65536891e5
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
     operations. These offer limited exposure to the admin APIs through rest endpoints.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 85b45753a0740d39c83253703e7b97ad027d2c2c
+  x-open-api-commit-sha: cea6dc858e444cf80623f1b987244690fce6be9e
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -409,12 +409,24 @@ paths:
                 $ref: "#/components/schemas/DatasourceConfigurationResponse"
         "400":
           description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "401":
           description: Not authorized
         "403":
           description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: Datasource instance not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
     patch:
       description: |
         Updates the greenlisted configuration values for a datasource instance. Only configuration keys that are exposed via the public API greenlist may be set. Returns the full greenlisted configuration after the update is applied.
@@ -441,12 +453,24 @@ paths:
                 $ref: "#/components/schemas/DatasourceConfigurationResponse"
         "400":
           description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "401":
           description: Not authorized
         "403":
           description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: Datasource instance not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     SensitiveInfoType:
@@ -1119,6 +1143,13 @@ components:
       properties:
         configuration:
           $ref: "#/components/schemas/DatasourceInstanceConfiguration"
+    ErrorResponse:
+      description: Error response returned for failed requests
+      type: object
+      properties:
+        message:
+          description: Client-facing error message describing what went wrong
+          type: string
     UpdateDatasourceConfigurationRequest:
       description: |
         Request to update greenlisted configuration values for a datasource instance. Only keys that are exposed via the public API greenlist may be set.
