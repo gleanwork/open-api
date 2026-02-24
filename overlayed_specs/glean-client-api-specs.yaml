@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 6b06411e8986ec282b51fd46a5fe05f6aef272a8
+  x-source-commit-sha: 48b30f65e7fe1ce4405e3aa0cd19b1ec7796a37e
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 0cd3f8f670cbc90130adaf8103f32803dd460962
+  x-open-api-commit-sha: 85b45753a0740d39c83253703e7b97ad027d2c2c
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -2694,6 +2694,65 @@ paths:
         "500":
           description: Internal error
       x-visibility: Public
+  /rest/api/v1/configure/datasources/{datasourceId}/instances/{instanceId}:
+    get:
+      operationId: getDatasourceInstanceConfiguration
+      summary: Get datasource instance configuration
+      description: |
+        Gets the greenlisted configuration values for a datasource instance. Returns only configuration keys that are exposed via the public API greenlist.
+      tags:
+        - Datasources
+      parameters:
+        - $ref: '#/components/parameters/datasourceId'
+        - $ref: '#/components/parameters/instanceId'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasourceConfigurationResponse'
+        "400":
+          description: Invalid request
+        "401":
+          description: Not authorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Datasource instance not found
+      x-visibility: Preview
+    patch:
+      operationId: updateDatasourceInstanceConfiguration
+      summary: Update datasource instance configuration
+      description: |
+        Updates the greenlisted configuration values for a datasource instance. Only configuration keys that are exposed via the public API greenlist may be set. Returns the full greenlisted configuration after the update is applied.
+      tags:
+        - Datasources
+      parameters:
+        - $ref: '#/components/parameters/datasourceId'
+        - $ref: '#/components/parameters/instanceId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDatasourceConfigurationRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasourceConfigurationResponse'
+        "400":
+          description: Invalid request
+        "401":
+          description: Not authorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Datasource instance not found
+      x-visibility: Preview
   /rest/api/v1/chat#stream:
     post:
       tags:
@@ -10520,6 +10579,49 @@ components:
           items:
             type: string
           description: List of field names to exclude from the export
+    ConfigurationValue:
+      type: object
+      properties:
+        value:
+          type: string
+          description: The configuration value as a string. Only one of value or valueList should be populated.
+        valueList:
+          type: array
+          items:
+            type: string
+          description: The configuration value as a list of strings. Only one of value or valueList should be populated.
+      description: A single configuration value, either a scalar or a list
+    ConfigurationValues:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/ConfigurationValue'
+      description: A map from configuration key names to their values
+    DatasourceInstanceConfiguration:
+      type: object
+      properties:
+        values:
+          $ref: '#/components/schemas/ConfigurationValues'
+      required:
+        - values
+      description: Configuration for a datasource instance
+    DatasourceConfigurationResponse:
+      type: object
+      properties:
+        configuration:
+          $ref: '#/components/schemas/DatasourceInstanceConfiguration'
+      required:
+        - configuration
+      description: |
+        The greenlisted configuration values for a datasource instance. Only keys that are exposed via the public API greenlist are included.
+    UpdateDatasourceConfigurationRequest:
+      type: object
+      properties:
+        configuration:
+          $ref: '#/components/schemas/DatasourceInstanceConfiguration'
+      required:
+        - configuration
+      description: |
+        Request to update greenlisted configuration values for a datasource instance. Only keys that are exposed via the public API greenlist may be set.
     ChatRequestStream:
       required:
         - messages
@@ -10577,6 +10679,22 @@ components:
       description: The offset of the client's timezone in minutes from UTC. e.g. PDT is -420 because it's 7 hours behind UTC.
       schema:
         type: integer
+    datasourceId:
+      name: datasourceId
+      in: path
+      description: The datasource type identifier (e.g. o365sharepoint)
+      required: true
+      schema:
+        type: string
+        example: o365sharepoint
+    instanceId:
+      name: instanceId
+      in: path
+      description: The datasource instance identifier
+      required: true
+      schema:
+        type: string
+        example: o365sharepoint_abc123
 x-tagGroups:
   - name: Search & Generative AI
     tags:
