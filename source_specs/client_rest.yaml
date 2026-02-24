@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 973465b8222d0c5d21ccba16f55bc2869e3e2e23
+  x-source-commit-sha: ab63403c556e8f9300544da1782dab2aa126a90e
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -6515,6 +6515,32 @@ components:
         display_name:
           type: string
           description: The display name of the action.
+        type:
+          type: string
+          description: The type of tool - RETRIEVAL for read-only operations, ACTION for operations that modify data.
+        auth_type:
+          type: string
+          description: The authentication type required - OAUTH_USER, OAUTH_ADMIN, API_KEY, BASIC_AUTH, DWD (domain-wide delegation), or NONE.
+        write_action_type:
+          type: string
+          description: For write actions only - REDIRECT (client renders URL) or EXECUTION (external server call).
+        is_setup_finished:
+          type: boolean
+          description: Whether this action has been fully configured and validated.
+          x-includeEmpty: true
+        data_source:
+          type: string
+          description: |
+            Indicates the kind of knowledge a tool would access or modify.
+            Company knowledge:
+              - Glean search, and any native tools that derive from it (e.g., expert search, code search)
+              - Native federated tools to company data sources (e.g., outlook search)
+            World knowledge:
+              - Native tools that bring in public content (e.g., web browser)
+              - Platform action like bingwebsearch, geminiwebsearch, etc
+            Neutral knowledge:
+              - Native tools that don't access or modify content via APIs (e.g., file analyst, think)
+              - Platform read or write tools (creator has to determine their knowledge implications)
     AgentSchemas:
       properties:
         agent_id:
