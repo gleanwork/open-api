@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: ab63403c556e8f9300544da1782dab2aa126a90e
+  x-source-commit-sha: 47ccc962e7c6961cd1c4242d868050d6d7512ab1
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 40468ef09031270e410c9734f90ff6ba397e1dc6
+  x-open-api-commit-sha: 737506c6d01986478772f40cd2d5ae4a4d279004
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -7065,12 +7065,6 @@ components:
         chatSessionTrackingToken:
           type: string
           description: A token that is used to track the session.
-        unauthorizedDatasourceInstances:
-          type: array
-          description: |
-            Datasource instances that could not be queried because the user has not completed or has expired per-user OAuth, aggregated across all tools invoked in this turn.
-          items:
-            $ref: "#/components/schemas/UnauthorizedDatasourceInstance"
     DeleteChatsRequest:
       required:
         - ids
@@ -8176,12 +8170,6 @@ components:
         federatedSearchRateLimitError:
           type: boolean
           description: Indicates the federated search results could not be fetched due to rate limiting.
-        unauthorizedDatasourceInstances:
-          type: array
-          description: |
-            Datasource instances that could not be queried because the user has not completed or has expired per-user OAuth.
-          items:
-            $ref: "#/components/schemas/UnauthorizedDatasourceInstance"
       x-speakeasy-name-override: GleanDataError
     ResultsResponse:
       properties:
