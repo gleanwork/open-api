@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 3f37c40506b45e21d37e65e427cd2874fa8c5319
+  x-source-commit-sha: f7ce14e1b1226b07bef209b2c38c001674b0cd54
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -6019,6 +6019,10 @@ components:
           type: string
           format: url
           description: The OAuth provider's endpoint, where access tokens are requested.
+        resource:
+          type: string
+          format: url
+          description: The OAuth 2.0 Resource Indicator (RFC 8707) for the protected resource. Discovered from Protected Resource Metadata (RFC 9728) during DCR. Included in authorization and token exchange requests when present.
         lastAuthorizedAt:
           type: string
           format: date-time
