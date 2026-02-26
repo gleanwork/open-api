@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 3e494bb3f65efb4260e9f67a468cb4ee766e8cf2
+  x-source-commit-sha: d962692999b050d83c9ef22c11984b634e40c337
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -4133,9 +4133,6 @@ components:
         target:
           $ref: '#/components/schemas/CollectionPinTarget'
     CollectionPinnedMetadata:
-      required:
-        - pinnedCategories
-        - eligibleCategoriesForPinning
       properties:
         existingPins:
           type: array
