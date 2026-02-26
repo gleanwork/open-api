@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 6438da9420822e55db469a1fef057e446774ff85
+  x-source-commit-sha: 3e494bb3f65efb4260e9f67a468cb4ee766e8cf2
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -4648,8 +4648,6 @@ components:
         type:
           $ref: '#/components/schemas/EntityType'
     SearchResultSnippet:
-      required:
-        - snippet
       properties:
         mimeType:
           type: string
@@ -4672,6 +4670,11 @@ components:
           type: string
           deprecated: true
           description: A matching snippet from the document. Query term matches are marked by the unicode characters uE006 and uE007. Use 'text' field instead.
+          x-glean-deprecated:
+            id: e55ddf30-7c47-43a5-b775-d78f8b29411a
+            introduced: '2026-02-05'
+            message: Use 'text' field instead
+            removal: '2026-10-15'
       example:
         snippet: snippet
         mimeType: mimeType
