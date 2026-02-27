@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 6da482909d3650582a8a5b32a44ad6294c554df3
+  x-open-api-commit-sha: a2aa956b6acbc4622ed1990b048bf590c7f4350c
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -11830,12 +11830,12 @@ components:
           type: string
           description: The employee's location (city/office name etc).
           deprecated: true
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
           x-glean-deprecated:
             id: a7f6fbaa-0eaf-4c0c-a4f5-ab90347f73fd
             introduced: "2026-02-05"
             message: Field is deprecated
             removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
         structuredLocation:
           $ref: '#/components/schemas/StructuredLocation'
           description: Detailed location with information about country, state, city etc.
