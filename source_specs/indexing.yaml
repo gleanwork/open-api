@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Indexing API
-  x-source-commit-sha: 136c40c8838b29a96cb85a59365dbb934ebbec23
+  x-source-commit-sha: fd18bf128f02d759cd67e775eaa6c10d96fe177b
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -602,6 +602,11 @@ paths:
           description: Not Authorized
         '429':
           description: Too Many Requests
+      x-glean-deprecated:
+        id: 7eec0433-78fd-49f9-a34f-cca83640ec24
+        introduced: '2026-02-03'
+        message: Endpoint is deprecated
+        removal: '2026-10-15'
   /getdocumentcount:
     post:
       deprecated: true
@@ -632,6 +637,11 @@ paths:
           description: Not Authorized
         '409':
           description: Conflict
+      x-glean-deprecated:
+        id: c164089c-9412-4724-acf6-caf3b0d2a527
+        introduced: '2026-02-03'
+        message: Endpoint is deprecated
+        removal: '2026-10-15'
   /getusercount:
     post:
       deprecated: true
@@ -662,6 +672,11 @@ paths:
           description: Not Authorized
         '409':
           description: Conflict
+      x-glean-deprecated:
+        id: 4f5df873-385e-4539-8183-cb764b0f06b9
+        introduced: '2026-02-03'
+        message: Endpoint is deprecated
+        removal: '2026-10-15'
   /betausers:
     post:
       summary: Beta users
