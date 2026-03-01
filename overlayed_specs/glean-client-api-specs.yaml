@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: fd18bf128f02d759cd67e775eaa6c10d96fe177b
+  x-source-commit-sha: 2cd4af895f6c25f5f6ad00d514b331e8075a0b68
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: e923dbdff0fb4bc13f0f75fc2e454ae60a5d486a
+  x-open-api-commit-sha: c157041a4ce4e251ef325b030a6c2779d46fd581
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -7267,8 +7267,7 @@ components:
               - Glean search, and any native tools that derive from it (e.g., expert search, code search)
               - Native federated tools to company data sources (e.g., outlook search)
             World knowledge:
-              - Native tools that bring in public content (e.g., web browser)
-              - Platform action like bingwebsearch, geminiwebsearch, etc
+              - Platform action like bravewebsearch, geminiwebsearch, etc
             Neutral knowledge:
               - Native tools that don't access or modify content via APIs (e.g., file analyst, think)
               - Platform read or write tools (creator has to determine their knowledge implications)

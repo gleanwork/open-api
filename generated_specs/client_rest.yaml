@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: fd18bf128f02d759cd67e775eaa6c10d96fe177b
+  x-source-commit-sha: 2cd4af895f6c25f5f6ad00d514b331e8075a0b68
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: e923dbdff0fb4bc13f0f75fc2e454ae60a5d486a
+  x-open-api-commit-sha: c157041a4ce4e251ef325b030a6c2779d46fd581
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -6646,8 +6646,7 @@ components:
               - Glean search, and any native tools that derive from it (e.g., expert search, code search)
               - Native federated tools to company data sources (e.g., outlook search)
             World knowledge:
-              - Native tools that bring in public content (e.g., web browser)
-              - Platform action like bingwebsearch, geminiwebsearch, etc
+              - Platform action like bravewebsearch, geminiwebsearch, etc
             Neutral knowledge:
               - Native tools that don't access or modify content via APIs (e.g., file analyst, think)
               - Platform read or write tools (creator has to determine their knowledge implications)
