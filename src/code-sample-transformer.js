@@ -77,43 +77,43 @@ export function transformPythonCodeSamplesToPython(spec) {
 }
 
 /**
- * Transforms code samples in an OpenAPI specification to add instance configuration
- * for various programming languages. This function adds the necessary instance/server
+ * Transforms code samples in an OpenAPI specification to add server URL configuration
+ * for various programming languages. This function adds the necessary server URL
  * configuration to existing code samples that only contain API token configuration.
  *
  * Supported transformations:
- * - Python: Adds `instance=os.getenv("GLEAN_INSTANCE", "")` after `api_token`
- * - TypeScript: Adds `instance: process.env["GLEAN_INSTANCE"] ?? ""` after `apiToken`
- * - Go: Adds `apiclientgo.WithInstance("<value>")` before `WithSecurity`
- * - Java: Adds `.instance("<YOUR_GLEAN_INSTANCE_HERE>")` after `.apiToken()`
+ * - Python: Adds `server_url="mycompany-be.glean.com",` after `api_token`
+ * - TypeScript: Adds `serverURL: "mycompany-be.glean.com",` after `apiToken`
+ * - Go: Adds `apiclientgo.WithServerURL("mycompany-be.glean.com"),` before `WithSecurity`
+ * - Java: Adds `.serverURL("mycompany-be.glean.com")` after `.apiToken()`
  *
  * @param {Object} spec The OpenAPI specification object containing code samples
  * @returns {Object} The modified OpenAPI specification with updated code samples
  */
-export function addInstanceToCodeSamples(spec) {
+export function addServerURLToCodeSamples(spec) {
   const transformationsByLang = {
     python: [
       [
         /([\s]*)(api_token=os\.getenv\("GLEAN_API_TOKEN", ""\),)/,
-        '$1$2$1instance=os.getenv("GLEAN_INSTANCE", ""),',
+        '$1$2$1server_url="mycompany-be.glean.com",',
       ],
     ],
     typescript: [
       [
         /([\s]*)(apiToken: process\.env\["GLEAN_API_TOKEN"\] \?\? "",)/,
-        '$1$2$1instance: process.env["GLEAN_INSTANCE"] ?? "",',
+        '$1$2$1serverURL: "mycompany-be.glean.com",',
       ],
     ],
     go: [
       [
         /([\s]*)(apiclientgo\.WithSecurity\(os\.Getenv\("GLEAN_API_TOKEN"\)\),)/,
-        '$1$2$1apiclientgo.WithInstance(os.Getenv("GLEAN_INSTANCE")),',
+        '$1$2$1apiclientgo.WithServerURL("mycompany-be.glean.com"),',
       ],
     ],
     java: [
       [
         /([\s]*)(\.apiToken\("<YOUR_BEARER_TOKEN_HERE>"\))/,
-        '$1$2$1.instance("<YOUR_GLEAN_INSTANCE_HERE>")',
+        '$1$2$1.serverURL("mycompany-be.glean.com")',
       ],
     ],
   };
@@ -149,7 +149,7 @@ export function transform(content, _filename) {
   const spec = yaml.load(content);
 
   transformPythonCodeSamplesToPython(spec);
-  addInstanceToCodeSamples(spec);
+  addServerURLToCodeSamples(spec);
 
   return yaml.dump(spec, {
     lineWidth: -1, // Preserve line breaks

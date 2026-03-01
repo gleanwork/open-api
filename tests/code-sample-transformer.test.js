@@ -133,11 +133,11 @@ paths:
     });
   });
 
-  describe('addInstanceToCodeSamples', () => {
+  describe('addServerURLToCodeSamples', () => {
     test('updates chat code sample to use namespace', () => {
       const spec = yaml.load(fixtureContent);
 
-      const updatedSpec = codeSampleTransformer.addInstanceToCodeSamples(spec);
+      const updatedSpec = codeSampleTransformer.addServerURLToCodeSamples(spec);
       const chatSpec = updatedSpec.paths['/rest/api/v1/chat'];
 
       expect(codeSampleTransformer.extractCodeSnippet(chatSpec, 'python'))
@@ -151,7 +151,7 @@ paths:
 
         with Glean(
             api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            instance=os.getenv("GLEAN_INSTANCE", ""),
+            server_url="mycompany-be.glean.com",
         ) as g_client:
 
             res = g_client.client.chat.create(messages=[
@@ -177,7 +177,7 @@ paths:
 
         const glean = new Glean({
           apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
-          instance: process.env["GLEAN_INSTANCE"] ?? "",
+          serverURL: "mycompany-be.glean.com",
         });
 
         async function run() {
@@ -220,7 +220,7 @@ paths:
 
             s := apiclientgo.New(
                 apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                apiclientgo.WithInstance(os.Getenv("GLEAN_INSTANCE")),
+                apiclientgo.WithServerURL("mycompany-be.glean.com"),
             )
 
             res, err := s.Client.Chat.Create(ctx, components.ChatRequest{
@@ -262,7 +262,7 @@ paths:
 
                 Glean sdk = Glean.builder()
                         .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                        .instance("<YOUR_GLEAN_INSTANCE_HERE>")
+                        .serverURL("mycompany-be.glean.com")
                     .build();
 
                 ChatResponse res = sdk.client().chat().create()
