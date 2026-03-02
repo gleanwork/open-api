@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 3a01e5a7f8a52f7b94354a86f9f839a70d28fbdc
+  x-source-commit-sha: 2a325f21b2578ab778ee622047935455f0017da9
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -6397,6 +6397,9 @@ components:
           items:
             $ref: '#/components/schemas/ChatMetadataResult'
           x-includeEmpty: true
+        cursor:
+          type: string
+          description: An opaque cursor for fetching the next page of results. If empty, there are no more results.
     GetChatApplicationRequest:
       required:
         - id
