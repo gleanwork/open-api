@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 2cd4af895f6c25f5f6ad00d514b331e8075a0b68
+  x-source-commit-sha: 2a325f21b2578ab778ee622047935455f0017da9
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: c157041a4ce4e251ef325b030a6c2779d46fd581
+  x-open-api-commit-sha: 4bf166d40704ef8e1bd80eda6eb7fbf757271af0
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -6509,6 +6509,9 @@ components:
           items:
             $ref: "#/components/schemas/ChatMetadataResult"
           x-includeEmpty: true
+        cursor:
+          type: string
+          description: An opaque cursor for fetching the next page of results. If empty, there are no more results.
     GetChatApplicationRequest:
       required:
         - id
