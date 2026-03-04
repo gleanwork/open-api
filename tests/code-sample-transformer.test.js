@@ -151,7 +151,7 @@ paths:
 
         with Glean(
             api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            server_url="mycompany-be.glean.com",
+            server_url="https://mycompany-be.glean.com",
         ) as g_client:
 
             res = g_client.client.chat.create(messages=[
@@ -177,7 +177,7 @@ paths:
 
         const glean = new Glean({
           apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
-          serverURL: "mycompany-be.glean.com",
+          serverURL: "https://mycompany-be.glean.com",
         });
 
         async function run() {
@@ -220,7 +220,7 @@ paths:
 
             s := apiclientgo.New(
                 apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                apiclientgo.WithServerURL("mycompany-be.glean.com"),
+                apiclientgo.WithServerURL("https://mycompany-be.glean.com"),
             )
 
             res, err := s.Client.Chat.Create(ctx, components.ChatRequest{
@@ -262,7 +262,7 @@ paths:
 
                 Glean sdk = Glean.builder()
                         .apiToken("<YOUR_BEARER_TOKEN_HERE>")
-                        .serverURL("mycompany-be.glean.com")
+                        .serverURL("https://mycompany-be.glean.com")
                     .build();
 
                 ChatResponse res = sdk.client().chat().create()

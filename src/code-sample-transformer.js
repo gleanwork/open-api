@@ -82,10 +82,10 @@ export function transformPythonCodeSamplesToPython(spec) {
  * configuration to existing code samples that only contain API token configuration.
  *
  * Supported transformations:
- * - Python: Adds `server_url="mycompany-be.glean.com",` after `api_token`
- * - TypeScript: Adds `serverURL: "mycompany-be.glean.com",` after `apiToken`
- * - Go: Adds `apiclientgo.WithServerURL("mycompany-be.glean.com"),` before `WithSecurity`
- * - Java: Adds `.serverURL("mycompany-be.glean.com")` after `.apiToken()`
+ * - Python: Adds `server_url="https://mycompany-be.glean.com",` after `api_token`
+ * - TypeScript: Adds `serverURL: "https://mycompany-be.glean.com",` after `apiToken`
+ * - Go: Adds `apiclientgo.WithServerURL("https://mycompany-be.glean.com"),` before `WithSecurity`
+ * - Java: Adds `.serverURL("https://mycompany-be.glean.com")` after `.apiToken()`
  *
  * @param {Object} spec The OpenAPI specification object containing code samples
  * @returns {Object} The modified OpenAPI specification with updated code samples
@@ -95,25 +95,25 @@ export function addServerURLToCodeSamples(spec) {
     python: [
       [
         /([\s]*)(api_token=os\.getenv\("GLEAN_API_TOKEN", ""\),)/,
-        '$1$2$1server_url="mycompany-be.glean.com",',
+        '$1$2$1server_url="https://mycompany-be.glean.com",',
       ],
     ],
     typescript: [
       [
         /([\s]*)(apiToken: process\.env\["GLEAN_API_TOKEN"\] \?\? "",)/,
-        '$1$2$1serverURL: "mycompany-be.glean.com",',
+        '$1$2$1serverURL: "https://mycompany-be.glean.com",',
       ],
     ],
     go: [
       [
         /([\s]*)(apiclientgo\.WithSecurity\(os\.Getenv\("GLEAN_API_TOKEN"\)\),)/,
-        '$1$2$1apiclientgo.WithServerURL("mycompany-be.glean.com"),',
+        '$1$2$1apiclientgo.WithServerURL("https://mycompany-be.glean.com"),',
       ],
     ],
     java: [
       [
         /([\s]*)(\.apiToken\("<YOUR_BEARER_TOKEN_HERE>"\))/,
-        '$1$2$1.serverURL("mycompany-be.glean.com")',
+        '$1$2$1.serverURL("https://mycompany-be.glean.com")',
       ],
     ],
   };
