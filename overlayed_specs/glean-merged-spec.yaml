@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 165e85ce0450b14d9ad367974ac852cb325c00b0
+  x-source-commit-sha: d4677b5edad581a54d42108533f0815074ff42fc
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 2d6217ed2c0edc0b742a3898852e904adeca3954
+  x-open-api-commit-sha: 7031d32cda71225508a6bffc6cea74bbf1df3ed1
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -30,8 +30,6 @@ servers:
       instance:
         default: instance-name
         description: The instance name (typically the email domain without the TLD) that determines the deployment backend.
-security:
-  - APIToken: []
 paths:
   /rest/api/v1/activity:
     post:
@@ -58,6 +56,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: report
       x-speakeasy-group: client.activity
   /rest/api/v1/feedback:
@@ -91,6 +91,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-group: client.activity
   /rest/api/v1/createannouncement:
     post:
@@ -124,6 +126,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: create
       x-speakeasy-group: client.announcements
   /rest/api/v1/deleteannouncement:
@@ -154,6 +158,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: delete
       x-speakeasy-group: client.announcements
   /rest/api/v1/updateannouncement:
@@ -188,6 +194,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: update
       x-speakeasy-group: client.announcements
   /rest/api/v1/createanswer:
@@ -222,6 +230,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: create
       x-speakeasy-group: client.answers
   /rest/api/v1/deleteanswer:
@@ -252,6 +262,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: delete
       x-speakeasy-group: client.answers
   /rest/api/v1/editanswer:
@@ -286,6 +298,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: update
       x-speakeasy-group: client.answers
   /rest/api/v1/getanswer:
@@ -320,6 +334,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.answers
   /rest/api/v1/listanswers:
@@ -361,6 +377,8 @@ paths:
         message: Answer boards have been removed and this endpoint no longer serves a purpose
         removal: "2026-10-15"
       x-speakeasy-deprecation-message: "Deprecated on 2026-01-21, removal scheduled for 2026-10-15: Answer boards have been removed and this endpoint no longer serves a purpose"
+      security:
+        - APIToken: []
       x-speakeasy-name-override: list
       x-speakeasy-group: client.answers
   /rest/api/v1/checkdatasourceauth:
@@ -390,6 +408,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
   /rest/api/v1/createauthtoken:
     post:
       tags:
@@ -417,6 +437,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: createToken
       x-speakeasy-group: client.authentication
   /rest/api/v1/chat:
@@ -555,6 +577,8 @@ paths:
           description: Request Timeout
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-group: client.chat
       x-speakeasy-name-override: create
       x-speakeasy-usage-example: true
@@ -579,6 +603,8 @@ paths:
           description: Not Authorized
         "403":
           description: Forbidden
+      security:
+        - APIToken: []
       x-speakeasy-name-override: deleteAll
       x-speakeasy-group: client.chat
   /rest/api/v1/deletechats:
@@ -611,6 +637,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: delete
       x-speakeasy-group: client.chat
   /rest/api/v1/getchat:
@@ -647,6 +675,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.chat
   /rest/api/v1/listchats:
@@ -674,6 +704,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: list
       x-speakeasy-group: client.chat
   /rest/api/v1/getchatapplication:
@@ -708,6 +740,8 @@ paths:
           description: Not Authorized
         "403":
           description: Forbidden
+      security:
+        - APIToken: []
       x-speakeasy-name-override: retrieveApplication
       x-speakeasy-group: client.chat
   /rest/api/v1/uploadchatfiles:
@@ -743,6 +777,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: uploadFiles
       x-speakeasy-group: client.chat
   /rest/api/v1/getchatfiles:
@@ -778,6 +814,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: retrieveFiles
       x-speakeasy-group: client.chat
   /rest/api/v1/deletechatfiles:
@@ -808,6 +846,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: deleteFiles
       x-speakeasy-group: client.chat
   /rest/api/v1/agents/{agent_id}:
@@ -848,6 +888,8 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
+      security:
+        - APIToken: []
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: retrieve
   /rest/api/v1/agents/{agent_id}/schemas:
@@ -894,6 +936,8 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
+      security:
+        - APIToken: []
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: retrieveSchemas
   /rest/api/v1/agents/search:
@@ -935,6 +979,8 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
+      security:
+        - APIToken: []
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: list
   /rest/api/v1/agents/runs/stream:
@@ -999,6 +1045,8 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
+      security:
+        - APIToken: []
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: runStream
   /rest/api/v1/agents/runs/wait:
@@ -1034,6 +1082,8 @@ paths:
           description: Validation Error
         "500":
           description: Internal server error
+      security:
+        - APIToken: []
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: run
   /rest/api/v1/addcollectionitems:
@@ -1068,6 +1118,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: addItems
       x-speakeasy-group: client.collections
   /rest/api/v1/createcollection:
@@ -1108,6 +1160,8 @@ paths:
                 $ref: "#/components/schemas/CollectionError"
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-group: client.collections
       x-speakeasy-name-override: create
   /rest/api/v1/deletecollection:
@@ -1144,6 +1198,8 @@ paths:
                 $ref: "#/components/schemas/CollectionError"
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: delete
       x-speakeasy-group: client.collections
   /rest/api/v1/deletecollectionitem:
@@ -1180,6 +1236,8 @@ paths:
           description: Failed to save deletion
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: deleteItem
       x-speakeasy-group: client.collections
   /rest/api/v1/editcollection:
@@ -1220,6 +1278,8 @@ paths:
                 $ref: "#/components/schemas/CollectionError"
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: update
       x-speakeasy-group: client.collections
   /rest/api/v1/editcollectionitem:
@@ -1254,6 +1314,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: updateItem
       x-speakeasy-group: client.collections
   /rest/api/v1/getcollection:
@@ -1288,6 +1350,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.collections
   /rest/api/v1/listcollections:
@@ -1322,6 +1386,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: list
       x-speakeasy-group: client.collections
   /rest/api/v1/getdocpermissions:
@@ -1358,6 +1424,8 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: retrievePermissions
       x-speakeasy-group: client.documents
   /rest/api/v1/getdocuments:
@@ -1392,6 +1460,8 @@ paths:
           description: Documents does not exist, or user cannot access documents.
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.documents
   /rest/api/v1/getdocumentsbyfacets:
@@ -1426,6 +1496,8 @@ paths:
           description: Not Found
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: retrieveByFacets
       x-speakeasy-group: client.documents
   /rest/api/v1/insights:
@@ -1460,6 +1532,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.insights
   /rest/api/v1/messages:
@@ -1494,6 +1568,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.messages
   /rest/api/v1/editpin:
@@ -1528,6 +1604,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: update
       x-speakeasy-group: client.pins
   /rest/api/v1/getpin:
@@ -1562,6 +1640,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.pins
   /rest/api/v1/listpins:
@@ -1596,6 +1676,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: list
       x-speakeasy-group: client.pins
   /rest/api/v1/pin:
@@ -1630,6 +1712,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: create
       x-speakeasy-group: client.pins
   /rest/api/v1/unpin:
@@ -1662,6 +1746,8 @@ paths:
           description: Forbidden from unpinning someone else's pin
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: remove
       x-speakeasy-group: client.pins
   /rest/api/v1/adminsearch:
@@ -1708,6 +1794,8 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-group: client.search
       x-speakeasy-name-override: queryAsAdmin
   /rest/api/v1/autocomplete:
@@ -1742,6 +1830,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-group: client.search
       x-speakeasy-name-override: autocomplete
   /rest/api/v1/feed:
@@ -1778,6 +1868,8 @@ paths:
           description: Request Timeout
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: retrieveFeed
       x-speakeasy-group: client.search
   /rest/api/v1/recommendations:
@@ -1818,6 +1910,8 @@ paths:
           description: Document does not exist or user cannot access document
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-group: client.search
       x-speakeasy-name-override: recommendations
   /rest/api/v1/search:
@@ -1866,6 +1960,8 @@ paths:
                 $ref: "#/components/schemas/ErrorInfo"
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-group: client.search
       x-speakeasy-name-override: query
   /rest/api/v1/listentities:
@@ -1900,6 +1996,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-group: client.entities
       x-speakeasy-name-override: list
   /rest/api/v1/people:
@@ -1934,6 +2032,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: readPeople
       x-speakeasy-group: client.entities
   /rest/api/v1/createshortcut:
@@ -1968,6 +2068,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: create
       x-speakeasy-group: client.shortcuts
   /rest/api/v1/deleteshortcut:
@@ -1998,6 +2100,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: delete
       x-speakeasy-group: client.shortcuts
   /rest/api/v1/getshortcut:
@@ -2032,6 +2136,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-group: client.shortcuts
       x-speakeasy-name-override: retrieve
   /rest/api/v1/listshortcuts:
@@ -2066,6 +2172,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-group: client.shortcuts
       x-speakeasy-name-override: list
   /rest/api/v1/updateshortcut:
@@ -2100,6 +2208,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-group: client.shortcuts
       x-speakeasy-name-override: update
   /rest/api/v1/summarize:
@@ -2134,6 +2244,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: summarize
       x-speakeasy-group: client.documents
   /rest/api/v1/addverificationreminder:
@@ -2170,6 +2282,8 @@ paths:
           description: Document does not exist, does not support verification or user cannot access document
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: addReminder
       x-speakeasy-group: client.verification
   /rest/api/v1/listverifications:
@@ -2202,6 +2316,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: list
       x-speakeasy-group: client.verification
   /rest/api/v1/verify:
@@ -2238,6 +2354,8 @@ paths:
           description: Document does not exist, does not support verification or user cannot access document
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       x-speakeasy-name-override: verify
       x-speakeasy-group: client.verification
   /rest/api/v1/tools/list:
@@ -2271,6 +2389,8 @@ paths:
           description: Not Found
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       tags:
         - Tools
       x-speakeasy-name-override: list
@@ -2301,6 +2421,8 @@ paths:
           description: Not Found
         "429":
           description: Too Many Requests
+      security:
+        - APIToken: []
       tags:
         - Tools
       x-speakeasy-name-override: run
@@ -2311,6 +2433,8 @@ paths:
       description: Adds a document to the index or updates an existing document.
       tags:
         - Documents
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2337,6 +2461,8 @@ paths:
       description: Adds or updates multiple documents in the index. Please refer to the [bulk indexing](https://developers.glean.com/indexing/documents/bulk-indexing/choosing-indexdocuments-vs-bulkindexdocuments) documentation for an explanation of when to use this endpoint.
       tags:
         - Documents
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2363,6 +2489,8 @@ paths:
       description: Replaces the documents in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
       tags:
         - Documents
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2387,6 +2515,8 @@ paths:
       description: Updates the permissions for a given document without modifying document content.
       tags:
         - Documents
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2424,6 +2554,8 @@ paths:
         For more frequent document processing, contact Glean support.
       tags:
         - Documents
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2447,6 +2579,8 @@ paths:
       description: Deletes the specified document from the index. Succeeds if document is not present.
       tags:
         - Documents
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2471,6 +2605,8 @@ paths:
       description: Adds a datasource user or updates an existing user.
       tags:
         - Permissions
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2497,6 +2633,8 @@ paths:
         Note: Any users deleted from the existing set will have their associated memberships deleted as well.
       tags:
         - Permissions
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2521,6 +2659,8 @@ paths:
       description: Add or update a group in the datasource.
       tags:
         - Permissions
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2547,6 +2687,8 @@ paths:
         Note: Any groups deleted from the existing set will have their associated memberships deleted as well.
       tags:
         - Permissions
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2571,6 +2713,8 @@ paths:
       description: Add the memberships of a group in the datasource.
       tags:
         - Permissions
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2595,6 +2739,8 @@ paths:
       description: Replaces the memberships for a group in a datasource using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
       tags:
         - Permissions
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2620,6 +2766,8 @@ paths:
         Schedules the immediate processing of all group memberships uploaded through the indexing API. By default the uploaded group memberships will be processed asynchronously but this API can be used to schedule processing of all memberships on demand.
       tags:
         - Permissions
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2643,6 +2791,8 @@ paths:
         Note: All memberships associated with the deleted user will also be deleted.
       tags:
         - Permissions
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2669,6 +2819,8 @@ paths:
         Note: All memberships associated with the deleted group will also be deleted.
       tags:
         - Permissions
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2693,6 +2845,8 @@ paths:
       description: Delete membership to a group in the specified datasource. Silently succeeds if membership is not present.
       tags:
         - Permissions
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2721,6 +2875,8 @@ paths:
         Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/indexing/debugging/datasource-config) for more information.
       tags:
         - Troubleshooting
+      security:
+        - APIToken: []
       parameters:
         - name: datasource
           in: path
@@ -2752,6 +2908,8 @@ paths:
         Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/indexing/debugging/datasource-config) for more information.
       tags:
         - Troubleshooting
+      security:
+        - APIToken: []
       parameters:
         - name: datasource
           in: path
@@ -2790,6 +2948,8 @@ paths:
         Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/indexing/debugging/datasource-config) for more information.
       tags:
         - Troubleshooting
+      security:
+        - APIToken: []
       parameters:
         - name: datasource
           in: path
@@ -2828,6 +2988,8 @@ paths:
         Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/indexing/debugging/datasource-config) for more information.
       tags:
         - Troubleshooting
+      security:
+        - APIToken: []
       parameters:
         - name: datasource
           in: path
@@ -2865,6 +3027,8 @@ paths:
         Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/indexing/debugging/datasource-config) for more information.
       tags:
         - Troubleshooting
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2896,6 +3060,8 @@ paths:
         Tip: Use [/debug/{datasource}/document](https://developers.glean.com/indexing/debugging/datasource-document) for richer information.
       tags:
         - Troubleshooting
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2934,6 +3100,8 @@ paths:
         Tip: Use [/debug/{datasource}/status](https://developers.glean.com/indexing/debugging/datasource-status) for richer information.
       tags:
         - Troubleshooting
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -2972,6 +3140,8 @@ paths:
         Tip: Use [/debug/{datasource}/status](https://developers.glean.com/indexing/debugging/datasource-status) for richer information.
       tags:
         - Troubleshooting
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -3007,6 +3177,8 @@ paths:
       description: Allow the datasource be visible to the specified beta users. The default behaviour is datasource being visible to all users if it is enabled and not visible to any user if it is not enabled.
       tags:
         - Permissions
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -3031,6 +3203,8 @@ paths:
       description: Add or update a custom datasource and its schema.
       tags:
         - Datasources
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -3053,6 +3227,8 @@ paths:
       description: Fetches the datasource config for the specified custom datasource.
       tags:
         - Datasources
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json:
@@ -3081,6 +3257,8 @@ paths:
       description: Rotates the secret value inside the Indexing API token and returns the new raw secret. All other properties of the token are unchanged. In order to rotate the secret value, include the token as the bearer token in the `/rotatetoken` request. Please refer to [Token rotation](https://developers.glean.com/indexing/authentication/token-rotation) documentation for more information.
       tags:
         - Authentication
+      security:
+        - APIToken: []
       responses:
         "200":
           description: OK
@@ -3100,6 +3278,8 @@ paths:
       description: Adds an employee or updates information about an employee
       tags:
         - People
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json; charset=UTF-8:
@@ -3124,6 +3304,8 @@ paths:
       description: Replaces all the currently indexed employees using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
       tags:
         - People
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json; charset=UTF-8:
@@ -3157,6 +3339,8 @@ paths:
         Schedules the immediate processing of employees and teams uploaded through the indexing API. By default all uploaded people data will be processed asynchronously but this API can be used to schedule its processing on demand.
       tags:
         - People
+      security:
+        - APIToken: []
       responses:
         "200":
           description: OK
@@ -3174,6 +3358,8 @@ paths:
       description: Delete an employee. Silently succeeds if employee is not present.
       tags:
         - People
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json; charset=UTF-8:
@@ -3198,6 +3384,8 @@ paths:
       description: Adds a team or updates information about a team
       tags:
         - People
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json; charset=UTF-8:
@@ -3222,6 +3410,8 @@ paths:
       description: Delete a team based on provided id.
       tags:
         - People
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json; charset=UTF-8:
@@ -3246,6 +3436,8 @@ paths:
       description: Replaces all the currently indexed teams using paginated batch API calls. Please refer to the [bulk indexing](https://developers.glean.com/indexing/documents/bulk-upload-model) documentation for an explanation of how to use bulk endpoints.
       tags:
         - People
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json; charset=UTF-8:
@@ -3270,6 +3462,8 @@ paths:
       description: Replaces all the currently indexed shortcuts using paginated batch API calls. Note that this endpoint is used for indexing shortcuts not hosted by Glean. If you want to upload shortcuts that would be hosted by Glean, please use the `/uploadshortcuts` endpoint. For information on what you can do with Golinks, which are Glean-hosted shortcuts, please refer to [this](https://help.glean.com/en/articles/5628838-how-go-links-work) page.
       tags:
         - Shortcuts
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json; charset=UTF-8:
@@ -3294,6 +3488,8 @@ paths:
       description: Creates glean shortcuts for uploaded shortcuts info. Glean would host the shortcuts, and they can be managed in the knowledge tab once uploaded.
       tags:
         - Shortcuts
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json; charset=UTF-8:
@@ -3319,6 +3515,8 @@ paths:
       description: Fetches the specified policy version, or the latest if no version is provided.
       tags:
         - Governance
+      security:
+        - APIToken: []
       parameters:
         - name: id
           in: path
@@ -3353,6 +3551,8 @@ paths:
       description: Updates an existing policy.
       tags:
         - Governance
+      security:
+        - APIToken: []
       parameters:
         - name: id
           in: path
@@ -3386,6 +3586,8 @@ paths:
       description: Lists policies with filtering.
       tags:
         - Governance
+      security:
+        - APIToken: []
       parameters:
         - name: autoHide
           in: query
@@ -3419,6 +3621,8 @@ paths:
       description: Creates a new policy with specified specifications and returns its id.
       tags:
         - Governance
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json; charset=UTF-8:
@@ -3446,6 +3650,8 @@ paths:
       description: Downloads CSV violations report for a specific policy id. This does not support continuous policies.
       tags:
         - Governance
+      security:
+        - APIToken: []
       parameters:
         - name: id
           in: path
@@ -3477,6 +3683,8 @@ paths:
       description: Creates a new one-time report and executes its batch job.
       tags:
         - Governance
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json; charset=UTF-8:
@@ -3504,6 +3712,8 @@ paths:
       description: Downloads CSV violations report for a specific report id.
       tags:
         - Governance
+      security:
+        - APIToken: []
       parameters:
         - name: id
           in: path
@@ -3533,6 +3743,8 @@ paths:
       description: Fetches the status of the run corresponding to the report-id.
       tags:
         - Governance
+      security:
+        - APIToken: []
       parameters:
         - name: id
           in: path
@@ -3561,6 +3773,8 @@ paths:
       description: Fetches the visibility override status of the documents passed.
       tags:
         - Governance
+      security:
+        - APIToken: []
       parameters:
         - name: docIds
           in: query
@@ -3589,6 +3803,8 @@ paths:
       description: Sets the visibility-override state of the documents specified, effectively hiding or un-hiding documents.
       tags:
         - Governance
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json; charset=UTF-8:
@@ -3616,6 +3832,8 @@ paths:
       description: Creates a new DLP findings export job.
       tags:
         - Governance
+      security:
+        - APIToken: []
       requestBody:
         content:
           application/json; charset=UTF-8:
@@ -3640,6 +3858,8 @@ paths:
       description: Lists all DLP findings exports.
       tags:
         - Governance
+      security:
+        - APIToken: []
       responses:
         "200":
           description: OK
@@ -3659,6 +3879,8 @@ paths:
       description: Downloads a DLP findings export as a CSV file.
       tags:
         - Governance
+      security:
+        - APIToken: []
       parameters:
         - name: id
           in: path
@@ -3685,6 +3907,8 @@ paths:
       description: Deletes a DLP findings export.
       tags:
         - Governance
+      security:
+        - APIToken: []
       parameters:
         - name: id
           in: path
@@ -3709,6 +3933,8 @@ paths:
         Gets the greenlisted configuration values for a datasource instance. Returns only configuration keys that are exposed via the public API greenlist.
       tags:
         - Datasources
+      security:
+        - APIToken: []
       parameters:
         - $ref: '#/components/parameters/datasourceId'
         - $ref: '#/components/parameters/instanceId'
@@ -3747,6 +3973,8 @@ paths:
         Updates the greenlisted configuration values for a datasource instance. Only configuration keys that are exposed via the public API greenlist may be set. Returns the full greenlisted configuration after the update is applied.
       tags:
         - Datasources
+      security:
+        - APIToken: []
       parameters:
         - $ref: '#/components/parameters/datasourceId'
         - $ref: '#/components/parameters/instanceId'
