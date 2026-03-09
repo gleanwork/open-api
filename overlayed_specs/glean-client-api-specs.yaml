@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: bad40710342308903d1ea2d60ac6cfab5f0c9f01
+  x-source-commit-sha: 386df706f9267ff1dee78fcaf1998c0ab62ae25e
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 0d74f1412e46676c60a1a633d331f0e138b1eb49
+  x-open-api-commit-sha: f7b5df03a24792d196ee88dfa6eeb373703e8a68
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -10156,13 +10156,13 @@ components:
             - UNLIKELY
             - VERY_UNLIKELY
           deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
           x-glean-deprecated:
             - id: d45039ec-d6f6-47ba-93b7-ab2307b07f84
               introduced: "2026-02-05"
               kind: property
               message: Field is deprecated
               removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
         infoType:
           type: string
           description: Text representation of an info-type to scan for.
@@ -10188,12 +10188,12 @@ components:
             type: string
           description: list of url regex matching documents excluded from report
           deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
           x-glean-deprecated:
             id: e022aaa5-56e6-4b57-bca3-b11943da76a0
             introduced: "2026-02-05"
             message: Field is deprecated
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
         datasourcesType:
           type: string
           enum:
@@ -10206,12 +10206,12 @@ components:
             type: string
           description: List of datasources to consider for report. DEPRECATED - use datasourceInstances instead.
           deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use datasourceInstances instead"
           x-glean-deprecated:
             id: 97e35970-e0ed-4248-be13-2af8c22e7894
             introduced: "2026-02-05"
             message: Use datasourceInstances instead
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use datasourceInstances instead"
         datasourceInstances:
           type: array
           items:
@@ -10239,12 +10239,12 @@ components:
         enabled:
           type: boolean
           deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
           x-glean-deprecated:
             id: e9260be6-209b-4ce2-a4b3-f7f22879dd86
             introduced: "2026-02-05"
             message: Field is deprecated
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
         threshold:
           type: integer
           description: The minimum number of users the document is shared with.
@@ -10254,12 +10254,12 @@ components:
         anyoneWithLinkEnabled:
           type: boolean
           deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
           x-glean-deprecated:
             id: 30646ced-e0db-43ef-8412-64a67c5d0f53
             introduced: "2026-02-05"
             message: Field is deprecated
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
         anyoneInternalEnabled:
           type: boolean
           description: Only users within the organization can access the document.
@@ -10284,12 +10284,12 @@ components:
             domainAccessEnabled:
               type: boolean
       deprecated: true
-      x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use broadSharingOptions instead"
       x-glean-deprecated:
         id: 7c9e4a1d-3f8b-4e2c-9a5d-6b0f1c8e2d4a
         introduced: "2026-02-05"
         message: Use broadSharingOptions instead
         removal: "2026-10-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use broadSharingOptions instead"
     HotwordProximity:
       properties:
         windowBefore:
@@ -10357,36 +10357,36 @@ components:
             $ref: '#/components/schemas/SensitiveInfoType'
           description: DEPRECATED - use 'customSensitiveExpressions' instead.
           deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
           x-glean-deprecated:
             id: 3497cb1c-f7aa-42d8-81b8-309c3adeed84
             introduced: "2026-02-05"
             message: Use customSensitiveExpressions instead
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
         sensitiveTerms:
           type: array
           items:
             $ref: '#/components/schemas/SensitiveExpression'
           description: DEPRECATED - use 'customSensitiveExpressions' instead.
           deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
           x-glean-deprecated:
             id: b0713b37-472e-4c29-80ba-6f5d6f2b449c
             introduced: "2026-02-05"
             message: Use customSensitiveExpressions instead
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
         sensitiveRegexes:
           type: array
           items:
             $ref: '#/components/schemas/SensitiveExpression'
           description: DEPRECATED - use 'customSensitiveExpressions' instead.
           deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
           x-glean-deprecated:
             id: a26e1920-36b6-4c0f-981f-57b09a9ebce3
             introduced: "2026-02-05"
             message: Use customSensitiveExpressions instead
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
         customSensitiveExpressions:
           type: array
           items:
@@ -10435,12 +10435,12 @@ components:
             $ref: '#/components/schemas/SensitiveInfoType'
           description: DEPRECATED - use `sensitiveContentOptions` instead.
           deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use sensitiveContentOptions instead"
           x-glean-deprecated:
             id: 60d6d182-e9d0-448d-af75-137f68bbdcbf
             introduced: "2026-02-05"
             message: Use sensitiveContentOptions instead
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use sensitiveContentOptions instead"
         inputOptions:
           $ref: '#/components/schemas/InputOptions'
           description: Options for documents to include or exclude in a report
@@ -10448,12 +10448,12 @@ components:
           $ref: '#/components/schemas/ExternalSharingOptions'
           description: DEPRECATED - use `broadSharingOptions` instead.
           deprecated: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use broadSharingOptions instead"
           x-glean-deprecated:
             id: 6484ec17-a133-4176-b2ce-28e25b0e9065
             introduced: "2026-02-05"
             message: Use broadSharingOptions instead
             removal: "2026-10-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use broadSharingOptions instead"
         broadSharingOptions:
           $ref: '#/components/schemas/SharingOptions'
           description: Options for defining documents to scan for sensitive content.
