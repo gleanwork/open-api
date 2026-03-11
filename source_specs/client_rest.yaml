@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 9cb01f90be71b3fca26e175c81ca1853716585e0
+  x-source-commit-sha: d65ee98e79e7e1fbf8e05a7ae8a70447819ad5e4
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -6548,6 +6548,11 @@ components:
           title: Agent Id
           description: The ID of the agent.
           example: mho4lwzylcozgoc2
+        name:
+          type: string
+          title: Agent Name
+          description: The name of the agent.
+          example: HR Policy Agent
         input_schema:
           type: object
           title: Input Schema
