@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: b8cf916f96f603348b874890e0b8dea0a4c6abb8
+  x-source-commit-sha: 1b00ce498fb6a689bb639411b7d7e66ec747a572
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -8465,13 +8465,21 @@ components:
                 $ref: '#/components/schemas/UserRoleSpecification'
     UgcType:
       enum:
+        - AGENT_TYPE
         - ANNOUNCEMENTS_TYPE
         - ANSWERS_TYPE
         - COLLECTIONS_TYPE
-        - SHORTCUTS_TYPE
-        - WORKFLOWS_TYPE
-        - PROMPT_TEMPLATES_TYPE
+        - EMAIL_TYPE
+        - HTML_CODE_TYPE
+        - IMAGE_TYPE
+        - MESSAGE_TYPE
+        - PAPER_TYPE
         - PRISM_VIEWS_TYPE
+        - PROMPT_TEMPLATES_TYPE
+        - SCRIBES_TYPE
+        - SHORTCUTS_TYPE
+        - SLIDE_TYPE
+        - WORKFLOWS_TYPE
     FavoriteInfo:
       type: object
       properties:
