@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: de4f74f24d0466b03516026d7602a7b54ded6793
+  x-source-commit-sha: c1a5aab1047c76d5cf6c9698a1055a4f0afda200
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -8147,6 +8147,12 @@ components:
               - ZERO_STATE_WORKFLOW_SUGGESTION
               - PERSONALIZED_CHAT_SUGGESTION
               - DAILY_DIGEST
+              - TASK
+              - PLAN_MY_DAY
+              - END_MY_DAY
+              - STARTER_KIT
+              - MID_DAY_CATCH_UP
+              - QUERY_SUGGESTION
           description: Categories of content requested. An allowlist gives flexibility to request content separately or together.
         requestOptions:
           $ref: '#/components/schemas/FeedRequestOptions'
@@ -8627,6 +8633,10 @@ components:
             - STARTER_KIT_EXTENSION
             - STARTER_KIT_ORG_CHART
             - STARTER_KIT_ADD_DOC
+            - MEETING_RECAP
+            - ACTIVE_DISCUSSION
+            - MID_DAY_CATCH_UP
+            - QUERY_SUGGESTION
           description: Type of the justification.
         justification:
           type: string
@@ -8703,6 +8713,8 @@ components:
             - PLAN_MY_DAY
             - END_MY_DAY
             - STARTER_KIT
+            - MID_DAY_CATCH_UP
+            - QUERY_SUGGESTION
           description: Category of the result, one of the requested categories in incoming request.
         primaryEntry:
           $ref: '#/components/schemas/FeedEntry'
