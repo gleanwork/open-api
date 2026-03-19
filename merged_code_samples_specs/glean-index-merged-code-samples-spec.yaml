@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 4045699340887e4fc9b61bee0cf0ed888e74fcc1
+  x-source-commit-sha: b82cd7608fd801b317cf9df15ebfb73f83d9febc
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 24c3e1f002896f627e40e5e9031a65214bd921e3
+  x-open-api-commit-sha: 0b2689b6010d15de5b45dc85490080ea14936ea6
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -2181,7 +2181,7 @@ paths:
                             .call();
 
                     if (res.debugDatasourceStatusResponse().isPresent()) {
-                        // handle response
+                        System.out.println(res.debugDatasourceStatusResponse().get());
                     }
                 }
             }
@@ -2312,7 +2312,7 @@ paths:
                             .call();
 
                     if (res.debugDocumentResponse().isPresent()) {
-                        // handle response
+                        System.out.println(res.debugDocumentResponse().get());
                     }
                 }
             }
@@ -2456,7 +2456,7 @@ paths:
                             .call();
 
                     if (res.debugDocumentsResponse().isPresent()) {
-                        // handle response
+                        System.out.println(res.debugDocumentsResponse().get());
                     }
                 }
             }
@@ -2593,7 +2593,7 @@ paths:
                             .call();
 
                     if (res.debugUserResponse().isPresent()) {
-                        // handle response
+                        System.out.println(res.debugUserResponse().get());
                     }
                 }
             }
@@ -2725,7 +2725,7 @@ paths:
                             .call();
 
                     if (res.checkDocumentAccessResponse().isPresent()) {
-                        // handle response
+                        System.out.println(res.checkDocumentAccessResponse().get());
                     }
                 }
             }
@@ -2792,6 +2792,12 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-glean-deprecated:
+        id: 7eec0433-78fd-49f9-a34f-cca83640ec24
+        introduced: "2026-02-03"
+        message: Endpoint is deprecated
+        removal: "2026-10-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2026-10-15: Endpoint is deprecated"
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: status
   /api/index/v1/getdocumentcount:
@@ -2824,6 +2830,12 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-deprecated:
+        id: c164089c-9412-4724-acf6-caf3b0d2a527
+        introduced: "2026-02-03"
+        message: Endpoint is deprecated
+        removal: "2026-10-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2026-10-15: Endpoint is deprecated"
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: count
   /api/index/v1/getusercount:
@@ -2856,6 +2868,12 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-deprecated:
+        id: 4f5df873-385e-4539-8183-cb764b0f06b9
+        introduced: "2026-02-03"
+        message: Endpoint is deprecated
+        removal: "2026-10-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2026-10-15: Endpoint is deprecated"
       x-speakeasy-name-override: count
       x-speakeasy-group: indexing.people
   /api/index/v1/betausers:
@@ -3238,7 +3256,7 @@ paths:
                             .call();
 
                     if (res.customDatasourceConfig().isPresent()) {
-                        // handle response
+                        System.out.println(res.customDatasourceConfig().get());
                     }
                 }
             }
@@ -3344,7 +3362,7 @@ paths:
                             .call();
 
                     if (res.rotateTokenResponse().isPresent()) {
-                        // handle response
+                        System.out.println(res.rotateTokenResponse().get());
                     }
                 }
             }
@@ -3549,204 +3567,15 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-deprecated:
+        id: ce596f49-55c4-465e-bf3c-5a3a33906e1f
+        introduced: "2026-02-03"
+        message: Endpoint is deprecated
+        removal: "2026-10-15"
+      deprecated: true
+      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2026-10-15: Endpoint is deprecated"
       x-speakeasy-name-override: bulkIndex
       x-speakeasy-group: indexing.people
-      x-codeSamples:
-        - lang: python
-          label: Python (API Client)
-          source: |-
-            from glean.api_client import Glean
-            import os
-
-
-            with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-            ) as glean:
-
-                glean.indexing.people.bulk_index(upload_id="<id>", employees=[
-                    {
-                        "email": "Robin.Stoltenberg@yahoo.com",
-                        "department": "<value>",
-                        "datasource_profiles": [
-                            {
-                                "datasource": "github",
-                                "handle": "<value>",
-                            },
-                        ],
-                    },
-                ])
-
-                # Use the SDK ...
-        - lang: typescript
-          label: Typescript (API Client)
-          source: |-
-            import { Glean } from "@gleanwork/api-client";
-
-            const glean = new Glean({
-              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
-            });
-
-            async function run() {
-              await glean.indexing.people.bulkIndex({
-                uploadId: "<id>",
-                employees: [
-                  {
-                    email: "Robin.Stoltenberg@yahoo.com",
-                    department: "<value>",
-                    datasourceProfiles: [
-                      {
-                        datasource: "github",
-                        handle: "<value>",
-                      },
-                    ],
-                  },
-                  {
-                    email: "Robin.Stoltenberg@yahoo.com",
-                    department: "<value>",
-                    datasourceProfiles: [
-                      {
-                        datasource: "github",
-                        handle: "<value>",
-                      },
-                    ],
-                  },
-                  {
-                    email: "Robin.Stoltenberg@yahoo.com",
-                    department: "<value>",
-                    datasourceProfiles: [
-                      {
-                        datasource: "github",
-                        handle: "<value>",
-                      },
-                    ],
-                  },
-                ],
-              });
-
-
-            }
-
-            run();
-        - lang: java
-          label: Java (API Client)
-          source: |-
-            package hello.world;
-
-            import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.*;
-            import com.glean.api_client.glean_api_client.models.operations.PostApiIndexV1BulkindexemployeesResponse;
-            import java.lang.Exception;
-            import java.util.List;
-
-            public class Application {
-
-                public static void main(String[] args) throws Exception {
-
-                    Glean sdk = Glean.builder()
-                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
-                        .build();
-
-                    BulkIndexEmployeesRequest req = BulkIndexEmployeesRequest.builder()
-                            .uploadId("<id>")
-                            .employees(List.of(
-                                EmployeeInfoDefinition.builder()
-                                    .email("Robin.Stoltenberg@yahoo.com")
-                                    .department("<value>")
-                                    .datasourceProfiles(List.of(
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
-                                            .build()))
-                                    .build(),
-                                EmployeeInfoDefinition.builder()
-                                    .email("Robin.Stoltenberg@yahoo.com")
-                                    .department("<value>")
-                                    .datasourceProfiles(List.of(
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
-                                            .build()))
-                                    .build(),
-                                EmployeeInfoDefinition.builder()
-                                    .email("Robin.Stoltenberg@yahoo.com")
-                                    .department("<value>")
-                                    .datasourceProfiles(List.of(
-                                        DatasourceProfile.builder()
-                                            .datasource("github")
-                                            .handle("<value>")
-                                            .build()))
-                                    .build()))
-                            .build();
-
-                    PostApiIndexV1BulkindexemployeesResponse res = sdk.indexing().people().bulkIndex()
-                            .request(req)
-                            .call();
-
-                    // handle response
-                }
-            }
-        - lang: go
-          label: Go (API Client)
-          source: |-
-            package main
-
-            import(
-            	"context"
-            	"os"
-            	apiclientgo "github.com/gleanwork/api-client-go"
-            	"github.com/gleanwork/api-client-go/models/components"
-            	"log"
-            )
-
-            func main() {
-                ctx := context.Background()
-
-                s := apiclientgo.New(
-                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
-                )
-
-                res, err := s.Indexing.People.BulkIndex(ctx, components.BulkIndexEmployeesRequest{
-                    UploadID: "<id>",
-                    Employees: []components.EmployeeInfoDefinition{
-                        components.EmployeeInfoDefinition{
-                            Email: "Robin.Stoltenberg@yahoo.com",
-                            Department: "<value>",
-                            DatasourceProfiles: []components.DatasourceProfile{
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                            },
-                        },
-                        components.EmployeeInfoDefinition{
-                            Email: "Robin.Stoltenberg@yahoo.com",
-                            Department: "<value>",
-                            DatasourceProfiles: []components.DatasourceProfile{
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                            },
-                        },
-                        components.EmployeeInfoDefinition{
-                            Email: "Robin.Stoltenberg@yahoo.com",
-                            Department: "<value>",
-                            DatasourceProfiles: []components.DatasourceProfile{
-                                components.DatasourceProfile{
-                                    Datasource: "github",
-                                    Handle: "<value>",
-                                },
-                            },
-                        },
-                    },
-                })
-                if err != nil {
-                    log.Fatal(err)
-                }
-                if res != nil {
-                    // handle response
-                }
-            }
   /api/index/v1/indexemployeelist: {}
   /api/index/v1/processallemployeesandteams:
     post:
