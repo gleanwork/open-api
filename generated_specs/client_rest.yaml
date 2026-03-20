@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: b82cd7608fd801b317cf9df15ebfb73f83d9febc
+  x-source-commit-sha: 46c103d4cb6663364fc3a7a1730d370157cbfc3b
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 0b2689b6010d15de5b45dc85490080ea14936ea6
+  x-open-api-commit-sha: e5ec36ce374053ce4b42dcb612c1908ca1687ac8
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -7217,6 +7217,15 @@ components:
               $ref: "#/components/schemas/InsightsSearchSummary"
             chatSummary:
               $ref: "#/components/schemas/InsightsChatSummary"
+            searchActiveUsers:
+              $ref: "#/components/schemas/CurrentActiveUsers"
+              description: Search-specific active user counts for the specified departments.
+            assistantActiveUsers:
+              $ref: "#/components/schemas/CurrentActiveUsers"
+              description: Assistant-specific active user counts for the specified departments.
+            agentsActiveUsers:
+              $ref: "#/components/schemas/CurrentActiveUsers"
+              description: Agents-specific active user counts for the specified departments.
             extensionSummary:
               $ref: "#/components/schemas/CurrentActiveUsers"
             ugcSummary:
