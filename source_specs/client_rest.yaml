@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: a7fbe52aa715d10033028af3ee25b98a4dc52246
+  x-source-commit-sha: 46c103d4cb6663364fc3a7a1730d370157cbfc3b
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -7105,6 +7105,15 @@ components:
               $ref: '#/components/schemas/InsightsSearchSummary'
             chatSummary:
               $ref: '#/components/schemas/InsightsChatSummary'
+            searchActiveUsers:
+              $ref: '#/components/schemas/CurrentActiveUsers'
+              description: Search-specific active user counts for the specified departments.
+            assistantActiveUsers:
+              $ref: '#/components/schemas/CurrentActiveUsers'
+              description: Assistant-specific active user counts for the specified departments.
+            agentsActiveUsers:
+              $ref: '#/components/schemas/CurrentActiveUsers'
+              description: Agents-specific active user counts for the specified departments.
             extensionSummary:
               $ref: '#/components/schemas/CurrentActiveUsers'
             ugcSummary:
