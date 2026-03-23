@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 089d2baea11d39aa644fee9e219acabfcec2b422
+  x-source-commit-sha: 7e68a849f9cb22fa3aad6a751bde84e61caaeecd
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -8164,6 +8164,7 @@ components:
               - STARTER_KIT
               - MID_DAY_CATCH_UP
               - QUERY_SUGGESTION
+              - WEEKLY_MEETINGS
           description: Categories of content requested. An allowlist gives flexibility to request content separately or together.
         requestOptions:
           $ref: '#/components/schemas/FeedRequestOptions'
@@ -8657,6 +8658,7 @@ components:
             - ACTIVE_DISCUSSION
             - MID_DAY_CATCH_UP
             - QUERY_SUGGESTION
+            - WEEKLY_MEETINGS
           description: Type of the justification.
         justification:
           type: string
@@ -8735,6 +8737,7 @@ components:
             - STARTER_KIT
             - MID_DAY_CATCH_UP
             - QUERY_SUGGESTION
+            - WEEKLY_MEETINGS
           description: Category of the result, one of the requested categories in incoming request.
         primaryEntry:
           $ref: '#/components/schemas/FeedEntry'
