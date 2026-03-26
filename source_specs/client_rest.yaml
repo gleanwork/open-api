@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: bb1dcb12a5f470a6935ddf28481d5504a5a679cf
+  x-source-commit-sha: 7955288823cb2deb1967ce55d2efd5d3877ba651
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -720,7 +720,7 @@ paths:
     post:
       tags:
         - Chat
-      summary: Upload files for Chat.
+      summary: Upload files for Chat
       description: Upload files for Chat.
       operationId: uploadchatfiles
       x-visibility: Public
@@ -755,7 +755,7 @@ paths:
     post:
       tags:
         - Chat
-      summary: Get files uploaded by a user for Chat.
+      summary: Get files uploaded by a user for Chat
       description: Get files uploaded by a user for Chat.
       operationId: getchatfiles
       x-visibility: Public
@@ -790,7 +790,7 @@ paths:
     post:
       tags:
         - Chat
-      summary: Delete files uploaded by a user for chat.
+      summary: Delete files uploaded by a user for chat
       description: Delete files uploaded by a user for Chat.
       operationId: deletechatfiles
       x-visibility: Public
