@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: c97cd871585dc1b4d34ec4578e6a14287fa7dc48
+  x-source-commit-sha: 7955288823cb2deb1967ce55d2efd5d3877ba651
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: e74171e14f59ce7bcfabbda6a2622da882d38c77
+  x-open-api-commit-sha: 4ac4aab2448d19a600a4e414887f626ac7cae57d
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -722,7 +722,7 @@ paths:
     post:
       tags:
         - Chat
-      summary: Upload files for Chat.
+      summary: Upload files for Chat
       description: Upload files for Chat.
       operationId: uploadchatfiles
       x-visibility: Public
@@ -757,7 +757,7 @@ paths:
     post:
       tags:
         - Chat
-      summary: Get files uploaded by a user for Chat.
+      summary: Get files uploaded by a user for Chat
       description: Get files uploaded by a user for Chat.
       operationId: getchatfiles
       x-visibility: Public
@@ -792,7 +792,7 @@ paths:
     post:
       tags:
         - Chat
-      summary: Delete files uploaded by a user for chat.
+      summary: Delete files uploaded by a user for chat
       description: Delete files uploaded by a user for Chat.
       operationId: deletechatfiles
       x-visibility: Public
