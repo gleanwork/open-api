@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 7955288823cb2deb1967ce55d2efd5d3877ba651
+  x-source-commit-sha: cd2af179a4ddf649fec5f17e3199fccdcc21fbdc
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 4ac4aab2448d19a600a4e414887f626ac7cae57d
+  x-open-api-commit-sha: 4d282dc80a2f2935aab3ecf6868b58526426c4b8
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -9055,6 +9055,10 @@ components:
               - MID_DAY_CATCH_UP
               - QUERY_SUGGESTION
               - WEEKLY_MEETINGS
+              - FOLLOW_UP
+              - MILESTONE_TIMELINE_CHECK
+              - PROJECT_DISCUSSION_DIGEST
+              - PROJECT_NEXT_STEP
           description: Categories of content requested. An allowlist gives flexibility to request content separately or together.
         requestOptions:
           $ref: "#/components/schemas/FeedRequestOptions"
@@ -9556,6 +9560,10 @@ components:
             - MID_DAY_CATCH_UP
             - QUERY_SUGGESTION
             - WEEKLY_MEETINGS
+            - FOLLOW_UP
+            - MILESTONE_TIMELINE_CHECK
+            - PROJECT_DISCUSSION_DIGEST
+            - PROJECT_NEXT_STEP
           description: Type of the justification.
         justification:
           type: string
@@ -9635,6 +9643,10 @@ components:
             - MID_DAY_CATCH_UP
             - QUERY_SUGGESTION
             - WEEKLY_MEETINGS
+            - FOLLOW_UP
+            - MILESTONE_TIMELINE_CHECK
+            - PROJECT_DISCUSSION_DIGEST
+            - PROJECT_NEXT_STEP
           description: Category of the result, one of the requested categories in incoming request.
         primaryEntry:
           $ref: "#/components/schemas/FeedEntry"
