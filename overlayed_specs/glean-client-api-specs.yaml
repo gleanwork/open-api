@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: cf623d2156525bde0d1de72071442af3a27882f6
+  x-source-commit-sha: 0851ba226b03c6a78b3e31fcb3b3ba41ddd13867
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,6 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 3052e26816768b41f852a0bbea5124e2e696d336
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -5417,6 +5416,23 @@ components:
             - TICKET
             - TRANSCRIPT
             - WITH
+          x-enum-varnames:
+            - ATTACHMENT
+            - CANONICAL
+            - CASE
+            - CONTACT_LOWERCASE
+            - CONTACT
+            - CONVERSATION_MESSAGES
+            - EXPERT
+            - FROM
+            - HIGHLIGHT
+            - OPPORTUNITY_LOWERCASE
+            - OPPORTUNITY
+            - RECENT
+            - SOURCE
+            - TICKET
+            - TRANSCRIPT
+            - WITH
           x-enumDescriptions:
             CANONICAL: Canonical documents for the entity, such as overview docs, architecture docs elastic.
           x-speakeasy-enum-descriptions:
@@ -9391,6 +9407,7 @@ components:
         - PAPER_TYPE
         - PRISM_VIEWS_TYPE
         - PROMPT_TEMPLATES_TYPE
+        - PINS_TYPE
         - SCRIBES_TYPE
         - SHORTCUTS_TYPE
         - SLIDE_TYPE
