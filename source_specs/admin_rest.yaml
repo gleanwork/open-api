@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: 4bfa9fd012daa13ffc9ee05c61d2bd6a71fb0dac
+  x-source-commit-sha: bdffa28fa78595b63c610c794e26509559a8e6a8
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
@@ -14,7 +14,7 @@ servers:
     variables:
       domain:
         default: domain
-        description: Email domain (without extension) that determines the deployment backend.
+        description: Backend subdomain for the API (e.g. mycompany or be4f5226 for new customers)
 security:
   - actAsBearerToken: []
   - cookieAuth: []
