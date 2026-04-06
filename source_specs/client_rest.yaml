@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 53458922197945b19149ca9700195556ea46ec69
+  x-source-commit-sha: 8a0e3a32d5d6639d10ef809d104942a79d54d1a0
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -2242,6 +2242,8 @@ paths:
           description: Too Many Requests
   /tools/list:
     get:
+      tags:
+        - Tools
       summary: List available tools
       description: Returns a filtered set of available tools based on optional tool name parameters. If no filters are provided, all available tools are returned.
       x-visibility: Preview
@@ -2273,6 +2275,8 @@ paths:
           description: Too Many Requests
   /tools/call:
     post:
+      tags:
+        - Tools
       summary: Execute the specified tool
       description: Execute the specified tool with provided parameters
       x-visibility: Preview
