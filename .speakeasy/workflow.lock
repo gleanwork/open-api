@@ -24,8 +24,8 @@ sources:
             - 0.9.0
     glean-client-merged-code-samples-spec:
         sourceNamespace: glean-client-merged-code-samples-spec
-        sourceRevisionDigest: sha256:b0472c82b07fe34f7f4408af4cc3aeceecb980c7ed769d6872c4c097650e521a
-        sourceBlobDigest: sha256:cbaeb4ac94d209dc53590b8984e5082aa0d194d7ea0fc6e4aa63572459492ec1
+        sourceRevisionDigest: sha256:eadf82fcf8db98a38bc2ff40ab123de6b5dc9e0435d2e8e3546a5eeea7682f6a
+        sourceBlobDigest: sha256:ba6491293aeaab43a4bcaae80a24c52fa7ebdd6be0824dd18ec53b02ef4436f4
         tags:
             - latest
             - main
