@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 691d462532b106865c64b4367de30d11ce332aba
+  x-source-commit-sha: 7cd01919b796c950ca54c51503238f534fa48e00
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -7420,6 +7420,12 @@ components:
                 $ref: '#/components/schemas/AgentsTimeSavedInsight'
               description: Insights for agents time saved over the specified time period.
             dailyAgentRunsTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            successfulRunsTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            failedRunsTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            pausedRunsTimeseries:
               $ref: '#/components/schemas/LabeledCountInfo'
             upvotesTimeseries:
               $ref: '#/components/schemas/LabeledCountInfo'
