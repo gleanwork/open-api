@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Indexing API
-  x-source-commit-sha: d99879d02db995486773473096bf8912331a187c
+  x-source-commit-sha: d828d8748baaea5d08328c090c23e1e800990cff
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -1746,7 +1746,7 @@ components:
         name:
           type: string
         value:
-          description: Must either be a string or an array of strings. An integer, boolean, etc. is not valid. When OpenAPI Generator supports `oneOf`, we can semantically enforce this.
+          description: Must be a string, a number (for INT properties), or an array of strings. A boolean is not valid. When OpenAPI Generator supports `oneOf`, we can semantically enforce this.
     DatasourceConfig:
       $ref: '#/components/schemas/SharedDatasourceConfig'
     GetDatasourceConfigRequest:
