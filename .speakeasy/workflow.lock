@@ -2,8 +2,8 @@ speakeasyVersion: 1.761.3
 sources:
     glean-api-specs:
         sourceNamespace: glean-api-specs
-        sourceRevisionDigest: sha256:6a73f1dc99905329abbd6b328f3d45cb951f8a0cd1071743f1603d9e359c494c
-        sourceBlobDigest: sha256:7780b77693fddb2a05afb94eec55300dd04fd947a371c3fcb72b142d621bc100
+        sourceRevisionDigest: sha256:4277e40661964f139892dc9d41791b75db9979df555b982a4a62cc169325772a
+        sourceBlobDigest: sha256:6a3dd4be2e04e2bdbcd679004b42f4d59ccfa73ec4982b0b8d7d235ca5de454c
         tags:
             - latest
             - main

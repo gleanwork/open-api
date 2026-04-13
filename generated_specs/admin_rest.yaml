@@ -2,14 +2,14 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: d828d8748baaea5d08328c090c23e1e800990cff
+  x-source-commit-sha: f22099952cadccba25912a5a8a01d9ea21e70e27
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
     operations. These offer limited exposure to the admin APIs through rest endpoints.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 84e37ffdb6ac1463f12d6a578f1cc8c48bc09f34
+  x-open-api-commit-sha: 292e27e6533b64a95d51fa3d49f485681eed2d8b
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -1006,6 +1006,15 @@ components:
         - LOW
         - MEDIUM
         - HIGH
+    DlpIssueStatus:
+      type: string
+      description: Status of a DLP issue.
+      x-include-enum-class-prefix: true
+      enum:
+        - OPEN
+        - CLOSED
+        - IN_PROGRESS
+        - RESOLVED
     TimeRangeFilter:
       properties:
         timePeriodType:
@@ -1041,6 +1050,10 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/DlpSeverity"
+        statuses:
+          type: array
+          items:
+            $ref: "#/components/schemas/DlpIssueStatus"
         timeRange:
           $ref: "#/components/schemas/TimeRangeFilter"
         archived:
