@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: a9a6d4f331a3052d3347e7366e1166f483ff5cb7
+  x-source-commit-sha: a8fa186119684cfb02b671c706421d54aa603a0c
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: bee9d999e037d7c61bcd75eafa0755e05e88dba7
+  x-open-api-commit-sha: d779e0cb5fd1e7422a60bf5137113490232f468f
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -8207,6 +8207,33 @@ components:
         downvoteCount:
           type: integer
           description: Total number of downvotes for this agent over the specified time period.
+    AgentUseCaseInsight:
+      properties:
+        useCase:
+          type: string
+          description: Use case name
+        runCount:
+          type: integer
+          description: Total number of runs for this use case over the specified time period.
+        trend:
+          type: number
+          format: float
+          description: Percentage change in runs compared to the previous equivalent time period.
+        topDepartments:
+          type: string
+          description: Comma-separated list of the top departments using this use case.
+        topAgentId:
+          type: string
+          description: ID of the most-used agent for this use case.
+        topAgentName:
+          type: string
+          description: Name of the most-used agent for this use case.
+        topAgentIcon:
+          $ref: "#/components/schemas/IconConfig"
+          description: Icon of the most-used agent for this use case.
+        topAgentIsDeleted:
+          type: boolean
+          description: Indicates whether the top agent has been deleted.
     AgentsUsageByDepartmentInsight:
       properties:
         department:
@@ -8296,6 +8323,10 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/PerAgentInsight"
+            topUseCasesInsights:
+              type: array
+              items:
+                $ref: "#/components/schemas/AgentUseCaseInsight"
             agentsUsageByDepartmentInsights:
               type: array
               items:
