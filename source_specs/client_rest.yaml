@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: c60984d640e7b39a4ae062d30d8af269143e12ec
+  x-source-commit-sha: a8fa186119684cfb02b671c706421d54aa603a0c
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -7324,6 +7324,33 @@ components:
         downvoteCount:
           type: integer
           description: Total number of downvotes for this agent over the specified time period.
+    AgentUseCaseInsight:
+      properties:
+        useCase:
+          type: string
+          description: Use case name
+        runCount:
+          type: integer
+          description: Total number of runs for this use case over the specified time period.
+        trend:
+          type: number
+          format: float
+          description: Percentage change in runs compared to the previous equivalent time period.
+        topDepartments:
+          type: string
+          description: Comma-separated list of the top departments using this use case.
+        topAgentId:
+          type: string
+          description: ID of the most-used agent for this use case.
+        topAgentName:
+          type: string
+          description: Name of the most-used agent for this use case.
+        topAgentIcon:
+          $ref: '#/components/schemas/IconConfig'
+          description: Icon of the most-used agent for this use case.
+        topAgentIsDeleted:
+          type: boolean
+          description: Indicates whether the top agent has been deleted.
     AgentsUsageByDepartmentInsight:
       properties:
         department:
@@ -7413,6 +7440,10 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/PerAgentInsight'
+            topUseCasesInsights:
+              type: array
+              items:
+                $ref: '#/components/schemas/AgentUseCaseInsight'
             agentsUsageByDepartmentInsights:
               type: array
               items:
