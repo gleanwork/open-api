@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: b2c1c07242b95ac33cc4b3cd5afed6ca2c39990e
+  x-source-commit-sha: 5a56b00e5547e340755a8a8e233e815701d1cebf
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -6747,6 +6747,7 @@ components:
           type: string
           enum:
             - EXISTING_ITEM
+            - CORRUPT_ITEM
     AddCollectionItemsResponse:
       properties:
         collection:
@@ -6776,6 +6777,7 @@ components:
             - HEIGHT_VIOLATION
             - WIDTH_VIOLATION
             - NO_PERMISSIONS
+            - CORRUPT_ITEM
     CreateCollectionResponse:
       allOf:
         - type: object
