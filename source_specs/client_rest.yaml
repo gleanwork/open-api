@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 629561bf00a47ed54aec0ceaa9f6b5af20460ab6
+  x-source-commit-sha: 0a298fc06955b0f9f2815ce8a3e55881b1444be7
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -8263,6 +8263,7 @@ components:
               - FOLLOW_UP
               - MILESTONE_TIMELINE_CHECK
               - PROJECT_DISCUSSION_DIGEST
+              - PROJECT_FOCUS_BLOCK
               - PROJECT_NEXT_STEP
           description: Categories of content requested. An allowlist gives flexibility to request content separately or together.
         requestOptions:
@@ -8767,6 +8768,7 @@ components:
             - FOLLOW_UP
             - MILESTONE_TIMELINE_CHECK
             - PROJECT_DISCUSSION_DIGEST
+            - PROJECT_FOCUS_BLOCK
             - PROJECT_NEXT_STEP
           description: Type of the justification.
         justification:
@@ -8850,6 +8852,7 @@ components:
             - FOLLOW_UP
             - MILESTONE_TIMELINE_CHECK
             - PROJECT_DISCUSSION_DIGEST
+            - PROJECT_FOCUS_BLOCK
             - PROJECT_NEXT_STEP
           description: Category of the result, one of the requested categories in incoming request.
         primaryEntry:
