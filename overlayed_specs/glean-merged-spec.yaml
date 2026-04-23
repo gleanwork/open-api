@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 5a56b00e5547e340755a8a8e233e815701d1cebf
+  x-source-commit-sha: 0f17e336c8b3c8a1cd68eb6185f322d76ab069a6
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 2f85bab3951b065d5ee1ea00c5c5ddaf572f36df
+  x-open-api-commit-sha: e1ef611429506a30c94ec5cf589a2764eb7faa56
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -3993,6 +3993,95 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DatasourceConfigurationResponse'
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "401":
+          description: Not authorized
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Datasource instance not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-visibility: Preview
+  /rest/api/v1/configure/datasources/{datasourceId}/instances/{instanceId}/credentialstatus:
+    get:
+      operationId: getDatasourceCredentialStatus
+      summary: Get datasource instance credential status
+      description: |
+        Returns the current credential status for a datasource instance. Access is limited to callers with the ADMIN scope; the handler enforces this check.
+      tags:
+        - Datasources
+      security:
+        - APIToken: []
+      parameters:
+        - $ref: '#/components/parameters/datasourceId'
+        - $ref: '#/components/parameters/instanceId'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasourceCredentialStatusResponse'
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "401":
+          description: Not authorized
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Datasource instance not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      x-visibility: Preview
+  /rest/api/v1/configure/datasources/{datasourceId}/instances/{instanceId}/credentials:
+    post:
+      operationId: rotateDatasourceCredentials
+      summary: Rotate datasource instance credentials
+      description: |
+        Rotates the credentials that a datasource instance uses to connect to its upstream system. Replaces the active credential material with the supplied values and returns the credential status after rotation. Access is limited to callers with the ADMIN scope; the handler enforces this check.
+        Only keys recognized as credential material for the datasource type may be set in `credentials.values` (e.g. `clientSecret`, `apiToken`, `privateKey`, depending on the configured auth method). Unrecognized keys, or keys that correspond to non-credential configuration, cause a 400; other instance configuration must be updated via PATCH /configure/datasources/{datasourceId}/instances/{instanceId}.
+      tags:
+        - Datasources
+      security:
+        - APIToken: []
+      parameters:
+        - $ref: '#/components/parameters/datasourceId'
+        - $ref: '#/components/parameters/instanceId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RotateDatasourceCredentialsRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasourceCredentialStatusResponse'
         "400":
           description: Invalid request
           content:
@@ -13878,6 +13967,46 @@ components:
         - configuration
       description: |
         Request to update greenlisted configuration values for a datasource instance. Only keys that are exposed via the public API greenlist may be set.
+    DatasourceCredentialStatus:
+      type: string
+      enum:
+        - VALID
+        - VALID_WITH_WARNINGS
+        - VALIDATING
+        - INVALID
+        - MISSING
+      description: |
+        Lifecycle state of the credentials installed for a datasource instance. Mirrors the internal admin Status enum so the handler can surface the same health signals already tracked today. EXPIRING_SOON is represented as VALID_WITH_WARNINGS (with detail in `message`); EXPIRED is surfaced as INVALID plus a non-null `expiresAt` in the past.
+    DatasourceCredentialStatusResponse:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/DatasourceCredentialStatus'
+        lastRotatedAt:
+          type: string
+          format: date-time
+          description: When the credentials were last rotated. Omitted when not known.
+        expiresAt:
+          type: string
+          format: date-time
+          description: |
+            When the active credentials expire. Omitted when not known or not applicable to this credential type.
+        message:
+          type: string
+          description: Optional human-readable detail about the current credential status.
+      required:
+        - status
+      description: Status of the credentials currently installed for a datasource instance.
+    RotateDatasourceCredentialsRequest:
+      type: object
+      properties:
+        credentials:
+          $ref: '#/components/schemas/DatasourceInstanceConfiguration'
+      required:
+        - credentials
+      description: |
+        Request to rotate the credentials used by a datasource instance. Replaces the active credential material with the supplied values.
+        `credentials.values` must contain only keys recognized as credential material for the datasource type (for example `clientSecret` for OAuth, `apiToken` for API-token auth, `privateKey` for certificate auth). Unrecognized keys, or keys that correspond to non-credential configuration, cause a 400; use the configure endpoint to change non-credential config.
     ChatRequestStream:
       required:
         - messages
