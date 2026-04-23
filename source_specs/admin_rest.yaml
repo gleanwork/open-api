@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: ed09587f66438af8dc3a7738d388b06ef99bc352
+  x-source-commit-sha: 0f17e336c8b3c8a1cd68eb6185f322d76ab069a6
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
@@ -451,6 +451,91 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DatasourceConfigurationResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Not authorized
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Datasource instance not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /configure/datasources/{datasourceId}/instances/{instanceId}/credentialstatus:
+    get:
+      description: |
+        Returns the current credential status for a datasource instance. Access is limited to callers with the ADMIN scope; the handler enforces this check.
+      summary: Get datasource instance credential status
+      operationId: getDatasourceCredentialStatus
+      x-visibility: Preview
+      tags:
+        - Datasources
+      parameters:
+        - $ref: '#/components/parameters/datasourceId'
+        - $ref: '#/components/parameters/instanceId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasourceCredentialStatusResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Not authorized
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Datasource instance not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /configure/datasources/{datasourceId}/instances/{instanceId}/credentials:
+    post:
+      description: |
+        Rotates the credentials that a datasource instance uses to connect to its upstream system. Replaces the active credential material with the supplied values and returns the credential status after rotation. Access is limited to callers with the ADMIN scope; the handler enforces this check.
+        Only keys recognized as credential material for the datasource type may be set in `credentials.values` (e.g. `clientSecret`, `apiToken`, `privateKey`, depending on the configured auth method). Unrecognized keys, or keys that correspond to non-credential configuration, cause a 400; other instance configuration must be updated via PATCH /configure/datasources/{datasourceId}/instances/{instanceId}.
+      summary: Rotate datasource instance credentials
+      operationId: rotateDatasourceCredentials
+      x-visibility: Preview
+      tags:
+        - Datasources
+      parameters:
+        - $ref: '#/components/parameters/datasourceId'
+        - $ref: '#/components/parameters/instanceId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RotateDatasourceCredentialsRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatasourceCredentialStatusResponse'
         '400':
           description: Invalid request
           content:
@@ -1210,6 +1295,46 @@ components:
         - configuration
       properties:
         configuration:
+          $ref: '#/components/schemas/DatasourceInstanceConfiguration'
+    DatasourceCredentialStatus:
+      description: |
+        Lifecycle state of the credentials installed for a datasource instance. Mirrors the internal admin Status enum so the handler can surface the same health signals already tracked today. EXPIRING_SOON is represented as VALID_WITH_WARNINGS (with detail in `message`); EXPIRED is surfaced as INVALID plus a non-null `expiresAt` in the past.
+      type: string
+      enum:
+        - VALID
+        - VALID_WITH_WARNINGS
+        - VALIDATING
+        - INVALID
+        - MISSING
+    DatasourceCredentialStatusResponse:
+      description: Status of the credentials currently installed for a datasource instance.
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          $ref: '#/components/schemas/DatasourceCredentialStatus'
+        lastRotatedAt:
+          description: When the credentials were last rotated. Omitted when not known.
+          type: string
+          format: date-time
+        expiresAt:
+          description: |
+            When the active credentials expire. Omitted when not known or not applicable to this credential type.
+          type: string
+          format: date-time
+        message:
+          description: Optional human-readable detail about the current credential status.
+          type: string
+    RotateDatasourceCredentialsRequest:
+      description: |
+        Request to rotate the credentials used by a datasource instance. Replaces the active credential material with the supplied values.
+        `credentials.values` must contain only keys recognized as credential material for the datasource type (for example `clientSecret` for OAuth, `apiToken` for API-token auth, `privateKey` for certificate auth). Unrecognized keys, or keys that correspond to non-credential configuration, cause a 400; use the configure endpoint to change non-credential config.
+      type: object
+      required:
+        - credentials
+      properties:
+        credentials:
           $ref: '#/components/schemas/DatasourceInstanceConfiguration'
   parameters:
     datasourceId:
