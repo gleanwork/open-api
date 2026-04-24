@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: 7f812a8045defd453a85ca3d12df9a9772ce5ac5
+  x-source-commit-sha: 2b05cc8b1ef4a538636951303f1fe5ffa1d04325
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
@@ -471,7 +471,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /configure/datasources/{datasourceId}/instances/{instanceId}/credentialstatus:
+  /datasource/{datasourceInstanceId}/credentialstatus:
     get:
       description: |
         Returns the current credential status for a datasource instance. Access is limited to callers with the ADMIN scope; the handler enforces this check.
@@ -481,8 +481,7 @@ paths:
       tags:
         - Datasources
       parameters:
-        - $ref: '#/components/parameters/datasourceId'
-        - $ref: '#/components/parameters/instanceId'
+        - $ref: '#/components/parameters/datasourceInstanceId'
       responses:
         '200':
           description: OK
@@ -510,7 +509,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /configure/datasources/{datasourceId}/instances/{instanceId}/credentials:
+  /datasource/{datasourceInstanceId}/credentials:
     post:
       description: |
         Rotates the credentials that a datasource instance uses to connect to its upstream system. Replaces the active credential material with the supplied values and returns the credential status after rotation. Access is limited to callers with the ADMIN scope; the handler enforces this check.
@@ -521,8 +520,7 @@ paths:
       tags:
         - Datasources
       parameters:
-        - $ref: '#/components/parameters/datasourceId'
-        - $ref: '#/components/parameters/instanceId'
+        - $ref: '#/components/parameters/datasourceInstanceId'
       requestBody:
         content:
           application/json:
@@ -1349,6 +1347,14 @@ components:
       name: instanceId
       in: path
       description: The datasource instance identifier
+      required: true
+      schema:
+        type: string
+        example: o365sharepoint_abc123
+    datasourceInstanceId:
+      name: datasourceInstanceId
+      in: path
+      description: The full datasource instance identifier (e.g. o365sharepoint_abc123)
       required: true
       schema:
         type: string
