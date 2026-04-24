@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 0f17e336c8b3c8a1cd68eb6185f322d76ab069a6
+  x-source-commit-sha: 2b05cc8b1ef4a538636951303f1fe5ffa1d04325
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: e1ef611429506a30c94ec5cf589a2764eb7faa56
+  x-open-api-commit-sha: aa97329cdffc64165fb340015273235a6b0d7b52
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -2933,7 +2933,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-visibility: Preview
-  /rest/api/v1/configure/datasources/{datasourceId}/instances/{instanceId}/credentialstatus:
+  /rest/api/v1/datasource/{datasourceInstanceId}/credentialstatus:
     get:
       operationId: getDatasourceCredentialStatus
       summary: Get datasource instance credential status
@@ -2944,8 +2944,7 @@ paths:
       security:
         - APIToken: []
       parameters:
-        - $ref: '#/components/parameters/datasourceId'
-        - $ref: '#/components/parameters/instanceId'
+        - $ref: '#/components/parameters/datasourceInstanceId'
       responses:
         "200":
           description: OK
@@ -2974,7 +2973,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-visibility: Preview
-  /rest/api/v1/configure/datasources/{datasourceId}/instances/{instanceId}/credentials:
+  /rest/api/v1/datasource/{datasourceInstanceId}/credentials:
     post:
       operationId: rotateDatasourceCredentials
       summary: Rotate datasource instance credentials
@@ -2986,8 +2985,7 @@ paths:
       security:
         - APIToken: []
       parameters:
-        - $ref: '#/components/parameters/datasourceId'
-        - $ref: '#/components/parameters/instanceId'
+        - $ref: '#/components/parameters/datasourceInstanceId'
       requestBody:
         content:
           application/json:
@@ -11259,6 +11257,14 @@ components:
       name: instanceId
       in: path
       description: The datasource instance identifier
+      required: true
+      schema:
+        type: string
+        example: o365sharepoint_abc123
+    datasourceInstanceId:
+      name: datasourceInstanceId
+      in: path
+      description: The full datasource instance identifier (e.g. o365sharepoint_abc123)
       required: true
       schema:
         type: string
