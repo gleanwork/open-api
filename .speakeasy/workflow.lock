@@ -1,4 +1,4 @@
-speakeasyVersion: 1.675.2
+speakeasyVersion: 1.761.9
 sources:
     glean-api-specs:
         sourceNamespace: glean-api-specs
@@ -39,8 +39,8 @@ sources:
             - 0.9.0
     glean-index-merged-code-samples-spec:
         sourceNamespace: glean-index-merged-code-samples-spec
-        sourceRevisionDigest: sha256:bb4432dd41e5b7a1745bcab2d0fac2703ac3a2a619a3d5f48d5b4f9774f87e6a
-        sourceBlobDigest: sha256:ff80a1467c50581784d6a4ab6d8cf1094e430d8de65837dcd60f7a3ae908f4b0
+        sourceRevisionDigest: sha256:413ee9fff5e8727a4a55c9aaaf0602ab0c141d38b92a06bf839fa27e9360ad76
+        sourceBlobDigest: sha256:62ed9a2db23284f71d59ce195dc1f91118d0a0f11370bad33b6194a82a2a6816
         tags:
             - latest
             - main
