@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 3f72cbb62f3609756152951413abf7956145eecc
+  x-source-commit-sha: 9355413e02c4fe3fa64fd343ae44dc74b0d28a5d
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 211133969bb0bcfbb531f68109821b7df29e8276
+  x-open-api-commit-sha: 199d4507f428b988865f4c6c19062815a302f8a5
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -8812,6 +8812,9 @@ components:
             lastDraftSavedAt:
               type: integer
               description: Server Unix timestamp of the last time the draft was saved.
+            lastDraftSavedBy:
+              description: The person who last saved the draft.
+              $ref: "#/components/schemas/Person"
             lastUpdatedBy:
               $ref: "#/components/schemas/Person"
     Workflow:
