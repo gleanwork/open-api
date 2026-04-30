@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: c208d27df9f9ec87fc6d56a88ff4f9200d5411dd
+  x-source-commit-sha: 3f72cbb62f3609756152951413abf7956145eecc
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 43a7d4a3e200437df5daa6418e2044db7ebbe409
+  x-open-api-commit-sha: 211133969bb0bcfbb531f68109821b7df29e8276
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -8420,6 +8420,7 @@ components:
               - PROJECT_DISCUSSION_DIGEST
               - PROJECT_FOCUS_BLOCK
               - PROJECT_NEXT_STEP
+              - DEMO_CARD
           description: Categories of content requested. An allowlist gives flexibility to request content separately or together.
         requestOptions:
           $ref: "#/components/schemas/FeedRequestOptions"
@@ -8932,6 +8933,7 @@ components:
             - PROJECT_DISCUSSION_DIGEST
             - PROJECT_FOCUS_BLOCK
             - PROJECT_NEXT_STEP
+            - DEMO_CARD
           description: Type of the justification.
         justification:
           type: string
@@ -9016,6 +9018,7 @@ components:
             - PROJECT_DISCUSSION_DIGEST
             - PROJECT_FOCUS_BLOCK
             - PROJECT_NEXT_STEP
+            - DEMO_CARD
           description: Category of the result, one of the requested categories in incoming request.
         primaryEntry:
           $ref: "#/components/schemas/FeedEntry"
