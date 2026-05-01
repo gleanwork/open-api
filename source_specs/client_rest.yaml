@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: c523aa8e381fb13707b688032893d55a8bf6bac0
+  x-source-commit-sha: c979a67d005ef9cd19459f9a90c9c6a563d15ac2
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -8308,6 +8308,7 @@ components:
               - PROJECT_FOCUS_BLOCK
               - PROJECT_NEXT_STEP
               - DEMO_CARD
+              - OOO_PLANNER
           description: Categories of content requested. An allowlist gives flexibility to request content separately or together.
         requestOptions:
           $ref: '#/components/schemas/FeedRequestOptions'
@@ -8817,6 +8818,7 @@ components:
             - PROJECT_FOCUS_BLOCK
             - PROJECT_NEXT_STEP
             - DEMO_CARD
+            - OOO_PLANNER
           description: Type of the justification.
         justification:
           type: string
@@ -8902,6 +8904,7 @@ components:
             - PROJECT_FOCUS_BLOCK
             - PROJECT_NEXT_STEP
             - DEMO_CARD
+            - OOO_PLANNER
           description: Category of the result, one of the requested categories in incoming request.
         primaryEntry:
           $ref: '#/components/schemas/FeedEntry'
