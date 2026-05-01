@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: c979a67d005ef9cd19459f9a90c9c6a563d15ac2
+  x-source-commit-sha: 084a38e736474e58631b0ce03aff14df68813883
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: ef8e51d2f3d427adfe3a8b60949f49d43a66dc62
+  x-open-api-commit-sha: 1ba4734f08fab834e9a98752b97414a464a4bbb8
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -7970,6 +7970,11 @@ components:
           items:
             type: string
           description: Departments for which Insights are requested.
+        managerEmails:
+          type: array
+          items:
+            type: string
+          description: Manager emails whose teams should be filtered for. Empty array means no filtering.
         dayRange:
           $ref: "#/components/schemas/Period"
           description: Time period for which Insights are requested.
@@ -7980,6 +7985,11 @@ components:
           items:
             type: string
           description: Departments for which Insights are requested.
+        managerEmails:
+          type: array
+          items:
+            type: string
+          description: Manager emails whose teams should be filtered for. Empty array means no filtering.
         dayRange:
           $ref: "#/components/schemas/Period"
           description: Time period for which Insights are requested.
@@ -7995,6 +8005,11 @@ components:
           items:
             type: string
           description: Departments for which Insights are requested.
+        managerEmails:
+          type: array
+          items:
+            type: string
+          description: Manager emails whose teams should be filtered for. Empty array means no filtering.
         dayRange:
           $ref: "#/components/schemas/Period"
           description: Time period for which Insights are requested.
@@ -8010,6 +8025,11 @@ components:
           items:
             type: string
           description: Manager user IDs whose teams should be filtered for. Empty array means no filtering.
+        managerEmails:
+          type: array
+          items:
+            type: string
+          description: Manager emails whose teams should be filtered for. Empty array means no filtering.
         dayRange:
           $ref: "#/components/schemas/Period"
           description: Time period for which Insights are requested.
