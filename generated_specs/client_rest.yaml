@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: dd99f9b0b97f4fc08904f2510c0d4ed21ed03f31
+  x-source-commit-sha: 5a507f5682ae7ea105f03f090c6a65c511016f42
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 2d3443c7126e7b9b8504012ebc1b576f478f719e
+  x-open-api-commit-sha: d485d2c00fb0fcbba724b8fefe66283b2d55e155
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -1938,6 +1938,57 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+  /rest/api/v1/people/{person_id}/photo:
+    get:
+      tags:
+        - Entities
+      summary: Get person photo
+      description: |
+        Returns the profile photo bytes for a person whose photo is stored in Glean (crawled from an identity source or user-uploaded via admin console). Photos hosted externally (e.g. Slack CDN) are not served by this endpoint; callers should follow the photoUrl from /people or /listentities directly. Responses include a Cache-Control header (max-age=3600) to reduce redundant fetches.
+      operationId: getPersonPhoto
+      x-visibility: Public
+      parameters:
+        - name: person_id
+          in: path
+          required: true
+          description: The obfuscated ID of the person whose photo to retrieve.
+          schema:
+            type: string
+        - name: ds
+          in: query
+          required: false
+          description: |
+            Optional datasource override for crawled photos (e.g. AZURE, GDRIVE, OKTA). When omitted, the datasource is derived from the person's stored photo URL or the deployment's primary person datasource.
+          schema:
+            type: string
+        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+      responses:
+        "200":
+          description: Photo bytes returned successfully.
+          headers:
+            Cache-Control:
+              description: Caching directive for the photo response.
+              schema:
+                type: string
+                example: public, max-age=3600
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: Missing person_id parameter.
+        "401":
+          description: Not Authorized.
+        "404":
+          description: |
+            Person not found, person has no photo, or photo is not hosted by Glean (follow photoUrl from /people or /listentities directly).
+        "429":
+          description: Too Many Requests.
   /rest/api/v1/createshortcut:
     post:
       tags:
