@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 8366810a352aa165d5a7b7a507910380d9883795
+  x-source-commit-sha: dd99f9b0b97f4fc08904f2510c0d4ed21ed03f31
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -8716,6 +8716,9 @@ components:
             lastDraftSavedBy:
               description: The person who last saved the draft.
               $ref: '#/components/schemas/Person'
+            lastDraftGitAuthorId:
+              type: string
+              description: ID of the VCS user (e.g. GitHub username) who last saved the draft. Set only by the draft save path via the external Git integration API.
             lastUpdatedBy:
               $ref: '#/components/schemas/Person'
     Workflow:
