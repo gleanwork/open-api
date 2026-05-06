@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 5a507f5682ae7ea105f03f090c6a65c511016f42
+  x-source-commit-sha: 0b17946d38c0892a69095c970778324c160a0e21
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: d485d2c00fb0fcbba724b8fefe66283b2d55e155
+  x-open-api-commit-sha: 613e50d86e1eaafdd9fcba76262c08e019a4d76d
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -10424,6 +10424,7 @@ components:
               - STARTER_KIT
               - MID_DAY_CATCH_UP
               - QUERY_SUGGESTION
+              - COWORK_CUJ_PROMO
               - WEEKLY_MEETINGS
               - FOLLOW_UP
               - MILESTONE_TIMELINE_CHECK
@@ -10944,6 +10945,7 @@ components:
             - ACTIVE_DISCUSSION
             - MID_DAY_CATCH_UP
             - QUERY_SUGGESTION
+            - COWORK_CUJ_PROMO
             - WEEKLY_MEETINGS
             - FOLLOW_UP
             - MILESTONE_TIMELINE_CHECK
@@ -11030,6 +11032,7 @@ components:
             - STARTER_KIT
             - MID_DAY_CATCH_UP
             - QUERY_SUGGESTION
+            - COWORK_CUJ_PROMO
             - WEEKLY_MEETINGS
             - FOLLOW_UP
             - MILESTONE_TIMELINE_CHECK
