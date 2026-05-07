@@ -1,0 +1,69 @@
+overlay: 1.0.0
+x-speakeasy-jsonpath: rfc9535
+info:
+  title: Speakeasy Modifications - Custom Metadata
+  version: 0.0.1
+
+actions:
+  # Custom Metadata - SDK grouping and method names
+  - target: $["paths"]["/rest/api/index/document/{docId}/custom-metadata/{groupName}"]["put"]
+    update:
+      x-speakeasy-name-override: upsert
+      x-speakeasy-group: indexing.customMetadata
+
+  - target: $["paths"]["/rest/api/index/document/{docId}/custom-metadata/{groupName}"]["delete"]
+    update:
+      x-speakeasy-name-override: delete
+      x-speakeasy-group: indexing.customMetadata
+
+  - target: $["paths"]["/rest/api/index/custom-metadata/schema/{groupName}"]["get"]
+    update:
+      x-speakeasy-name-override: getSchema
+      x-speakeasy-group: indexing.customMetadata
+
+  - target: $["paths"]["/rest/api/index/custom-metadata/schema/{groupName}"]["put"]
+    update:
+      x-speakeasy-name-override: upsertSchema
+      x-speakeasy-group: indexing.customMetadata
+
+  - target: $["paths"]["/rest/api/index/custom-metadata/schema/{groupName}"]["delete"]
+    update:
+      x-speakeasy-name-override: deleteSchema
+      x-speakeasy-group: indexing.customMetadata
+
+  # Introduce a Custom Metadata-specific PropertyDefinition schema that exposes only
+  # the fields applicable to Custom Metadata. The shared PropertyDefinition schema
+  # (used by the Datasource / Custom Properties API) carries fields like displayLabel,
+  # displayLabelPlural, uiOptions, hideUiFacet, uiFacetOrder, and group that are not
+  # relevant to Custom Metadata. We cannot strip those fields from PropertyDefinition
+  # itself without affecting the Indexing API surface, so we create a
+  # narrower schema scoped to Custom Metadata and re-point CustomMetadataSchema to it.
+  - target: $["components"]["schemas"]
+    update:
+      CustomMetadataPropertyDefinition:
+        type: object
+        description: The definition for a key within a Custom Metadata schema. Only the fields applicable to Custom Metadata are exposed.
+        properties:
+          name:
+            type: string
+            description: The name of the metadata key.
+          propertyType:
+            type: string
+            enum:
+              - TEXT
+              - PICKLIST
+              - TEXTLIST
+              - MULTIPICKLIST
+            description: The type of metadata key. This governs the search and faceting behavior.
+          skipIndexing:
+            type: boolean
+            description: If true then the property will not be indexed for retrieval and ranking.
+        required:
+          - name
+          - propertyType
+
+  # Re-point CustomMetadataSchema.metadataKeys to the narrower schema above.
+  - target: $["components"]["schemas"]["CustomMetadataSchema"]["properties"]["metadataKeys"]
+    update:
+      items:
+        $ref: "#/components/schemas/CustomMetadataPropertyDefinition"
