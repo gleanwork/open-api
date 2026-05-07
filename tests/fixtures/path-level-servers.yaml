@@ -1,0 +1,25 @@
+openapi: 3.0.0
+info:
+  title: Path-Level Servers Test Fixture
+  version: 0.0.1
+servers:
+  - url: https://{domain}-be.glean.com/api/index/v1
+    variables:
+      domain:
+        default: domain
+paths:
+  /indexdocument:
+    post:
+      responses:
+        "200":
+          description: OK
+  /document/{docId}/custom-metadata/{groupName}:
+    servers:
+      - url: https://{domain}-be.glean.com/rest/api/index
+        variables:
+          domain:
+            default: domain
+    put:
+      responses:
+        "200":
+          description: OK

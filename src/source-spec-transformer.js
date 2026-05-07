@@ -196,23 +196,35 @@ export function transformActAsBearerTokenToAPIToken(spec) {
  * @returns {Object} Transformed spec object
  */
 export function transformServerVariables(spec) {
-  if (!spec.servers || !Array.isArray(spec.servers)) {
-    return spec;
-  }
-
-  for (const server of spec.servers) {
-    if (server.url) {
-      server.url = server.url.replace(/{domain}/g, '{instance}');
+  const updateServers = (servers) => {
+    if (!Array.isArray(servers)) {
+      return;
     }
 
-    if (server.variables && server.variables.domain) {
-      server.variables.instance = {
-        default: 'instance-name',
-        description:
-          'The instance name (typically the email domain without the TLD) that determines the deployment backend.',
-      };
+    for (const server of servers) {
+      if (server.url) {
+        server.url = server.url.replace(/{domain}/g, '{instance}');
+      }
 
-      delete server.variables.domain;
+      if (server.variables && server.variables.domain) {
+        server.variables.instance = {
+          default: 'instance-name',
+          description:
+            'The instance name (typically the email domain without the TLD) that determines the deployment backend.',
+        };
+
+        delete server.variables.domain;
+      }
+    }
+  };
+
+  updateServers(spec.servers);
+
+  if (spec.paths) {
+    for (const pathValue of Object.values(spec.paths)) {
+      if (pathValue && typeof pathValue === 'object') {
+        updateServers(pathValue.servers);
+      }
     }
   }
 
@@ -551,7 +563,28 @@ export function transform(content, filename, commitSha) {
     for (const [pathKey, pathValue] of Object.entries(spec.paths)) {
       const normalizedPath = pathKey.startsWith('/') ? pathKey : `/${pathKey}`;
 
-      const newPathKey = `${basePath}${normalizedPath}`;
+      // Honor path-level `servers:` blocks. When a path declares its own server,
+      // its basePath is the prefix that should appear in the final path key —
+      // not the global basePath. We also strip that basePath from the path-level
+      // server URL so that `pathServer.url + pathKey` composes the correct full
+      // URL (matching the convention used for the global server).
+      let pathBasePath = basePath;
+      if (Array.isArray(pathValue?.servers) && pathValue.servers.length > 0) {
+        const firstPathServerUrl = pathValue.servers[0].url;
+        if (firstPathServerUrl) {
+          const candidate = extractBasePath(firstPathServerUrl);
+          if (candidate) {
+            pathBasePath = candidate;
+            for (const pathServer of pathValue.servers) {
+              if (pathServer.url) {
+                pathServer.url = pathServer.url.replace(candidate, '');
+              }
+            }
+          }
+        }
+      }
+
+      const newPathKey = `${pathBasePath}${normalizedPath}`;
       newPaths[newPathKey] = pathValue;
     }
     spec.paths = newPaths;
