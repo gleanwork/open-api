@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: a3fb5e4fd92e0053054d738af9a70d2f747afbcf
+  x-source-commit-sha: 44c3cda4f9c5f6408e04a0c914513b7884a487ea
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -816,6 +816,47 @@ paths:
           description: Forbidden
         '429':
           description: Too Many Requests
+  /chat-files/{fileId}:
+    get:
+      tags:
+        - Chat
+      summary: Download a chat file
+      description: |
+        Download the raw content of a file generated or uploaded during a chat session (for example, an image produced by the assistant). Returns the file bytes with a Content-Type header matching the file's MIME type.
+      operationId: getChatFile
+      x-visibility: Public
+      parameters:
+        - name: fileId
+          in: path
+          required: true
+          description: Identifier of the chat file to download.
+          schema:
+            type: string
+        - name: preview
+          in: query
+          required: false
+          description: |
+            When true and the file is a PDF, the response is served inline (Content-Disposition: inline) instead of as an attachment.
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: File content.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: File ID missing from path.
+        '401':
+          description: Missing or invalid API token.
+        '403':
+          description: Caller does not have access to the file.
+        '404':
+          description: File not found.
+        '500':
+          description: Internal server error.
   /agents/{agent_id}:
     get:
       tags:
