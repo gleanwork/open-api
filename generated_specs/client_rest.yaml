@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 0b17946d38c0892a69095c970778324c160a0e21
+  x-source-commit-sha: b14bbe35a9f9b2ede6a2b2969a6d34cfac74af06
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 613e50d86e1eaafdd9fcba76262c08e019a4d76d
+  x-open-api-commit-sha: 6a7c06cb55082b8df19cf4111a4d1fefd6efb22e
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -2352,6 +2352,76 @@ paths:
           description: Unauthorized
         "404":
           description: Not Found
+        "429":
+          description: Too Many Requests
+  /rest/api/v1/actions/{actionPackId}/auth:
+    parameters:
+      - in: path
+        name: actionPackId
+        required: true
+        description: ID of the action pack to query or authorize.
+        schema:
+          type: string
+    get:
+      tags:
+        - Tools
+      summary: Get end-user authentication status for an action pack.
+      description: |
+        Reports whether the calling user is already authenticated against the third-party
+        tool backing the specified action pack. Intended for headless / server-driven clients
+        that render an "Authorize" prompt when the user has not yet consented to the tool.
+      operationId: getActionAuthStatus
+      x-visibility: Preview
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActionAuthStatusResponse"
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Action pack not found
+        "429":
+          description: Too Many Requests
+    post:
+      tags:
+        - Tools
+      summary: Start the OAuth authorization flow for an action pack.
+      description: |
+        Starts the third-party OAuth flow for the specified action pack and returns the
+        redirect URL that the client should navigate the end user to. After the OAuth
+        callback completes, the user's browser is redirected back to `returnUrl` with a
+        status query parameter (`?glean_action_auth=success|error&actionPackId=...`).
+
+        `returnUrl` must match the tenant's configured return URL allowlist; otherwise the
+        request is rejected with 400.
+      operationId: authorizeAction
+      x-visibility: Preview
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthorizeActionRequest"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorizeActionResponse"
+        "400":
+          description: Invalid request (e.g. returnUrl not in allowlist, unsupported auth type)
+        "401":
+          description: Unauthorized
+        "403":
+          description: User not entitled to the action pack
+        "404":
+          description: Action pack not found
         "429":
           description: Too Many Requests
 components:
@@ -9673,6 +9743,48 @@ components:
         error:
           type: string
           description: The error message if applicable
+    ActionAuthType:
+      type: string
+      description: |
+        Authentication mechanism used by an action pack.
+          - `AUTH_USER_OAUTH`: Requires per-user OAuth consent to the third-party tool.
+          - `AUTH_ADMIN`: Uses a service-account / admin-owned credential. End users do not authorize individually.
+          - `AUTH_NONE`: Action pack requires no authentication.
+      enum:
+        - AUTH_USER_OAUTH
+        - AUTH_ADMIN
+        - AUTH_NONE
+    ActionAuthStatusResponse:
+      type: object
+      required:
+        - authenticated
+        - authType
+      properties:
+        authenticated:
+          type: boolean
+          description: Whether the calling user is already authenticated to the tool backing the action pack.
+        authType:
+          $ref: "#/components/schemas/ActionAuthType"
+    AuthorizeActionRequest:
+      type: object
+      required:
+        - returnUrl
+      properties:
+        returnUrl:
+          type: string
+          description: |
+            URL on the customer's domain to redirect the end user's browser back to after the third-party OAuth
+            callback completes. Must be present in the tenant's return URL allowlist.
+    AuthorizeActionResponse:
+      type: object
+      required:
+        - redirectUrl
+      properties:
+        redirectUrl:
+          type: string
+          description: |
+            URL that the customer UI should navigate the end user to in order to begin the third-party OAuth flow.
+            After the user consents, control returns to `returnUrl` from the request.
   parameters:
     xGleanActAsHeader:
       name: X-Glean-ActAs
