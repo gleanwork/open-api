@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 44c3cda4f9c5f6408e04a0c914513b7884a487ea
+  x-source-commit-sha: efd0e29759d848a897d479b3195704bbde82daec
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: d89e4c712e828488eac8b15079a88cde012fe6f6
+  x-open-api-commit-sha: 368a20e9e9b003c93c2a9bc7a34d0672cd764a20
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -889,6 +889,49 @@ paths:
                 $ref: "#/components/schemas/Agent"
         "400":
           description: Bad request
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+    post:
+      tags:
+        - Agents
+      summary: Edit an agent
+      description: Creates a draft or publishes an [agent](https://developers.glean.com/agents/agents-api). Use `isDraft=true` to save a draft, or `isDraft=false` (or omit) to publish immediately. Only draft and publish modes are supported.
+      operationId: editAgent
+      x-visibility: Preview
+      parameters:
+        - $ref: "#/components/parameters/xGleanActAsHeader"
+        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+        - $ref: "#/components/parameters/locale"
+        - $ref: "#/components/parameters/timezoneOffset"
+        - description: The ID of the agent.
+          required: true
+          schema:
+            type: string
+            title: Agent ID
+            description: The ID of the agent.
+          name: agent_id
+          in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EditWorkflowRequest"
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Bad request
+        "401":
+          description: Not Authorized
         "403":
           description: Forbidden
         "404":
@@ -6818,6 +6861,24 @@ components:
       type: string
       title: ErrorResponse
       description: Error message returned from the server
+    WorkflowDraftableProperties:
+      properties:
+        name:
+          type: string
+          description: The name of the workflow.
+    WorkflowMutableProperties:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/WorkflowDraftableProperties"
+        - type: object
+    EditWorkflowRequest:
+      allOf:
+        - $ref: "#/components/schemas/WorkflowMutableProperties"
+        - type: object
+          properties:
+            id:
+              type: string
+              description: The workflow ID we want to update.
     ActionSummary:
       type: object
       description: Represents a minimal summary of an action.
@@ -8971,16 +9032,6 @@ components:
         runCount:
           $ref: "#/components/schemas/CountInfo"
           description: This tracks how many times this prompt template was run. If user runs a prompt template after modifying the original one, it still counts as a run for the original template.
-    WorkflowDraftableProperties:
-      properties:
-        name:
-          type: string
-          description: The name of the workflow.
-    WorkflowMutableProperties:
-      type: object
-      allOf:
-        - $ref: "#/components/schemas/WorkflowDraftableProperties"
-        - type: object
     WorkflowMetadata:
       allOf:
         - type: object
