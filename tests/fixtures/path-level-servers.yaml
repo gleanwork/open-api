@@ -11,7 +11,7 @@ paths:
   /indexdocument:
     post:
       responses:
-        "200":
+        '200':
           description: OK
   /document/{docId}/custom-metadata/{groupName}:
     servers:
@@ -21,5 +21,5 @@ paths:
             default: domain
     put:
       responses:
-        "200":
+        '200':
           description: OK

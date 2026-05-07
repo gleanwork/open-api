@@ -182,8 +182,7 @@ describe('OpenAPI YAML Transformer', () => {
 
     // The path-level server URL has its basePath stripped, so server.url + pathKey
     // composes the correct full URL (no doubled prefix).
-    const pathLevelServers =
-      transformedSpec.paths[customMetadataKey].servers;
+    const pathLevelServers = transformedSpec.paths[customMetadataKey].servers;
     expect(pathLevelServers[0].url).toBe('https://{instance}-be.glean.com');
 
     // Top-level server URL is also stripped of its global basePath.
