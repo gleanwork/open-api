@@ -74,6 +74,7 @@ const httpMethods = new Set([
 // changes the public SDK surface and should be reviewed as such.
 const platformSdkOperationNames = {
   'platform-search': { group: 'search', method: 'query' },
+  'platform-tools-list': { group: 'tools', method: 'list' },
 };
 
 function rewriteRefs(obj, refMap) {

@@ -64,4 +64,32 @@ describe('Post-transformation smoke tests', () => {
 
     expect(hasUnexpected).toBe(false);
   });
+
+  test('platform endpoints have expected SDK mappings', () => {
+    expect(spec.paths?.['/api/search']?.post).toMatchObject({
+      operationId: 'platform-search',
+      'x-speakeasy-group': 'platform.search',
+      'x-speakeasy-name-override': 'query',
+    });
+    expect(spec.paths?.['/api/tools']?.get).toMatchObject({
+      operationId: 'platform-tools-list',
+      'x-speakeasy-group': 'platform.tools',
+      'x-speakeasy-name-override': 'list',
+    });
+  });
+
+  test('platform experimental metadata does not publish runtime gates', () => {
+    for (const operation of [
+      spec.paths?.['/api/search']?.post,
+      spec.paths?.['/api/tools']?.get,
+    ]) {
+      expect(operation?.['x-glean-experimental']).toMatchObject({
+        id: expect.any(String),
+        introduced: expect.any(String),
+      });
+      expect(operation?.['x-glean-experimental']).not.toHaveProperty(
+        'gated-by',
+      );
+    }
+  });
 });

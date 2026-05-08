@@ -12,6 +12,52 @@ servers:
 security:
   - ApiToken: []
 paths:
+  /tools:
+    get:
+      tags:
+        - Tools
+      summary: List tools
+      description: |
+        List tools available to the authenticated user, optionally filtered by tool name.
+      operationId: platform-tools-list
+      x-visibility: Public
+      x-glean-experimental:
+        id: 3cb43a04-ad52-4c25-be62-3ce1daffd513
+        introduced: '2026-05-06'
+      parameters:
+        - in: query
+          name: tool_names
+          description: Optional comma-delimited list of tool names to return.
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolsListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
   /search:
     post:
       tags:
@@ -62,6 +108,143 @@ components:
       description: |
         Glean API token. Obtain via Admin Console -> Platform -> API Tokens, or via OAuth 2.0 client credentials flow.
   schemas:
+    ToolParameter:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Parameter type.
+          enum:
+            - string
+            - number
+            - boolean
+            - object
+            - array
+        name:
+          type: string
+          description: Parameter name.
+        description:
+          type: string
+          description: Parameter description.
+        is_required:
+          type: boolean
+          description: Whether the parameter is required.
+        possible_values:
+          type: array
+          description: Possible primitive values for the parameter.
+          items:
+            type: string
+        items:
+          $ref: '#/components/schemas/ToolParameter'
+        properties:
+          type: object
+          description: Object properties for object parameters.
+          additionalProperties:
+            $ref: '#/components/schemas/ToolParameter'
+    Tool:
+      type: object
+      required:
+        - type
+        - name
+        - display_name
+        - description
+        - parameters
+      properties:
+        type:
+          type: string
+          description: Type of tool.
+          enum:
+            - READ
+            - WRITE
+        name:
+          type: string
+          description: Unique identifier for the tool.
+        display_name:
+          type: string
+          description: Human-readable name.
+        description:
+          type: string
+          description: LLM-friendly description of the tool.
+        parameters:
+          type: object
+          description: Parameters supported by the tool.
+          additionalProperties:
+            $ref: '#/components/schemas/ToolParameter'
+    ToolsListResponse:
+      type: object
+      required:
+        - tools
+        - request_id
+      properties:
+        tools:
+          type: array
+          description: List of tools available to the user.
+          items:
+            $ref: '#/components/schemas/Tool'
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
+    ProblemDetail:
+      type: object
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - code
+        - request_id
+      description: |
+        Error response following RFC 9457, extended with `code` and `documentation_url` for machine-readable classification and self-service remediation.
+      properties:
+        type:
+          type: string
+          format: uri
+          description: URI identifying the error type.
+          example: https://developer.glean.com/errors/invalid-cursor
+        title:
+          type: string
+          description: Short, human-readable summary of the error.
+          example: Invalid Pagination Cursor
+        status:
+          type: integer
+          description: HTTP status code mirrored from the response.
+          example: 400
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence.
+          example: |
+            The provided cursor has expired. Start a new search to get a fresh cursor.
+        code:
+          type: string
+          description: Stable machine-readable error code.
+          enum:
+            - invalid_request
+            - missing_required_field
+            - invalid_parameter
+            - invalid_cursor
+            - expired_cursor
+            - invalid_filter
+            - authentication_required
+            - token_expired
+            - insufficient_permissions
+            - resource_not_found
+            - request_timeout
+            - conflict
+            - gone
+            - unprocessable_query
+            - rate_limit_exceeded
+            - internal_error
+            - service_unavailable
+          example: invalid_cursor
+        documentation_url:
+          type: string
+          format: uri
+          description: Direct URL to documentation for this error code.
+          example: https://developer.glean.com/errors/invalid-cursor
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
+          example: req_7f8a9b0c1d2e
     Filter:
       type: object
       required:
@@ -221,67 +404,6 @@ components:
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
-    ProblemDetail:
-      type: object
-      required:
-        - type
-        - title
-        - status
-        - detail
-        - code
-        - request_id
-      description: |
-        Error response following RFC 9457, extended with `code` and `documentation_url` for machine-readable classification and self-service remediation.
-      properties:
-        type:
-          type: string
-          format: uri
-          description: URI identifying the error type.
-          example: https://developer.glean.com/errors/invalid-cursor
-        title:
-          type: string
-          description: Short, human-readable summary of the error.
-          example: Invalid Pagination Cursor
-        status:
-          type: integer
-          description: HTTP status code mirrored from the response.
-          example: 400
-        detail:
-          type: string
-          description: Human-readable explanation specific to this occurrence.
-          example: |
-            The provided cursor has expired. Start a new search to get a fresh cursor.
-        code:
-          type: string
-          description: Stable machine-readable error code.
-          enum:
-            - invalid_request
-            - missing_required_field
-            - invalid_parameter
-            - invalid_cursor
-            - expired_cursor
-            - invalid_filter
-            - authentication_required
-            - token_expired
-            - insufficient_permissions
-            - resource_not_found
-            - request_timeout
-            - conflict
-            - gone
-            - unprocessable_query
-            - rate_limit_exceeded
-            - internal_error
-            - service_unavailable
-          example: invalid_cursor
-        documentation_url:
-          type: string
-          format: uri
-          description: Direct URL to documentation for this error code.
-          example: https://developer.glean.com/errors/invalid-cursor
-        request_id:
-          type: string
-          description: Platform-generated request ID for support correlation.
-          example: req_7f8a9b0c1d2e
   responses:
     BadRequest:
       description: Invalid request (malformed JSON, invalid parameter values, unknown fields).

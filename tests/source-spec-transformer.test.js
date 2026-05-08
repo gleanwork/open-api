@@ -193,6 +193,16 @@ describe('OpenAPI YAML Transformer', () => {
         },
         schemas: {
           SearchRequest: { type: 'object' },
+          ToolsListResponse: {
+            type: 'object',
+            properties: {
+              tools: {
+                type: 'array',
+                items: { $ref: '#/components/schemas/Tool' },
+              },
+            },
+          },
+          Tool: { type: 'object' },
           Result: {
             type: 'object',
             properties: {
@@ -230,6 +240,24 @@ describe('OpenAPI YAML Transformer', () => {
             },
           },
         },
+        '/tools': {
+          get: {
+            tags: ['Tools'],
+            operationId: 'platform-tools-list',
+            responses: {
+              200: {
+                description: 'ok',
+                content: {
+                  'application/json': {
+                    schema: {
+                      $ref: '#/components/schemas/ToolsListResponse',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     };
 
@@ -241,11 +269,14 @@ describe('OpenAPI YAML Transformer', () => {
       'https://{instance}-be.glean.com',
     );
     expect(transformedSpec.paths).toHaveProperty('/api/search');
+    expect(transformedSpec.paths).toHaveProperty('/api/tools');
 
     expect(Object.keys(transformedSpec.components.schemas).sort()).toEqual([
       'PlatformExisting',
       'PlatformResult',
       'PlatformSearchRequest',
+      'PlatformTool',
+      'PlatformToolsListResponse',
     ]);
     expect(
       transformedSpec.paths['/api/search'].post.requestBody.content[
@@ -265,6 +296,19 @@ describe('OpenAPI YAML Transformer', () => {
     expect(transformedSpec.paths['/api/search'].post).toMatchObject({
       'x-speakeasy-group': 'platform.search',
       'x-speakeasy-name-override': 'query',
+    });
+    expect(
+      transformedSpec.paths['/api/tools'].get.responses[200].content[
+        'application/json'
+      ].schema.$ref,
+    ).toBe('#/components/schemas/PlatformToolsListResponse');
+    expect(
+      transformedSpec.components.schemas.PlatformToolsListResponse.properties
+        .tools.items.$ref,
+    ).toBe('#/components/schemas/PlatformTool');
+    expect(transformedSpec.paths['/api/tools'].get).toMatchObject({
+      'x-speakeasy-group': 'platform.tools',
+      'x-speakeasy-name-override': 'list',
     });
     expect(transformedSpec.security).toEqual([{ APIToken: [] }]);
     expect(transformedSpec.components.securitySchemes).toHaveProperty(
