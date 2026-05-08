@@ -68,9 +68,10 @@ const httpMethods = new Set([
   'trace',
 ]);
 
-// This map is the published Platform SDK contract. Adding, removing, or
-// changing an entry changes the public SDK surface and should be reviewed as
-// such.
+// This map is the published Platform SDK contract. Each key is a scio
+// operationId; each value becomes the generated SDK method chain:
+// glean.platform.<group>.<method>(...). Adding, removing, or changing an entry
+// changes the public SDK surface and should be reviewed as such.
 const platformSdkOperationNames = {
   'platform-search': { group: 'search', method: 'query' },
 };
