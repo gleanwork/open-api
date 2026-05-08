@@ -97,6 +97,10 @@ function transformPlatformSchemas(spec) {
     return;
   }
 
+  // Platform is merged into the existing public SDK spec, so common names like
+  // SearchRequest, Result, or Person would otherwise collide with legacy REST
+  // schemas. Prefixing every Platform schema keeps the merged model surface
+  // deterministic without requiring each scio schema to know about SDK peers.
   const schemas = spec.components.schemas;
   const refMap = {};
 
@@ -129,6 +133,9 @@ function transformPlatformResponses(spec) {
     return;
   }
 
+  // Shared response names such as BadRequest and Unauthorized are global within
+  // the merged OpenAPI document. Keep Platform problem-detail responses separate
+  // from the existing REST response components.
   const responses = spec.components.responses;
   const refMap = {};
 
@@ -157,6 +164,9 @@ function transformPlatformResponses(spec) {
 }
 
 function transformPlatformApiTokenSecurity(spec) {
+  // scio's Platform source spec uses ApiToken, while the merged SDK spec already
+  // standardizes auth under APIToken. Normalize before merge so Speakeasy sees
+  // one auth scheme instead of generating a second Platform-specific credential.
   const securitySchemes = spec.components?.securitySchemes;
   if (securitySchemes?.ApiToken) {
     if (securitySchemes.APIToken) {
@@ -224,6 +234,8 @@ function transformPlatformOperations(spec) {
 
       const sdkName = platformSdkOperationNames[operation.operationId];
       if (!sdkName) {
+        // Fail closed: adding a Platform endpoint to SDKs is a public surface
+        // decision, so every operation must be explicitly mapped above.
         throw new Error(
           `Platform operation ${method.toUpperCase()} ${path} with operationId ${operation.operationId || '<missing>'} has no SDK mapping in platformSdkOperationNames`,
         );
