@@ -22,7 +22,6 @@ paths:
       operationId: platform-search
       x-visibility: Public
       x-glean-experimental:
-        gated-by: platform.apiSearchEnabled
         id: 5ab612fc-ed50-4419-bec3-e5fe83934653
         introduced: '2026-04-08'
       x-codegen-request-body-name: payload
