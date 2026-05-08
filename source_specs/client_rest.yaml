@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 7f65c75be4cd26ce3901f1f7d01d0dff65395180
+  x-source-commit-sha: 4a94769b0b4803d51dfa5a3c877486b8273d6612
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -7609,6 +7609,10 @@ components:
         downvoteCount:
           type: integer
           description: Total number of downvotes for this agent over the specified time period.
+        owner:
+          $ref: '#/components/schemas/Person'
+          description: |
+            The creator/owner of the agent. Absent if agent is deleted or owner is unknown.
     AgentUseCaseInsight:
       properties:
         useCase:
