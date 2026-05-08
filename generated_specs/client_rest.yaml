@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 4a94769b0b4803d51dfa5a3c877486b8273d6612
+  x-source-commit-sha: be392b09dbb2d90d1eb33786d69d1b8df8ea98ec
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: e389ebc7252f03608cbbbf669e4ae1369e59ffc2
+  x-open-api-commit-sha: 127bc440bea5368e5d1cea27cd51c5ef900b9147
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -3994,6 +3994,12 @@ components:
           enum:
             - DOCUMENT
             - ASSISTANT
+    UgcTrackingSignals:
+      type: object
+      properties:
+        trackingToken:
+          type: string
+          description: An opaque token that represents this particular UGC. To be used for `/feedback` reporting.
     StructuredText:
       allOf:
         - $ref: "#/components/schemas/StructuredTextMutableProperties"
@@ -4278,6 +4284,7 @@ components:
       allOf:
         - $ref: "#/components/schemas/CollectionMutableProperties"
         - $ref: "#/components/schemas/PermissionedObject"
+        - $ref: "#/components/schemas/UgcTrackingSignals"
         - type: object
           required:
             - id
@@ -4420,6 +4427,7 @@ components:
         - $ref: "#/components/schemas/AnswerDocId"
         - $ref: "#/components/schemas/AnswerMutableProperties"
         - $ref: "#/components/schemas/PermissionedObject"
+        - $ref: "#/components/schemas/UgcTrackingSignals"
         - type: object
           required:
             - id
@@ -5929,6 +5937,7 @@ components:
         - $ref: "#/components/schemas/AnnouncementMutableProperties"
         - $ref: "#/components/schemas/DraftProperties"
         - $ref: "#/components/schemas/PermissionedObject"
+        - $ref: "#/components/schemas/UgcTrackingSignals"
         - type: object
           properties:
             id:
@@ -6039,7 +6048,14 @@ components:
           $ref: "#/components/schemas/Answer"
         trackingToken:
           type: string
-          description: An opaque token that represents this particular Answer. To be used for `/feedback` reporting.
+          description: Use `answer.trackingToken` instead.
+          deprecated: true
+          x-glean-deprecated:
+            id: 62de643b-f182-4d4d-a2fc-5e2cbfee7320
+            introduced: "2026-05-07"
+            message: Use `answer.trackingToken` instead.
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-05-07, removal scheduled for 2027-01-15: Use `answer.trackingToken` instead."
     GetAnswerError:
       properties:
         errorType:
@@ -7218,11 +7234,18 @@ components:
           $ref: "#/components/schemas/Collection"
         rootCollection:
           $ref: "#/components/schemas/Collection"
-        trackingToken:
-          type: string
-          description: An opaque token that represents this particular Collection. To be used for `/feedback` reporting.
         error:
           $ref: "#/components/schemas/CollectionError"
+        trackingToken:
+          type: string
+          description: Use `collection.trackingToken` instead.
+          deprecated: true
+          x-glean-deprecated:
+            id: 2d6ca3a7-4763-4137-9ebd-740568fe8300
+            introduced: "2026-05-07"
+            message: Use `collection.trackingToken` instead.
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-05-07, removal scheduled for 2027-01-15: Use `collection.trackingToken` instead."
     ListCollectionsRequest:
       properties:
         includeAudience:
