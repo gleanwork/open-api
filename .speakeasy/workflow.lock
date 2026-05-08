@@ -52,6 +52,7 @@ workflow:
     sources:
         glean-api-specs:
             inputs:
+                - location: generated_specs/platform.yaml
                 - location: generated_specs/client_rest.yaml
                 - location: generated_specs/indexing.yaml
                 - location: generated_specs/admin_rest.yaml

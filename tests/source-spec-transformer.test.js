@@ -10,6 +10,7 @@ import {
   transformServerVariables,
   transformEnumDescriptions,
   transformGleanDeprecated,
+  transformPlatformSpec,
   injectOpenApiCommitSha,
 } from '../src/source-spec-transformer.js';
 
@@ -169,6 +170,182 @@ describe('OpenAPI YAML Transformer', () => {
       'IndexingShortcut',
     );
     expect(transformedSpec.components.schemas).not.toHaveProperty('Shortcut');
+  });
+
+  test('transforms platform components, paths, and SDK names by convention', () => {
+    const platformSpec = {
+      openapi: '3.0.0',
+      info: { title: 'Glean Platform API', version: '2026-04-01' },
+      servers: [{ url: 'https://{domain}-be.glean.com/api' }],
+      components: {
+        securitySchemes: {
+          ApiToken: { type: 'http', scheme: 'bearer' },
+        },
+        responses: {
+          BadRequest: {
+            description: 'bad request',
+            content: {
+              'application/problem+json': {
+                schema: { $ref: '#/components/schemas/Result' },
+              },
+            },
+          },
+        },
+        schemas: {
+          SearchRequest: { type: 'object' },
+          Result: {
+            type: 'object',
+            properties: {
+              related: { $ref: '#/components/schemas/SearchRequest' },
+            },
+          },
+          PlatformExisting: { type: 'object' },
+        },
+      },
+      security: [{ ApiToken: [] }],
+      paths: {
+        '/search': {
+          post: {
+            tags: ['Search'],
+            operationId: 'platform-search-query',
+            requestBody: {
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/SearchRequest' },
+                },
+              },
+            },
+            responses: {
+              200: {
+                description: 'ok',
+                content: {
+                  'application/json': {
+                    schema: { $ref: '#/components/schemas/Result' },
+                  },
+                },
+              },
+              400: {
+                $ref: '#/components/responses/BadRequest',
+              },
+            },
+          },
+        },
+        '/tools': {
+          get: {
+            tags: ['Tools'],
+            operationId: 'platform-tools-list',
+            responses: { 200: { description: 'ok' } },
+          },
+        },
+        '/custom': {
+          get: {
+            tags: ['Custom'],
+            operationId: 'platform-custom-list',
+            'x-speakeasy-group': 'platform.custom-overridden',
+            'x-speakeasy-name-override': 'customList',
+            responses: { 200: { description: 'ok' } },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = yaml.load(
+      transform(yaml.dump(platformSpec), 'platform.yaml'),
+    );
+
+    expect(transformedSpec.servers[0].url).toBe(
+      'https://{instance}-be.glean.com',
+    );
+    expect(transformedSpec.paths).toHaveProperty('/api/search');
+    expect(transformedSpec.paths).toHaveProperty('/api/tools');
+
+    expect(Object.keys(transformedSpec.components.schemas).sort()).toEqual([
+      'PlatformExisting',
+      'PlatformResult',
+      'PlatformSearchRequest',
+    ]);
+    expect(
+      transformedSpec.paths['/api/search'].post.requestBody.content[
+        'application/json'
+      ].schema.$ref,
+    ).toBe('#/components/schemas/PlatformSearchRequest');
+    expect(
+      transformedSpec.components.schemas.PlatformResult.properties.related.$ref,
+    ).toBe('#/components/schemas/PlatformSearchRequest');
+    expect(transformedSpec.components.responses).toHaveProperty(
+      'PlatformBadRequest',
+    );
+    expect(transformedSpec.paths['/api/search'].post.responses[400].$ref).toBe(
+      '#/components/responses/PlatformBadRequest',
+    );
+
+    expect(transformedSpec.paths['/api/search'].post).toMatchObject({
+      'x-speakeasy-group': 'platform.search',
+      'x-speakeasy-name-override': 'query',
+    });
+    expect(transformedSpec.paths['/api/tools'].get).toMatchObject({
+      'x-speakeasy-group': 'platform.tools',
+      'x-speakeasy-name-override': 'list',
+    });
+    expect(transformedSpec.paths['/api/custom'].get).toMatchObject({
+      'x-speakeasy-group': 'platform.custom-overridden',
+      'x-speakeasy-name-override': 'customList',
+    });
+    expect(transformedSpec.security).toEqual([{ APIToken: [] }]);
+    expect(transformedSpec.components.securitySchemes).toHaveProperty(
+      'APIToken',
+    );
+    expect(transformedSpec.components.securitySchemes).not.toHaveProperty(
+      'ApiToken',
+    );
+  });
+
+  test('transformPlatformSpec rejects operationIds outside the platform convention', () => {
+    expect(() =>
+      transformPlatformSpec({
+        paths: {
+          '/search': {
+            post: {
+              operationId: 'platformSearch',
+            },
+          },
+        },
+      }),
+    ).toThrow(
+      'Platform operation POST /search must use operationId platform-<family>-<method>; got platformSearch',
+    );
+  });
+
+  test('transformPlatformSpec rejects schema names that collide after prefixing', () => {
+    expect(() =>
+      transformPlatformSpec({
+        components: {
+          schemas: {
+            SearchRequest: { type: 'object' },
+            PlatformSearchRequest: { type: 'object' },
+          },
+        },
+        paths: {},
+      }),
+    ).toThrow(
+      'Platform schema SearchRequest cannot be renamed to PlatformSearchRequest because PlatformSearchRequest already exists',
+    );
+  });
+
+  test('transformPlatformSpec rejects response names that collide after prefixing', () => {
+    expect(() =>
+      transformPlatformSpec({
+        components: {
+          responses: {
+            BadRequest: { description: 'bad request' },
+            PlatformBadRequest: { description: 'platform bad request' },
+          },
+        },
+        paths: {},
+      }),
+    ).toThrow(
+      'Platform response BadRequest cannot be renamed to PlatformBadRequest because PlatformBadRequest already exists',
+    );
   });
 
   ['client_rest.yaml', 'indexing.yaml'].forEach((filename) => {

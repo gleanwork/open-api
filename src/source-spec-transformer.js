@@ -57,6 +57,202 @@ export function transformShortcutComponent(spec) {
   return spec;
 }
 
+const httpMethods = new Set([
+  'delete',
+  'get',
+  'head',
+  'options',
+  'patch',
+  'post',
+  'put',
+  'trace',
+]);
+
+function rewriteRefs(obj, refMap) {
+  if (!obj || typeof obj !== 'object') return;
+
+  Object.keys(obj).forEach((key) => {
+    if (key === '$ref' && typeof obj[key] === 'string' && refMap[obj[key]]) {
+      obj[key] = refMap[obj[key]];
+    } else if (typeof obj[key] === 'object') {
+      rewriteRefs(obj[key], refMap);
+    }
+  });
+}
+
+function platformSchemaName(name) {
+  return name.startsWith('Platform') ? name : `Platform${name}`;
+}
+
+function transformPlatformSchemas(spec) {
+  if (!spec.components?.schemas) {
+    return;
+  }
+
+  const schemas = spec.components.schemas;
+  const refMap = {};
+
+  for (const name of Object.keys(schemas)) {
+    const nextName = platformSchemaName(name);
+    if (nextName !== name) {
+      if (schemas[nextName]) {
+        throw new Error(
+          `Platform schema ${name} cannot be renamed to ${nextName} because ${nextName} already exists`,
+        );
+      }
+      refMap[`#/components/schemas/${name}`] =
+        `#/components/schemas/${nextName}`;
+    }
+  }
+
+  for (const [name, schema] of Object.entries(schemas)) {
+    const nextName = platformSchemaName(name);
+    if (nextName !== name) {
+      schemas[nextName] = schema;
+      delete schemas[name];
+    }
+  }
+
+  rewriteRefs(spec, refMap);
+}
+
+function transformPlatformResponses(spec) {
+  if (!spec.components?.responses) {
+    return;
+  }
+
+  const responses = spec.components.responses;
+  const refMap = {};
+
+  for (const name of Object.keys(responses)) {
+    const nextName = platformSchemaName(name);
+    if (nextName !== name) {
+      if (responses[nextName]) {
+        throw new Error(
+          `Platform response ${name} cannot be renamed to ${nextName} because ${nextName} already exists`,
+        );
+      }
+      refMap[`#/components/responses/${name}`] =
+        `#/components/responses/${nextName}`;
+    }
+  }
+
+  for (const [name, response] of Object.entries(responses)) {
+    const nextName = platformSchemaName(name);
+    if (nextName !== name) {
+      responses[nextName] = response;
+      delete responses[name];
+    }
+  }
+
+  rewriteRefs(spec, refMap);
+}
+
+function transformPlatformApiTokenSecurity(spec) {
+  const securitySchemes = spec.components?.securitySchemes;
+  if (securitySchemes?.ApiToken) {
+    if (securitySchemes.APIToken) {
+      throw new Error(
+        'Platform security scheme ApiToken cannot be renamed to APIToken because APIToken already exists',
+      );
+    }
+    securitySchemes.APIToken = securitySchemes.ApiToken;
+    delete securitySchemes.ApiToken;
+  }
+
+  const rewriteSecurity = (requirements) => {
+    if (!Array.isArray(requirements)) {
+      return requirements;
+    }
+
+    return requirements.map((requirement) => {
+      if (!requirement || typeof requirement !== 'object') {
+        return requirement;
+      }
+      if (requirement.ApiToken === undefined) {
+        return requirement;
+      }
+      return { APIToken: requirement.ApiToken };
+    });
+  };
+
+  spec.security = rewriteSecurity(spec.security);
+  if (!spec.paths) {
+    return;
+  }
+
+  for (const pathItem of Object.values(spec.paths)) {
+    if (!pathItem || typeof pathItem !== 'object') continue;
+
+    for (const [method, operation] of Object.entries(pathItem)) {
+      if (
+        !httpMethods.has(method) ||
+        !operation ||
+        typeof operation !== 'object'
+      ) {
+        continue;
+      }
+      operation.security = rewriteSecurity(operation.security);
+    }
+  }
+}
+
+function parsePlatformOperationId(operationId, path, method) {
+  const match = /^platform-([a-z0-9]+(?:-[a-z0-9]+)*)-([a-z0-9]+)$/.exec(
+    operationId || '',
+  );
+
+  if (!match) {
+    throw new Error(
+      `Platform operation ${method.toUpperCase()} ${path} must use operationId platform-<family>-<method>; got ${operationId || '<missing>'}`,
+    );
+  }
+
+  return { family: match[1], methodName: match[2] };
+}
+
+function transformPlatformOperations(spec) {
+  if (!spec.paths) {
+    return;
+  }
+
+  for (const [path, pathItem] of Object.entries(spec.paths)) {
+    if (!pathItem || typeof pathItem !== 'object') continue;
+
+    for (const [method, operation] of Object.entries(pathItem)) {
+      if (
+        !httpMethods.has(method) ||
+        !operation ||
+        typeof operation !== 'object'
+      ) {
+        continue;
+      }
+
+      const { family, methodName } = parsePlatformOperationId(
+        operation.operationId,
+        path,
+        method,
+      );
+
+      if (!operation['x-speakeasy-group']) {
+        operation['x-speakeasy-group'] = `platform.${family}`;
+      }
+      if (!operation['x-speakeasy-name-override']) {
+        operation['x-speakeasy-name-override'] = methodName;
+      }
+    }
+  }
+}
+
+export function transformPlatformSpec(spec) {
+  transformPlatformSchemas(spec);
+  transformPlatformResponses(spec);
+  transformPlatformApiTokenSecurity(spec);
+  transformPlatformOperations(spec);
+
+  return spec;
+}
+
 /**
  * Transforms the BearerAuth security scheme to APIToken
  * @param {Object} spec The OpenAPI spec object
@@ -560,6 +756,10 @@ export function transform(content, filename, commitSha) {
   // Apply Shortcut -> IndexingShortcut transformation for indexing.yaml
   if (filename === 'indexing.yaml') {
     transformShortcutComponent(spec);
+  }
+
+  if (filename === 'platform.yaml') {
+    transformPlatformSpec(spec);
   }
 
   // Apply BearerAuth -> APIToken transformation for all files

@@ -55,10 +55,12 @@ describe('Post-transformation smoke tests', () => {
 
     expect(paths.length).toBeGreaterThan(0);
 
-    const allowedPrefixes = ['/rest/api/v1', '/api/index/v1'];
-    const hasUnexpected = paths.some(
-      (p) => !allowedPrefixes.some((prefix) => p.startsWith(prefix)),
-    );
+    const hasAllowedPrefix = (path) =>
+      path.startsWith('/rest/api/v1') ||
+      path.startsWith('/api/index/v1') ||
+      path === '/api' ||
+      path.startsWith('/api/');
+    const hasUnexpected = paths.some((path) => !hasAllowedPrefix(path));
 
     expect(hasUnexpected).toBe(false);
   });
