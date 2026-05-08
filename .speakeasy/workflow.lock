@@ -24,8 +24,8 @@ sources:
             - 0.9.0
     glean-client-merged-code-samples-spec:
         sourceNamespace: glean-client-merged-code-samples-spec
-        sourceRevisionDigest: sha256:2255f13650f401cc140c8f9b53ece6095583814b51820eac4ed77d59ae2ea488
-        sourceBlobDigest: sha256:fab90e173dc037c50dbb34cdf735fb8a1134ba21a7dfc5a4ff6e9015953959ad
+        sourceRevisionDigest: sha256:3e987ec6094f42b91b3ce7e42d8d288e58c38b2179f6248f1f92052b219dc86d
+        sourceBlobDigest: sha256:5b37056dbbbaf6e2f581b0f85d3c3fb0368b7a790b4284d58bb615bac481d39e
         tags:
             - latest
             - main
@@ -39,8 +39,8 @@ sources:
             - 0.9.0
     glean-index-merged-code-samples-spec:
         sourceNamespace: glean-index-merged-code-samples-spec
-        sourceRevisionDigest: sha256:48128fb9a97d237bb47c764bf5e592977c1387168dd65aeb330d5f49ffe10983
-        sourceBlobDigest: sha256:00a2c65b5b88d9cfd3bbb1bacb116b36b36481da5babb714250c6b4420e85a2c
+        sourceRevisionDigest: sha256:93bed4ce885db38c90d54e290e87085281127c3fc29fc20b197e7dac8bb66625
+        sourceBlobDigest: sha256:c4d362ccd1dd0cffde3ed5afccf6a0c71d41aec9504bf15a70cb3e7a72380a82
         tags:
             - latest
             - main
