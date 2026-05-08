@@ -172,7 +172,7 @@ describe('OpenAPI YAML Transformer', () => {
     expect(transformedSpec.components.schemas).not.toHaveProperty('Shortcut');
   });
 
-  test('transforms platform components, paths, and SDK names by convention', () => {
+  test('transforms platform components, paths, and SDK names from explicit mappings', () => {
     const platformSpec = {
       openapi: '3.0.0',
       info: { title: 'Glean Platform API', version: '2026-04-01' },
@@ -207,7 +207,7 @@ describe('OpenAPI YAML Transformer', () => {
         '/search': {
           post: {
             tags: ['Search'],
-            operationId: 'platform-search-query',
+            operationId: 'platform-search',
             requestBody: {
               content: {
                 'application/json': {
@@ -230,22 +230,6 @@ describe('OpenAPI YAML Transformer', () => {
             },
           },
         },
-        '/tools': {
-          get: {
-            tags: ['Tools'],
-            operationId: 'platform-tools-list',
-            responses: { 200: { description: 'ok' } },
-          },
-        },
-        '/custom': {
-          get: {
-            tags: ['Custom'],
-            operationId: 'platform-custom-list',
-            'x-speakeasy-group': 'platform.custom-overridden',
-            'x-speakeasy-name-override': 'customList',
-            responses: { 200: { description: 'ok' } },
-          },
-        },
       },
     };
 
@@ -257,7 +241,6 @@ describe('OpenAPI YAML Transformer', () => {
       'https://{instance}-be.glean.com',
     );
     expect(transformedSpec.paths).toHaveProperty('/api/search');
-    expect(transformedSpec.paths).toHaveProperty('/api/tools');
 
     expect(Object.keys(transformedSpec.components.schemas).sort()).toEqual([
       'PlatformExisting',
@@ -283,14 +266,6 @@ describe('OpenAPI YAML Transformer', () => {
       'x-speakeasy-group': 'platform.search',
       'x-speakeasy-name-override': 'query',
     });
-    expect(transformedSpec.paths['/api/tools'].get).toMatchObject({
-      'x-speakeasy-group': 'platform.tools',
-      'x-speakeasy-name-override': 'list',
-    });
-    expect(transformedSpec.paths['/api/custom'].get).toMatchObject({
-      'x-speakeasy-group': 'platform.custom-overridden',
-      'x-speakeasy-name-override': 'customList',
-    });
     expect(transformedSpec.security).toEqual([{ APIToken: [] }]);
     expect(transformedSpec.components.securitySchemes).toHaveProperty(
       'APIToken',
@@ -300,19 +275,19 @@ describe('OpenAPI YAML Transformer', () => {
     );
   });
 
-  test('transformPlatformSpec rejects operationIds outside the platform convention', () => {
+  test('transformPlatformSpec rejects operations without SDK mappings', () => {
     expect(() =>
       transformPlatformSpec({
         paths: {
-          '/search': {
+          '/tools': {
             post: {
-              operationId: 'platformSearch',
+              operationId: 'platform-tools',
             },
           },
         },
       }),
     ).toThrow(
-      'Platform operation POST /search must use operationId platform-<family>-<method>; got platformSearch',
+      'Platform operation POST /tools with operationId platform-tools has no SDK mapping in platformSdkOperationNames',
     );
   });
 

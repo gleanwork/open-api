@@ -68,6 +68,13 @@ const httpMethods = new Set([
   'trace',
 ]);
 
+// This map is the published Platform SDK contract. Adding, removing, or
+// changing an entry changes the public SDK surface and should be reviewed as
+// such.
+const platformSdkOperationNames = {
+  'platform-search': { group: 'search', method: 'query' },
+};
+
 function rewriteRefs(obj, refMap) {
   if (!obj || typeof obj !== 'object') return;
 
@@ -197,20 +204,6 @@ function transformPlatformApiTokenSecurity(spec) {
   }
 }
 
-function parsePlatformOperationId(operationId, path, method) {
-  const match = /^platform-([a-z0-9]+(?:-[a-z0-9]+)*)-([a-z0-9]+)$/.exec(
-    operationId || '',
-  );
-
-  if (!match) {
-    throw new Error(
-      `Platform operation ${method.toUpperCase()} ${path} must use operationId platform-<family>-<method>; got ${operationId || '<missing>'}`,
-    );
-  }
-
-  return { family: match[1], methodName: match[2] };
-}
-
 function transformPlatformOperations(spec) {
   if (!spec.paths) {
     return;
@@ -228,17 +221,18 @@ function transformPlatformOperations(spec) {
         continue;
       }
 
-      const { family, methodName } = parsePlatformOperationId(
-        operation.operationId,
-        path,
-        method,
-      );
+      const sdkName = platformSdkOperationNames[operation.operationId];
+      if (!sdkName) {
+        throw new Error(
+          `Platform operation ${method.toUpperCase()} ${path} with operationId ${operation.operationId || '<missing>'} has no SDK mapping in platformSdkOperationNames`,
+        );
+      }
 
       if (!operation['x-speakeasy-group']) {
-        operation['x-speakeasy-group'] = `platform.${family}`;
+        operation['x-speakeasy-group'] = `platform.${sdkName.group}`;
       }
       if (!operation['x-speakeasy-name-override']) {
-        operation['x-speakeasy-name-override'] = methodName;
+        operation['x-speakeasy-name-override'] = sdkName.method;
       }
     }
   }

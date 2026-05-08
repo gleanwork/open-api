@@ -19,7 +19,7 @@ paths:
       summary: Search
       description: |
         Execute a search query and retrieve ranked results. This is the data retrieval variant of the search API and returns only results and pagination state.
-      operationId: platform-search-query
+      operationId: platform-search
       x-visibility: Public
       x-glean-experimental:
         gated-by: platform.apiSearchEnabled
