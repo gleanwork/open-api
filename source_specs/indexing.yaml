@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Indexing API
-  x-source-commit-sha: be392b09dbb2d90d1eb33786d69d1b8df8ea98ec
+  x-source-commit-sha: 23062285513fa182a81205b4400aa16b0e57a395
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -982,6 +982,42 @@ paths:
           description: Not Authorized
         '409':
           description: Conflict
+  /debug/{datasource}/document/events:
+    post:
+      x-beta: true
+      summary: |
+        Beta: Get document lifecycle events
+      description: |
+        Retrieves lifecycle events for a specific document including upload time, index times and deletions. Rate limited to 1 request per minute per datasource. Currently in beta, might undergo breaking changes without prior notice.
+      tags:
+        - Troubleshooting
+      parameters:
+        - name: datasource
+          in: path
+          description: The datasource to which the document belongs
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json; charset=UTF-8:
+            schema:
+              $ref: '#/components/schemas/DebugDocumentLifecycleRequest'
+        required: true
+        x-exportParamName: DebugDocumentLifecycleRequest
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/DebugDocumentLifecycleResponse'
+        '400':
+          description: Bad Request
+        '401':
+          description: Not Authorized
+        '429':
+          description: Too Many Requests
 components:
   securitySchemes:
     BearerAuth:
