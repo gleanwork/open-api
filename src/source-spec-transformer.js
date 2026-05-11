@@ -191,7 +191,8 @@ function transformPlatformApiTokenSecurity(spec) {
       if (requirement.ApiToken === undefined) {
         return requirement;
       }
-      return { APIToken: requirement.ApiToken };
+      const { ApiToken, ...otherSchemes } = requirement;
+      return { APIToken: ApiToken, ...otherSchemes };
     });
   };
 

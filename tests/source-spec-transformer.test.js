@@ -335,6 +335,33 @@ describe('OpenAPI YAML Transformer', () => {
     );
   });
 
+  test('transformPlatformSpec preserves other security schemes when normalizing ApiToken', () => {
+    const spec = {
+      components: {
+        securitySchemes: {
+          ApiToken: { type: 'http', scheme: 'bearer' },
+          ExtraAuth: { type: 'apiKey', in: 'header', name: 'X-Extra-Auth' },
+        },
+      },
+      security: [{ ApiToken: [], ExtraAuth: ['admin'] }],
+      paths: {
+        '/search': {
+          post: {
+            operationId: 'platform-search',
+            security: [{ ApiToken: [], ExtraAuth: ['search'] }],
+          },
+        },
+      },
+    };
+
+    transformPlatformSpec(spec);
+
+    expect(spec.security).toEqual([{ APIToken: [], ExtraAuth: ['admin'] }]);
+    expect(spec.paths['/search'].post.security).toEqual([
+      { APIToken: [], ExtraAuth: ['search'] },
+    ]);
+  });
+
   test('transformPlatformSpec rejects schema names that collide after prefixing', () => {
     expect(() =>
       transformPlatformSpec({
