@@ -10,6 +10,7 @@ import {
   transformServerVariables,
   transformEnumDescriptions,
   transformGleanDeprecated,
+  transformPlatformSpec,
   injectOpenApiCommitSha,
 } from '../src/source-spec-transformer.js';
 
@@ -169,6 +170,295 @@ describe('OpenAPI YAML Transformer', () => {
       'IndexingShortcut',
     );
     expect(transformedSpec.components.schemas).not.toHaveProperty('Shortcut');
+  });
+
+  test('transforms platform components, paths, and SDK names from x-glean-sdk metadata', () => {
+    const platformSpec = {
+      openapi: '3.0.0',
+      info: { title: 'Glean Platform API', version: '2026-04-01' },
+      servers: [{ url: 'https://{domain}-be.glean.com/api' }],
+      components: {
+        securitySchemes: {
+          ApiToken: { type: 'http', scheme: 'bearer' },
+        },
+        responses: {
+          BadRequest: {
+            description: 'bad request',
+            content: {
+              'application/problem+json': {
+                schema: { $ref: '#/components/schemas/Result' },
+              },
+            },
+          },
+        },
+        schemas: {
+          SearchRequest: { type: 'object' },
+          ToolsListResponse: {
+            type: 'object',
+            properties: {
+              tools: {
+                type: 'array',
+                items: { $ref: '#/components/schemas/Tool' },
+              },
+            },
+          },
+          Tool: { type: 'object' },
+          Result: {
+            type: 'object',
+            properties: {
+              related: { $ref: '#/components/schemas/SearchRequest' },
+            },
+          },
+          PlatformExisting: { type: 'object' },
+        },
+      },
+      security: [{ ApiToken: [] }],
+      paths: {
+        '/search': {
+          post: {
+            tags: ['Search'],
+            operationId: 'platform-search',
+            'x-glean-sdk': {
+              group: 'platform.search',
+              method: 'query',
+            },
+            requestBody: {
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/SearchRequest' },
+                },
+              },
+            },
+            responses: {
+              200: {
+                description: 'ok',
+                content: {
+                  'application/json': {
+                    schema: { $ref: '#/components/schemas/Result' },
+                  },
+                },
+              },
+              400: {
+                $ref: '#/components/responses/BadRequest',
+              },
+            },
+          },
+        },
+        '/tools': {
+          get: {
+            tags: ['Tools'],
+            operationId: 'platform-tools-list',
+            'x-glean-sdk': {
+              group: 'platform.tools',
+              method: 'list',
+            },
+            responses: {
+              200: {
+                description: 'ok',
+                content: {
+                  'application/json': {
+                    schema: {
+                      $ref: '#/components/schemas/ToolsListResponse',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = yaml.load(
+      transform(yaml.dump(platformSpec), 'platform.yaml'),
+    );
+
+    expect(transformedSpec.servers[0].url).toBe(
+      'https://{instance}-be.glean.com',
+    );
+    expect(transformedSpec.paths).toHaveProperty('/api/search');
+    expect(transformedSpec.paths).toHaveProperty('/api/tools');
+
+    expect(Object.keys(transformedSpec.components.schemas).sort()).toEqual([
+      'PlatformExisting',
+      'PlatformResult',
+      'PlatformSearchRequest',
+      'PlatformTool',
+      'PlatformToolsListResponse',
+    ]);
+    expect(
+      transformedSpec.paths['/api/search'].post.requestBody.content[
+        'application/json'
+      ].schema.$ref,
+    ).toBe('#/components/schemas/PlatformSearchRequest');
+    expect(
+      transformedSpec.components.schemas.PlatformResult.properties.related.$ref,
+    ).toBe('#/components/schemas/PlatformSearchRequest');
+    expect(transformedSpec.components.responses).toHaveProperty(
+      'PlatformBadRequest',
+    );
+    expect(transformedSpec.paths['/api/search'].post.responses[400].$ref).toBe(
+      '#/components/responses/PlatformBadRequest',
+    );
+
+    expect(transformedSpec.paths['/api/search'].post).toMatchObject({
+      'x-speakeasy-group': 'platform.search',
+      'x-speakeasy-name-override': 'query',
+    });
+    expect(transformedSpec.paths['/api/search'].post).not.toHaveProperty(
+      'x-glean-sdk',
+    );
+    expect(
+      transformedSpec.paths['/api/tools'].get.responses[200].content[
+        'application/json'
+      ].schema.$ref,
+    ).toBe('#/components/schemas/PlatformToolsListResponse');
+    expect(
+      transformedSpec.components.schemas.PlatformToolsListResponse.properties
+        .tools.items.$ref,
+    ).toBe('#/components/schemas/PlatformTool');
+    expect(transformedSpec.paths['/api/tools'].get).toMatchObject({
+      'x-speakeasy-group': 'platform.tools',
+      'x-speakeasy-name-override': 'list',
+    });
+    expect(transformedSpec.paths['/api/tools'].get).not.toHaveProperty(
+      'x-glean-sdk',
+    );
+    expect(transformedSpec.security).toEqual([{ APIToken: [] }]);
+    expect(transformedSpec.components.securitySchemes).toHaveProperty(
+      'APIToken',
+    );
+    expect(transformedSpec.components.securitySchemes).not.toHaveProperty(
+      'ApiToken',
+    );
+  });
+
+  test('transformPlatformSpec rejects operations without x-glean-sdk metadata', () => {
+    expect(() =>
+      transformPlatformSpec({
+        paths: {
+          '/tools': {
+            post: {
+              operationId: 'platform-tools',
+            },
+          },
+        },
+      }),
+    ).toThrow(
+      'Platform operation POST /tools with operationId platform-tools must declare x-glean-sdk.group and x-glean-sdk.method',
+    );
+  });
+
+  test('transformPlatformSpec preserves other security schemes when normalizing ApiToken', () => {
+    const spec = {
+      components: {
+        securitySchemes: {
+          ApiToken: { type: 'http', scheme: 'bearer' },
+          ExtraAuth: { type: 'apiKey', in: 'header', name: 'X-Extra-Auth' },
+        },
+      },
+      security: [{ ApiToken: [], ExtraAuth: ['admin'] }],
+      paths: {
+        '/search': {
+          post: {
+            operationId: 'platform-search',
+            'x-glean-sdk': {
+              group: 'platform.search',
+              method: 'query',
+            },
+            security: [{ ApiToken: [], ExtraAuth: ['search'] }],
+          },
+        },
+      },
+    };
+
+    transformPlatformSpec(spec);
+
+    expect(spec.security).toEqual([{ APIToken: [], ExtraAuth: ['admin'] }]);
+    expect(spec.paths['/search'].post.security).toEqual([
+      { APIToken: [], ExtraAuth: ['search'] },
+    ]);
+  });
+
+  test('transformPlatformSpec rejects schema names that collide after prefixing', () => {
+    expect(() =>
+      transformPlatformSpec({
+        components: {
+          schemas: {
+            SearchRequest: { type: 'object' },
+            PlatformSearchRequest: { type: 'object' },
+          },
+        },
+        paths: {},
+      }),
+    ).toThrow(
+      'Platform schema SearchRequest cannot be renamed to PlatformSearchRequest because PlatformSearchRequest already exists',
+    );
+  });
+
+  test('transformPlatformSpec rejects response names that collide after prefixing', () => {
+    expect(() =>
+      transformPlatformSpec({
+        components: {
+          responses: {
+            BadRequest: { description: 'bad request' },
+            PlatformBadRequest: { description: 'platform bad request' },
+          },
+        },
+        paths: {},
+      }),
+    ).toThrow(
+      'Platform response BadRequest cannot be renamed to PlatformBadRequest because PlatformBadRequest already exists',
+    );
+  });
+
+  test('transformPlatformSpec rejects invalid SDK metadata', () => {
+    expect(() =>
+      transformPlatformSpec({
+        paths: {
+          '/search': {
+            post: {
+              operationId: 'platform-search',
+              'x-glean-sdk': {
+                group: 'search',
+                method: 'Query',
+              },
+            },
+          },
+        },
+      }),
+    ).toThrow(
+      'Platform operation POST /search with operationId platform-search has invalid x-glean-sdk.group "search"; expected platform.<lowercase identifiers>',
+    );
+  });
+
+  test('transformPlatformSpec rejects duplicate SDK methods', () => {
+    expect(() =>
+      transformPlatformSpec({
+        paths: {
+          '/search': {
+            post: {
+              operationId: 'platform-search',
+              'x-glean-sdk': {
+                group: 'platform.search',
+                method: 'query',
+              },
+            },
+          },
+          '/query': {
+            post: {
+              operationId: 'platform-query',
+              'x-glean-sdk': {
+                group: 'platform.search',
+                method: 'query',
+              },
+            },
+          },
+        },
+      }),
+    ).toThrow(
+      'Platform operation POST /query with operationId platform-query declares duplicate SDK method platform.search.query; already used by POST /search with operationId platform-search',
+    );
   });
 
   ['client_rest.yaml', 'indexing.yaml'].forEach((filename) => {

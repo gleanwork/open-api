@@ -57,6 +57,228 @@ export function transformShortcutComponent(spec) {
   return spec;
 }
 
+const httpMethods = new Set([
+  'delete',
+  'get',
+  'head',
+  'options',
+  'patch',
+  'post',
+  'put',
+  'trace',
+]);
+
+const platformSdkGroupPattern = /^platform(\.[a-z][a-z0-9]*)+$/;
+const platformSdkMethodPattern = /^[a-z][A-Za-z0-9]*$/;
+
+function rewriteRefs(obj, refMap) {
+  if (!obj || typeof obj !== 'object') return;
+
+  Object.keys(obj).forEach((key) => {
+    if (key === '$ref' && typeof obj[key] === 'string' && refMap[obj[key]]) {
+      obj[key] = refMap[obj[key]];
+    } else if (typeof obj[key] === 'object') {
+      rewriteRefs(obj[key], refMap);
+    }
+  });
+}
+
+function platformSchemaName(name) {
+  return name.startsWith('Platform') ? name : `Platform${name}`;
+}
+
+function transformPlatformSchemas(spec) {
+  if (!spec.components?.schemas) {
+    return;
+  }
+
+  // Platform is merged into the existing public SDK spec, so common names like
+  // SearchRequest, Result, or Person would otherwise collide with legacy REST
+  // schemas. Prefixing every Platform schema keeps the merged model surface
+  // deterministic without requiring each scio schema to know about SDK peers.
+  const schemas = spec.components.schemas;
+  const refMap = {};
+
+  for (const name of Object.keys(schemas)) {
+    const nextName = platformSchemaName(name);
+    if (nextName !== name) {
+      if (schemas[nextName]) {
+        throw new Error(
+          `Platform schema ${name} cannot be renamed to ${nextName} because ${nextName} already exists`,
+        );
+      }
+      refMap[`#/components/schemas/${name}`] =
+        `#/components/schemas/${nextName}`;
+    }
+  }
+
+  for (const [name, schema] of Object.entries(schemas)) {
+    const nextName = platformSchemaName(name);
+    if (nextName !== name) {
+      schemas[nextName] = schema;
+      delete schemas[name];
+    }
+  }
+
+  rewriteRefs(spec, refMap);
+}
+
+function transformPlatformResponses(spec) {
+  if (!spec.components?.responses) {
+    return;
+  }
+
+  // Shared response names such as BadRequest and Unauthorized are global within
+  // the merged OpenAPI document. Keep Platform problem-detail responses separate
+  // from the existing REST response components.
+  const responses = spec.components.responses;
+  const refMap = {};
+
+  for (const name of Object.keys(responses)) {
+    const nextName = platformSchemaName(name);
+    if (nextName !== name) {
+      if (responses[nextName]) {
+        throw new Error(
+          `Platform response ${name} cannot be renamed to ${nextName} because ${nextName} already exists`,
+        );
+      }
+      refMap[`#/components/responses/${name}`] =
+        `#/components/responses/${nextName}`;
+    }
+  }
+
+  for (const [name, response] of Object.entries(responses)) {
+    const nextName = platformSchemaName(name);
+    if (nextName !== name) {
+      responses[nextName] = response;
+      delete responses[name];
+    }
+  }
+
+  rewriteRefs(spec, refMap);
+}
+
+function transformPlatformApiTokenSecurity(spec) {
+  // scio's Platform source spec uses ApiToken, while the merged SDK spec already
+  // standardizes auth under APIToken. Normalize before merge so Speakeasy sees
+  // one auth scheme instead of generating a second Platform-specific credential.
+  const securitySchemes = spec.components?.securitySchemes;
+  if (securitySchemes?.ApiToken) {
+    if (securitySchemes.APIToken) {
+      throw new Error(
+        'Platform security scheme ApiToken cannot be renamed to APIToken because APIToken already exists',
+      );
+    }
+    securitySchemes.APIToken = securitySchemes.ApiToken;
+    delete securitySchemes.ApiToken;
+  }
+
+  const rewriteSecurity = (requirements) => {
+    if (!Array.isArray(requirements)) {
+      return requirements;
+    }
+
+    return requirements.map((requirement) => {
+      if (!requirement || typeof requirement !== 'object') {
+        return requirement;
+      }
+      if (requirement.ApiToken === undefined) {
+        return requirement;
+      }
+      const { ApiToken, ...otherSchemes } = requirement;
+      return { APIToken: ApiToken, ...otherSchemes };
+    });
+  };
+
+  spec.security = rewriteSecurity(spec.security);
+  if (!spec.paths) {
+    return;
+  }
+
+  for (const pathItem of Object.values(spec.paths)) {
+    if (!pathItem || typeof pathItem !== 'object') continue;
+
+    for (const [method, operation] of Object.entries(pathItem)) {
+      if (
+        !httpMethods.has(method) ||
+        !operation ||
+        typeof operation !== 'object'
+      ) {
+        continue;
+      }
+      operation.security = rewriteSecurity(operation.security);
+    }
+  }
+}
+
+function transformPlatformOperations(spec) {
+  if (!spec.paths) {
+    return;
+  }
+
+  const sdkMethods = new Map();
+  for (const [path, pathItem] of Object.entries(spec.paths)) {
+    if (!pathItem || typeof pathItem !== 'object') continue;
+
+    for (const [method, operation] of Object.entries(pathItem)) {
+      if (
+        !httpMethods.has(method) ||
+        !operation ||
+        typeof operation !== 'object'
+      ) {
+        continue;
+      }
+
+      const location = `${method.toUpperCase()} ${path} with operationId ${operation.operationId || '<missing>'}`;
+      const sdk = operation['x-glean-sdk'];
+      if (!sdk || typeof sdk !== 'object' || Array.isArray(sdk)) {
+        throw new Error(
+          `Platform operation ${location} must declare x-glean-sdk.group and x-glean-sdk.method`,
+        );
+      }
+
+      if (
+        typeof sdk.group !== 'string' ||
+        !platformSdkGroupPattern.test(sdk.group)
+      ) {
+        throw new Error(
+          `Platform operation ${location} has invalid x-glean-sdk.group ${JSON.stringify(sdk.group)}; expected platform.<lowercase identifiers>`,
+        );
+      }
+
+      if (
+        typeof sdk.method !== 'string' ||
+        !platformSdkMethodPattern.test(sdk.method)
+      ) {
+        throw new Error(
+          `Platform operation ${location} has invalid x-glean-sdk.method ${JSON.stringify(sdk.method)}; expected lower-camel identifier`,
+        );
+      }
+
+      const sdkMethodKey = `${sdk.group}.${sdk.method}`;
+      if (sdkMethods.has(sdkMethodKey)) {
+        throw new Error(
+          `Platform operation ${location} declares duplicate SDK method ${sdkMethodKey}; already used by ${sdkMethods.get(sdkMethodKey)}`,
+        );
+      }
+      sdkMethods.set(sdkMethodKey, location);
+
+      operation['x-speakeasy-group'] = sdk.group;
+      operation['x-speakeasy-name-override'] = sdk.method;
+      delete operation['x-glean-sdk'];
+    }
+  }
+}
+
+export function transformPlatformSpec(spec) {
+  transformPlatformSchemas(spec);
+  transformPlatformResponses(spec);
+  transformPlatformApiTokenSecurity(spec);
+  transformPlatformOperations(spec);
+
+  return spec;
+}
+
 /**
  * Transforms the BearerAuth security scheme to APIToken
  * @param {Object} spec The OpenAPI spec object
@@ -560,6 +782,10 @@ export function transform(content, filename, commitSha) {
   // Apply Shortcut -> IndexingShortcut transformation for indexing.yaml
   if (filename === 'indexing.yaml') {
     transformShortcutComponent(spec);
+  }
+
+  if (filename === 'platform.yaml') {
+    transformPlatformSpec(spec);
   }
 
   // Apply BearerAuth -> APIToken transformation for all files

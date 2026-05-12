@@ -1,0 +1,464 @@
+openapi: 3.0.0
+info:
+  version: "2026-04-01"
+  title: Glean Platform API
+  x-source-commit-sha: __SCIO_COMMIT_SHA__
+servers:
+  - url: https://{instance}-be.glean.com
+    variables:
+      instance:
+        default: instance-name
+        description: The instance name (typically the email domain without the TLD) that determines the deployment backend.
+security:
+  - APIToken: []
+paths:
+  /api/tools:
+    get:
+      tags:
+        - Tools
+      summary: List tools
+      description: |
+        List tools available to the authenticated user, optionally filtered by tool name.
+      operationId: platform-tools-list
+      x-visibility: Public
+      x-glean-experimental:
+        id: 3cb43a04-ad52-4c25-be62-3ce1daffd513
+        introduced: "2026-05-06"
+      parameters:
+        - in: query
+          name: tool_names
+          description: Optional comma-delimited list of tool names to return.
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformToolsListResponse"
+        "400":
+          $ref: "#/components/responses/PlatformBadRequest"
+        "401":
+          $ref: "#/components/responses/PlatformUnauthorized"
+        "403":
+          $ref: "#/components/responses/PlatformForbidden"
+        "404":
+          $ref: "#/components/responses/PlatformNotFound"
+        "408":
+          $ref: "#/components/responses/PlatformRequestTimeout"
+        "429":
+          $ref: "#/components/responses/PlatformTooManyRequests"
+        "500":
+          $ref: "#/components/responses/PlatformInternalServerError"
+        "503":
+          $ref: "#/components/responses/PlatformServiceUnavailable"
+      x-speakeasy-group: platform.tools
+      x-speakeasy-name-override: list
+  /api/search:
+    post:
+      tags:
+        - Search
+      summary: Search
+      description: |
+        Execute a search query and retrieve ranked results. This is the data retrieval variant of the search API and returns only results and pagination state.
+      operationId: platform-search
+      x-visibility: Public
+      x-glean-experimental:
+        id: 5ab612fc-ed50-4419-bec3-e5fe83934653
+        introduced: "2026-04-08"
+      x-codegen-request-body-name: payload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlatformSearchRequest"
+      responses:
+        "200":
+          description: Successful search.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformSearchResponse"
+        "400":
+          $ref: "#/components/responses/PlatformBadRequest"
+        "401":
+          $ref: "#/components/responses/PlatformUnauthorized"
+        "403":
+          $ref: "#/components/responses/PlatformForbidden"
+        "404":
+          $ref: "#/components/responses/PlatformNotFound"
+        "408":
+          $ref: "#/components/responses/PlatformRequestTimeout"
+        "429":
+          $ref: "#/components/responses/PlatformTooManyRequests"
+        "500":
+          $ref: "#/components/responses/PlatformInternalServerError"
+        "503":
+          $ref: "#/components/responses/PlatformServiceUnavailable"
+      x-speakeasy-group: platform.search
+      x-speakeasy-name-override: query
+components:
+  securitySchemes:
+    APIToken:
+      type: http
+      scheme: bearer
+      description: |
+        Glean API token. Obtain via Admin Console -> Platform -> API Tokens, or via OAuth 2.0 client credentials flow.
+  schemas:
+    PlatformToolParameter:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Parameter type.
+          enum:
+            - string
+            - number
+            - boolean
+            - object
+            - array
+        name:
+          type: string
+          description: Parameter name.
+        description:
+          type: string
+          description: Parameter description.
+        is_required:
+          type: boolean
+          description: Whether the parameter is required.
+        possible_values:
+          type: array
+          description: Possible primitive values for the parameter.
+          items:
+            type: string
+        items:
+          $ref: "#/components/schemas/PlatformToolParameter"
+        properties:
+          type: object
+          description: Object properties for object parameters.
+          additionalProperties:
+            $ref: "#/components/schemas/PlatformToolParameter"
+    PlatformTool:
+      type: object
+      required:
+        - type
+        - name
+        - display_name
+        - description
+        - parameters
+      properties:
+        type:
+          type: string
+          description: Type of tool.
+          enum:
+            - READ
+            - WRITE
+        name:
+          type: string
+          description: Unique identifier for the tool.
+        display_name:
+          type: string
+          description: Human-readable name.
+        description:
+          type: string
+          description: LLM-friendly description of the tool.
+        parameters:
+          type: object
+          description: Parameters supported by the tool.
+          additionalProperties:
+            $ref: "#/components/schemas/PlatformToolParameter"
+    PlatformToolsListResponse:
+      type: object
+      required:
+        - tools
+        - request_id
+      properties:
+        tools:
+          type: array
+          description: List of tools available to the user.
+          items:
+            $ref: "#/components/schemas/PlatformTool"
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
+    PlatformProblemDetail:
+      type: object
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - code
+        - request_id
+      description: |
+        Error response following RFC 9457, extended with `code` and `documentation_url` for machine-readable classification and self-service remediation.
+      properties:
+        type:
+          type: string
+          format: uri
+          description: URI identifying the error type.
+          example: https://developer.glean.com/errors/invalid-cursor
+        title:
+          type: string
+          description: Short, human-readable summary of the error.
+          example: Invalid Pagination Cursor
+        status:
+          type: integer
+          description: HTTP status code mirrored from the response.
+          example: 400
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence.
+          example: |
+            The provided cursor has expired. Start a new search to get a fresh cursor.
+        code:
+          type: string
+          description: Stable machine-readable error code.
+          enum:
+            - invalid_request
+            - missing_required_field
+            - invalid_parameter
+            - invalid_cursor
+            - expired_cursor
+            - invalid_filter
+            - authentication_required
+            - token_expired
+            - insufficient_permissions
+            - resource_not_found
+            - request_timeout
+            - conflict
+            - gone
+            - unprocessable_query
+            - rate_limit_exceeded
+            - internal_error
+            - service_unavailable
+          example: invalid_cursor
+        documentation_url:
+          type: string
+          format: uri
+          description: Direct URL to documentation for this error code.
+          example: https://developer.glean.com/errors/invalid-cursor
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
+          example: req_7f8a9b0c1d2e
+    PlatformFilter:
+      type: object
+      required:
+        - field
+        - values
+      description: |
+        A single filter criterion. Multiple values within a filter are OR'd. Filters are AND'd with each other and with any inline query operators.
+      properties:
+        field:
+          type: string
+          description: |
+            The field to filter on. Accepts built-in operator names such as `type`, `owner`, `from`, `author`, `channel`, `status`, `assignee`, `reporter`, `component`, `mentions`, and `collection`, plus custom datasource property names.
+          example: type
+        values:
+          type: array
+          minItems: 1
+          items:
+            type: string
+          description: One or more values to match.
+          example:
+            - spreadsheet
+            - presentation
+        exclude:
+          type: boolean
+          default: false
+          description: Excludes results matching any of the specified values when true.
+    PlatformTimeRange:
+      type: object
+      description: Filter results to those last updated within this range.
+      properties:
+        start:
+          type: string
+          format: date-time
+          description: Inclusive lower bound in ISO 8601 format.
+        end:
+          type: string
+          format: date-time
+          description: Exclusive upper bound in ISO 8601 format.
+    PlatformSearchRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - query
+      properties:
+        query:
+          type: string
+          description: |
+            The search query string. Supports inline operators such as `from:jane type:document app:confluence`. Inline operators are AND'd with structured `filters`.
+          example: quarterly planning 2026
+        page_size:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+          description: Number of results to return per page.
+        cursor:
+          type: string
+          nullable: true
+          description: |
+            Opaque pagination token from a previous response's `next_cursor` field. Omit on the first request.
+        datasources:
+          type: array
+          items:
+            type: string
+          description: Restrict results to specific datasources.
+          example:
+            - confluence
+            - google_drive
+        filters:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlatformFilter"
+          description: |
+            Structured filters applied to search results. Multiple values within a filter are OR'd. Multiple filters are AND'd together. Filters are AND'd with any inline operators in `query`. Note that conflicting constraints on the same field (e.g., `type:document` in the query and `type: spreadsheet` in a filter) produce an empty result set.
+        time_range:
+          $ref: "#/components/schemas/PlatformTimeRange"
+    PlatformPerson:
+      type: object
+      nullable: true
+      description: A person associated with the result.
+      properties:
+        name:
+          type: string
+          description: Display name.
+          example: Jane Smith
+        email:
+          type: string
+          format: email
+          description: Email address.
+          example: jane.smith@company.com
+    PlatformResult:
+      type: object
+      required:
+        - url
+        - title
+        - datasource
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Canonical URL of the result.
+          example: https://company.atlassian.net/wiki/spaces/ENG/pages/12345
+        title:
+          type: string
+          description: Result title.
+          example: Q2 2026 Platform Roadmap
+        snippets:
+          type: array
+          items:
+            type: string
+          description: Query-relevant plain-text excerpts from the result body.
+          example:
+            - The platform team will focus on API stability and...
+        datasource:
+          type: string
+          description: The datasource this result originates from.
+          example: confluence
+        document_type:
+          type: string
+          nullable: true
+          description: The document type within the datasource.
+          example: page
+        creator:
+          $ref: "#/components/schemas/PlatformPerson"
+        owner:
+          $ref: "#/components/schemas/PlatformPerson"
+        updated_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the result was last modified.
+        created_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the result was created.
+    PlatformSearchResponse:
+      type: object
+      required:
+        - results
+        - has_more
+        - next_cursor
+        - request_id
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlatformResult"
+          description: Ordered list of search results.
+        has_more:
+          type: boolean
+          description: Indicates whether additional pages of results are available.
+        next_cursor:
+          type: string
+          nullable: true
+          description: Opaque token to pass as `cursor` in the next request.
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
+  responses:
+    PlatformBadRequest:
+      description: Invalid request (malformed JSON, invalid parameter values, unknown fields).
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/PlatformProblemDetail"
+    PlatformUnauthorized:
+      description: Missing or invalid authentication token.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/PlatformProblemDetail"
+    PlatformForbidden:
+      description: Token valid but lacks permission for the requested operation.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/PlatformProblemDetail"
+    PlatformNotFound:
+      description: Resource not found.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/PlatformProblemDetail"
+    PlatformRequestTimeout:
+      description: Backend did not respond within the timeout window.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/PlatformProblemDetail"
+    PlatformTooManyRequests:
+      description: Rate limit exceeded. Includes Retry-After header.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/PlatformProblemDetail"
+    PlatformInternalServerError:
+      description: Unexpected server-side failure.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/PlatformProblemDetail"
+    PlatformServiceUnavailable:
+      description: Backend temporarily unavailable.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/PlatformProblemDetail"
+x-tagGroups:
+  - name: Data Retrieval
+    tags:
+      - Search
+      - Tools
