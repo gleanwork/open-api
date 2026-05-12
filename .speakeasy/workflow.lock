@@ -1,11 +1,12 @@
-speakeasyVersion: 1.762.0
+speakeasyVersion: 1.675.2
 sources:
     glean-api-specs:
         sourceNamespace: glean-api-specs
-        sourceRevisionDigest: sha256:44d818ff0fc432ff8c173cb733e5e73b4effccbee4fef7022a9216ec16101064
-        sourceBlobDigest: sha256:44f7666dff279368978fb6fc6980b460371acbbbac6c1f647017a10b08e11f75
+        sourceRevisionDigest: sha256:1b8e6a4cabc753b2fbc2541ac5ba3772654b62e86cb0b1f14259c7c8b76ae466
+        sourceBlobDigest: sha256:fb4b9a9b0a690bf336dd7f736354596f58707f118851180fc6452eef9e1906d3
         tags:
             - latest
+            - main
             - 0.9.0
     glean-client-and-indexing-specs:
         sourceNamespace: glean-client-and-indexing-specs
@@ -23,8 +24,8 @@ sources:
             - 0.9.0
     glean-client-merged-code-samples-spec:
         sourceNamespace: glean-client-merged-code-samples-spec
-        sourceRevisionDigest: sha256:f2cb7e8c7af041dd78ff40a23293210a860f8a71b24c333e56b4283fcf103cb7
-        sourceBlobDigest: sha256:47ecc2679891e64c0f60cdca0e7f870047c100d2625aa83be527f5214327a388
+        sourceRevisionDigest: sha256:43a09fb17d0aeb8714f1f4ba7f23896ef4c4e296b7dee22c13ea85960d883d1d
+        sourceBlobDigest: sha256:205eefddbb176507c3a47f5fa9ce35498b49c893bbbf20f7c373921d62ffd6dc
         tags:
             - latest
             - main
@@ -38,8 +39,8 @@ sources:
             - 0.9.0
     glean-index-merged-code-samples-spec:
         sourceNamespace: glean-index-merged-code-samples-spec
-        sourceRevisionDigest: sha256:22e6636919b214d3cd8863ccdbb73f32d34a986935f223f78af7333a7c72944e
-        sourceBlobDigest: sha256:568a28d615e2f5dd4bf1e5fce7a84e3c9208ce12bd38b6687e62d736ab06a6aa
+        sourceRevisionDigest: sha256:3ecee41dcd86893be65eb03f706e185232bf153c815552ca2412de5173c2ccd9
+        sourceBlobDigest: sha256:31373deb158a91b4576f5be41af24a07b2518b777d99e061d521cf3254835a4b
         tags:
             - latest
             - main
@@ -51,7 +52,6 @@ workflow:
     sources:
         glean-api-specs:
             inputs:
-                - location: generated_specs/platform.yaml
                 - location: generated_specs/client_rest.yaml
                 - location: generated_specs/indexing.yaml
                 - location: generated_specs/admin_rest.yaml
