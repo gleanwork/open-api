@@ -461,6 +461,42 @@ describe('OpenAPI YAML Transformer', () => {
     );
   });
 
+  test('transformPlatformSpec allows multiple operations in the same SDK group with different methods', () => {
+    const spec = {
+      paths: {
+        '/tools': {
+          get: {
+            operationId: 'platform-tools-list',
+            'x-glean-sdk': {
+              group: 'platform.tools',
+              method: 'list',
+            },
+          },
+        },
+        '/tools/call': {
+          post: {
+            operationId: 'platform-tools-call',
+            'x-glean-sdk': {
+              group: 'platform.tools',
+              method: 'call',
+            },
+          },
+        },
+      },
+    };
+
+    transformPlatformSpec(spec);
+
+    expect(spec.paths['/tools'].get).toMatchObject({
+      'x-speakeasy-group': 'platform.tools',
+      'x-speakeasy-name-override': 'list',
+    });
+    expect(spec.paths['/tools/call'].post).toMatchObject({
+      'x-speakeasy-group': 'platform.tools',
+      'x-speakeasy-name-override': 'call',
+    });
+  });
+
   ['client_rest.yaml', 'indexing.yaml'].forEach((filename) => {
     test(`transformBearerAuthToAPIToken renames BearerAuth to APIToken in ${filename}`, () => {
       const yamlContent = readFixture(filename);
