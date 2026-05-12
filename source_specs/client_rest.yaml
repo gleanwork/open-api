@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: fd7f8d1f4016d4f8b3103eb1e4804c3a9d373a4b
+  x-source-commit-sha: c1a6bd382b7481dfe6a4875ecb2122ac18685cd2
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -2436,7 +2436,7 @@ paths:
           description: Not Found
         '429':
           description: Too Many Requests
-  /actions/{actionPackId}/auth:
+  /actions/actionpack/{actionPackId}/auth:
     parameters:
       - in: path
         name: actionPackId
@@ -2452,7 +2452,7 @@ paths:
         Reports whether the calling user is already authenticated against the third-party
         tool backing the specified action pack. Intended for headless / server-driven clients
         that render an "Authorize" prompt when the user has not yet consented to the tool.
-      operationId: getActionAuthStatus
+      operationId: getActionPackAuthStatus
       x-visibility: Preview
       responses:
         '200':
@@ -2460,7 +2460,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ActionAuthStatusResponse'
+                $ref: '#/components/schemas/ActionPackAuthStatusResponse'
         '400':
           description: Bad Request
         '401':
@@ -2481,21 +2481,21 @@ paths:
 
         `returnUrl` must match the tenant's configured return URL allowlist; otherwise the
         request is rejected with 400.
-      operationId: authorizeAction
+      operationId: authorizeActionPack
       x-visibility: Preview
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthorizeActionRequest'
+              $ref: '#/components/schemas/AuthorizeActionPackRequest'
       responses:
         '200':
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthorizeActionResponse'
+                $ref: '#/components/schemas/AuthorizeActionPackResponse'
         '400':
           description: Invalid request (e.g. returnUrl not in allowlist, unsupported auth type)
         '401':
@@ -9745,7 +9745,7 @@ components:
         - AUTH_USER_OAUTH
         - AUTH_ADMIN
         - AUTH_NONE
-    ActionAuthStatusResponse:
+    ActionPackAuthStatus:
       type: object
       required:
         - authenticated
@@ -9756,7 +9756,18 @@ components:
           description: Whether the calling user is already authenticated to the tool backing the action pack.
         authType:
           $ref: '#/components/schemas/ActionAuthType'
-    AuthorizeActionRequest:
+    ActionPackAuthStatusResponse:
+      type: object
+      required:
+        - actionPack
+      properties:
+        actionPack:
+          $ref: '#/components/schemas/ActionPackAuthStatus'
+          description: |
+            Action-pack-scoped authentication status. Wrapped under `actionPack` so the response
+            shape clearly conveys that the status applies to the whole pack and leaves room to add
+            sibling fields (e.g. per-action status) later without a breaking change.
+    AuthorizeActionPackRequest:
       type: object
       required:
         - returnUrl
@@ -9766,7 +9777,7 @@ components:
           description: |
             URL on the customer's domain to redirect the end user's browser back to after the third-party OAuth
             callback completes. Must be present in the tenant's return URL allowlist.
-    AuthorizeActionResponse:
+    AuthorizeActionPackResponse:
       type: object
       required:
         - redirectUrl
