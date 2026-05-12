@@ -3,6 +3,7 @@ info:
   version: "2026-04-01"
   title: Glean Platform API
   x-source-commit-sha: __SCIO_COMMIT_SHA__
+  x-open-api-commit-sha: ca2d2acb19116a2f72cbdddaeefc22d18588ae17
 servers:
   - url: https://{instance}-be.glean.com
     variables:

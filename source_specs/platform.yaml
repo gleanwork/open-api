@@ -21,6 +21,9 @@ paths:
         List tools available to the authenticated user, optionally filtered by tool name.
       operationId: platform-tools-list
       x-visibility: Public
+      x-glean-sdk:
+        group: platform.tools
+        method: list
       x-glean-experimental:
         id: 3cb43a04-ad52-4c25-be62-3ce1daffd513
         introduced: '2026-05-06'
@@ -67,6 +70,9 @@ paths:
         Execute a search query and retrieve ranked results. This is the data retrieval variant of the search API and returns only results and pagination state.
       operationId: platform-search
       x-visibility: Public
+      x-glean-sdk:
+        group: platform.search
+        method: query
       x-glean-experimental:
         id: 5ab612fc-ed50-4419-bec3-e5fe83934653
         introduced: '2026-04-08'

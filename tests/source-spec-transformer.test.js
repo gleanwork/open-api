@@ -172,7 +172,7 @@ describe('OpenAPI YAML Transformer', () => {
     expect(transformedSpec.components.schemas).not.toHaveProperty('Shortcut');
   });
 
-  test('transforms platform components, paths, and SDK names from explicit mappings', () => {
+  test('transforms platform components, paths, and SDK names from x-glean-sdk metadata', () => {
     const platformSpec = {
       openapi: '3.0.0',
       info: { title: 'Glean Platform API', version: '2026-04-01' },
@@ -218,6 +218,10 @@ describe('OpenAPI YAML Transformer', () => {
           post: {
             tags: ['Search'],
             operationId: 'platform-search',
+            'x-glean-sdk': {
+              group: 'platform.search',
+              method: 'query',
+            },
             requestBody: {
               content: {
                 'application/json': {
@@ -244,6 +248,10 @@ describe('OpenAPI YAML Transformer', () => {
           get: {
             tags: ['Tools'],
             operationId: 'platform-tools-list',
+            'x-glean-sdk': {
+              group: 'platform.tools',
+              method: 'list',
+            },
             responses: {
               200: {
                 description: 'ok',
@@ -297,6 +305,9 @@ describe('OpenAPI YAML Transformer', () => {
       'x-speakeasy-group': 'platform.search',
       'x-speakeasy-name-override': 'query',
     });
+    expect(transformedSpec.paths['/api/search'].post).not.toHaveProperty(
+      'x-glean-sdk',
+    );
     expect(
       transformedSpec.paths['/api/tools'].get.responses[200].content[
         'application/json'
@@ -310,6 +321,9 @@ describe('OpenAPI YAML Transformer', () => {
       'x-speakeasy-group': 'platform.tools',
       'x-speakeasy-name-override': 'list',
     });
+    expect(transformedSpec.paths['/api/tools'].get).not.toHaveProperty(
+      'x-glean-sdk',
+    );
     expect(transformedSpec.security).toEqual([{ APIToken: [] }]);
     expect(transformedSpec.components.securitySchemes).toHaveProperty(
       'APIToken',
@@ -319,7 +333,7 @@ describe('OpenAPI YAML Transformer', () => {
     );
   });
 
-  test('transformPlatformSpec rejects operations without SDK mappings', () => {
+  test('transformPlatformSpec rejects operations without x-glean-sdk metadata', () => {
     expect(() =>
       transformPlatformSpec({
         paths: {
@@ -331,7 +345,7 @@ describe('OpenAPI YAML Transformer', () => {
         },
       }),
     ).toThrow(
-      'Platform operation POST /tools with operationId platform-tools has no SDK mapping in platformSdkOperationNames',
+      'Platform operation POST /tools with operationId platform-tools must declare x-glean-sdk.group and x-glean-sdk.method',
     );
   });
 
@@ -348,6 +362,10 @@ describe('OpenAPI YAML Transformer', () => {
         '/search': {
           post: {
             operationId: 'platform-search',
+            'x-glean-sdk': {
+              group: 'platform.search',
+              method: 'query',
+            },
             security: [{ ApiToken: [], ExtraAuth: ['search'] }],
           },
         },
@@ -391,6 +409,55 @@ describe('OpenAPI YAML Transformer', () => {
       }),
     ).toThrow(
       'Platform response BadRequest cannot be renamed to PlatformBadRequest because PlatformBadRequest already exists',
+    );
+  });
+
+  test('transformPlatformSpec rejects invalid SDK metadata', () => {
+    expect(() =>
+      transformPlatformSpec({
+        paths: {
+          '/search': {
+            post: {
+              operationId: 'platform-search',
+              'x-glean-sdk': {
+                group: 'search',
+                method: 'Query',
+              },
+            },
+          },
+        },
+      }),
+    ).toThrow(
+      'Platform operation POST /search with operationId platform-search has invalid x-glean-sdk.group "search"; expected platform.<lowercase identifiers>',
+    );
+  });
+
+  test('transformPlatformSpec rejects duplicate SDK methods', () => {
+    expect(() =>
+      transformPlatformSpec({
+        paths: {
+          '/search': {
+            post: {
+              operationId: 'platform-search',
+              'x-glean-sdk': {
+                group: 'platform.search',
+                method: 'query',
+              },
+            },
+          },
+          '/query': {
+            post: {
+              operationId: 'platform-query',
+              'x-glean-sdk': {
+                group: 'platform.search',
+                method: 'query',
+              },
+            },
+          },
+        },
+      }),
+    ).toThrow(
+      'Platform operation POST /query with operationId platform-query declares duplicate SDK method platform.search.query; already used by POST /search with operationId platform-search',
     );
   });
 

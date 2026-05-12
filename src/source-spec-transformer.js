@@ -68,14 +68,8 @@ const httpMethods = new Set([
   'trace',
 ]);
 
-// This map is the published Platform SDK contract. Each key is a scio
-// operationId; each value becomes the generated SDK method chain:
-// glean.platform.<group>.<method>(...). Adding, removing, or changing an entry
-// changes the public SDK surface and should be reviewed as such.
-const platformSdkOperationNames = {
-  'platform-search': { group: 'search', method: 'query' },
-  'platform-tools-list': { group: 'tools', method: 'list' },
-};
+const platformSdkGroupPattern = /^platform(\.[a-z][a-z0-9]*)+$/;
+const platformSdkMethodPattern = /^[a-z][A-Za-z0-9]*$/;
 
 function rewriteRefs(obj, refMap) {
   if (!obj || typeof obj !== 'object') return;
@@ -222,6 +216,7 @@ function transformPlatformOperations(spec) {
     return;
   }
 
+  const sdkMethods = new Map();
   for (const [path, pathItem] of Object.entries(spec.paths)) {
     if (!pathItem || typeof pathItem !== 'object') continue;
 
@@ -234,21 +229,43 @@ function transformPlatformOperations(spec) {
         continue;
       }
 
-      const sdkName = platformSdkOperationNames[operation.operationId];
-      if (!sdkName) {
-        // Fail closed: adding a Platform endpoint to SDKs is a public surface
-        // decision, so every operation must be explicitly mapped above.
+      const location = `${method.toUpperCase()} ${path} with operationId ${operation.operationId || '<missing>'}`;
+      const sdk = operation['x-glean-sdk'];
+      if (!sdk || typeof sdk !== 'object' || Array.isArray(sdk)) {
         throw new Error(
-          `Platform operation ${method.toUpperCase()} ${path} with operationId ${operation.operationId || '<missing>'} has no SDK mapping in platformSdkOperationNames`,
+          `Platform operation ${location} must declare x-glean-sdk.group and x-glean-sdk.method`,
         );
       }
 
-      if (!operation['x-speakeasy-group']) {
-        operation['x-speakeasy-group'] = `platform.${sdkName.group}`;
+      if (
+        typeof sdk.group !== 'string' ||
+        !platformSdkGroupPattern.test(sdk.group)
+      ) {
+        throw new Error(
+          `Platform operation ${location} has invalid x-glean-sdk.group ${JSON.stringify(sdk.group)}; expected platform.<lowercase identifiers>`,
+        );
       }
-      if (!operation['x-speakeasy-name-override']) {
-        operation['x-speakeasy-name-override'] = sdkName.method;
+
+      if (
+        typeof sdk.method !== 'string' ||
+        !platformSdkMethodPattern.test(sdk.method)
+      ) {
+        throw new Error(
+          `Platform operation ${location} has invalid x-glean-sdk.method ${JSON.stringify(sdk.method)}; expected lower-camel identifier`,
+        );
       }
+
+      const sdkMethodKey = `${sdk.group}.${sdk.method}`;
+      if (sdkMethods.has(sdkMethodKey)) {
+        throw new Error(
+          `Platform operation ${location} declares duplicate SDK method ${sdkMethodKey}; already used by ${sdkMethods.get(sdkMethodKey)}`,
+        );
+      }
+      sdkMethods.set(sdkMethodKey, location);
+
+      operation['x-speakeasy-group'] = sdk.group;
+      operation['x-speakeasy-name-override'] = sdk.method;
+      delete operation['x-glean-sdk'];
     }
   }
 }
