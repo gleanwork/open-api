@@ -74,6 +74,8 @@ const platformSdkMethodPattern = /^[a-z][A-Za-z0-9]*$/;
 function rewriteRefs(obj, refMap) {
   if (!obj || typeof obj !== 'object') return;
 
+  // Component refs can appear in request bodies, responses, nested schemas, and
+  // examples, so renames have to be applied across the whole document tree.
   Object.keys(obj).forEach((key) => {
     if (key === '$ref' && typeof obj[key] === 'string' && refMap[obj[key]]) {
       obj[key] = refMap[obj[key]];
@@ -99,6 +101,8 @@ function transformPlatformSchemas(spec) {
   const schemas = spec.components.schemas;
   const refMap = {};
 
+  // Build the full rename plan before mutating schemas so collisions fail before
+  // refs are rewritten and before any partial rename can leak into the output.
   for (const name of Object.keys(schemas)) {
     const nextName = platformSchemaName(name);
     if (nextName !== name) {
@@ -216,6 +220,8 @@ function transformPlatformOperations(spec) {
     return;
   }
 
+  // Missing SDK metadata should fail here instead of letting Speakeasy invent a
+  // default method name or forcing a follow-up mapping change in this repo.
   const sdkMethods = new Map();
   for (const [path, pathItem] of Object.entries(spec.paths)) {
     if (!pathItem || typeof pathItem !== 'object') continue;
@@ -265,6 +271,8 @@ function transformPlatformOperations(spec) {
 
       operation['x-speakeasy-group'] = sdk.group;
       operation['x-speakeasy-name-override'] = sdk.method;
+      // x-glean-sdk is a source contract between scio and this transform; the
+      // generated public spec only needs the Speakeasy extensions it derives.
       delete operation['x-glean-sdk'];
     }
   }
@@ -784,6 +792,8 @@ export function transform(content, filename, commitSha) {
     transformShortcutComponent(spec);
   }
 
+  // Platform is the only source spec merged into an existing public SDK, so it
+  // needs collision isolation and SDK-name materialization before generic passes.
   if (filename === 'platform.yaml') {
     transformPlatformSpec(spec);
   }
