@@ -19,6 +19,11 @@ function readFixture(filename) {
   return fs.readFileSync(sourceFile, 'utf8');
 }
 
+function readTestFixture(filename) {
+  const sourceFile = path.join(process.cwd(), 'tests', 'fixtures', filename);
+  return fs.readFileSync(sourceFile, 'utf8');
+}
+
 describe('OpenAPI YAML Transformer', () => {
   test('extractBasePath extracts path correctly', () => {
     expect(extractBasePath('https://{domain}-be.glean.com/rest/api/v1')).toBe(
@@ -159,6 +164,36 @@ describe('OpenAPI YAML Transformer', () => {
         Object.keys(originalOperation.responses),
       );
     }
+  });
+
+  test('honors path-level servers when prefixing path keys', () => {
+    const sourceYaml = readTestFixture('path-level-servers.yaml');
+    const transformedSpec = yaml.load(transform(sourceYaml, 'indexing.yaml'));
+
+    // Global-server path keeps the global basePath prefix.
+    expect(transformedSpec.paths).toHaveProperty('/api/index/v1/indexdocument');
+
+    // Path-level-server path is prefixed with its OWN basePath, not the global one.
+    const customMetadataKey =
+      '/rest/api/index/document/{docId}/custom-metadata/{groupName}';
+    expect(transformedSpec.paths).toHaveProperty(customMetadataKey);
+    expect(transformedSpec.paths).not.toHaveProperty(
+      '/api/index/v1/document/{docId}/custom-metadata/{groupName}',
+    );
+
+    // The path-level server URL has its basePath stripped, so server.url + pathKey
+    // composes the correct full URL (no doubled prefix).
+    const pathLevelServers = transformedSpec.paths[customMetadataKey].servers;
+    expect(pathLevelServers[0].url).toBe('https://{instance}-be.glean.com');
+
+    // Top-level server URL is also stripped of its global basePath.
+    expect(transformedSpec.servers[0].url).toBe(
+      'https://{instance}-be.glean.com',
+    );
+
+    // {domain} → {instance} variable rename applies to path-level servers too.
+    expect(pathLevelServers[0].variables).toHaveProperty('instance');
+    expect(pathLevelServers[0].variables).not.toHaveProperty('domain');
   });
 
   test('transformShortcutComponent renames Shortcut to IndexingShortcut', () => {
