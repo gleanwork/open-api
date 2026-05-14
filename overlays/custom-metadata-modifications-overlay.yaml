@@ -66,4 +66,4 @@ actions:
   - target: $["components"]["schemas"]["CustomMetadataSchema"]["properties"]["metadataKeys"]
     update:
       items:
-        $ref: "#/components/schemas/CustomMetadataPropertyDefinition"
+        $ref: '#/components/schemas/CustomMetadataPropertyDefinition'

@@ -89,8 +89,26 @@ describe('OpenAPI YAML Transformer', () => {
 
     expect(transformedPaths.length).toBe(originalPaths.length);
 
+    // A path may declare its own `servers:` block; in that case the transformer
+    // prefixes the path with that path-level basePath rather than the global one.
+    const expectedBasePathFor = (pathValue) => {
+      const pathServers = pathValue?.servers;
+      if (Array.isArray(pathServers) && pathServers.length > 0) {
+        const candidate = extractBasePath(pathServers[0].url ?? '');
+        if (candidate) return candidate;
+      }
+      return originalBasePath;
+    };
+
+    const allExpectedBasePaths = new Set();
+
     for (const originalPath of originalPaths) {
-      const expectedTransformedPath = `${originalBasePath}${originalPath}`;
+      const expectedBasePath = expectedBasePathFor(
+        originalSpec.paths[originalPath],
+      );
+      allExpectedBasePaths.add(expectedBasePath);
+
+      const expectedTransformedPath = `${expectedBasePath}${originalPath}`;
       expect(transformedSpec.paths).toHaveProperty(expectedTransformedPath);
 
       const originalOperations = originalSpec.paths[originalPath];
@@ -103,7 +121,10 @@ describe('OpenAPI YAML Transformer', () => {
     }
 
     for (const path of transformedPaths) {
-      expect(path.startsWith(originalBasePath)).toBe(true);
+      const matchesSomeBasePath = [...allExpectedBasePaths].some((prefix) =>
+        path.startsWith(prefix),
+      );
+      expect(matchesSomeBasePath).toBe(true);
     }
 
     if (
