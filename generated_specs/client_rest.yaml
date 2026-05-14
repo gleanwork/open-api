@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: c1a6bd382b7481dfe6a4875ecb2122ac18685cd2
+  x-source-commit-sha: 509a3e53bb2cd759b456a72dac7bb4d89e7922b7
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: ac90652cd3b04079af97614a9d4bc9207bb7b715
+  x-open-api-commit-sha: 6dadb3d4d79f45ae6872d80589e93423b75ba93a
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -7621,6 +7621,13 @@ components:
               type: number
               format: float
               description: Search session satisfaction rate, over the specified time period in the specified departments.
+              deprecated: true
+              x-glean-deprecated:
+                id: 2652ea73-3e33-4409-ba8c-bda7b60a2c24
+                introduced: "2026-05-13"
+                message: This property is no longer supported. Please contact Support for alternatives.
+                removal: "2027-01-15"
+              x-speakeasy-deprecation-message: "Deprecated on 2026-05-13, removal scheduled for 2027-01-15: This property is no longer supported. Please contact Support for alternatives."
             monthlyActiveUserTimeseries:
               $ref: "#/components/schemas/LabeledCountInfo"
             weeklyActiveUserTimeseries:
@@ -8955,9 +8962,17 @@ components:
         query:
           type: string
           description: The actionable chat query to run when the user selects this suggestion.
+        cta:
+          type: string
+          description: Button text to show for the suggestion action.
         feature:
           type: string
           description: Targeted Glean Chat feature for the suggestion.
+        sourceDocumentIds:
+          type: array
+          items:
+            type: string
+          description: Document IDs that grounded the suggestion.
     PromptTemplateMutableProperties:
       required:
         - template

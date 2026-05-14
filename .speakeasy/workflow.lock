@@ -2,8 +2,8 @@ speakeasyVersion: 1.763.0
 sources:
     glean-api-specs:
         sourceNamespace: glean-api-specs
-        sourceRevisionDigest: sha256:1b8e6a4cabc753b2fbc2541ac5ba3772654b62e86cb0b1f14259c7c8b76ae466
-        sourceBlobDigest: sha256:fb4b9a9b0a690bf336dd7f736354596f58707f118851180fc6452eef9e1906d3
+        sourceRevisionDigest: sha256:bdfb858f68b166617c4c2cdc2e3553a75320cdd1250429ea574d666e83c928d5
+        sourceBlobDigest: sha256:ae65549595272f9cf0a5b83bb40339b78279361d1b5edbf4f11768853e173f36
         tags:
             - latest
             - main
@@ -61,6 +61,7 @@ workflow:
                 - location: overlays/strip-headers-overlay.yaml
                 - location: overlays/client-modifications-overlay.yaml
                 - location: overlays/indexing-modifications-overlay.yaml
+                - location: overlays/custom-metadata-modifications-overlay.yaml
                 - location: overlays/agent-modifications-overlay.yaml
                 - location: overlays/admin-modifications-overlay.yaml
             output: overlayed_specs/glean-merged-spec.yaml
@@ -107,5 +108,6 @@ workflow:
                 - location: overlays/info-name-overlay.yaml
                 - location: overlays/strip-headers-overlay.yaml
                 - location: overlays/indexing-modifications-overlay.yaml
+                - location: overlays/custom-metadata-modifications-overlay.yaml
             output: overlayed_specs/glean-indexing-api-specs.yaml
     targets: {}
