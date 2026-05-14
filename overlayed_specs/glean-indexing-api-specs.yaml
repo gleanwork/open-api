@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 5a507f5682ae7ea105f03f090c6a65c511016f42
+  x-source-commit-sha: c1a6bd382b7481dfe6a4875ecb2122ac18685cd2
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: d485d2c00fb0fcbba724b8fefe66283b2d55e155
+  x-open-api-commit-sha: ac90652cd3b04079af97614a9d4bc9207bb7b715
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -1051,6 +1051,42 @@ paths:
           description: Conflict
       x-speakeasy-name-override: upload
       x-speakeasy-group: indexing.shortcuts
+  /api/index/v1/debug/{datasource}/document/events:
+    post:
+      x-beta: true
+      summary: |
+        Beta: Get document lifecycle events
+      description: |
+        Retrieves lifecycle events for a specific document including upload time, index times and deletions. Rate limited to 1 request per minute per datasource. Currently in beta, might undergo breaking changes without prior notice.
+      tags:
+        - Troubleshooting
+      parameters:
+        - name: datasource
+          in: path
+          description: The datasource to which the document belongs
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json; charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/DebugDocumentLifecycleRequest"
+        required: true
+        x-exportParamName: DebugDocumentLifecycleRequest
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json; charset=UTF-8:
+              schema:
+                $ref: "#/components/schemas/DebugDocumentLifecycleResponse"
+        "400":
+          description: Bad Request
+        "401":
+          description: Not Authorized
+        "429":
+          description: Too Many Requests
 components:
   securitySchemes:
     APIToken:

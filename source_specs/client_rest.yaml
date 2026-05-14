@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: bcc8ebea507fca7c8f4fe50c97681519154a33e4
+  x-source-commit-sha: c8a46fa277a87bbec8e623484402d9980b67f792
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -816,6 +816,47 @@ paths:
           description: Forbidden
         '429':
           description: Too Many Requests
+  /chat-files/{fileId}:
+    get:
+      tags:
+        - Chat
+      summary: Download a chat file
+      description: |
+        Download the raw content of a file generated or uploaded during a chat session (for example, an image produced by the assistant). Returns the file bytes with a Content-Type header matching the file's MIME type.
+      operationId: getChatFile
+      x-visibility: Public
+      parameters:
+        - name: fileId
+          in: path
+          required: true
+          description: Identifier of the chat file to download.
+          schema:
+            type: string
+        - name: preview
+          in: query
+          required: false
+          description: |
+            When true and the file is a PDF, the response is served inline (Content-Disposition: inline) instead of as an attachment.
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: File content.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: File ID missing from path.
+        '401':
+          description: Missing or invalid API token.
+        '403':
+          description: Caller does not have access to the file.
+        '404':
+          description: File not found.
+        '500':
+          description: Internal server error.
   /agents/{agent_id}:
     get:
       tags:
@@ -846,6 +887,49 @@ paths:
                 $ref: '#/components/schemas/Agent'
         '400':
           description: Bad request
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+    post:
+      tags:
+        - Agents
+      summary: Edit an agent
+      description: Creates a draft or publishes an [agent](https://developers.glean.com/agents/agents-api). Use `isDraft=true` to save a draft, or `isDraft=false` (or omit) to publish immediately. Only draft and publish modes are supported.
+      operationId: editAgent
+      x-visibility: Preview
+      parameters:
+        - $ref: '#/components/parameters/xGleanActAsHeader'
+        - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
+        - $ref: '#/components/parameters/timezoneOffset'
+        - description: The ID of the agent.
+          required: true
+          schema:
+            type: string
+            title: Agent ID
+            description: The ID of the agent.
+          name: agent_id
+          in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditWorkflowRequest'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Bad request
+        '401':
+          description: Not Authorized
         '403':
           description: Forbidden
         '404':
@@ -2352,6 +2436,76 @@ paths:
           description: Not Found
         '429':
           description: Too Many Requests
+  /actions/actionpack/{actionPackId}/auth:
+    parameters:
+      - in: path
+        name: actionPackId
+        required: true
+        description: ID of the action pack to query or authorize.
+        schema:
+          type: string
+    get:
+      tags:
+        - Tools
+      summary: Get end-user authentication status for an action pack.
+      description: |
+        Reports whether the calling user is already authenticated against the third-party
+        tool backing the specified action pack. Intended for headless / server-driven clients
+        that render an "Authorize" prompt when the user has not yet consented to the tool.
+      operationId: getActionPackAuthStatus
+      x-visibility: Preview
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionPackAuthStatusResponse'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Action pack not found
+        '429':
+          description: Too Many Requests
+    post:
+      tags:
+        - Tools
+      summary: Start the OAuth authorization flow for an action pack.
+      description: |
+        Starts the third-party OAuth flow for the specified action pack and returns the
+        redirect URL that the client should navigate the end user to. After the OAuth
+        callback completes, the user's browser is redirected back to `returnUrl` with a
+        status query parameter (`?glean_action_auth=success|error&actionPackId=...`).
+
+        `returnUrl` must match the tenant's configured return URL allowlist; otherwise the
+        request is rejected with 400.
+      operationId: authorizeActionPack
+      x-visibility: Preview
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorizeActionPackRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorizeActionPackResponse'
+        '400':
+          description: Invalid request (e.g. returnUrl not in allowlist, unsupported auth type)
+        '401':
+          description: Unauthorized
+        '403':
+          description: User not entitled to the action pack
+        '404':
+          description: Action pack not found
+        '429':
+          description: Too Many Requests
 components:
   securitySchemes:
     BearerAuth:
@@ -3784,6 +3938,12 @@ components:
           enum:
             - DOCUMENT
             - ASSISTANT
+    UgcTrackingSignals:
+      type: object
+      properties:
+        trackingToken:
+          type: string
+          description: An opaque token that represents this particular UGC. To be used for `/feedback` reporting.
     StructuredText:
       allOf:
         - $ref: '#/components/schemas/StructuredTextMutableProperties'
@@ -4068,6 +4228,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/CollectionMutableProperties'
         - $ref: '#/components/schemas/PermissionedObject'
+        - $ref: '#/components/schemas/UgcTrackingSignals'
         - type: object
           required:
             - id
@@ -4210,6 +4371,7 @@ components:
         - $ref: '#/components/schemas/AnswerDocId'
         - $ref: '#/components/schemas/AnswerMutableProperties'
         - $ref: '#/components/schemas/PermissionedObject'
+        - $ref: '#/components/schemas/UgcTrackingSignals'
         - type: object
           required:
             - id
@@ -5690,6 +5852,7 @@ components:
         - $ref: '#/components/schemas/AnnouncementMutableProperties'
         - $ref: '#/components/schemas/DraftProperties'
         - $ref: '#/components/schemas/PermissionedObject'
+        - $ref: '#/components/schemas/UgcTrackingSignals'
         - type: object
           properties:
             id:
@@ -5800,7 +5963,13 @@ components:
           $ref: '#/components/schemas/Answer'
         trackingToken:
           type: string
-          description: An opaque token that represents this particular Answer. To be used for `/feedback` reporting.
+          description: Use `answer.trackingToken` instead.
+          deprecated: true
+          x-glean-deprecated:
+            id: 62de643b-f182-4d4d-a2fc-5e2cbfee7320
+            introduced: '2026-05-07'
+            message: Use `answer.trackingToken` instead.
+            removal: '2027-01-15'
     GetAnswerError:
       properties:
         errorType:
@@ -6595,6 +6764,24 @@ components:
       type: string
       title: ErrorResponse
       description: Error message returned from the server
+    WorkflowDraftableProperties:
+      properties:
+        name:
+          type: string
+          description: The name of the workflow.
+    WorkflowMutableProperties:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/WorkflowDraftableProperties'
+        - type: object
+    EditWorkflowRequest:
+      allOf:
+        - $ref: '#/components/schemas/WorkflowMutableProperties'
+        - type: object
+          properties:
+            id:
+              type: string
+              description: The workflow ID we want to update.
     ActionSummary:
       type: object
       description: Represents a minimal summary of an action.
@@ -6934,11 +7121,17 @@ components:
           $ref: '#/components/schemas/Collection'
         rootCollection:
           $ref: '#/components/schemas/Collection'
-        trackingToken:
-          type: string
-          description: An opaque token that represents this particular Collection. To be used for `/feedback` reporting.
         error:
           $ref: '#/components/schemas/CollectionError'
+        trackingToken:
+          type: string
+          description: Use `collection.trackingToken` instead.
+          deprecated: true
+          x-glean-deprecated:
+            id: 2d6ca3a7-4763-4137-9ebd-740568fe8300
+            introduced: '2026-05-07'
+            message: Use `collection.trackingToken` instead.
+            removal: '2027-01-15'
     ListCollectionsRequest:
       properties:
         includeAudience:
@@ -7314,6 +7507,12 @@ components:
               type: number
               format: float
               description: Search session satisfaction rate, over the specified time period in the specified departments.
+              deprecated: true
+              x-glean-deprecated:
+                id: 2652ea73-3e33-4409-ba8c-bda7b60a2c24
+                introduced: '2026-05-13'
+                message: This property is no longer supported. Please contact Support for alternatives.
+                removal: '2027-01-15'
             monthlyActiveUserTimeseries:
               $ref: '#/components/schemas/LabeledCountInfo'
             weeklyActiveUserTimeseries:
@@ -7437,6 +7636,10 @@ components:
         downvoteCount:
           type: integer
           description: Total number of downvotes for this agent over the specified time period.
+        owner:
+          $ref: '#/components/schemas/Person'
+          description: |
+            The creator/owner of the agent. Absent if agent is deleted or owner is unknown.
     AgentUseCaseInsight:
       properties:
         useCase:
@@ -8372,6 +8575,7 @@ components:
               - STARTER_KIT
               - MID_DAY_CATCH_UP
               - QUERY_SUGGESTION
+              - COWORK_CUJ_PROMO
               - WEEKLY_MEETINGS
               - FOLLOW_UP
               - MILESTONE_TIMELINE_CHECK
@@ -8635,9 +8839,17 @@ components:
         query:
           type: string
           description: The actionable chat query to run when the user selects this suggestion.
+        cta:
+          type: string
+          description: Button text to show for the suggestion action.
         feature:
           type: string
           description: Targeted Glean Chat feature for the suggestion.
+        sourceDocumentIds:
+          type: array
+          items:
+            type: string
+          description: Document IDs that grounded the suggestion.
     PromptTemplateMutableProperties:
       required:
         - template
@@ -8739,16 +8951,6 @@ components:
         runCount:
           $ref: '#/components/schemas/CountInfo'
           description: This tracks how many times this prompt template was run. If user runs a prompt template after modifying the original one, it still counts as a run for the original template.
-    WorkflowDraftableProperties:
-      properties:
-        name:
-          type: string
-          description: The name of the workflow.
-    WorkflowMutableProperties:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/WorkflowDraftableProperties'
-        - type: object
     WorkflowMetadata:
       allOf:
         - type: object
@@ -8885,6 +9087,7 @@ components:
             - ACTIVE_DISCUSSION
             - MID_DAY_CATCH_UP
             - QUERY_SUGGESTION
+            - COWORK_CUJ_PROMO
             - WEEKLY_MEETINGS
             - FOLLOW_UP
             - MILESTONE_TIMELINE_CHECK
@@ -8971,6 +9174,7 @@ components:
             - STARTER_KIT
             - MID_DAY_CATCH_UP
             - QUERY_SUGGESTION
+            - COWORK_CUJ_PROMO
             - WEEKLY_MEETINGS
             - FOLLOW_UP
             - MILESTONE_TIMELINE_CHECK
@@ -9544,6 +9748,59 @@ components:
         error:
           type: string
           description: The error message if applicable
+    ActionAuthType:
+      type: string
+      description: |
+        Authentication mechanism used by an action pack.
+          - `AUTH_USER_OAUTH`: Requires per-user OAuth consent to the third-party tool.
+          - `AUTH_ADMIN`: Uses a service-account / admin-owned credential. End users do not authorize individually.
+          - `AUTH_NONE`: Action pack requires no authentication.
+      enum:
+        - AUTH_USER_OAUTH
+        - AUTH_ADMIN
+        - AUTH_NONE
+    ActionPackAuthStatus:
+      type: object
+      required:
+        - authenticated
+        - authType
+      properties:
+        authenticated:
+          type: boolean
+          description: Whether the calling user is already authenticated to the tool backing the action pack.
+        authType:
+          $ref: '#/components/schemas/ActionAuthType'
+    ActionPackAuthStatusResponse:
+      type: object
+      required:
+        - actionPack
+      properties:
+        actionPack:
+          $ref: '#/components/schemas/ActionPackAuthStatus'
+          description: |
+            Action-pack-scoped authentication status. Wrapped under `actionPack` so the response
+            shape clearly conveys that the status applies to the whole pack and leaves room to add
+            sibling fields (e.g. per-action status) later without a breaking change.
+    AuthorizeActionPackRequest:
+      type: object
+      required:
+        - returnUrl
+      properties:
+        returnUrl:
+          type: string
+          description: |
+            URL on the customer's domain to redirect the end user's browser back to after the third-party OAuth
+            callback completes. Must be present in the tenant's return URL allowlist.
+    AuthorizeActionPackResponse:
+      type: object
+      required:
+        - redirectUrl
+      properties:
+        redirectUrl:
+          type: string
+          description: |
+            URL that the customer UI should navigate the end user to in order to begin the third-party OAuth flow.
+            After the user consents, control returns to `returnUrl` from the request.
   parameters:
     xGleanActAsHeader:
       name: X-Glean-ActAs

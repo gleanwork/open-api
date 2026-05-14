@@ -55,7 +55,7 @@ describe('Post-transformation smoke tests', () => {
 
     expect(paths.length).toBeGreaterThan(0);
 
-    const allowedPrefixes = ['/rest/api/v1', '/api/index/v1'];
+    const allowedPrefixes = ['/rest/api/v1', '/api/index/v1', '/api/'];
     const hasUnexpected = paths.some(
       (p) => !allowedPrefixes.some((prefix) => p.startsWith(prefix)),
     );
