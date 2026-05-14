@@ -108,4 +108,26 @@ describe('Post-transformation smoke tests', () => {
       expect(operation['x-speakeasy-name-override']).toBe(nameOverride);
     }
   });
+
+  test('CustomMetadataSchema is narrowed via CustomMetadataPropertyDefinition', () => {
+    const schemas = spec.components?.schemas ?? {};
+
+    const propertyDef = schemas.CustomMetadataPropertyDefinition;
+    expect(
+      propertyDef,
+      'CustomMetadataPropertyDefinition schema',
+    ).toBeDefined();
+    expect(Object.keys(propertyDef.properties ?? {}).sort()).toEqual([
+      'name',
+      'propertyType',
+      'skipIndexing',
+    ]);
+    expect(propertyDef.required).toEqual(['name', 'propertyType']);
+
+    const customMetadataSchema = schemas.CustomMetadataSchema;
+    expect(customMetadataSchema, 'CustomMetadataSchema').toBeDefined();
+    expect(customMetadataSchema.properties?.metadataKeys?.items?.$ref).toBe(
+      '#/components/schemas/CustomMetadataPropertyDefinition',
+    );
+  });
 });
