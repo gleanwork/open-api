@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Indexing API
-  x-source-commit-sha: c8a46fa277a87bbec8e623484402d9980b67f792
+  x-source-commit-sha: 509a3e53bb2cd759b456a72dac7bb4d89e7922b7
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -1044,7 +1044,10 @@ paths:
       tags:
         - Custom Metadata
       requestBody:
-        content: {}
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomMetadataPutRequest'
         required: true
         x-exportParamName: CustomMetadataPutRequest
       responses:
@@ -1100,7 +1103,10 @@ paths:
       responses:
         '200':
           description: OK
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomMetadataSchema'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         '404':
@@ -1115,7 +1121,10 @@ paths:
       tags:
         - Custom Metadata
       requestBody:
-        content: {}
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomMetadataSchema'
         required: true
         x-exportParamName: CustomMetadataSchema
       responses:
@@ -2638,6 +2647,28 @@ components:
           description: List of lifecycle events corresponding to the document
           items:
             $ref: '#/components/schemas/LifeCycleEvent'
+    CustomMetadataPutRequest:
+      type: object
+      description: Request body for adding or updating custom metadata on a document
+      properties:
+        customMetadata:
+          type: array
+          description: Array of custom metadata key-value pairs
+          items:
+            $ref: '#/components/schemas/CustomProperty'
+      required:
+        - customMetadata
+    CustomMetadataSchema:
+      type: object
+      description: Schema for custom metadata containing metadata key definitions
+      properties:
+        metadataKeys:
+          type: array
+          description: Array of metadata key definitions
+          items:
+            $ref: '#/components/schemas/PropertyDefinition'
+      required:
+        - metadataKeys
     SuccessResponse:
       type: object
       description: Success response for custom metadata operations
