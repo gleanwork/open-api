@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: ba51ebee970bd0a7fa4fb087eea8384ea6e4a213
+  x-source-commit-sha: 8bb5c66c8dcfabf626b6b8ed8e232b7caea68ce4
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: cad3c014c888fc7442256294952cb883df341978
+  x-open-api-commit-sha: fde363207066fcc86fa7f2970888334cc13e5d8c
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -2872,6 +2872,8 @@ components:
           description: The feature category to which the feedback applies. These should be broad product areas such as Announcements, Answers, Search, etc. rather than specific components or UI treatments within those areas.
           enum:
             - ANNOUNCEMENT
+            - ANSWERS
+            - ARTIFACTS
             - AUTOCOMPLETE
             - COLLECTIONS
             - FEED
