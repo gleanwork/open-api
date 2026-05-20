@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 63bd52a47776932eb42b560fc35fcb0259713c29
+  x-source-commit-sha: d62ce20702818e2d56ea67cf735c3f48e18e8d9a
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 3c3491bd7b524343c4186e8f2b9a08e0e3cc69d9
+  x-open-api-commit-sha: bfc0f7a63cb82718ebf86034eda5db4d3cc12918
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -7567,6 +7567,9 @@ components:
             agentsActiveUsers:
               $ref: "#/components/schemas/CurrentActiveUsers"
               description: Agents-specific active user counts for the specified departments.
+            mcpActiveUsers:
+              $ref: "#/components/schemas/CurrentActiveUsers"
+              description: MCP active user counts for the specified departments.
             extensionSummary:
               $ref: "#/components/schemas/CurrentActiveUsers"
             ugcSummary:
@@ -7611,6 +7614,9 @@ components:
         numAgentRuns:
           type: integer
           description: Total number of agent runs for this user over the specified time period.
+        numMcpCalls:
+          type: integer
+          description: Total number of MCP calls for this user over the specified time period.
     InsightsOverviewResponse:
       allOf:
         - $ref: "#/components/schemas/InsightsDepartmentsSummary"
@@ -7654,11 +7660,19 @@ components:
               $ref: "#/components/schemas/LabeledCountInfo"
             agentsDailyActiveUserTimeseries:
               $ref: "#/components/schemas/LabeledCountInfo"
+            mcpMonthlyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            mcpWeeklyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            mcpDailyActiveUserTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
             searchesTimeseries:
               $ref: "#/components/schemas/LabeledCountInfo"
             assistantInteractionsTimeseries:
               $ref: "#/components/schemas/LabeledCountInfo"
             agentRunsTimeseries:
+              $ref: "#/components/schemas/LabeledCountInfo"
+            mcpCallsTimeseries:
               $ref: "#/components/schemas/LabeledCountInfo"
             searchDatasourceCounts:
               type: object
