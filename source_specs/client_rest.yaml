@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: df27c03931bb913ccdf311f4eef61dba2f80fd7a
+  x-source-commit-sha: 47c7c4b7bd7b607f782a44d485853f0d27833649
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -7289,6 +7289,26 @@ components:
         dayRange:
           $ref: '#/components/schemas/Period'
           description: Time period for which Insights are requested.
+    McpInsightsRequest:
+      properties:
+        departments:
+          type: array
+          items:
+            type: string
+          description: Departments for which Insights are requested.
+        managerIds:
+          type: array
+          items:
+            type: string
+          description: Manager user IDs whose teams should be filtered for. Empty array means no filtering.
+        managerEmails:
+          type: array
+          items:
+            type: string
+          description: Manager emails whose teams should be filtered for. Empty array means no filtering.
+        dayRange:
+          $ref: '#/components/schemas/Period'
+          description: Time period for which Insights are requested.
     McpBreakdownInsightsRequest:
       properties:
         departments:
@@ -7346,6 +7366,9 @@ components:
           $ref: '#/components/schemas/AgentsInsightsV2Request'
           x-visibility: Public
           description: If specified, will return data for the Agents section of the Insights Dashboard.
+        mcpRequest:
+          $ref: '#/components/schemas/McpInsightsRequest'
+          description: If specified, will return data for the MCP section of the Insights Dashboard.
         mcpBreakdownRequest:
           $ref: '#/components/schemas/McpBreakdownInsightsRequest'
         disablePerUserInsights:
@@ -7801,6 +7824,109 @@ components:
               $ref: '#/components/schemas/LabeledCountInfo'
             downvotesTimeseries:
               $ref: '#/components/schemas/LabeledCountInfo'
+    McpInsightsResponse:
+      allOf:
+        - $ref: '#/components/schemas/CurrentActiveUsers'
+        - type: object
+          properties:
+            dailyActiveUsers:
+              type: integer
+              description: Number of current Daily Active Users.
+            monthlyActiveUserTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            weeklyActiveUserTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            dailyActiveUserTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            overallDailyActiveUserTimeseries:
+              $ref: '#/components/schemas/LabeledCountInfo'
+            topHostApplicationsActiveUserTimeseries:
+              type: array
+              items:
+                $ref: '#/components/schemas/LabeledCountInfo'
+    McpUserBreakdown:
+      properties:
+        person:
+          $ref: '#/components/schemas/Person'
+        totalCalls:
+          type: integer
+          description: Total number of MCP calls made by this user in the specified time period.
+        hostApplications:
+          type: array
+          items:
+            type: string
+          description: Host applications used by this user in the specified time period.
+        tools:
+          type: array
+          items:
+            type: string
+          description: MCP tools used by this user in the specified time period.
+        servers:
+          type: array
+          items:
+            type: string
+          description: MCP servers used by this user in the specified time period.
+    McpHostApplicationBreakdown:
+      properties:
+        hostApplication:
+          type: string
+          description: Host application name.
+        totalCalls:
+          type: integer
+          description: Total number of MCP calls made from this host application in the specified time period.
+        activeUsers:
+          type: integer
+          description: Total number of active users from this host application in the specified time period.
+    McpToolBreakdown:
+      properties:
+        tool:
+          type: string
+          description: MCP tool name.
+        totalCalls:
+          type: integer
+          description: Total number of MCP calls for this tool in the specified time period.
+        activeUsers:
+          type: integer
+          description: Total number of active users for this tool in the specified time period.
+        hostApplications:
+          type: array
+          items:
+            type: string
+          description: Host applications using this tool in the specified time period.
+    McpServerBreakdown:
+      properties:
+        server:
+          type: string
+          description: MCP server name.
+        totalCalls:
+          type: integer
+          description: Total number of MCP calls for this server in the specified time period.
+        activeUsers:
+          type: integer
+          description: Total number of active users for this server in the specified time period.
+        hostApplications:
+          type: array
+          items:
+            type: string
+          description: Host applications using this server in the specified time period.
+    McpBreakdownInsightsResponse:
+      properties:
+        usersBreakdown:
+          type: array
+          items:
+            $ref: '#/components/schemas/McpUserBreakdown'
+        hostApplicationsBreakdown:
+          type: array
+          items:
+            $ref: '#/components/schemas/McpHostApplicationBreakdown'
+        toolsBreakdown:
+          type: array
+          items:
+            $ref: '#/components/schemas/McpToolBreakdown'
+        serversBreakdown:
+          type: array
+          items:
+            $ref: '#/components/schemas/McpServerBreakdown'
     InsightsResponse:
       properties:
         gleanAssist:
@@ -7817,6 +7943,10 @@ components:
           $ref: '#/components/schemas/AssistantInsightsResponse'
         agentsResponse:
           $ref: '#/components/schemas/AgentsInsightsV2Response'
+        mcpResponse:
+          $ref: '#/components/schemas/McpInsightsResponse'
+        mcpBreakdownResponse:
+          $ref: '#/components/schemas/McpBreakdownInsightsResponse'
     MessagesRequest:
       required:
         - id
