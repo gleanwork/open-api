@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 6f50f0b325ae618cb38dd2fdc0b334e9d6ccf805
+  x-source-commit-sha: 8041c7f73ed7b1a8bb52c21b4736355b3d3ac705
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 98fce8303895c9cdc333fe1210501e17f21a2800
+  x-open-api-commit-sha: bcfb45a263878a9d08bcb4117a44e970b498dc10
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -558,6 +558,23 @@ paths:
                                     startIndex: 0
                                     endIndex: 12
                                     type: CITATION
+        "202":
+          description: |
+            Request accepted but not yet processed. Returned when another
+            in-flight request is already running for the same chat session;
+            the body's `queuedRequestId` identifies the deferred run and
+            output will be persisted to the chat session referenced by
+            `chatId`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatResponse"
+              examples:
+                queuedExample:
+                  value:
+                    chatId: abc123
+                    queuedRequestId: qr-xyz
+                    isSavedToChatHistory: true
         "400":
           description: Invalid request
         "401":
