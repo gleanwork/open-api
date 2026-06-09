@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 4143b9491103a1a9506873c9d5becc54306ca83e
+  x-source-commit-sha: b9ccec7d05a7bdb183fded5c10a67ae457d71853
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -874,6 +874,40 @@ paths:
           description: File not found.
         '500':
           description: Internal server error.
+  /agents:
+    post:
+      tags:
+        - Agents
+      summary: Create an agent
+      description: Create an agent.
+      operationId: createAgent
+      x-visibility: Preview
+      parameters:
+        - $ref: '#/components/parameters/xGleanActAsHeader'
+        - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
+        - $ref: '#/components/parameters/timezoneOffset'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkflowRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateWorkflowResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Not Authorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
   /agents/{agent_id}:
     get:
       tags:
@@ -6734,6 +6768,80 @@ components:
           items:
             type: string
           description: IDs of files to delete.
+    WorkflowDraftableProperties:
+      properties:
+        name:
+          type: string
+          description: The name of the workflow.
+    WorkflowMutableProperties:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/WorkflowDraftableProperties'
+        - type: object
+    CreateWorkflowRequest:
+      allOf:
+        - $ref: '#/components/schemas/WorkflowMutableProperties'
+        - type: object
+          properties:
+            transient:
+              type: boolean
+              description: Used to create a transient workflow.
+            parentWorkflowId:
+              type: string
+              description: id of the parent workflow for transient workflows
+    WorkflowMetadata:
+      allOf:
+        - type: object
+          properties:
+            author:
+              $ref: '#/components/schemas/Person'
+            createTimestamp:
+              type: integer
+              description: Server Unix timestamp of the creation time.
+            lastUpdateTimestamp:
+              type: integer
+              description: Server Unix timestamp of the last update time.
+            lastDraftSavedAt:
+              type: integer
+              description: Server Unix timestamp of the last time the draft was saved.
+            lastDraftSavedBy:
+              description: The person who last saved the draft.
+              $ref: '#/components/schemas/Person'
+            lastDraftGitAuthorId:
+              type: string
+              description: ID of the VCS user (e.g. GitHub username) who last saved the draft. Set only by the draft save path via the external Git integration API.
+            lastUpdatedBy:
+              $ref: '#/components/schemas/Person'
+    AttributionProperties: {}
+    Workflow:
+      allOf:
+        - $ref: '#/components/schemas/PermissionedObject'
+        - $ref: '#/components/schemas/WorkflowMutableProperties'
+        - $ref: '#/components/schemas/WorkflowMetadata'
+        - $ref: '#/components/schemas/AttributionProperties'
+        - type: object
+          properties:
+            id:
+              type: string
+              description: The ID of the workflow.
+            verified:
+              type: boolean
+              readOnly: true
+              description: When present, indicates this workflow is admin-verified. Set via the dedicated admin settings endpoint, not by regular edits.
+            showOrganizationAsAuthor:
+              type: boolean
+              readOnly: true
+              description: When true, displays organization name instead of author name in agent card. Set via the dedicated admin settings endpoint, not by regular edits.
+    WorkflowResult:
+      type: object
+      required:
+        - workflow
+      properties:
+        workflow:
+          $ref: '#/components/schemas/Workflow'
+    CreateWorkflowResponse:
+      allOf:
+        - $ref: '#/components/schemas/WorkflowResult'
     Agent:
       title: Agent
       type: object
@@ -6783,16 +6891,6 @@ components:
       type: string
       title: ErrorResponse
       description: Error message returned from the server
-    WorkflowDraftableProperties:
-      properties:
-        name:
-          type: string
-          description: The name of the workflow.
-    WorkflowMutableProperties:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/WorkflowDraftableProperties'
-        - type: object
     EditWorkflowRequest:
       allOf:
         - $ref: '#/components/schemas/WorkflowMutableProperties'
@@ -9040,7 +9138,6 @@ components:
           description: A list of removed user roles for the Workflow.
           items:
             $ref: '#/components/schemas/UserRoleSpecification'
-    AttributionProperties: {}
     PromptTemplate:
       allOf:
         - $ref: '#/components/schemas/PromptTemplateMutableProperties'
@@ -9116,55 +9213,6 @@ components:
         runCount:
           $ref: '#/components/schemas/CountInfo'
           description: This tracks how many times this prompt template was run. If user runs a prompt template after modifying the original one, it still counts as a run for the original template.
-    WorkflowMetadata:
-      allOf:
-        - type: object
-          properties:
-            author:
-              $ref: '#/components/schemas/Person'
-            createTimestamp:
-              type: integer
-              description: Server Unix timestamp of the creation time.
-            lastUpdateTimestamp:
-              type: integer
-              description: Server Unix timestamp of the last update time.
-            lastDraftSavedAt:
-              type: integer
-              description: Server Unix timestamp of the last time the draft was saved.
-            lastDraftSavedBy:
-              description: The person who last saved the draft.
-              $ref: '#/components/schemas/Person'
-            lastDraftGitAuthorId:
-              type: string
-              description: ID of the VCS user (e.g. GitHub username) who last saved the draft. Set only by the draft save path via the external Git integration API.
-            lastUpdatedBy:
-              $ref: '#/components/schemas/Person'
-    Workflow:
-      allOf:
-        - $ref: '#/components/schemas/PermissionedObject'
-        - $ref: '#/components/schemas/WorkflowMutableProperties'
-        - $ref: '#/components/schemas/WorkflowMetadata'
-        - $ref: '#/components/schemas/AttributionProperties'
-        - type: object
-          properties:
-            id:
-              type: string
-              description: The ID of the workflow.
-            verified:
-              type: boolean
-              readOnly: true
-              description: When present, indicates this workflow is admin-verified. Set via the dedicated admin settings endpoint, not by regular edits.
-            showOrganizationAsAuthor:
-              type: boolean
-              readOnly: true
-              description: When true, displays organization name instead of author name in agent card. Set via the dedicated admin settings endpoint, not by regular edits.
-    WorkflowResult:
-      type: object
-      required:
-        - workflow
-      properties:
-        workflow:
-          $ref: '#/components/schemas/Workflow'
     UserActivity:
       properties:
         actor:
