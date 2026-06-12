@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 22a860b3fe76ccec19feecd7149cbab252c180eb
+  x-source-commit-sha: 6f57ea16bf102c603e4cb03b345cd367a45895cb
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 42d6aeefa532d4b2713f20d0ad962957204fda5f
+  x-open-api-commit-sha: 9571618ab0c8cd4dd764c4085206c283f52ea152
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -9545,6 +9545,12 @@ components:
         rank:
           type: integer
           description: Rank of the result. Rank is suggested by server. Client side rank may differ.
+        placementReason:
+          type: string
+          enum:
+            - ORGANIC
+            - PROMO
+          description: Placement source for ranked feed results. ORGANIC means the card was emitted by normal feed ranking. PROMO means the card was inserted by the homepage cards promo framework.
     FeedResponse:
       required:
         - serverTimestamp
