@@ -1,0 +1,27 @@
+overlay: 1.0.0
+x-speakeasy-jsonpath: rfc9535
+info:
+  title: OAuth Client API security
+  version: 0.0.1
+# Adds an OAuth access-token security scheme alongside the existing APIToken,
+# and declares a single global security requirement listing both as
+# alternatives. A uniform global security block (rather than per-operation
+# security) is required so the generated SDKs expose a clean client-level
+# `security` object containing both schemes; non-uniform/per-operation security
+# causes the generator to scatter the second scheme into per-method arguments.
+#
+# Applies to the client-bearing sources only (merged + client). OAuth is a
+# Client API capability; the indexing-only spec is intentionally left untouched.
+actions:
+  - target: $.components.securitySchemes
+    update:
+      OAuthAccessToken:
+        type: http
+        scheme: bearer
+  - target: $.paths.*.*.security
+    remove: true
+  - target: $
+    update:
+      security:
+        - APIToken: []
+        - OAuthAccessToken: []
