@@ -2,8 +2,8 @@ speakeasyVersion: 1.778.0
 sources:
     glean-api-specs:
         sourceNamespace: glean-api-specs
-        sourceRevisionDigest: sha256:dd8d0e93313fe5767fcfa748d1c68c9173266bd558ce95bb569957fe46e9428f
-        sourceBlobDigest: sha256:69f553e9de3b1008daaf0d41a3cc9370e7c62ddeabbbee515d221ba6075ec054
+        sourceRevisionDigest: sha256:e7af30d3805b450b051c3f5b02f95b562d5a7ab2cd59ee1b155205934e53ecaa
+        sourceBlobDigest: sha256:d196777b486d61ccc71ecd1a9a5fd731d66d7bbcb081cdf7c1f92ecb1cc19a9b
         tags:
             - latest
             - main
@@ -64,6 +64,7 @@ workflow:
                 - location: overlays/custom-metadata-modifications-overlay.yaml
                 - location: overlays/agent-modifications-overlay.yaml
                 - location: overlays/admin-modifications-overlay.yaml
+                - location: overlays/oauth-client-security-overlay.yaml
             output: overlayed_specs/glean-merged-spec.yaml
             registry:
                 location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs
@@ -78,6 +79,7 @@ workflow:
                 - location: overlays/client-modifications-overlay.yaml
                 - location: overlays/agent-modifications-overlay.yaml
                 - location: overlays/admin-modifications-overlay.yaml
+                - location: overlays/oauth-client-security-overlay.yaml
             output: overlayed_specs/glean-client-api-specs.yaml
         glean-client-merged-code-samples-spec:
             inputs:

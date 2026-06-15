@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: ecd165626f8ae7c16c4080a5fffda47dedf7fc79
+  x-source-commit-sha: 44d244bc10e748c7e8c6ec85b030d6ba214830af
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: dee7b81a7c82d053efac049637cc22aa92bd1b35
+  x-open-api-commit-sha: 21df4f948ed0b5213e33588e4eeaaf07ddb88ee6
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -4709,6 +4709,8 @@ components:
     APIToken:
       scheme: bearer
       type: http
+      description: >-
+        HTTP bearer token. Accepts a Glean-issued API token, an OAuth access token from the Glean OAuth Authorization Server (including Dynamic Client Registration clients), or an OAuth access token issued by an external identity provider. External-IdP OAuth tokens must also include the `X-Glean-Auth-Type: OAUTH` request header. OAuth is supported on the Client API only; the Indexing API requires a Glean-issued token.
   schemas:
     ActivityEventParams:
       properties:
