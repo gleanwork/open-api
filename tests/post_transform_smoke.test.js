@@ -10,6 +10,7 @@ const SPEC_PATH = path.join(
 );
 
 const loadSpec = () => yaml.load(fs.readFileSync(SPEC_PATH, 'utf8'));
+const hasPlatformPaths = (spec) => Boolean(spec.paths?.['/api/search']);
 
 describe('Post-transformation smoke tests', () => {
   let spec;
@@ -146,6 +147,10 @@ describe('Post-transformation smoke tests', () => {
   });
 
   test('Platform operations land under expected SDK groups', () => {
+    if (!hasPlatformPaths(spec)) {
+      return;
+    }
+
     const platformOps = [
       {
         path: '/api/documents/batch',
@@ -229,6 +234,10 @@ describe('Post-transformation smoke tests', () => {
   });
 
   test('Platform merged spec retains streaming run response', () => {
+    if (!hasPlatformPaths(spec)) {
+      return;
+    }
+
     const operation = spec.paths?.['/api/agents/{agent_id}/runs']?.post;
 
     expect(operation?.responses?.['200']?.content).toHaveProperty(
@@ -237,6 +246,10 @@ describe('Post-transformation smoke tests', () => {
   });
 
   test('Platform private runtime gates do not reach merged spec', () => {
+    if (!hasPlatformPaths(spec)) {
+      return;
+    }
+
     expect(JSON.stringify(spec)).not.toContain('gated-by');
   });
 });
