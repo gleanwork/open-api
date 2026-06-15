@@ -232,6 +232,7 @@ describe('OpenAPI YAML Transformer', () => {
     const platformSpec = {
       openapi: '3.0.0',
       info: { title: 'Glean Platform API', version: '2026-04-01' },
+      'x-tagGroups': [{ name: 'Platform', tags: ['Search'] }],
       servers: [{ url: 'https://{domain}-be.glean.com/api' }],
       components: {
         securitySchemes: {
@@ -259,10 +260,41 @@ describe('OpenAPI YAML Transformer', () => {
             },
           },
           Tool: { type: 'object' },
+          ToolCallRequest: { type: 'object' },
+          ToolCallResponse: {
+            type: 'object',
+            properties: {
+              result: { $ref: '#/components/schemas/Result' },
+            },
+          },
+          'Person-2': { type: 'object' },
+          'Person-3': { type: 'object' },
+          'DocumentSpec-2': { type: 'object' },
+          PeopleSearchResponse: {
+            type: 'object',
+            properties: {
+              people: {
+                type: 'array',
+                items: { $ref: '#/components/schemas/Person-2' },
+              },
+            },
+          },
+          RunRequest: { type: 'object' },
+          RunEvent: { type: 'object' },
           Result: {
             type: 'object',
             properties: {
               related: { $ref: '#/components/schemas/SearchRequest' },
+              creator: { $ref: '#/components/schemas/Person-3' },
+            },
+          },
+          SummarizeRequest: {
+            type: 'object',
+            properties: {
+              document_specs: {
+                type: 'array',
+                items: { $ref: '#/components/schemas/DocumentSpec-2' },
+              },
             },
           },
           PlatformExisting: { type: 'object' },
@@ -322,6 +354,64 @@ describe('OpenAPI YAML Transformer', () => {
             },
           },
         },
+        '/tools/call': {
+          post: {
+            tags: ['Tools'],
+            operationId: 'platform-tools-call',
+            'x-glean-sdk': {
+              group: 'platform.tools',
+              method: 'call',
+            },
+            requestBody: {
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/ToolCallRequest' },
+                },
+              },
+            },
+            responses: {
+              200: {
+                description: 'ok',
+                content: {
+                  'application/json': {
+                    schema: {
+                      $ref: '#/components/schemas/ToolCallResponse',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        '/agents/{agent_id}/runs': {
+          post: {
+            tags: ['Agents'],
+            operationId: 'platform-agents-create-run',
+            'x-glean-sdk': {
+              group: 'platform.agents',
+              method: 'createRun',
+            },
+            requestBody: {
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/RunRequest' },
+                },
+              },
+            },
+            responses: {
+              200: {
+                description: 'ok',
+                content: {
+                  'text/event-stream': {
+                    schema: {
+                      $ref: '#/components/schemas/RunEvent',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     };
 
@@ -334,12 +424,24 @@ describe('OpenAPI YAML Transformer', () => {
     );
     expect(transformedSpec.paths).toHaveProperty('/api/search');
     expect(transformedSpec.paths).toHaveProperty('/api/tools');
+    expect(transformedSpec.paths).toHaveProperty('/api/tools/call');
+    expect(transformedSpec.paths).toHaveProperty('/api/agents/{agent_id}/runs');
+    expect(transformedSpec['x-tagGroups']).toBeUndefined();
 
     expect(Object.keys(transformedSpec.components.schemas).sort()).toEqual([
       'PlatformExisting',
+      'PlatformPeopleSearchPerson',
+      'PlatformPeopleSearchResponse',
       'PlatformResult',
+      'PlatformRunEvent',
+      'PlatformRunRequest',
       'PlatformSearchRequest',
+      'PlatformSearchResultPerson',
+      'PlatformSummarizeDocumentSpec',
+      'PlatformSummarizeRequest',
       'PlatformTool',
+      'PlatformToolCallRequest',
+      'PlatformToolCallResponse',
       'PlatformToolsListResponse',
     ]);
     expect(
@@ -350,6 +452,17 @@ describe('OpenAPI YAML Transformer', () => {
     expect(
       transformedSpec.components.schemas.PlatformResult.properties.related.$ref,
     ).toBe('#/components/schemas/PlatformSearchRequest');
+    expect(
+      transformedSpec.components.schemas.PlatformResult.properties.creator.$ref,
+    ).toBe('#/components/schemas/PlatformSearchResultPerson');
+    expect(
+      transformedSpec.components.schemas.PlatformPeopleSearchResponse.properties
+        .people.items.$ref,
+    ).toBe('#/components/schemas/PlatformPeopleSearchPerson');
+    expect(
+      transformedSpec.components.schemas.PlatformSummarizeRequest.properties
+        .document_specs.items.$ref,
+    ).toBe('#/components/schemas/PlatformSummarizeDocumentSpec');
     expect(transformedSpec.components.responses).toHaveProperty(
       'PlatformBadRequest',
     );
@@ -380,6 +493,35 @@ describe('OpenAPI YAML Transformer', () => {
     expect(transformedSpec.paths['/api/tools'].get).not.toHaveProperty(
       'x-glean-sdk',
     );
+    expect(transformedSpec.paths['/api/tools/call'].post).toMatchObject({
+      'x-speakeasy-group': 'platform.tools',
+      'x-speakeasy-name-override': 'call',
+    });
+    expect(
+      transformedSpec.paths['/api/tools/call'].post.responses[200].content[
+        'application/json'
+      ].schema.$ref,
+    ).toBe('#/components/schemas/PlatformToolCallResponse');
+    expect(
+      transformedSpec.components.schemas.PlatformToolCallResponse.properties
+        .result.$ref,
+    ).toBe('#/components/schemas/PlatformResult');
+    expect(transformedSpec.paths['/api/tools/call'].post).not.toHaveProperty(
+      'x-glean-sdk',
+    );
+    expect(
+      transformedSpec.paths['/api/agents/{agent_id}/runs'].post,
+    ).toMatchObject({
+      'x-speakeasy-group': 'platform.agents',
+      'x-speakeasy-name-override': 'createRun',
+    });
+    expect(
+      transformedSpec.paths['/api/agents/{agent_id}/runs'].post.responses[200]
+        .content['text/event-stream'].schema.$ref,
+    ).toBe('#/components/schemas/PlatformRunEvent');
+    expect(
+      transformedSpec.paths['/api/agents/{agent_id}/runs'].post,
+    ).not.toHaveProperty('x-glean-sdk');
     expect(transformedSpec.security).toEqual([{ APIToken: [] }]);
     expect(transformedSpec.components.securitySchemes).toHaveProperty(
       'APIToken',
