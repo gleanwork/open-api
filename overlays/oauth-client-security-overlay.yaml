@@ -3,25 +3,27 @@ x-speakeasy-jsonpath: rfc9535
 info:
   title: OAuth Client API security
   version: 0.0.1
-# Adds an OAuth access-token security scheme alongside the existing APIToken,
-# and declares a single global security requirement listing both as
-# alternatives. A uniform global security block (rather than per-operation
-# security) is required so the generated SDKs expose a clean client-level
-# `security` object containing both schemes; non-uniform/per-operation security
-# causes the generator to scatter the second scheme into per-method arguments.
+# A Glean API token and an OAuth access token are both HTTP bearer credentials,
+# so the existing single APIToken security scheme already covers both — no
+# separate OAuth security scheme is required, and the generated SDKs keep their
+# existing flat `apiToken` constructor field. This overlay only clarifies the
+# scheme description to document OAuth usage.
 #
-# Applies to the client-bearing sources only (merged + client). OAuth is a
-# Client API capability; the indexing-only spec is intentionally left untouched.
+# External-IdP OAuth tokens additionally require the `X-Glean-Auth-Type: OAUTH`
+# request header, which the caller supplies (e.g. a per-request header option on
+# the SDKs, or a custom HTTP client). Glean-issued OAuth tokens (Glean OAuth
+# Authorization Server, including Dynamic Client Registration clients) are
+# detected by issuer and need no header.
+#
+# OAuth applies to the Client API only; the Indexing API accepts Glean-issued
+# tokens exclusively.
 actions:
-  - target: $.components.securitySchemes
+  - target: $.components.securitySchemes.APIToken
     update:
-      OAuthAccessToken:
-        type: http
-        scheme: bearer
-  - target: $.paths.*.*.security
-    remove: true
-  - target: $
-    update:
-      security:
-        - APIToken: []
-        - OAuthAccessToken: []
+      description: >-
+        HTTP bearer token. Accepts a Glean-issued API token, an OAuth access
+        token from the Glean OAuth Authorization Server (including Dynamic Client
+        Registration clients), or an OAuth access token issued by an external
+        identity provider. External-IdP OAuth tokens must also include the
+        `X-Glean-Auth-Type: OAUTH` request header. OAuth is supported on the
+        Client API only; the Indexing API requires a Glean-issued token.
