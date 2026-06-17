@@ -267,15 +267,15 @@ describe('OpenAPI YAML Transformer', () => {
               result: { $ref: '#/components/schemas/Result' },
             },
           },
-          'Person-2': { type: 'object' },
-          'Person-3': { type: 'object' },
-          'DocumentSpec-2': { type: 'object' },
+          PersonReference: { type: 'object' },
+          Person: { type: 'object' },
+          DocumentSpec: { type: 'object' },
           PeopleSearchResponse: {
             type: 'object',
             properties: {
               people: {
                 type: 'array',
-                items: { $ref: '#/components/schemas/Person-2' },
+                items: { $ref: '#/components/schemas/Person' },
               },
             },
           },
@@ -285,7 +285,7 @@ describe('OpenAPI YAML Transformer', () => {
             type: 'object',
             properties: {
               related: { $ref: '#/components/schemas/SearchRequest' },
-              creator: { $ref: '#/components/schemas/Person-3' },
+              creator: { $ref: '#/components/schemas/PersonReference' },
             },
           },
           SummarizeRequest: {
@@ -293,7 +293,7 @@ describe('OpenAPI YAML Transformer', () => {
             properties: {
               document_specs: {
                 type: 'array',
-                items: { $ref: '#/components/schemas/DocumentSpec-2' },
+                items: { $ref: '#/components/schemas/DocumentSpec' },
               },
             },
           },
@@ -429,15 +429,15 @@ describe('OpenAPI YAML Transformer', () => {
     expect(transformedSpec['x-tagGroups']).toBeUndefined();
 
     expect(Object.keys(transformedSpec.components.schemas).sort()).toEqual([
+      'PlatformDocumentSpec',
       'PlatformExisting',
-      'PlatformPeopleSearchPerson',
       'PlatformPeopleSearchResponse',
+      'PlatformPerson',
+      'PlatformPersonReference',
       'PlatformResult',
       'PlatformRunEvent',
       'PlatformRunRequest',
       'PlatformSearchRequest',
-      'PlatformSearchResultPerson',
-      'PlatformSummarizeDocumentSpec',
       'PlatformSummarizeRequest',
       'PlatformTool',
       'PlatformToolCallRequest',
@@ -454,15 +454,15 @@ describe('OpenAPI YAML Transformer', () => {
     ).toBe('#/components/schemas/PlatformSearchRequest');
     expect(
       transformedSpec.components.schemas.PlatformResult.properties.creator.$ref,
-    ).toBe('#/components/schemas/PlatformSearchResultPerson');
+    ).toBe('#/components/schemas/PlatformPersonReference');
     expect(
       transformedSpec.components.schemas.PlatformPeopleSearchResponse.properties
         .people.items.$ref,
-    ).toBe('#/components/schemas/PlatformPeopleSearchPerson');
+    ).toBe('#/components/schemas/PlatformPerson');
     expect(
       transformedSpec.components.schemas.PlatformSummarizeRequest.properties
         .document_specs.items.$ref,
-    ).toBe('#/components/schemas/PlatformSummarizeDocumentSpec');
+    ).toBe('#/components/schemas/PlatformDocumentSpec');
     expect(transformedSpec.components.responses).toHaveProperty(
       'PlatformBadRequest',
     );

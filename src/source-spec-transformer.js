@@ -70,11 +70,6 @@ const httpMethods = new Set([
 
 const platformSdkGroupPattern = /^platform(\.[a-z][a-z0-9]*)+$/;
 const platformSdkMethodPattern = /^[a-z][A-Za-z0-9]*$/;
-const platformComponentNameOverrides = {
-  'Person-2': 'PeopleSearchPerson',
-  'Person-3': 'SearchResultPerson',
-  'DocumentSpec-2': 'SummarizeDocumentSpec',
-};
 
 function rewriteRefs(obj, refMap) {
   if (!obj || typeof obj !== 'object') return;
@@ -95,11 +90,7 @@ function transformPlatformTagGroups(spec) {
 }
 
 function platformSchemaName(name) {
-  const overriddenName = platformComponentNameOverrides[name] ?? name;
-
-  return overriddenName.startsWith('Platform')
-    ? overriddenName
-    : `Platform${overriddenName}`;
+  return name.startsWith('Platform') ? name : `Platform${name}`;
 }
 
 function transformPlatformSchemas(spec) {
