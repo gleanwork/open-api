@@ -43,6 +43,24 @@ jobs:
         env:
           GITHUB_SHA: ${{ github.sha }}
 
+      - name: Omit Platform input until generated
+        if: ${{ hashFiles('generated_specs/platform.yaml') == '' }}
+        run: |
+          cp .speakeasy/workflow.yaml /tmp/speakeasy-workflow.yaml
+          python3 - <<'PY'
+          from pathlib import Path
+
+          workflow_path = Path(".speakeasy/workflow.yaml")
+          workflow_path.write_text(
+              "\n".join(
+                  line
+                  for line in workflow_path.read_text().splitlines()
+                  if "generated_specs/platform.yaml" not in line
+              )
+              + "\n"
+          )
+          PY
+
       - name: Generate OpenAPI specs
         run: speakeasy run -s glean-api-specs
         env:
@@ -64,6 +82,12 @@ jobs:
 
       - name: Run post-transformation smoke tests
         run: pnpm exec vitest run tests/post_transform_smoke.test.js
+
+      - name: Restore Speakeasy workflow
+        run: |
+          if [ -f /tmp/speakeasy-workflow.yaml ]; then
+            cp /tmp/speakeasy-workflow.yaml .speakeasy/workflow.yaml
+          fi
 
       - name: Check if changes are only SHA updates
         id: check_changes
