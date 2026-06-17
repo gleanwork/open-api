@@ -85,6 +85,10 @@ function rewriteRefs(obj, refMap) {
   });
 }
 
+function transformPlatformTagGroups(spec) {
+  delete spec['x-tagGroups'];
+}
+
 function platformSchemaName(name) {
   return name.startsWith('Platform') ? name : `Platform${name}`;
 }
@@ -279,6 +283,7 @@ function transformPlatformOperations(spec) {
 }
 
 export function transformPlatformSpec(spec) {
+  transformPlatformTagGroups(spec);
   transformPlatformSchemas(spec);
   transformPlatformResponses(spec);
   transformPlatformApiTokenSecurity(spec);
