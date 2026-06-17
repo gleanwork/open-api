@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 44d244bc10e748c7e8c6ec85b030d6ba214830af
+  x-source-commit-sha: 7b0af07618c6ec7dbee3754be2474a8345fab1c3
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 21df4f948ed0b5213e33588e4eeaaf07ddb88ee6
+  x-open-api-commit-sha: a0e5d109a17db287fc3f2bf35895479430fbb1f6
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -1141,7 +1141,7 @@ paths:
             text/event-stream:
               schema:
                 type: string
-                description: The server will send a stream of events in server-sent events (SSE) format.
+                description: The server will send a stream of events in server-sent events (SSE) format. If execution fails after the stream has started, the stream may terminate with an error message in a normal `message` event.
                 example: |
                   id: 1
                   event: message
@@ -11107,6 +11107,7 @@ components:
               - MID_DAY_CATCH_UP
               - QUERY_SUGGESTION
               - COWORK_CUJ_PROMO
+              - CARD_STACK_PROMO
               - WEEKLY_MEETINGS
               - FOLLOW_UP
               - MILESTONE_TIMELINE_CHECK
@@ -11586,6 +11587,7 @@ components:
             - MID_DAY_CATCH_UP
             - QUERY_SUGGESTION
             - COWORK_CUJ_PROMO
+            - CARD_STACK_PROMO
             - WEEKLY_MEETINGS
             - FOLLOW_UP
             - MILESTONE_TIMELINE_CHECK
@@ -11674,6 +11676,7 @@ components:
             - MID_DAY_CATCH_UP
             - QUERY_SUGGESTION
             - COWORK_CUJ_PROMO
+            - CARD_STACK_PROMO
             - WEEKLY_MEETINGS
             - FOLLOW_UP
             - MILESTONE_TIMELINE_CHECK
