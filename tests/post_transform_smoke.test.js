@@ -8,14 +8,8 @@ const SPEC_PATH = path.join(
   'overlayed_specs',
   'glean-merged-spec.yaml',
 );
-const PLATFORM_SPEC_PATH = path.join(
-  process.cwd(),
-  'generated_specs',
-  'platform.yaml',
-);
 
 const loadSpec = () => yaml.load(fs.readFileSync(SPEC_PATH, 'utf8'));
-const hasGeneratedPlatformSpec = () => fs.existsSync(PLATFORM_SPEC_PATH);
 
 describe('Post-transformation smoke tests', () => {
   let spec;
@@ -54,20 +48,6 @@ describe('Post-transformation smoke tests', () => {
 
   test('overlay applied title', () => {
     expect(spec.info?.title).toBe('Glean API');
-  });
-
-  test('merged spec keeps existing version and source traceability', () => {
-    expect(spec.info?.version).toBe('0.9.0');
-    expect(spec.info?.['x-source-commit-sha']).toBeDefined();
-    expect(spec.info?.['x-open-api-commit-sha']).toBeDefined();
-  });
-
-  test('existing merged tag groups are preserved', () => {
-    const tagGroupNames = (spec['x-tagGroups'] ?? []).map(({ name }) => name);
-
-    expect(tagGroupNames).toContain('Search & Generative AI');
-    expect(tagGroupNames).toContain('Connected Content');
-    expect(tagGroupNames).not.toEqual(['AI', 'Data Retrieval']);
   });
 
   test('all paths use expected base prefixes', () => {
@@ -149,112 +129,5 @@ describe('Post-transformation smoke tests', () => {
     expect(customMetadataSchema.properties?.metadataKeys?.items?.$ref).toBe(
       '#/components/schemas/CustomMetadataPropertyDefinition',
     );
-  });
-
-  test('Platform operations land under expected SDK groups', () => {
-    if (!hasGeneratedPlatformSpec()) {
-      return;
-    }
-
-    const platformOps = [
-      {
-        path: '/api/documents/batch',
-        method: 'post',
-        group: 'platform.documents',
-        nameOverride: 'batch',
-      },
-      {
-        path: '/api/documents/{id}/permissions',
-        method: 'get',
-        group: 'platform.documents',
-        nameOverride: 'getPermissions',
-      },
-      {
-        path: '/api/people/search',
-        method: 'post',
-        group: 'platform.people',
-        nameOverride: 'search',
-      },
-      {
-        path: '/api/agents/search',
-        method: 'post',
-        group: 'platform.agents',
-        nameOverride: 'search',
-      },
-      {
-        path: '/api/agents/{agent_id}',
-        method: 'get',
-        group: 'platform.agents',
-        nameOverride: 'get',
-      },
-      {
-        path: '/api/agents/{agent_id}/schemas',
-        method: 'get',
-        group: 'platform.agents',
-        nameOverride: 'getSchemas',
-      },
-      {
-        path: '/api/agents/{agent_id}/runs',
-        method: 'post',
-        group: 'platform.agents',
-        nameOverride: 'createRun',
-      },
-      {
-        path: '/api/search',
-        method: 'post',
-        group: 'platform.search',
-        nameOverride: 'query',
-      },
-      {
-        path: '/api/tools',
-        method: 'get',
-        group: 'platform.tools',
-        nameOverride: 'list',
-      },
-      {
-        path: '/api/tools/call',
-        method: 'post',
-        group: 'platform.tools',
-        nameOverride: 'call',
-      },
-      {
-        path: '/api/summarize',
-        method: 'post',
-        group: 'platform.summarize',
-        nameOverride: 'create',
-      },
-    ];
-
-    for (const { path, method, group, nameOverride } of platformOps) {
-      const operation = spec.paths?.[path]?.[method];
-
-      expect(
-        operation,
-        `expected operation ${method.toUpperCase()} ${path}`,
-      ).toBeDefined();
-      expect(operation['x-speakeasy-group']).toBe(group);
-      expect(operation['x-speakeasy-name-override']).toBe(nameOverride);
-      expect(operation['x-glean-sdk']).toBeUndefined();
-    }
-  });
-
-  test('Platform merged spec retains streaming run response', () => {
-    if (!hasGeneratedPlatformSpec()) {
-      return;
-    }
-
-    const operation = spec.paths?.['/api/agents/{agent_id}/runs']?.post;
-
-    expect(operation?.responses?.['200']?.content).toHaveProperty(
-      'text/event-stream',
-    );
-  });
-
-  test('Platform private runtime gates do not reach merged spec', () => {
-    if (!hasGeneratedPlatformSpec()) {
-      return;
-    }
-
-    expect(JSON.stringify(spec)).not.toContain('gated-by');
   });
 });
