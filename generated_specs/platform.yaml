@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: d05ef5343fb5089eaa46254f7fe3f3a68ccdceba
-  x-open-api-commit-sha: 7f483e816afd95607d9a39d16ea1fe2cfea988d5
+  x-source-commit-sha: 77d699703c1f0cd76fabd3fa1dde772bd0c67509
+  x-open-api-commit-sha: 03138d28a5220afba7b0893fe57d6663a7713f32
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -646,18 +646,15 @@ components:
         to:
           type: string
           format: date-time
-    PlatformPersonReference:
+    PlatformPerson:
       type: object
-      description: A lightweight reference to a person, used where a payload merely points at someone.
-      required:
-        - name
       properties:
-        id:
-          type: string
-          description: Opaque Glean person ID.
         name:
           type: string
-          description: Display name.
+        email:
+          type: string
+        obfuscated_id:
+          type: string
     PlatformShare:
       type: object
       properties:
@@ -665,7 +662,7 @@ components:
           type: integer
           description: Number of days since the share occurred.
         sharer:
-          $ref: "#/components/schemas/PlatformPersonReference"
+          $ref: "#/components/schemas/PlatformPerson"
         sharing_document:
           $ref: "#/components/schemas/PlatformDocumentReference"
     PlatformDocumentInteractions:
@@ -964,44 +961,47 @@ components:
         - CONTRACTOR
         - NON_EMPLOYEE
         - FORMER_EMPLOYEE
-    PlatformPerson:
-      description: A full person record returned by people search.
-      allOf:
-        - $ref: "#/components/schemas/PlatformPersonReference"
-        - type: object
-          required:
-            - id
-            - is_valid
-            - name
-          properties:
-            is_valid:
-              type: boolean
-              description: Whether this is a valid person record. Invalid people are returned only when requested with include_types.
-            type:
-              $ref: "#/components/schemas/PlatformPersonType"
-            email:
-              type: string
-              format: email
-              description: Primary email address.
-            title:
-              type: string
-              description: Job title.
-            department:
-              type: string
-              description: Department or organizational unit.
-            location:
-              type: string
-              description: User-facing location.
-            photo_url:
-              type: string
-              format: uri
-              description: Avatar URL.
-            manager_id:
-              type: string
-              description: Opaque Glean person ID for the person's manager.
-            manager_name:
-              type: string
-              description: Display name for the person's manager.
+    PlatformPerson-2:
+      type: object
+      required:
+        - id
+        - is_valid
+        - name
+      properties:
+        id:
+          type: string
+          description: Opaque Glean person ID.
+        is_valid:
+          type: boolean
+          description: Whether this is a valid person record. Invalid people are returned only when requested with include_types.
+        name:
+          type: string
+          description: Display name.
+        type:
+          $ref: "#/components/schemas/PlatformPersonType"
+        email:
+          type: string
+          format: email
+          description: Primary email address.
+        title:
+          type: string
+          description: Job title.
+        department:
+          type: string
+          description: Department or organizational unit.
+        location:
+          type: string
+          description: User-facing location.
+        photo_url:
+          type: string
+          format: uri
+          description: Avatar URL.
+        manager_id:
+          type: string
+          description: Opaque Glean person ID for the person's manager.
+        manager_name:
+          type: string
+          description: Display name for the person's manager.
     PlatformPeopleSearchResponse:
       type: object
       required:
@@ -1013,7 +1013,7 @@ components:
           type: array
           description: People matching the requested identifiers.
           items:
-            $ref: "#/components/schemas/PlatformPerson"
+            $ref: "#/components/schemas/PlatformPerson-2"
         not_found:
           type: array
           description: Identifiers that could not be resolved.
@@ -1458,6 +1458,20 @@ components:
             Structured filters applied to search results. Equality operators OR multiple values within a filter. Multiple filters are AND'd together, including range filters on the same field. Filters are AND'd with any inline operators in `query`. Note that conflicting constraints on the same field (e.g., `type:document` in the query and `type: spreadsheet` in a filter) produce an empty result set.
         time_range:
           $ref: "#/components/schemas/PlatformTimeRange"
+    PlatformPerson-3:
+      type: object
+      nullable: true
+      description: A person associated with the result.
+      properties:
+        name:
+          type: string
+          description: Display name.
+          example: Jane Smith
+        email:
+          type: string
+          format: email
+          description: Email address.
+          example: jane.smith@company.com
     PlatformResult:
       type: object
       required:
@@ -1496,9 +1510,9 @@ components:
           description: The document type within the datasource.
           example: page
         creator:
-          $ref: "#/components/schemas/PlatformPersonReference"
+          $ref: "#/components/schemas/PlatformPerson-3"
         owner:
-          $ref: "#/components/schemas/PlatformPersonReference"
+          $ref: "#/components/schemas/PlatformPerson-3"
         updated_at:
           type: string
           format: date-time
@@ -1532,6 +1546,44 @@ components:
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
+    PlatformDocumentSpec-2:
+      type: object
+      description: |
+        Reference to a document to summarize. Exactly one of `url`, `id`, or a UGC pair (`content_id` + `ugc_type` for ANNOUNCEMENTS/ANSWERS/COLLECTIONS) must be provided.
+      oneOf:
+        - type: object
+          additionalProperties: false
+          required:
+            - url
+          properties:
+            url:
+              type: string
+              description: Public URL of the document.
+        - type: object
+          additionalProperties: false
+          required:
+            - id
+          properties:
+            id:
+              type: string
+              description: Glean document ID.
+        - type: object
+          additionalProperties: false
+          required:
+            - content_id
+            - ugc_type
+          properties:
+            content_id:
+              type: integer
+              format: int32
+              description: Numeric ID of the user-generated content item.
+            ugc_type:
+              type: string
+              enum:
+                - ANNOUNCEMENTS
+                - ANSWERS
+                - COLLECTIONS
+              description: Datasource type of the user-generated content item.
     PlatformSummarizeRequest:
       type: object
       additionalProperties: false
@@ -1542,7 +1594,7 @@ components:
           type: array
           minItems: 1
           items:
-            $ref: "#/components/schemas/PlatformDocumentSpec"
+            $ref: "#/components/schemas/PlatformDocumentSpec-2"
           description: Specifications of the documents to summarize.
         preferred_summary_length:
           type: integer
