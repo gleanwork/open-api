@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: 6103cdd1c1bdd4666a563b84954e895fb548e87d
-  x-open-api-commit-sha: 389ef1dd5a469ab93c8757680d121524473818b1
+  x-source-commit-sha: 0f65187cbe415aa9bbd8d5cda75fe609e3538f6e
+  x-open-api-commit-sha: 477252bebd9081325eba09b458b4a0a39904620b
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -13,95 +13,6 @@ servers:
 security:
   - APIToken: []
 paths:
-  /api/documents/batch:
-    post:
-      tags:
-        - Documents
-      summary: Retrieve documents
-      description: |
-        Retrieve details for a batch of documents by URL, Glean document ID, or user-generated content reference. The response preserves request order and reports per-document lookup failures alongside successful results.
-      operationId: platform-documents-batch
-      x-visibility: Public
-      x-glean-experimental:
-        id: 9eb7c7c2-9807-4e64-bc53-7b10aeff813f
-        introduced: "2026-06-02"
-      x-codegen-request-body-name: payload
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/PlatformDocumentsBatchRequest"
-      responses:
-        "200":
-          description: Successful batch retrieval.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PlatformDocumentsBatchResponse"
-        "400":
-          $ref: "#/components/responses/PlatformBadRequest"
-        "401":
-          $ref: "#/components/responses/PlatformUnauthorized"
-        "403":
-          $ref: "#/components/responses/PlatformForbidden"
-        "404":
-          $ref: "#/components/responses/PlatformNotFound"
-        "408":
-          $ref: "#/components/responses/PlatformRequestTimeout"
-        "429":
-          $ref: "#/components/responses/PlatformTooManyRequests"
-        "500":
-          $ref: "#/components/responses/PlatformInternalServerError"
-        "503":
-          $ref: "#/components/responses/PlatformServiceUnavailable"
-      x-speakeasy-group: platform.documents
-      x-speakeasy-name-override: batch
-  /api/documents/{id}/permissions:
-    get:
-      tags:
-        - Documents
-      summary: Retrieve document permissions
-      description: |
-        Retrieve whether a document is visible to everyone and the email addresses of users who have access to it.
-      operationId: platform-documents-permissions
-      x-visibility: Public
-      x-glean-experimental:
-        id: 45684a5a-b8c0-4c2c-b022-50e2583666ff
-        introduced: "2026-06-03"
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Glean document ID.
-          schema:
-            type: string
-            minLength: 1
-      responses:
-        "200":
-          description: Successful document permissions retrieval.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PlatformDocumentPermissionsResponse"
-        "400":
-          $ref: "#/components/responses/PlatformBadRequest"
-        "401":
-          $ref: "#/components/responses/PlatformUnauthorized"
-        "403":
-          $ref: "#/components/responses/PlatformForbidden"
-        "404":
-          $ref: "#/components/responses/PlatformNotFound"
-        "408":
-          $ref: "#/components/responses/PlatformRequestTimeout"
-        "429":
-          $ref: "#/components/responses/PlatformTooManyRequests"
-        "500":
-          $ref: "#/components/responses/PlatformInternalServerError"
-        "503":
-          $ref: "#/components/responses/PlatformServiceUnavailable"
-      x-speakeasy-group: platform.documents
-      x-speakeasy-name-override: getPermissions
   /api/people/search:
     post:
       tags:
@@ -541,377 +452,6 @@ components:
       description: |
         Glean API token. Obtain via Admin Console -> Platform -> API Tokens, or via OAuth 2.0 client credentials flow.
   schemas:
-    PlatformUgcType:
-      type: string
-      enum:
-        - ANNOUNCEMENTS
-        - ANSWERS
-        - COLLECTIONS
-        - SHORTCUTS
-      description: Type of user-generated content.
-    PlatformDocumentSpec:
-      type: object
-      description: |
-        Reference to a document. Exactly one of `url`, `id`, or `content_id` with `ugc_type` must be provided.
-      oneOf:
-        - type: object
-          additionalProperties: false
-          required:
-            - url
-          properties:
-            url:
-              type: string
-              description: URL of the document.
-        - type: object
-          additionalProperties: false
-          required:
-            - id
-          properties:
-            id:
-              type: string
-              description: Glean document ID.
-        - type: object
-          additionalProperties: false
-          required:
-            - content_id
-            - ugc_type
-          properties:
-            content_id:
-              type: integer
-              format: int32
-              description: Numeric ID of the user-generated content item.
-            ugc_type:
-              $ref: "#/components/schemas/PlatformUgcType"
-            doc_type:
-              type: string
-              description: Specific subtype of the user-generated content item.
-    PlatformDocumentIncludeField:
-      type: string
-      enum:
-        - LAST_VIEWED_AT
-        - VISITORS_COUNT
-        - RECENT_SHARES
-        - DOCUMENT_CONTENT
-        - CUSTOM_METADATA
-      description: Optional fields that can be included in returned documents.
-    PlatformDocumentsBatchRequest:
-      type: object
-      additionalProperties: false
-      required:
-        - document_specs
-      properties:
-        document_specs:
-          type: array
-          minItems: 1
-          items:
-            $ref: "#/components/schemas/PlatformDocumentSpec"
-          description: Documents to retrieve.
-        include_fields:
-          type: array
-          items:
-            $ref: "#/components/schemas/PlatformDocumentIncludeField"
-          description: Additional document fields to include in the response.
-    PlatformDocumentContent:
-      type: object
-      properties:
-        full_text_list:
-          type: array
-          items:
-            type: string
-          description: Plaintext content of the document.
-    PlatformDocumentReference:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Glean document ID.
-        title:
-          type: string
-          description: Title of the referenced document.
-        url:
-          type: string
-          description: Permalink for the referenced document.
-    PlatformCountInfo:
-      type: object
-      properties:
-        count:
-          type: integer
-          format: int64
-        period:
-          type: string
-          description: Human-readable period represented by this count.
-        from:
-          type: string
-          format: date-time
-        to:
-          type: string
-          format: date-time
-    PlatformPersonReference:
-      type: object
-      description: A lightweight reference to a person, used where a payload merely points at someone.
-      required:
-        - name
-      properties:
-        id:
-          type: string
-          description: Opaque Glean person ID.
-        name:
-          type: string
-          description: Display name.
-    PlatformShare:
-      type: object
-      properties:
-        num_days_ago:
-          type: integer
-          description: Number of days since the share occurred.
-        sharer:
-          $ref: "#/components/schemas/PlatformPersonReference"
-        sharing_document:
-          $ref: "#/components/schemas/PlatformDocumentReference"
-    PlatformDocumentInteractions:
-      type: object
-      properties:
-        visitor_count:
-          $ref: "#/components/schemas/PlatformCountInfo"
-        shares:
-          type: array
-          items:
-            $ref: "#/components/schemas/PlatformShare"
-    PlatformViewerInfo:
-      type: object
-      properties:
-        last_viewed_time:
-          type: string
-          format: date-time
-    PlatformCustomDataValue:
-      type: object
-      properties:
-        string_value:
-          type: string
-        string_list_value:
-          type: array
-          items:
-            type: string
-    PlatformDocumentMetadata:
-      type: object
-      properties:
-        datasource:
-          type: string
-        datasource_instance:
-          type: string
-          description: Datasource instance from which the document was extracted.
-        object_type:
-          type: string
-          description: Datasource-specific object type.
-        container:
-          type: string
-          description: Name of the higher-level container.
-        container_id:
-          type: string
-          description: Glean document ID of the container.
-        parent_id:
-          type: string
-          description: Glean document ID of the direct parent.
-        mime_type:
-          type: string
-        interactions:
-          $ref: "#/components/schemas/PlatformDocumentInteractions"
-        viewer_info:
-          $ref: "#/components/schemas/PlatformViewerInfo"
-        custom_data:
-          type: object
-          additionalProperties:
-            $ref: "#/components/schemas/PlatformCustomDataValue"
-          description: Custom metadata requested via `CUSTOM_METADATA`.
-    PlatformDocumentSection:
-      type: object
-      properties:
-        title:
-          type: string
-          description: Section title.
-        url:
-          type: string
-          description: Permalink for the section.
-    PlatformDocument:
-      type: object
-      required:
-        - id
-      properties:
-        id:
-          type: string
-          description: Glean document ID.
-        datasource:
-          type: string
-          description: App or repository type from which the document was extracted.
-        connector_type:
-          type: string
-          description: Connector type for the source system.
-        document_type:
-          type: string
-          description: Datasource-specific type of the document.
-        title:
-          type: string
-          description: Title of the document.
-        url:
-          type: string
-          description: Permalink for the document.
-        content:
-          $ref: "#/components/schemas/PlatformDocumentContent"
-        container_document:
-          $ref: "#/components/schemas/PlatformDocumentReference"
-        parent_document:
-          $ref: "#/components/schemas/PlatformDocumentReference"
-        metadata:
-          $ref: "#/components/schemas/PlatformDocumentMetadata"
-        sections:
-          type: array
-          items:
-            $ref: "#/components/schemas/PlatformDocumentSection"
-          description: Content subsections in the document.
-    PlatformDocumentBatchErrorCode:
-      type: string
-      enum:
-        - NOT_FOUND_OR_NOT_ALLOWED
-        - INVALID_DOCUMENT_SPEC
-        - ANNOTATION_ERROR
-        - DOCUMENT_GENERATION_ERROR
-      description: Stable machine-readable item-level failure code.
-    PlatformDocumentBatchError:
-      type: object
-      required:
-        - code
-        - message
-      properties:
-        code:
-          $ref: "#/components/schemas/PlatformDocumentBatchErrorCode"
-        message:
-          type: string
-          description: Human-readable explanation for the item-level failure.
-    PlatformDocumentBatchResult:
-      description: |
-        One document retrieval result. Successful results include `document`; lookup failures include `error`.
-      oneOf:
-        - type: object
-          additionalProperties: false
-          required:
-            - status
-            - document
-          properties:
-            status:
-              type: string
-              enum:
-                - FOUND
-            document:
-              $ref: "#/components/schemas/PlatformDocument"
-        - type: object
-          additionalProperties: false
-          required:
-            - status
-            - error
-          properties:
-            status:
-              type: string
-              enum:
-                - NOT_FOUND
-                - INVALID
-                - ERROR
-            error:
-              $ref: "#/components/schemas/PlatformDocumentBatchError"
-    PlatformDocumentsBatchResponse:
-      type: object
-      required:
-        - request_id
-        - results
-      properties:
-        request_id:
-          type: string
-          description: Server-generated identifier for this response, useful for support.
-        results:
-          type: array
-          items:
-            $ref: "#/components/schemas/PlatformDocumentBatchResult"
-          description: Results in the same order as `document_specs`.
-    PlatformProblemDetail:
-      type: object
-      required:
-        - type
-        - title
-        - status
-        - detail
-        - code
-        - request_id
-      description: |
-        Error response following RFC 9457, extended with `code` and `documentation_url` for machine-readable classification and self-service remediation.
-      properties:
-        type:
-          type: string
-          format: uri
-          description: URI identifying the error type.
-          example: https://developer.glean.com/errors/invalid-cursor
-        title:
-          type: string
-          description: Short, human-readable summary of the error.
-          example: Invalid Pagination Cursor
-        status:
-          type: integer
-          description: HTTP status code mirrored from the response.
-          example: 400
-        detail:
-          type: string
-          description: Human-readable explanation specific to this occurrence.
-          example: |
-            The provided cursor has expired. Start a new search to get a fresh cursor.
-        code:
-          type: string
-          description: Stable machine-readable error code.
-          enum:
-            - invalid_request
-            - missing_required_field
-            - invalid_parameter
-            - invalid_cursor
-            - expired_cursor
-            - invalid_filter
-            - invalid_datasource
-            - authentication_required
-            - token_expired
-            - insufficient_permissions
-            - resource_not_found
-            - method_not_allowed
-            - request_timeout
-            - conflict
-            - gone
-            - unprocessable_query
-            - rate_limit_exceeded
-            - internal_error
-            - service_unavailable
-          example: invalid_cursor
-        documentation_url:
-          type: string
-          format: uri
-          description: Direct URL to documentation for this error code.
-          example: https://developer.glean.com/errors/invalid-cursor
-        request_id:
-          type: string
-          description: Platform-generated request ID for support correlation.
-          example: req_7f8a9b0c1d2e
-    PlatformDocumentPermissionsResponse:
-      type: object
-      required:
-        - request_id
-        - allowed_user_emails
-        - visible_to_all
-      properties:
-        request_id:
-          type: string
-          description: Server-generated identifier for this response, useful for support.
-        allowed_user_emails:
-          type: array
-          items:
-            type: string
-          description: Email addresses for users who can access the document.
-        visible_to_all:
-          type: boolean
-          description: Whether the document is visible to everyone.
     PlatformPeopleIncludeField:
       type: string
       description: Optional profile fields to request.
@@ -956,6 +496,18 @@ components:
           description: Optional non-default people result types to include.
           items:
             $ref: "#/components/schemas/PlatformPeopleIncludeType"
+    PlatformPersonReference:
+      type: object
+      description: A lightweight reference to a person, used where a payload merely points at someone.
+      required:
+        - name
+      properties:
+        id:
+          type: string
+          description: Opaque Glean person ID.
+        name:
+          type: string
+          description: Display name.
     PlatformPersonType:
       type: string
       description: Person employment status or account type.
@@ -1022,6 +574,69 @@ components:
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
+    PlatformProblemDetail:
+      type: object
+      required:
+        - type
+        - title
+        - status
+        - detail
+        - code
+        - request_id
+      description: |
+        Error response following RFC 9457, extended with `code` and `documentation_url` for machine-readable classification and self-service remediation.
+      properties:
+        type:
+          type: string
+          format: uri
+          description: URI identifying the error type.
+          example: https://developer.glean.com/errors/invalid-cursor
+        title:
+          type: string
+          description: Short, human-readable summary of the error.
+          example: Invalid Pagination Cursor
+        status:
+          type: integer
+          description: HTTP status code mirrored from the response.
+          example: 400
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence.
+          example: |
+            The provided cursor has expired. Start a new search to get a fresh cursor.
+        code:
+          type: string
+          description: Stable machine-readable error code.
+          enum:
+            - invalid_request
+            - missing_required_field
+            - invalid_parameter
+            - invalid_cursor
+            - expired_cursor
+            - invalid_filter
+            - invalid_datasource
+            - authentication_required
+            - token_expired
+            - insufficient_permissions
+            - resource_not_found
+            - method_not_allowed
+            - request_timeout
+            - conflict
+            - gone
+            - unprocessable_query
+            - rate_limit_exceeded
+            - internal_error
+            - service_unavailable
+          example: invalid_cursor
+        documentation_url:
+          type: string
+          format: uri
+          description: Direct URL to documentation for this error code.
+          example: https://developer.glean.com/errors/invalid-cursor
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
+          example: req_7f8a9b0c1d2e
     PlatformAgentsSearchRequest:
       type: object
       additionalProperties: false
