@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 7a925311cf02444855fdc18e811c25d2081eacc8
+  x-source-commit-sha: 1075c7fff29630ced54750e2d78db6434004d3a8
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -12,51 +12,6 @@ servers:
 security:
   - ApiToken: []
 paths:
-  /people/search:
-    post:
-      tags:
-        - People
-      summary: Search people
-      description: |
-        Retrieve people by Glean person ID or email address. When no identifiers are provided, the authenticated user's profile is returned.
-      operationId: platform-people-search
-      x-visibility: Public
-      x-glean-sdk:
-        group: platform.people
-        method: search
-      x-glean-experimental:
-        id: 51692e94-d9ff-4e5b-b5b5-4b78c4a9879a
-        introduced: '2026-05-18'
-      x-codegen-request-body-name: payload
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PeopleSearchRequest'
-      responses:
-        '200':
-          description: Successful people response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PeopleSearchResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '408':
-          $ref: '#/components/responses/RequestTimeout'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
   /agents/search:
     post:
       tags:
@@ -460,123 +415,59 @@ components:
       description: |
         Glean API token. Obtain via Admin Console -> Platform -> API Tokens, or via OAuth 2.0 client credentials flow.
   schemas:
-    PeopleIncludeField:
-      type: string
-      description: Optional profile fields to request.
-      enum:
-        - PEOPLE_DETAILS
-        - MANAGEMENT_DETAILS
-    PeopleIncludeType:
-      type: string
-      description: Optional people result types to request.
-      x-enumDescriptions:
-        INVALID_ENTITIES: Return invalid requested people that can be loaded in the people array with is_valid set to false. Identifiers that cannot be loaded are returned in not_found.
-      enum:
-        - INVALID_ENTITIES
-    PeopleSearchRequest:
+    AgentsSearchRequest:
       type: object
       additionalProperties: false
       properties:
-        person_ids:
-          type: array
-          description: Glean person IDs to retrieve.
-          items:
-            type: string
-          example:
-            - abc123
-            - abc456
-        email_ids:
-          type: array
-          description: Email addresses to retrieve.
-          items:
-            type: string
-          example:
-            - jane.smith@example.com
-        include_fields:
-          type: array
-          description: Optional profile fields to include beyond the default profile.
-          items:
-            $ref: '#/components/schemas/PeopleIncludeField'
-        include_types:
-          type: array
-          description: Optional non-default people result types to include.
-          items:
-            $ref: '#/components/schemas/PeopleIncludeType'
-    PersonReference:
-      type: object
-      description: A lightweight reference to a person, used where a payload merely points at someone.
-      required:
-        - name
-      properties:
-        id:
-          type: string
-          description: Opaque Glean person ID.
         name:
           type: string
-          description: Display name.
-    PersonType:
-      type: string
-      description: Person employment status or account type.
-      enum:
-        - FULL_TIME
-        - CONTRACTOR
-        - NON_EMPLOYEE
-        - FORMER_EMPLOYEE
-    Person:
-      description: A full person record returned by people search.
-      allOf:
-        - $ref: '#/components/schemas/PersonReference'
-        - type: object
-          required:
-            - id
-            - is_valid
-            - name
-          properties:
-            is_valid:
-              type: boolean
-              description: Whether this is a valid person record. Invalid people are returned only when requested with include_types.
-            type:
-              $ref: '#/components/schemas/PersonType'
-            email:
-              type: string
-              format: email
-              description: Primary email address.
-            title:
-              type: string
-              description: Job title.
-            department:
-              type: string
-              description: Department or organizational unit.
-            location:
-              type: string
-              description: User-facing location.
-            photo_url:
-              type: string
-              format: uri
-              description: Avatar URL.
-            manager_id:
-              type: string
-              description: Opaque Glean person ID for the person's manager.
-            manager_name:
-              type: string
-              description: Display name for the person's manager.
-    PeopleSearchResponse:
+          description: Case-insensitive substring to match against agent names. If omitted or empty, no name filter is applied.
+          example: HR Policy Agent
+    AgentCapabilities:
+      type: object
+      additionalProperties: true
+      properties:
+        ap.io.messages:
+          type: boolean
+          description: Whether the agent supports messages as input.
+        ap.io.streaming:
+          type: boolean
+          description: Whether the agent supports streaming output.
+    Agent:
       type: object
       required:
-        - people
-        - not_found
+        - agent_id
+        - name
+        - capabilities
+      properties:
+        agent_id:
+          type: string
+          description: ID of the agent.
+          example: mho4lwzylcozgoc2
+        name:
+          type: string
+          description: Name of the agent.
+          example: HR Policy Agent
+        description:
+          type: string
+          description: Description of the agent.
+        metadata:
+          type: object
+          description: Agent metadata.
+          additionalProperties: true
+        capabilities:
+          $ref: '#/components/schemas/AgentCapabilities'
+    AgentsSearchResponse:
+      type: object
+      required:
+        - agents
         - request_id
       properties:
-        people:
+        agents:
           type: array
-          description: People matching the requested identifiers.
+          description: Agents matching the search request.
           items:
-            $ref: '#/components/schemas/Person'
-        not_found:
-          type: array
-          description: Identifiers that could not be resolved.
-          items:
-            type: string
+            $ref: '#/components/schemas/Agent'
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
@@ -643,62 +534,6 @@ components:
           type: string
           description: Platform-generated request ID for support correlation.
           example: req_7f8a9b0c1d2e
-    AgentsSearchRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        name:
-          type: string
-          description: Case-insensitive substring to match against agent names. If omitted or empty, no name filter is applied.
-          example: HR Policy Agent
-    AgentCapabilities:
-      type: object
-      additionalProperties: true
-      properties:
-        ap.io.messages:
-          type: boolean
-          description: Whether the agent supports messages as input.
-        ap.io.streaming:
-          type: boolean
-          description: Whether the agent supports streaming output.
-    Agent:
-      type: object
-      required:
-        - agent_id
-        - name
-        - capabilities
-      properties:
-        agent_id:
-          type: string
-          description: ID of the agent.
-          example: mho4lwzylcozgoc2
-        name:
-          type: string
-          description: Name of the agent.
-          example: HR Policy Agent
-        description:
-          type: string
-          description: Description of the agent.
-        metadata:
-          type: object
-          description: Agent metadata.
-          additionalProperties: true
-        capabilities:
-          $ref: '#/components/schemas/AgentCapabilities'
-    AgentsSearchResponse:
-      type: object
-      required:
-        - agents
-        - request_id
-      properties:
-        agents:
-          type: array
-          description: Agents matching the search request.
-          items:
-            $ref: '#/components/schemas/Agent'
-        request_id:
-          type: string
-          description: Platform-generated request ID for support correlation.
     AgentGetResponse:
       type: object
       required:
@@ -1079,6 +914,18 @@ components:
             Structured filters applied to search results. Equality operators OR multiple values within a filter. Multiple filters are AND'd together, including range filters on the same field. Filters are AND'd with any inline operators in `query`. Note that conflicting constraints on the same field (e.g., `type:document` in the query and `type: spreadsheet` in a filter) produce an empty result set.
         time_range:
           $ref: '#/components/schemas/TimeRange'
+    PersonReference:
+      type: object
+      description: A lightweight reference to a person, used where a payload merely points at someone.
+      required:
+        - name
+      properties:
+        id:
+          type: string
+          description: Opaque Glean person ID.
+        name:
+          type: string
+          description: Display name.
     Result:
       type: object
       required:
@@ -1303,6 +1150,5 @@ x-tagGroups:
       - Summarize
   - name: Data Retrieval
     tags:
-      - People
       - Search
       - Tools
