@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 1075c7fff29630ced54750e2d78db6434004d3a8
+  x-source-commit-sha: e48f0e3c367da941c4e4bd97c7978c416f096c5a
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -346,51 +346,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SearchResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '408':
-          $ref: '#/components/responses/RequestTimeout'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-  /summarize:
-    post:
-      tags:
-        - Summarize
-      summary: Summarize documents
-      description: |
-        Generate an AI summary of one or more documents. Supply documents by URL, Glean document ID, or user-generated content reference.
-      operationId: platform-summarize
-      x-visibility: Public
-      x-glean-sdk:
-        group: platform.summarize
-        method: create
-      x-glean-experimental:
-        id: 4d2f8b2e-7c9d-4f4f-9b1d-4d2f8b2e7c9d
-        introduced: '2026-05-27'
-      x-codegen-request-body-name: payload
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SummarizeRequest'
-      responses:
-        '200':
-          description: Successful summary.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SummarizeResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -1000,94 +955,6 @@ components:
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
-    SummarizableUgcType:
-      type: string
-      enum:
-        - ANNOUNCEMENTS
-        - ANSWERS
-        - COLLECTIONS
-      description: Type of user-generated content that can be summarized.
-    SummarizableDocumentSpec:
-      type: object
-      description: |
-        Reference to a document that can be summarized. Exactly one of `url`, `id`, or `content_id` with `ugc_type` must be provided.
-      oneOf:
-        - type: object
-          additionalProperties: false
-          required:
-            - url
-          properties:
-            url:
-              type: string
-              description: URL of the document.
-        - type: object
-          additionalProperties: false
-          required:
-            - id
-          properties:
-            id:
-              type: string
-              description: Glean document ID.
-        - type: object
-          additionalProperties: false
-          required:
-            - content_id
-            - ugc_type
-          properties:
-            content_id:
-              type: integer
-              format: int32
-              description: Numeric ID of the user-generated content item.
-            ugc_type:
-              $ref: '#/components/schemas/SummarizableUgcType'
-            doc_type:
-              type: string
-              description: Specific subtype of the user-generated content item.
-    SummarizeRequest:
-      type: object
-      additionalProperties: false
-      required:
-        - document_specs
-      properties:
-        document_specs:
-          type: array
-          minItems: 1
-          items:
-            $ref: '#/components/schemas/SummarizableDocumentSpec'
-          description: Specifications of the documents to summarize.
-        preferred_summary_length:
-          type: integer
-          minimum: 1
-          default: 1000
-          description: |
-            Preferred summary length in characters. The model treats this as a target, not a strict bound.
-        tracking_token:
-          type: string
-          description: |
-            Opaque token from a previous response. Pass it back when reporting feedback to associate the feedback with this summary.
-    Summary:
-      type: object
-      properties:
-        text:
-          type: string
-          description: The generated summary text.
-        follow_up_prompts:
-          type: array
-          items:
-            type: string
-          description: Suggested follow-up prompts derived from the summarized documents.
-    SummarizeResponse:
-      type: object
-      properties:
-        request_id:
-          type: string
-          description: Server-generated identifier for this response, useful for support.
-        summary:
-          $ref: '#/components/schemas/Summary'
-        tracking_token:
-          type: string
-          description: |
-            Opaque token representing this summary. Pass it back to the feedback endpoint to associate feedback with this summary.
   responses:
     BadRequest:
       description: Invalid request (malformed JSON, invalid parameter values, unknown fields).
@@ -1147,7 +1014,6 @@ x-tagGroups:
   - name: AI
     tags:
       - Agents
-      - Summarize
   - name: Data Retrieval
     tags:
       - Search
