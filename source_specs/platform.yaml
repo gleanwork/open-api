@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: e48f0e3c367da941c4e4bd97c7978c416f096c5a
+  x-source-commit-sha: dab2f256ed97bf12c64bb739845935a1388af02d
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -217,100 +217,6 @@ paths:
           $ref: '#/components/responses/RequestTimeout'
         '409':
           $ref: '#/components/responses/Conflict'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-  /tools:
-    get:
-      tags:
-        - Tools
-      summary: List tools
-      description: |
-        List tools available to the authenticated user, optionally filtered by tool name.
-      operationId: platform-tools-list
-      x-visibility: Public
-      x-glean-sdk:
-        group: platform.tools
-        method: list
-      x-glean-experimental:
-        id: 3cb43a04-ad52-4c25-be62-3ce1daffd513
-        introduced: '2026-05-06'
-      parameters:
-        - in: query
-          name: tool_names
-          description: Optional comma-delimited list of tool names to return.
-          required: false
-          style: form
-          explode: false
-          schema:
-            type: array
-            items:
-              type: string
-      responses:
-        '200':
-          description: Successful response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ToolsListResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '408':
-          $ref: '#/components/responses/RequestTimeout'
-        '429':
-          $ref: '#/components/responses/TooManyRequests'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-  /tools/call:
-    post:
-      tags:
-        - Tools
-      summary: Call tool
-      description: |
-        Execute a tool available to the authenticated user with the provided parameters.
-      operationId: platform-tools-call
-      x-visibility: Public
-      x-glean-sdk:
-        group: platform.tools
-        method: call
-      x-glean-experimental:
-        id: 9ea7c149-7d5b-4c62-860d-afb56481069a
-        introduced: '2026-05-08'
-      x-codegen-request-body-name: payload
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ToolsCallRequest'
-      responses:
-        '200':
-          description: Successful response.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ToolsCallResponse'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '408':
-          $ref: '#/components/responses/RequestTimeout'
         '429':
           $ref: '#/components/responses/TooManyRequests'
         '500':
@@ -668,110 +574,6 @@ components:
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
-    ToolParameter:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Parameter type.
-          enum:
-            - string
-            - number
-            - boolean
-            - object
-            - array
-        name:
-          type: string
-          description: Parameter name.
-        description:
-          type: string
-          description: Parameter description.
-        is_required:
-          type: boolean
-          description: Whether the parameter is required.
-        possible_values:
-          type: array
-          description: Possible primitive values for the parameter.
-          items:
-            type: string
-        items:
-          $ref: '#/components/schemas/ToolParameter'
-        properties:
-          type: object
-          description: Object properties for object parameters.
-          additionalProperties:
-            $ref: '#/components/schemas/ToolParameter'
-    Tool:
-      type: object
-      required:
-        - type
-        - name
-        - display_name
-        - description
-        - parameters
-      properties:
-        type:
-          type: string
-          description: Type of tool.
-          enum:
-            - READ
-            - WRITE
-        name:
-          type: string
-          description: Unique identifier for the tool.
-        display_name:
-          type: string
-          description: Human-readable name.
-        description:
-          type: string
-          description: LLM-friendly description of the tool.
-        parameters:
-          type: object
-          description: Parameters supported by the tool.
-          additionalProperties:
-            $ref: '#/components/schemas/ToolParameter'
-    ToolsListResponse:
-      type: object
-      required:
-        - tools
-        - request_id
-      properties:
-        tools:
-          type: array
-          description: List of tools available to the user.
-          items:
-            $ref: '#/components/schemas/Tool'
-        request_id:
-          type: string
-          description: Platform-generated request ID for support correlation.
-    ToolsCallRequest:
-      type: object
-      additionalProperties: false
-      required:
-        - name
-        - parameters
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: Name of the tool to execute.
-        parameters:
-          type: object
-          description: Tool parameter values keyed by parameter name.
-          additionalProperties: true
-    ToolsCallResponse:
-      type: object
-      required:
-        - raw_response
-        - request_id
-      properties:
-        raw_response:
-          type: object
-          description: Raw response returned by the tool.
-          additionalProperties: true
-        request_id:
-          type: string
-          description: Platform-generated request ID for support correlation.
     FilterOperator:
       type: string
       description: Supported filter operator.
@@ -1017,4 +819,3 @@ x-tagGroups:
   - name: Data Retrieval
     tags:
       - Search
-      - Tools
