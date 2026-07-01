@@ -64,4 +64,23 @@ sources:
             - location: overlays/indexing-modifications-overlay.yaml
             - location: overlays/custom-metadata-modifications-overlay.yaml
         output: overlayed_specs/glean-indexing-api-specs.yaml
+    glean-platform-api-specs:
+        inputs:
+            - location: generated_specs/platform.yaml
+        overlays:
+            - location: overlays/info-name-overlay.yaml
+            - location: overlays/strip-headers-overlay.yaml
+            - location: overlays/oauth-client-security-overlay.yaml
+        output: overlayed_specs/glean-platform-api-specs.yaml
+    glean-platform-merged-code-samples-spec:
+        inputs:
+            - location: overlayed_specs/glean-platform-api-specs.yaml
+        overlays:
+            - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-python-code-samples
+            - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-typescript-code-samples
+            - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-go-code-samples
+            - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-java-code-samples
+        output: merged_code_samples_specs/glean-platform-merged-code-samples-spec.yaml
+        registry:
+            location: registry.speakeasyapi.dev/glean-el2/sdk/glean-platform-merged-code-samples-spec
 targets: {}

@@ -62,6 +62,13 @@ jobs:
         env:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
 
+      # We intentionally skip uploading the spec to the Speakeasy registry since
+      # we're only using them for code sample generation.
+      - name: Generate Platform API specs for code sample generation
+        run: speakeasy run -s glean-platform-api-specs --skip-upload-spec
+        env:
+          SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
+
       - name: Run post-transformation smoke tests
         run: pnpm exec vitest run tests/post_transform_smoke.test.js
 

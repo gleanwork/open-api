@@ -102,7 +102,9 @@ export async function transformMergedCodeSamplesSpecs() {
         ? 'client_rest.yaml'
         : specFile.includes('index')
           ? 'indexing.yaml'
-          : path.join(outputDir, specFile);
+          : specFile.includes('platform')
+            ? 'platform.yaml'
+            : specFile;
       const outputFilePath = path.join(outputDir, outputFileName);
 
       console.log(`Processing ${sourceFilePath}`);
