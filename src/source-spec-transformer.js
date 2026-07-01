@@ -273,7 +273,13 @@ function transformPlatformOperations(spec) {
       }
       sdkMethods.set(sdkMethodKey, location);
 
-      operation['x-speakeasy-group'] = sdk.group;
+      // Drop the leading `platform.` segment so Speakeasy emits top-level SDK
+      // namespaces (glean.agents.search()) instead of nesting every platform
+      // endpoint under a redundant `platform` group
+      // (glean.platform.agents.search()). scio keeps sending the
+      // platform-prefixed group as the source contract; only the derived
+      // Speakeasy group is un-namespaced here.
+      operation['x-speakeasy-group'] = sdk.group.replace(/^platform\./, '');
       operation['x-speakeasy-name-override'] = sdk.method;
       // x-glean-sdk is a source contract between scio and this transform; the
       // generated public spec only needs the Speakeasy extensions it derives.

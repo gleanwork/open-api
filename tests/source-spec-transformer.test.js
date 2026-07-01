@@ -471,7 +471,7 @@ describe('OpenAPI YAML Transformer', () => {
     );
 
     expect(transformedSpec.paths['/api/search'].post).toMatchObject({
-      'x-speakeasy-group': 'platform.search',
+      'x-speakeasy-group': 'search',
       'x-speakeasy-name-override': 'query',
     });
     expect(transformedSpec.paths['/api/search'].post).not.toHaveProperty(
@@ -487,14 +487,14 @@ describe('OpenAPI YAML Transformer', () => {
         .tools.items.$ref,
     ).toBe('#/components/schemas/PlatformTool');
     expect(transformedSpec.paths['/api/tools'].get).toMatchObject({
-      'x-speakeasy-group': 'platform.tools',
+      'x-speakeasy-group': 'tools',
       'x-speakeasy-name-override': 'list',
     });
     expect(transformedSpec.paths['/api/tools'].get).not.toHaveProperty(
       'x-glean-sdk',
     );
     expect(transformedSpec.paths['/api/tools/call'].post).toMatchObject({
-      'x-speakeasy-group': 'platform.tools',
+      'x-speakeasy-group': 'tools',
       'x-speakeasy-name-override': 'call',
     });
     expect(
@@ -512,7 +512,7 @@ describe('OpenAPI YAML Transformer', () => {
     expect(
       transformedSpec.paths['/api/agents/{agent_id}/runs'].post,
     ).toMatchObject({
-      'x-speakeasy-group': 'platform.agents',
+      'x-speakeasy-group': 'agents',
       'x-speakeasy-name-override': 'createRun',
     });
     expect(
@@ -686,11 +686,11 @@ describe('OpenAPI YAML Transformer', () => {
     transformPlatformSpec(spec);
 
     expect(spec.paths['/tools'].get).toMatchObject({
-      'x-speakeasy-group': 'platform.tools',
+      'x-speakeasy-group': 'tools',
       'x-speakeasy-name-override': 'list',
     });
     expect(spec.paths['/tools/call'].post).toMatchObject({
-      'x-speakeasy-group': 'platform.tools',
+      'x-speakeasy-group': 'tools',
       'x-speakeasy-name-override': 'call',
     });
   });
