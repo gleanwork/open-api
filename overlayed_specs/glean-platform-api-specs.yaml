@@ -55,7 +55,7 @@ paths:
           $ref: "#/components/responses/PlatformInternalServerError"
         "503":
           $ref: "#/components/responses/PlatformServiceUnavailable"
-      x-speakeasy-group: platform.agents
+      x-speakeasy-group: agents
       x-speakeasy-name-override: search
   /api/agents/{agent_id}:
     get:
@@ -100,7 +100,7 @@ paths:
           $ref: "#/components/responses/PlatformInternalServerError"
         "503":
           $ref: "#/components/responses/PlatformServiceUnavailable"
-      x-speakeasy-group: platform.agents
+      x-speakeasy-group: agents
       x-speakeasy-name-override: get
   /api/agents/{agent_id}/schemas:
     get:
@@ -152,7 +152,7 @@ paths:
           $ref: "#/components/responses/PlatformInternalServerError"
         "503":
           $ref: "#/components/responses/PlatformServiceUnavailable"
-      x-speakeasy-group: platform.agents
+      x-speakeasy-group: agents
       x-speakeasy-name-override: getSchemas
   /api/agents/{agent_id}/runs:
     post:
@@ -218,7 +218,7 @@ paths:
           $ref: "#/components/responses/PlatformInternalServerError"
         "503":
           $ref: "#/components/responses/PlatformServiceUnavailable"
-      x-speakeasy-group: platform.agents
+      x-speakeasy-group: agents
       x-speakeasy-name-override: createRun
   /api/skills:
     get:
@@ -360,7 +360,7 @@ paths:
           $ref: "#/components/responses/PlatformInternalServerError"
         "503":
           $ref: "#/components/responses/PlatformServiceUnavailable"
-      x-speakeasy-group: platform.search
+      x-speakeasy-group: search
       x-speakeasy-name-override: query
 components:
   securitySchemes:

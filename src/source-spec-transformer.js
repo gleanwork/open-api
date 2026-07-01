@@ -68,7 +68,7 @@ const httpMethods = new Set([
   'trace',
 ]);
 
-const platformSdkGroupPattern = /^platform(\.[a-z][a-z0-9]*)+$/;
+const platformSdkGroupPattern = /^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)*$/;
 const platformSdkMethodPattern = /^[a-z][A-Za-z0-9]*$/;
 
 function rewriteRefs(obj, refMap) {
@@ -252,7 +252,7 @@ function transformPlatformOperations(spec) {
         !platformSdkGroupPattern.test(sdk.group)
       ) {
         throw new Error(
-          `Platform operation ${location} has invalid x-glean-sdk.group ${JSON.stringify(sdk.group)}; expected platform.<lowercase identifiers>`,
+          `Platform operation ${location} has invalid x-glean-sdk.group ${JSON.stringify(sdk.group)}; expected lowercase dot-separated identifiers`,
         );
       }
 
