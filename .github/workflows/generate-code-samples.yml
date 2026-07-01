@@ -59,6 +59,12 @@ jobs:
         env:
           SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
 
+      - name: Generate platform code samples
+        if: github.event_name == 'workflow_dispatch' || steps.check.outputs.clients_ready == 'true'
+        run: speakeasy run -s glean-platform-merged-code-samples-spec
+        env:
+          SPEAKEASY_API_KEY: ${{ secrets.SPEAKEASY_API_KEY }}
+
       - name: Running code sample transformers
         if: github.event_name == 'workflow_dispatch' || steps.check.outputs.clients_ready == 'true'
         run: pnpm transform:merged_code_samples_specs
@@ -68,6 +74,7 @@ jobs:
         run: |
           cp -r ./modified_code_samples_specs/client_rest.yaml ./final_specs/client_rest.yaml
           cp -r ./modified_code_samples_specs/indexing.yaml ./final_specs/indexing.yaml
+          cp -r ./modified_code_samples_specs/platform.yaml ./final_specs/platform.yaml
 
       - name: Commit changes
         if: github.event_name == 'workflow_dispatch' || steps.check.outputs.clients_ready == 'true'
