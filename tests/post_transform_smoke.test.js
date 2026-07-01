@@ -8,14 +8,9 @@ const SPEC_PATH = path.join(
   'overlayed_specs',
   'glean-merged-spec.yaml',
 );
-const PLATFORM_SPEC_PATH = path.join(
-  process.cwd(),
-  'generated_specs',
-  'platform.yaml',
-);
 
 const loadSpec = () => yaml.load(fs.readFileSync(SPEC_PATH, 'utf8'));
-const hasGeneratedPlatformSpec = () => fs.existsSync(PLATFORM_SPEC_PATH);
+const hasMergedPlatformSpec = (spec) => Boolean(spec.paths?.['/api/search']);
 
 describe('Post-transformation smoke tests', () => {
   let spec;
@@ -152,29 +147,11 @@ describe('Post-transformation smoke tests', () => {
   });
 
   test('Platform operations land under expected SDK groups', () => {
-    if (!hasGeneratedPlatformSpec()) {
+    if (!hasMergedPlatformSpec(spec)) {
       return;
     }
 
     const platformOps = [
-      {
-        path: '/api/documents/batch',
-        method: 'post',
-        group: 'platform.documents',
-        nameOverride: 'batch',
-      },
-      {
-        path: '/api/documents/{id}/permissions',
-        method: 'get',
-        group: 'platform.documents',
-        nameOverride: 'getPermissions',
-      },
-      {
-        path: '/api/people/search',
-        method: 'post',
-        group: 'platform.people',
-        nameOverride: 'search',
-      },
       {
         path: '/api/agents/search',
         method: 'post',
@@ -206,22 +183,16 @@ describe('Post-transformation smoke tests', () => {
         nameOverride: 'query',
       },
       {
-        path: '/api/tools',
+        path: '/api/skills',
         method: 'get',
-        group: 'platform.tools',
+        group: 'platform.skills',
         nameOverride: 'list',
       },
       {
-        path: '/api/tools/call',
-        method: 'post',
-        group: 'platform.tools',
-        nameOverride: 'call',
-      },
-      {
-        path: '/api/summarize',
-        method: 'post',
-        group: 'platform.summarize',
-        nameOverride: 'create',
+        path: '/api/skills/{skill_id}',
+        method: 'get',
+        group: 'platform.skills',
+        nameOverride: 'retrieve',
       },
     ];
 
@@ -239,7 +210,7 @@ describe('Post-transformation smoke tests', () => {
   });
 
   test('Platform merged spec retains streaming run response', () => {
-    if (!hasGeneratedPlatformSpec()) {
+    if (!hasMergedPlatformSpec(spec)) {
       return;
     }
 
@@ -251,7 +222,7 @@ describe('Post-transformation smoke tests', () => {
   });
 
   test('Platform private runtime gates do not reach merged spec', () => {
-    if (!hasGeneratedPlatformSpec()) {
+    if (!hasMergedPlatformSpec(spec)) {
       return;
     }
 
