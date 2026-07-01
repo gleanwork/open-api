@@ -68,11 +68,6 @@ sources:
         inputs:
             - location: generated_specs/platform.yaml
         overlays:
-            # Only generic overlays here. info-name-overlay and
-            # oauth-client-security-overlay inject Client-API-specific copy
-            # ("Glean Client API" description / OAuth on Client API only), which
-            # is incorrect for a standalone Platform spec. Add a Platform-specific
-            # overlay if/when that copy exists.
             - location: overlays/strip-headers-overlay.yaml
         output: overlayed_specs/glean-platform-api-specs.yaml
     glean-platform-merged-code-samples-spec:

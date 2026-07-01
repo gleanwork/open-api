@@ -2,8 +2,8 @@ speakeasyVersion: 1.787.0
 sources:
     glean-api-specs:
         sourceNamespace: glean-api-specs
-        sourceRevisionDigest: sha256:9ec9dcb96f355e6572829665c4a6c65591f65e3261fcf32d23252e62c6a22939
-        sourceBlobDigest: sha256:4c2122181aa913d3e25086241c6b609d004aac5f0e2231bf451f3709f31a347f
+        sourceRevisionDigest: sha256:6db2c81c99ac7bd300d540ba8b253b9009b473d45e3783b2c53d2c6ed5c8f704
+        sourceBlobDigest: sha256:c6bdb1731fcd8ef95b6d31aac9a3e0f9fcb1344ec5f831ba6367ba8d2b28baa0
         tags:
             - latest
             - main
@@ -52,6 +52,7 @@ workflow:
     sources:
         glean-api-specs:
             inputs:
+                - location: generated_specs/platform.yaml
                 - location: generated_specs/client_rest.yaml
                 - location: generated_specs/indexing.yaml
                 - location: generated_specs/admin_rest.yaml
@@ -112,4 +113,21 @@ workflow:
                 - location: overlays/indexing-modifications-overlay.yaml
                 - location: overlays/custom-metadata-modifications-overlay.yaml
             output: overlayed_specs/glean-indexing-api-specs.yaml
+        glean-platform-api-specs:
+            inputs:
+                - location: generated_specs/platform.yaml
+            overlays:
+                - location: overlays/strip-headers-overlay.yaml
+            output: overlayed_specs/glean-platform-api-specs.yaml
+        glean-platform-merged-code-samples-spec:
+            inputs:
+                - location: overlayed_specs/glean-platform-api-specs.yaml
+            overlays:
+                - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-python-code-samples
+                - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-typescript-code-samples
+                - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-go-code-samples
+                - location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs-java-code-samples
+            output: merged_code_samples_specs/glean-platform-merged-code-samples-spec.yaml
+            registry:
+                location: registry.speakeasyapi.dev/glean-el2/sdk/glean-platform-merged-code-samples-spec
     targets: {}
