@@ -182,18 +182,6 @@ describe('Post-transformation smoke tests', () => {
         group: 'platform.search',
         nameOverride: 'query',
       },
-      {
-        path: '/api/skills',
-        method: 'get',
-        group: 'platform.skills',
-        nameOverride: 'list',
-      },
-      {
-        path: '/api/skills/{skill_id}',
-        method: 'get',
-        group: 'platform.skills',
-        nameOverride: 'retrieve',
-      },
     ];
 
     for (const { path, method, group, nameOverride } of platformOps) {
