@@ -73,7 +73,7 @@ paths:
           $ref: "#/components/responses/PlatformInternalServerError"
         "503":
           $ref: "#/components/responses/PlatformServiceUnavailable"
-      x-speakeasy-group: platform.agents
+      x-speakeasy-group: agents
       x-speakeasy-name-override: search
       security:
         - APIToken: []
@@ -120,7 +120,7 @@ paths:
           $ref: "#/components/responses/PlatformInternalServerError"
         "503":
           $ref: "#/components/responses/PlatformServiceUnavailable"
-      x-speakeasy-group: platform.agents
+      x-speakeasy-group: agents
       x-speakeasy-name-override: get
       security:
         - APIToken: []
@@ -174,7 +174,7 @@ paths:
           $ref: "#/components/responses/PlatformInternalServerError"
         "503":
           $ref: "#/components/responses/PlatformServiceUnavailable"
-      x-speakeasy-group: platform.agents
+      x-speakeasy-group: agents
       x-speakeasy-name-override: getSchemas
       security:
         - APIToken: []
@@ -242,7 +242,7 @@ paths:
           $ref: "#/components/responses/PlatformInternalServerError"
         "503":
           $ref: "#/components/responses/PlatformServiceUnavailable"
-      x-speakeasy-group: platform.agents
+      x-speakeasy-group: agents
       x-speakeasy-name-override: createRun
       security:
         - APIToken: []
@@ -390,7 +390,7 @@ paths:
           $ref: "#/components/responses/PlatformInternalServerError"
         "503":
           $ref: "#/components/responses/PlatformServiceUnavailable"
-      x-speakeasy-group: platform.search
+      x-speakeasy-group: search
       x-speakeasy-name-override: query
       security:
         - APIToken: []

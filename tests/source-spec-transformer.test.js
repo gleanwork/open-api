@@ -307,7 +307,7 @@ describe('OpenAPI YAML Transformer', () => {
             tags: ['Search'],
             operationId: 'platform-search',
             'x-glean-sdk': {
-              group: 'platform.search',
+              group: 'search',
               method: 'query',
             },
             requestBody: {
@@ -337,7 +337,7 @@ describe('OpenAPI YAML Transformer', () => {
             tags: ['Tools'],
             operationId: 'platform-tools-list',
             'x-glean-sdk': {
-              group: 'platform.tools',
+              group: 'tools',
               method: 'list',
             },
             responses: {
@@ -359,7 +359,7 @@ describe('OpenAPI YAML Transformer', () => {
             tags: ['Tools'],
             operationId: 'platform-tools-call',
             'x-glean-sdk': {
-              group: 'platform.tools',
+              group: 'tools',
               method: 'call',
             },
             requestBody: {
@@ -388,7 +388,7 @@ describe('OpenAPI YAML Transformer', () => {
             tags: ['Agents'],
             operationId: 'platform-agents-create-run',
             'x-glean-sdk': {
-              group: 'platform.agents',
+              group: 'agents',
               method: 'createRun',
             },
             requestBody: {
@@ -471,7 +471,7 @@ describe('OpenAPI YAML Transformer', () => {
     );
 
     expect(transformedSpec.paths['/api/search'].post).toMatchObject({
-      'x-speakeasy-group': 'platform.search',
+      'x-speakeasy-group': 'search',
       'x-speakeasy-name-override': 'query',
     });
     expect(transformedSpec.paths['/api/search'].post).not.toHaveProperty(
@@ -487,14 +487,14 @@ describe('OpenAPI YAML Transformer', () => {
         .tools.items.$ref,
     ).toBe('#/components/schemas/PlatformTool');
     expect(transformedSpec.paths['/api/tools'].get).toMatchObject({
-      'x-speakeasy-group': 'platform.tools',
+      'x-speakeasy-group': 'tools',
       'x-speakeasy-name-override': 'list',
     });
     expect(transformedSpec.paths['/api/tools'].get).not.toHaveProperty(
       'x-glean-sdk',
     );
     expect(transformedSpec.paths['/api/tools/call'].post).toMatchObject({
-      'x-speakeasy-group': 'platform.tools',
+      'x-speakeasy-group': 'tools',
       'x-speakeasy-name-override': 'call',
     });
     expect(
@@ -512,7 +512,7 @@ describe('OpenAPI YAML Transformer', () => {
     expect(
       transformedSpec.paths['/api/agents/{agent_id}/runs'].post,
     ).toMatchObject({
-      'x-speakeasy-group': 'platform.agents',
+      'x-speakeasy-group': 'agents',
       'x-speakeasy-name-override': 'createRun',
     });
     expect(
@@ -561,7 +561,7 @@ describe('OpenAPI YAML Transformer', () => {
           post: {
             operationId: 'platform-search',
             'x-glean-sdk': {
-              group: 'platform.search',
+              group: 'search',
               method: 'query',
             },
             security: [{ ApiToken: [], ExtraAuth: ['search'] }],
@@ -618,7 +618,7 @@ describe('OpenAPI YAML Transformer', () => {
             post: {
               operationId: 'platform-search',
               'x-glean-sdk': {
-                group: 'search',
+                group: 'Search',
                 method: 'Query',
               },
             },
@@ -626,7 +626,7 @@ describe('OpenAPI YAML Transformer', () => {
         },
       }),
     ).toThrow(
-      'Platform operation POST /search with operationId platform-search has invalid x-glean-sdk.group "search"; expected platform.<lowercase identifiers>',
+      'Platform operation POST /search with operationId platform-search has invalid x-glean-sdk.group "Search"; expected lowercase dot-separated identifiers',
     );
   });
 
@@ -638,7 +638,7 @@ describe('OpenAPI YAML Transformer', () => {
             post: {
               operationId: 'platform-search',
               'x-glean-sdk': {
-                group: 'platform.search',
+                group: 'search',
                 method: 'query',
               },
             },
@@ -647,7 +647,7 @@ describe('OpenAPI YAML Transformer', () => {
             post: {
               operationId: 'platform-query',
               'x-glean-sdk': {
-                group: 'platform.search',
+                group: 'search',
                 method: 'query',
               },
             },
@@ -655,7 +655,7 @@ describe('OpenAPI YAML Transformer', () => {
         },
       }),
     ).toThrow(
-      'Platform operation POST /query with operationId platform-query declares duplicate SDK method platform.search.query; already used by POST /search with operationId platform-search',
+      'Platform operation POST /query with operationId platform-query declares duplicate SDK method search.query; already used by POST /search with operationId platform-search',
     );
   });
 
@@ -666,7 +666,7 @@ describe('OpenAPI YAML Transformer', () => {
           get: {
             operationId: 'platform-tools-list',
             'x-glean-sdk': {
-              group: 'platform.tools',
+              group: 'tools',
               method: 'list',
             },
           },
@@ -675,7 +675,7 @@ describe('OpenAPI YAML Transformer', () => {
           post: {
             operationId: 'platform-tools-call',
             'x-glean-sdk': {
-              group: 'platform.tools',
+              group: 'tools',
               method: 'call',
             },
           },
@@ -686,11 +686,11 @@ describe('OpenAPI YAML Transformer', () => {
     transformPlatformSpec(spec);
 
     expect(spec.paths['/tools'].get).toMatchObject({
-      'x-speakeasy-group': 'platform.tools',
+      'x-speakeasy-group': 'tools',
       'x-speakeasy-name-override': 'list',
     });
     expect(spec.paths['/tools/call'].post).toMatchObject({
-      'x-speakeasy-group': 'platform.tools',
+      'x-speakeasy-group': 'tools',
       'x-speakeasy-name-override': 'call',
     });
   });

@@ -155,31 +155,31 @@ describe('Post-transformation smoke tests', () => {
       {
         path: '/api/agents/search',
         method: 'post',
-        group: 'platform.agents',
+        group: 'agents',
         nameOverride: 'search',
       },
       {
         path: '/api/agents/{agent_id}',
         method: 'get',
-        group: 'platform.agents',
+        group: 'agents',
         nameOverride: 'get',
       },
       {
         path: '/api/agents/{agent_id}/schemas',
         method: 'get',
-        group: 'platform.agents',
+        group: 'agents',
         nameOverride: 'getSchemas',
       },
       {
         path: '/api/agents/{agent_id}/runs',
         method: 'post',
-        group: 'platform.agents',
+        group: 'agents',
         nameOverride: 'createRun',
       },
       {
         path: '/api/search',
         method: 'post',
-        group: 'platform.search',
+        group: 'search',
         nameOverride: 'query',
       },
     ];
