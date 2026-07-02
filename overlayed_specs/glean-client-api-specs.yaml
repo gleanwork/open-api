@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 158aafa656d1619ab050fb5e80aa4016eb87d841
+  x-source-commit-sha: 45cf1612467e6d18655d1b9abb71df5af41745c8
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: b7b05e0db8512b8874431ddf6421a70abb107f58
+  x-open-api-commit-sha: 5e1c0246e3a646bf164cde427461f3bffe7c2fc4
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -5211,6 +5211,44 @@ components:
         editUrl:
           type: string
           description: The URL using which the user can access the edit page of the shortcut.
+    UgcType:
+      enum:
+        - AGENT_TYPE
+        - ANNOUNCEMENTS_TYPE
+        - ANSWERS_TYPE
+        - CHATS_TYPE
+        - COLLECTIONS_TYPE
+        - EMAIL_TYPE
+        - HTML_CODE_TYPE
+        - IMAGE_TYPE
+        - MESSAGE_TYPE
+        - PAPER_TYPE
+        - PRISM_VIEWS_TYPE
+        - PROMPT_TEMPLATES_TYPE
+        - PINS_TYPE
+        - SCRIBES_TYPE
+        - SHORTCUTS_TYPE
+        - SLIDE_TYPE
+        - SPREADSHEET_TYPE
+        - INLINE_HTML_TYPE
+        - PODCAST_TYPE
+        - WORKFLOWS_TYPE
+    FavoriteInfo:
+      type: object
+      properties:
+        ugcType:
+          $ref: "#/components/schemas/UgcType"
+        id:
+          type: string
+          description: Opaque id of the UGC.
+        count:
+          type: integer
+          x-includeEmpty: true
+          description: Number of users this object has been favorited by.
+        favoritedByUser:
+          type: boolean
+          x-includeEmpty: true
+          description: If the requesting user has favorited this object.
     Shortcut:
       allOf:
         - $ref: "#/components/schemas/UserGeneratedContentId"
@@ -5232,6 +5270,8 @@ components:
               description: A list of user roles for the Go Link.
               items:
                 $ref: "#/components/schemas/UserRoleSpecification"
+            favoriteInfo:
+              $ref: "#/components/schemas/FavoriteInfo"
     Collection:
       allOf:
         - $ref: "#/components/schemas/CollectionMutableProperties"
@@ -5284,6 +5324,8 @@ components:
               description: A list of user roles for the Collection.
               items:
                 $ref: "#/components/schemas/UserRoleSpecification"
+            favoriteInfo:
+              $ref: "#/components/schemas/FavoriteInfo"
     CollectionItem:
       allOf:
         - $ref: "#/components/schemas/CollectionItemMutableProperties"
@@ -6097,6 +6139,8 @@ components:
             updateTime:
               type: string
               format: date-time
+            favoriteInfo:
+              $ref: "#/components/schemas/FavoriteInfo"
     PersonTeam:
       description: Use `id` if you index teams via Glean, and use `name` and `externalLink` if you want to use your own team pages
       properties:
@@ -6920,6 +6964,8 @@ components:
             isPublished:
               type: boolean
               description: Whether or not the announcement is published.
+            favoriteInfo:
+              $ref: "#/components/schemas/FavoriteInfo"
     DeleteAnnouncementRequest:
       required:
         - id
@@ -7008,6 +7054,8 @@ components:
             message: Use `answer.trackingToken` instead.
             removal: "2027-01-15"
           x-speakeasy-deprecation-message: "Deprecated on 2026-05-07, removal scheduled for 2027-01-15: Use `answer.trackingToken` instead."
+        favoriteInfo:
+          $ref: "#/components/schemas/FavoriteInfo"
     GetAnswerError:
       properties:
         errorType:
@@ -10190,44 +10238,6 @@ components:
               description: A list of roles for this prompt template explicitly granted.
               items:
                 $ref: "#/components/schemas/UserRoleSpecification"
-    UgcType:
-      enum:
-        - AGENT_TYPE
-        - ANNOUNCEMENTS_TYPE
-        - ANSWERS_TYPE
-        - CHATS_TYPE
-        - COLLECTIONS_TYPE
-        - EMAIL_TYPE
-        - HTML_CODE_TYPE
-        - IMAGE_TYPE
-        - MESSAGE_TYPE
-        - PAPER_TYPE
-        - PRISM_VIEWS_TYPE
-        - PROMPT_TEMPLATES_TYPE
-        - PINS_TYPE
-        - SCRIBES_TYPE
-        - SHORTCUTS_TYPE
-        - SLIDE_TYPE
-        - SPREADSHEET_TYPE
-        - INLINE_HTML_TYPE
-        - PODCAST_TYPE
-        - WORKFLOWS_TYPE
-    FavoriteInfo:
-      type: object
-      properties:
-        ugcType:
-          $ref: "#/components/schemas/UgcType"
-        id:
-          type: string
-          description: Opaque id of the UGC.
-        count:
-          type: integer
-          x-includeEmpty: true
-          description: Number of users this object has been favorited by.
-        favoritedByUser:
-          type: boolean
-          x-includeEmpty: true
-          description: If the requesting user has favorited this object.
     PromptTemplateResult:
       properties:
         promptTemplate:
