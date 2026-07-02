@@ -219,5 +219,5 @@ In order to roll out changes from the upstream original source repo all the way 
 10. 🤖CI in this repo runs [trigger-developer-site-redeploy.yml](https://github.com/gleanwork/open-api/actions/workflows/trigger-developer-site-redeploy.yml)
     - `trigger-developer-site-redeploy` checks for changes and aborts early if there are none
     - otherwise it publishes a PR to [gleanwork/glean-developer-site](https://github.com/gleanwork/glean-developer-site)
-11. 👷Merge the [gleanwork/glean-developer-site](https://github.com/gleanwork/glean-developer-site) PR from step 11
+11. 👷Approve the auto-merging [gleanwork/glean-developer-site](https://github.com/gleanwork/glean-developer-site) PR from step 11
 12. 🤖Vercel [redeploys developers.glean.com](https://vercel.com/glean-developers/glean-developer-site)
