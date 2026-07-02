@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 98d5efa135cb651acfd2d70b4222f1a38838a076
+  x-source-commit-sha: 15020ec3ae38327a89f5da3d12e88044811c06f0
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -51,6 +51,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '408':
           $ref: '#/components/responses/RequestTimeout'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
         '429':
           $ref: '#/components/responses/TooManyRequests'
         '500':
@@ -217,6 +219,8 @@ paths:
           $ref: '#/components/responses/RequestTimeout'
         '409':
           $ref: '#/components/responses/Conflict'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
         '429':
           $ref: '#/components/responses/TooManyRequests'
         '500':
@@ -262,6 +266,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '408':
           $ref: '#/components/responses/RequestTimeout'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
         '429':
           $ref: '#/components/responses/TooManyRequests'
         '500':
@@ -349,6 +355,7 @@ components:
         - resource_not_found
         - method_not_allowed
         - request_timeout
+        - request_too_large
         - conflict
         - gone
         - unprocessable_query
@@ -808,6 +815,12 @@ components:
             $ref: '#/components/schemas/ProblemDetail'
     RequestTimeout:
       description: Backend did not respond within the timeout window.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    RequestTooLarge:
+      description: Request body exceeds the maximum allowed size.
       content:
         application/problem+json:
           schema:
