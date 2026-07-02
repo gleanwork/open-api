@@ -1087,6 +1087,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-speakeasy-group: indexing.documents
+      x-speakeasy-name-override: debugEvents
   /rest/api/index/document/{docId}/custom-metadata/{groupName}:
     servers:
       - url: https://{instance}-be.glean.com

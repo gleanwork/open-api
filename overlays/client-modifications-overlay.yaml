@@ -63,6 +63,11 @@ actions:
       x-speakeasy-name-override: createToken
       x-speakeasy-group: client.authentication
 
+  - target: $["paths"]["/rest/api/v1/checkdatasourceauth"]["post"]
+    update:
+      x-speakeasy-name-override: checkDatasourceAuth
+      x-speakeasy-group: client.authentication
+
   # Chat
   - target: $["paths"]["/rest/api/v1/chat"]["post"]
     update:
@@ -114,6 +119,11 @@ actions:
   - target: $["paths"]["/rest/api/v1/listchats"]["post"]
     update:
       x-speakeasy-name-override: list
+      x-speakeasy-group: client.chat
+
+  - target: $["paths"]["/rest/api/v1/chat-files/{fileId}"]["get"]
+    update:
+      x-speakeasy-name-override: retrieveFile
       x-speakeasy-group: client.chat
 
   # Collections
@@ -182,6 +192,11 @@ actions:
   - target: $["paths"]["/rest/api/v1/people"]["post"]
     update:
       x-speakeasy-name-override: readPeople
+      x-speakeasy-group: client.entities
+
+  - target: $["paths"]["/rest/api/v1/people/{person_id}/photo"]["get"]
+    update:
+      x-speakeasy-name-override: retrievePhoto
       x-speakeasy-group: client.entities
 
   # Insights
@@ -294,6 +309,37 @@ actions:
         - Tools
       x-speakeasy-name-override: run
       x-speakeasy-group: client.tools
+
+  - target: $["paths"]["/rest/api/v1/actions/actionpack/{actionPackId}/auth"]["get"]
+    update:
+      x-speakeasy-name-override: retrieveAuthStatus
+      x-speakeasy-group: client.tools
+
+  - target: $["paths"]["/rest/api/v1/actions/actionpack/{actionPackId}/auth"]["post"]
+    update:
+      x-speakeasy-name-override: authorize
+      x-speakeasy-group: client.tools
+
+  # Datasources
+  - target: $["paths"]["/rest/api/v1/configure/datasources/{datasourceId}/instances/{instanceId}"]["get"]
+    update:
+      x-speakeasy-name-override: retrieveConfiguration
+      x-speakeasy-group: client.datasources
+
+  - target: $["paths"]["/rest/api/v1/configure/datasources/{datasourceId}/instances/{instanceId}"]["patch"]
+    update:
+      x-speakeasy-name-override: updateConfiguration
+      x-speakeasy-group: client.datasources
+
+  - target: $["paths"]["/rest/api/v1/datasource/{datasourceInstanceId}/credentialstatus"]["get"]
+    update:
+      x-speakeasy-name-override: retrieveCredentialStatus
+      x-speakeasy-group: client.datasources
+
+  - target: $["paths"]["/rest/api/v1/datasource/{datasourceInstanceId}/credentials"]["post"]
+    update:
+      x-speakeasy-name-override: rotateCredentials
+      x-speakeasy-group: client.datasources
 
   # Verification
   - target: $["paths"]["/rest/api/v1/listverifications"]["post"]

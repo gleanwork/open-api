@@ -410,6 +410,8 @@ paths:
           description: Too Many Requests
       security:
         - APIToken: []
+      x-speakeasy-name-override: checkDatasourceAuth
+      x-speakeasy-group: client.authentication
   /rest/api/v1/createauthtoken:
     post:
       tags:
@@ -910,6 +912,8 @@ paths:
           description: Internal server error.
       security:
         - APIToken: []
+      x-speakeasy-name-override: retrieveFile
+      x-speakeasy-group: client.chat
   /rest/api/v1/agents:
     post:
       tags:
@@ -944,6 +948,8 @@ paths:
           description: Internal server error
       security:
         - APIToken: []
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: create
   /rest/api/v1/agents/{agent_id}:
     get:
       tags:
@@ -1029,6 +1035,8 @@ paths:
           description: Internal server error
       security:
         - APIToken: []
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: update
   /rest/api/v1/agents/{agent_id}/schemas:
     get:
       tags:
@@ -2225,6 +2233,8 @@ paths:
           description: Too Many Requests.
       security:
         - APIToken: []
+      x-speakeasy-name-override: retrievePhoto
+      x-speakeasy-group: client.entities
   /rest/api/v1/createshortcut:
     post:
       tags:
@@ -2653,6 +2663,8 @@ paths:
           description: Too Many Requests
       security:
         - APIToken: []
+      x-speakeasy-name-override: retrieveAuthStatus
+      x-speakeasy-group: client.tools
     post:
       tags:
         - Tools
@@ -2692,6 +2704,8 @@ paths:
           description: Too Many Requests
       security:
         - APIToken: []
+      x-speakeasy-name-override: authorize
+      x-speakeasy-group: client.tools
   /rest/api/v1/governance/data/policies/{id}:
     get:
       operationId: getpolicy
@@ -3036,6 +3050,8 @@ paths:
         "500":
           description: Internal error
       x-visibility: Public
+      x-speakeasy-group: client.governance.data.findings.exports
+      x-speakeasy-name-override: create
     get:
       operationId: listfindingsexports
       summary: Lists findings exports
@@ -3056,6 +3072,8 @@ paths:
         "500":
           description: Internal error
       x-visibility: Public
+      x-speakeasy-group: client.governance.data.findings.exports
+      x-speakeasy-name-override: list
   /rest/api/v1/governance/data/findings/exports/{id}:
     get:
       operationId: downloadfindingsexport
@@ -3085,6 +3103,8 @@ paths:
         "500":
           description: Internal error
       x-visibility: Public
+      x-speakeasy-group: client.governance.data.findings.exports
+      x-speakeasy-name-override: download
     delete:
       operationId: deletefindingsexport
       summary: Deletes findings export
@@ -3109,6 +3129,8 @@ paths:
         "500":
           description: Internal error
       x-visibility: Public
+      x-speakeasy-group: client.governance.data.findings.exports
+      x-speakeasy-name-override: delete
   /rest/api/v1/configure/datasources/{datasourceId}/instances/{instanceId}:
     get:
       operationId: getDatasourceInstanceConfiguration
@@ -3150,6 +3172,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-visibility: Preview
+      x-speakeasy-name-override: retrieveConfiguration
+      x-speakeasy-group: client.datasources
     patch:
       operationId: updateDatasourceInstanceConfiguration
       summary: Update datasource instance configuration
@@ -3196,6 +3220,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-visibility: Preview
+      x-speakeasy-name-override: updateConfiguration
+      x-speakeasy-group: client.datasources
   /rest/api/v1/datasource/{datasourceInstanceId}/credentialstatus:
     get:
       operationId: getDatasourceCredentialStatus
@@ -3236,6 +3262,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-visibility: Preview
+      x-speakeasy-name-override: retrieveCredentialStatus
+      x-speakeasy-group: client.datasources
   /rest/api/v1/datasource/{datasourceInstanceId}/credentials:
     post:
       operationId: rotateDatasourceCredentials
@@ -3283,6 +3311,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-visibility: Preview
+      x-speakeasy-name-override: rotateCredentials
+      x-speakeasy-group: client.datasources
   /rest/api/v1/chat#stream:
     post:
       tags:
