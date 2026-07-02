@@ -2,16 +2,22 @@ speakeasyVersion: 1.787.0
 sources:
     glean-api-specs:
         sourceNamespace: glean-api-specs
-        sourceRevisionDigest: sha256:33f674fcfaeec4d436d4ed7d96bb50d3ff4fd83ab1dfc897195f7e554b82fa87
-        sourceBlobDigest: sha256:8e36a2243615e5eaac4d86668fe856169d64767afdc94f704055540748b47ebc
+        sourceRevisionDigest: sha256:bff014c893ae13fd203067f3886d3e7707c73f4eb414c9731fcd104c51ce4f50
+        sourceBlobDigest: sha256:32282ad3f193147c756f7ab63678a53944ceb851459d0fdf0f666aec1ea6fabd
         tags:
             - latest
-            - main
             - 0.9.0
     glean-client-and-indexing-specs:
         sourceNamespace: glean-client-and-indexing-specs
         sourceRevisionDigest: sha256:7d7550316a7fc147ed5b70e41e81e33cf2f2f004d6000a83fee749b145eebfc4
         sourceBlobDigest: sha256:a9f406c6555d15a4b8d6acb6d2749f89090620386b1366b577f243007fd8f77a
+        tags:
+            - latest
+            - 0.9.0
+    glean-client-api-specs:
+        sourceNamespace: glean-client-api-specs
+        sourceRevisionDigest: sha256:8b1a4378ab2e5242e7ef69cd76a0be3fd6f041d8115d97b1132254b637d811e7
+        sourceBlobDigest: sha256:96f046253981e5c55ee68f116c663b91ec3b006adc1cbbbc122c82b84d379cad
         tags:
             - latest
             - 0.9.0
@@ -82,6 +88,8 @@ workflow:
                 - location: overlays/admin-modifications-overlay.yaml
                 - location: overlays/oauth-client-security-overlay.yaml
             output: overlayed_specs/glean-client-api-specs.yaml
+            registry:
+                location: registry.speakeasyapi.dev/glean-el2/sdk/glean-client-api-specs
         glean-client-merged-code-samples-spec:
             inputs:
                 - location: overlayed_specs/glean-client-api-specs.yaml

@@ -216,4 +216,49 @@ describe('Post-transformation smoke tests', () => {
 
     expect(JSON.stringify(spec)).not.toContain('gated-by');
   });
+
+  test('every operation carries an x-speakeasy-group with an allowed top-level namespace', () => {
+    // The SDK namespace is derived from x-speakeasy-group. Any operation
+    // without a group silently falls back to its `tags` and leaks a method to
+    // the SDK top level. The top level is reserved for the Platform API, so
+    // client/indexing operations must be nested under `client.*` / `indexing.*`.
+    // `agents` and `search` are the intentional Platform (top-level) groups.
+    const allowedTopLevelSegments = new Set([
+      'client',
+      'indexing',
+      'agents',
+      'search',
+    ]);
+    const methods = ['get', 'post', 'put', 'delete', 'patch'];
+
+    const ungrouped = [];
+    const badTopLevel = [];
+
+    for (const [path, pathItem] of Object.entries(spec.paths ?? {})) {
+      for (const method of methods) {
+        const operation = pathItem?.[method];
+        if (!operation) continue;
+
+        const group = operation['x-speakeasy-group'];
+        if (!group) {
+          ungrouped.push(`${method.toUpperCase()} ${path}`);
+          continue;
+        }
+
+        const topLevelSegment = group.split('.')[0];
+        if (!allowedTopLevelSegments.has(topLevelSegment)) {
+          badTopLevel.push(`${method.toUpperCase()} ${path} -> ${group}`);
+        }
+      }
+    }
+
+    expect(
+      ungrouped,
+      `operations missing x-speakeasy-group (they would leak to the SDK top level via their tags):\n${ungrouped.join('\n')}`,
+    ).toEqual([]);
+    expect(
+      badTopLevel,
+      `operations with an unexpected top-level SDK namespace:\n${badTopLevel.join('\n')}`,
+    ).toEqual([]);
+  });
 });

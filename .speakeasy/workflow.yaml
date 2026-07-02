@@ -33,6 +33,8 @@ sources:
             - location: overlays/admin-modifications-overlay.yaml
             - location: overlays/oauth-client-security-overlay.yaml
         output: overlayed_specs/glean-client-api-specs.yaml
+        registry:
+            location: registry.speakeasyapi.dev/glean-el2/sdk/glean-client-api-specs
     glean-client-merged-code-samples-spec:
         inputs:
             - location: overlayed_specs/glean-client-api-specs.yaml
