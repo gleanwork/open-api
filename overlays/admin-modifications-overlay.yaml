@@ -46,3 +46,39 @@ actions:
     update:
       x-speakeasy-group: client.governance.documents.visibilityoverrides
       x-speakeasy-name-override: create
+
+  # Governance data findings exports
+  - target: $["paths"]["/rest/api/v1/governance/data/findings/exports"]["get"]
+    update:
+      x-speakeasy-group: client.governance.data.findings
+      x-speakeasy-name-override: list
+  - target: $["paths"]["/rest/api/v1/governance/data/findings/exports"]["post"]
+    update:
+      x-speakeasy-group: client.governance.data.findings
+      x-speakeasy-name-override: create
+  - target: $["paths"]["/rest/api/v1/governance/data/findings/exports/{id}"]["get"]
+    update:
+      x-speakeasy-group: client.governance.data.findings
+      x-speakeasy-name-override: download
+  - target: $["paths"]["/rest/api/v1/governance/data/findings/exports/{id}"]["delete"]
+    update:
+      x-speakeasy-group: client.governance.data.findings
+      x-speakeasy-name-override: delete
+
+  # Datasource configuration & credentials (admin)
+  - target: $["paths"]["/rest/api/v1/configure/datasources/{datasourceId}/instances/{instanceId}"]["get"]
+    update:
+      x-speakeasy-group: client.datasources
+      x-speakeasy-name-override: retrieveConfiguration
+  - target: $["paths"]["/rest/api/v1/configure/datasources/{datasourceId}/instances/{instanceId}"]["patch"]
+    update:
+      x-speakeasy-group: client.datasources
+      x-speakeasy-name-override: updateConfiguration
+  - target: $["paths"]["/rest/api/v1/datasource/{datasourceInstanceId}/credentialstatus"]["get"]
+    update:
+      x-speakeasy-group: client.datasources
+      x-speakeasy-name-override: retrieveCredentialStatus
+  - target: $["paths"]["/rest/api/v1/datasource/{datasourceInstanceId}/credentials"]["post"]
+    update:
+      x-speakeasy-group: client.datasources
+      x-speakeasy-name-override: rotateCredentials

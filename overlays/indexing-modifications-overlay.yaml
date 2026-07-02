@@ -195,6 +195,11 @@ actions:
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: debug
 
+  - target: $["paths"]["/api/index/v1/debug/{datasource}/document/events"]["post"]
+    update:
+      x-speakeasy-group: indexing.documents
+      x-speakeasy-name-override: debugEvents
+
   - target: $["paths"]["/api/index/v1/debug/{datasource}/user"]["post"]
     update:
       x-speakeasy-name-override: debug

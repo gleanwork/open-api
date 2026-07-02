@@ -5,10 +5,20 @@ info:
   version: 0.0.5
 
 actions:
+  - target: $["paths"]["/rest/api/v1/agents"]["post"]
+    update:
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: create
+
   - target: $["paths"]["/rest/api/v1/agents/{agent_id}"]["get"]
     update:
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: retrieve
+
+  - target: $["paths"]["/rest/api/v1/agents/{agent_id}"]["post"]
+    update:
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: update
 
   - target: $["paths"]["/rest/api/v1/agents/{agent_id}/schemas"]["get"]
     update:
