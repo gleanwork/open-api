@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 806c1c64748a0308aab21f092a4e9a175bbe8be3
+  x-source-commit-sha: 45cf1612467e6d18655d1b9abb71df5af41745c8
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -51,6 +51,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '408':
           $ref: '#/components/responses/RequestTimeout'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
         '429':
           $ref: '#/components/responses/TooManyRequests'
         '500':
@@ -217,6 +219,8 @@ paths:
           $ref: '#/components/responses/RequestTimeout'
         '409':
           $ref: '#/components/responses/Conflict'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
         '429':
           $ref: '#/components/responses/TooManyRequests'
         '500':
@@ -262,6 +266,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '408':
           $ref: '#/components/responses/RequestTimeout'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
         '429':
           $ref: '#/components/responses/TooManyRequests'
         '500':
@@ -349,6 +355,7 @@ components:
         - resource_not_found
         - method_not_allowed
         - request_timeout
+        - request_too_large
         - conflict
         - gone
         - unprocessable_query
@@ -519,6 +526,7 @@ components:
           $ref: '#/components/schemas/MessageRole'
         content:
           type: array
+          minItems: 1
           description: Content blocks in the message.
           items:
             $ref: '#/components/schemas/MessageTextBlock'
@@ -808,6 +816,12 @@ components:
             $ref: '#/components/schemas/ProblemDetail'
     RequestTimeout:
       description: Backend did not respond within the timeout window.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    RequestTooLarge:
+      description: Request body exceeds the maximum allowed size.
       content:
         application/problem+json:
           schema:

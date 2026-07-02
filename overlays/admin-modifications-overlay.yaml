@@ -46,28 +46,30 @@ actions:
     update:
       x-speakeasy-group: admin.governance.documents.visibilityoverrides
       x-speakeasy-name-override: create
-  # Governance findings exports
-  - target: $["paths"]["/rest/api/v1/governance/data/findings/exports"]["post"]
-    update:
-      x-speakeasy-group: admin.governance.data.findings.exports
-      x-speakeasy-name-override: create
+
+  # Governance data findings exports
   - target: $["paths"]["/rest/api/v1/governance/data/findings/exports"]["get"]
     update:
-      x-speakeasy-group: admin.governance.data.findings.exports
+      x-speakeasy-group: admin.governance.data.findings
       x-speakeasy-name-override: list
+  - target: $["paths"]["/rest/api/v1/governance/data/findings/exports"]["post"]
+    update:
+      x-speakeasy-group: admin.governance.data.findings
+      x-speakeasy-name-override: create
   - target: $["paths"]["/rest/api/v1/governance/data/findings/exports/{id}"]["get"]
     update:
-      x-speakeasy-group: admin.governance.data.findings.exports
+      x-speakeasy-group: admin.governance.data.findings
       x-speakeasy-name-override: download
   - target: $["paths"]["/rest/api/v1/governance/data/findings/exports/{id}"]["delete"]
     update:
-      x-speakeasy-group: admin.governance.data.findings.exports
+      x-speakeasy-group: admin.governance.data.findings
       x-speakeasy-name-override: delete
-  # Datasource configuration and credentials
+
+  # Datasource configuration & credentials (admin)
   - target: $["paths"]["/rest/api/v1/configure/datasources/{datasourceId}/instances/{instanceId}"]["get"]
     update:
       x-speakeasy-group: admin.datasources
-      x-speakeasy-name-override: getConfiguration
+      x-speakeasy-name-override: retrieveConfiguration
   - target: $["paths"]["/rest/api/v1/configure/datasources/{datasourceId}/instances/{instanceId}"]["patch"]
     update:
       x-speakeasy-group: admin.datasources
@@ -75,7 +77,7 @@ actions:
   - target: $["paths"]["/rest/api/v1/datasource/{datasourceInstanceId}/credentialstatus"]["get"]
     update:
       x-speakeasy-group: admin.datasources
-      x-speakeasy-name-override: getCredentialStatus
+      x-speakeasy-name-override: retrieveCredentialStatus
   - target: $["paths"]["/rest/api/v1/datasource/{datasourceInstanceId}/credentials"]["post"]
     update:
       x-speakeasy-group: admin.datasources

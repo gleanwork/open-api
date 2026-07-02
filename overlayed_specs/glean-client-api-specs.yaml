@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: a19dc91d9e1b31a9a0928efdf0e06bbda1ee8499
+  x-source-commit-sha: 45cf1612467e6d18655d1b9abb71df5af41745c8
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: d30868a87b8567758c7336b33f497717bbe834eb
+  x-open-api-commit-sha: 5e1c0246e3a646bf164cde427461f3bffe7c2fc4
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -410,6 +410,8 @@ paths:
           description: Too Many Requests
       security:
         - APIToken: []
+      x-speakeasy-name-override: checkDatasourceAuth
+      x-speakeasy-group: client.authentication
   /rest/api/v1/createauthtoken:
     post:
       tags:
@@ -910,6 +912,8 @@ paths:
           description: Internal server error.
       security:
         - APIToken: []
+      x-speakeasy-name-override: retrieveFile
+      x-speakeasy-group: client.chat
   /rest/api/v1/agents:
     post:
       tags:
@@ -944,6 +948,8 @@ paths:
           description: Internal server error
       security:
         - APIToken: []
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: create
   /rest/api/v1/agents/{agent_id}:
     get:
       tags:
@@ -1029,6 +1035,8 @@ paths:
           description: Internal server error
       security:
         - APIToken: []
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: update
   /rest/api/v1/agents/{agent_id}/schemas:
     get:
       tags:
@@ -2225,6 +2233,8 @@ paths:
           description: Too Many Requests.
       security:
         - APIToken: []
+      x-speakeasy-name-override: retrievePersonPhoto
+      x-speakeasy-group: client.entities
   /rest/api/v1/createshortcut:
     post:
       tags:
@@ -2653,6 +2663,8 @@ paths:
           description: Too Many Requests
       security:
         - APIToken: []
+      x-speakeasy-name-override: retrieveActionPackAuthStatus
+      x-speakeasy-group: client.tools
     post:
       tags:
         - Tools
@@ -2692,6 +2704,8 @@ paths:
           description: Too Many Requests
       security:
         - APIToken: []
+      x-speakeasy-name-override: authorizeActionPack
+      x-speakeasy-group: client.tools
   /rest/api/v1/governance/data/policies/{id}:
     get:
       operationId: getpolicy
@@ -3036,6 +3050,8 @@ paths:
         "500":
           description: Internal error
       x-visibility: Public
+      x-speakeasy-group: client.governance.data.findings
+      x-speakeasy-name-override: create
     get:
       operationId: listfindingsexports
       summary: Lists findings exports
@@ -3056,6 +3072,8 @@ paths:
         "500":
           description: Internal error
       x-visibility: Public
+      x-speakeasy-group: client.governance.data.findings
+      x-speakeasy-name-override: list
   /rest/api/v1/governance/data/findings/exports/{id}:
     get:
       operationId: downloadfindingsexport
@@ -3085,6 +3103,8 @@ paths:
         "500":
           description: Internal error
       x-visibility: Public
+      x-speakeasy-group: client.governance.data.findings
+      x-speakeasy-name-override: download
     delete:
       operationId: deletefindingsexport
       summary: Deletes findings export
@@ -3109,6 +3129,8 @@ paths:
         "500":
           description: Internal error
       x-visibility: Public
+      x-speakeasy-group: client.governance.data.findings
+      x-speakeasy-name-override: delete
   /rest/api/v1/configure/datasources/{datasourceId}/instances/{instanceId}:
     get:
       operationId: getDatasourceInstanceConfiguration
@@ -3150,6 +3172,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-visibility: Preview
+      x-speakeasy-group: client.datasources
+      x-speakeasy-name-override: retrieveConfiguration
     patch:
       operationId: updateDatasourceInstanceConfiguration
       summary: Update datasource instance configuration
@@ -3196,6 +3220,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-visibility: Preview
+      x-speakeasy-group: client.datasources
+      x-speakeasy-name-override: updateConfiguration
   /rest/api/v1/datasource/{datasourceInstanceId}/credentialstatus:
     get:
       operationId: getDatasourceCredentialStatus
@@ -3236,6 +3262,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-visibility: Preview
+      x-speakeasy-group: client.datasources
+      x-speakeasy-name-override: retrieveCredentialStatus
   /rest/api/v1/datasource/{datasourceInstanceId}/credentials:
     post:
       operationId: rotateDatasourceCredentials
@@ -3283,6 +3311,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-visibility: Preview
+      x-speakeasy-group: client.datasources
+      x-speakeasy-name-override: rotateCredentials
   /rest/api/v1/chat#stream:
     post:
       tags:
@@ -5181,6 +5211,44 @@ components:
         editUrl:
           type: string
           description: The URL using which the user can access the edit page of the shortcut.
+    UgcType:
+      enum:
+        - AGENT_TYPE
+        - ANNOUNCEMENTS_TYPE
+        - ANSWERS_TYPE
+        - CHATS_TYPE
+        - COLLECTIONS_TYPE
+        - EMAIL_TYPE
+        - HTML_CODE_TYPE
+        - IMAGE_TYPE
+        - MESSAGE_TYPE
+        - PAPER_TYPE
+        - PRISM_VIEWS_TYPE
+        - PROMPT_TEMPLATES_TYPE
+        - PINS_TYPE
+        - SCRIBES_TYPE
+        - SHORTCUTS_TYPE
+        - SLIDE_TYPE
+        - SPREADSHEET_TYPE
+        - INLINE_HTML_TYPE
+        - PODCAST_TYPE
+        - WORKFLOWS_TYPE
+    FavoriteInfo:
+      type: object
+      properties:
+        ugcType:
+          $ref: "#/components/schemas/UgcType"
+        id:
+          type: string
+          description: Opaque id of the UGC.
+        count:
+          type: integer
+          x-includeEmpty: true
+          description: Number of users this object has been favorited by.
+        favoritedByUser:
+          type: boolean
+          x-includeEmpty: true
+          description: If the requesting user has favorited this object.
     Shortcut:
       allOf:
         - $ref: "#/components/schemas/UserGeneratedContentId"
@@ -5202,6 +5270,8 @@ components:
               description: A list of user roles for the Go Link.
               items:
                 $ref: "#/components/schemas/UserRoleSpecification"
+            favoriteInfo:
+              $ref: "#/components/schemas/FavoriteInfo"
     Collection:
       allOf:
         - $ref: "#/components/schemas/CollectionMutableProperties"
@@ -5254,6 +5324,8 @@ components:
               description: A list of user roles for the Collection.
               items:
                 $ref: "#/components/schemas/UserRoleSpecification"
+            favoriteInfo:
+              $ref: "#/components/schemas/FavoriteInfo"
     CollectionItem:
       allOf:
         - $ref: "#/components/schemas/CollectionItemMutableProperties"
@@ -6067,6 +6139,8 @@ components:
             updateTime:
               type: string
               format: date-time
+            favoriteInfo:
+              $ref: "#/components/schemas/FavoriteInfo"
     PersonTeam:
       description: Use `id` if you index teams via Glean, and use `name` and `externalLink` if you want to use your own team pages
       properties:
@@ -6890,6 +6964,8 @@ components:
             isPublished:
               type: boolean
               description: Whether or not the announcement is published.
+            favoriteInfo:
+              $ref: "#/components/schemas/FavoriteInfo"
     DeleteAnnouncementRequest:
       required:
         - id
@@ -6978,6 +7054,8 @@ components:
             message: Use `answer.trackingToken` instead.
             removal: "2027-01-15"
           x-speakeasy-deprecation-message: "Deprecated on 2026-05-07, removal scheduled for 2027-01-15: Use `answer.trackingToken` instead."
+        favoriteInfo:
+          $ref: "#/components/schemas/FavoriteInfo"
     GetAnswerError:
       properties:
         errorType:
@@ -10160,44 +10238,6 @@ components:
               description: A list of roles for this prompt template explicitly granted.
               items:
                 $ref: "#/components/schemas/UserRoleSpecification"
-    UgcType:
-      enum:
-        - AGENT_TYPE
-        - ANNOUNCEMENTS_TYPE
-        - ANSWERS_TYPE
-        - CHATS_TYPE
-        - COLLECTIONS_TYPE
-        - EMAIL_TYPE
-        - HTML_CODE_TYPE
-        - IMAGE_TYPE
-        - MESSAGE_TYPE
-        - PAPER_TYPE
-        - PRISM_VIEWS_TYPE
-        - PROMPT_TEMPLATES_TYPE
-        - PINS_TYPE
-        - SCRIBES_TYPE
-        - SHORTCUTS_TYPE
-        - SLIDE_TYPE
-        - SPREADSHEET_TYPE
-        - INLINE_HTML_TYPE
-        - PODCAST_TYPE
-        - WORKFLOWS_TYPE
-    FavoriteInfo:
-      type: object
-      properties:
-        ugcType:
-          $ref: "#/components/schemas/UgcType"
-        id:
-          type: string
-          description: Opaque id of the UGC.
-        count:
-          type: integer
-          x-includeEmpty: true
-          description: Number of users this object has been favorited by.
-        favoritedByUser:
-          type: boolean
-          x-includeEmpty: true
-          description: If the requesting user has favorited this object.
     PromptTemplateResult:
       properties:
         promptTemplate:
