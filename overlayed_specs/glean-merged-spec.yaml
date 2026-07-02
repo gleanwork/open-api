@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: 750ec3e4db6f2877f191460b47bff807273c68d8
-  x-open-api-commit-sha: 5130487252df59e5fe21a96c4e758609933045da
+  x-source-commit-sha: 15020ec3ae38327a89f5da3d12e88044811c06f0
+  x-open-api-commit-sha: 1935069cdfd959ef0cca8632b54dc9f084b4d2a3
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -67,6 +67,8 @@ paths:
           $ref: "#/components/responses/PlatformNotFound"
         "408":
           $ref: "#/components/responses/PlatformRequestTimeout"
+        "413":
+          $ref: "#/components/responses/PlatformRequestTooLarge"
         "429":
           $ref: "#/components/responses/PlatformTooManyRequests"
         "500":
@@ -236,6 +238,8 @@ paths:
           $ref: "#/components/responses/PlatformRequestTimeout"
         "409":
           $ref: "#/components/responses/PlatformConflict"
+        "413":
+          $ref: "#/components/responses/PlatformRequestTooLarge"
         "429":
           $ref: "#/components/responses/PlatformTooManyRequests"
         "500":
@@ -282,6 +286,8 @@ paths:
           $ref: "#/components/responses/PlatformNotFound"
         "408":
           $ref: "#/components/responses/PlatformRequestTimeout"
+        "413":
+          $ref: "#/components/responses/PlatformRequestTooLarge"
         "429":
           $ref: "#/components/responses/PlatformTooManyRequests"
         "500":
@@ -5078,6 +5084,7 @@ components:
         - resource_not_found
         - method_not_allowed
         - request_timeout
+        - request_too_large
         - conflict
         - gone
         - unprocessable_query
@@ -15752,6 +15759,12 @@ components:
             $ref: "#/components/schemas/PlatformProblemDetail"
     PlatformRequestTimeout:
       description: Backend did not respond within the timeout window.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/PlatformProblemDetail"
+    PlatformRequestTooLarge:
+      description: Request body exceeds the maximum allowed size.
       content:
         application/problem+json:
           schema:

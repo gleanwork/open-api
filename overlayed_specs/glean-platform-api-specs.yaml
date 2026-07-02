@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: 750ec3e4db6f2877f191460b47bff807273c68d8
-  x-open-api-commit-sha: 5130487252df59e5fe21a96c4e758609933045da
+  x-source-commit-sha: 15020ec3ae38327a89f5da3d12e88044811c06f0
+  x-open-api-commit-sha: 1935069cdfd959ef0cca8632b54dc9f084b4d2a3
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -49,6 +49,8 @@ paths:
           $ref: "#/components/responses/PlatformNotFound"
         "408":
           $ref: "#/components/responses/PlatformRequestTimeout"
+        "413":
+          $ref: "#/components/responses/PlatformRequestTooLarge"
         "429":
           $ref: "#/components/responses/PlatformTooManyRequests"
         "500":
@@ -212,6 +214,8 @@ paths:
           $ref: "#/components/responses/PlatformRequestTimeout"
         "409":
           $ref: "#/components/responses/PlatformConflict"
+        "413":
+          $ref: "#/components/responses/PlatformRequestTooLarge"
         "429":
           $ref: "#/components/responses/PlatformTooManyRequests"
         "500":
@@ -256,6 +260,8 @@ paths:
           $ref: "#/components/responses/PlatformNotFound"
         "408":
           $ref: "#/components/responses/PlatformRequestTimeout"
+        "413":
+          $ref: "#/components/responses/PlatformRequestTooLarge"
         "429":
           $ref: "#/components/responses/PlatformTooManyRequests"
         "500":
@@ -345,6 +351,7 @@ components:
         - resource_not_found
         - method_not_allowed
         - request_timeout
+        - request_too_large
         - conflict
         - gone
         - unprocessable_query
@@ -804,6 +811,12 @@ components:
             $ref: "#/components/schemas/PlatformProblemDetail"
     PlatformRequestTimeout:
       description: Backend did not respond within the timeout window.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/PlatformProblemDetail"
+    PlatformRequestTooLarge:
+      description: Request body exceeds the maximum allowed size.
       content:
         application/problem+json:
           schema:
