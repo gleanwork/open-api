@@ -10,6 +10,7 @@ import {
   transformServerVariables,
   transformEnumDescriptions,
   transformGleanDeprecated,
+  transformGleanExperimental,
   transformPlatformSpec,
   injectOpenApiCommitSha,
 } from '../src/source-spec-transformer.js';
@@ -1611,5 +1612,100 @@ describe('OpenAPI YAML Transformer', () => {
     expect(deprecatedField['x-speakeasy-deprecation-message']).toBe(
       'Deprecated on 2024-04-01, removal scheduled for 2024-10-01: This field is deprecated',
     );
+  });
+
+  test('transformGleanExperimental wires an opt-in global header for experimental operations', () => {
+    const testSpec = {
+      paths: {
+        '/agents/search': {
+          post: {
+            operationId: 'platform-agents-search',
+            'x-glean-experimental': {
+              id: 'exp-uuid-1',
+              introduced: '2026-05-12',
+            },
+          },
+        },
+      },
+    };
+
+    const transformedSpec = transformGleanExperimental(testSpec);
+    const operation = transformedSpec.paths['/agents/search'].post;
+
+    // Operation references the shared component parameter.
+    expect(operation.parameters).toContainEqual({
+      $ref: '#/components/parameters/xGleanIncludeExperimentalHeader',
+    });
+
+    // Original annotation is preserved.
+    expect(operation['x-glean-experimental']).toEqual({
+      id: 'exp-uuid-1',
+      introduced: '2026-05-12',
+    });
+
+    // Component parameter is defined as a hidden global header, opt-in (no default).
+    const param =
+      transformedSpec.components.parameters.xGleanIncludeExperimentalHeader;
+    expect(param.name).toBe('X-Glean-Include-Experimental');
+    expect(param.in).toBe('header');
+    expect(param.required).toBe(false);
+    expect(param['x-speakeasy-globals-hidden']).toBe(true);
+    expect(param['x-speakeasy-name-override']).toBe('includeExperimental');
+    expect(param.schema).toEqual({ type: 'boolean' });
+    expect(param.schema.default).toBeUndefined();
+
+    // Registered as an SDK-level global.
+    expect(transformedSpec['x-speakeasy-globals'].parameters).toContainEqual({
+      $ref: '#/components/parameters/xGleanIncludeExperimentalHeader',
+    });
+  });
+
+  test('transformGleanExperimental is idempotent and skips non-experimental operations', () => {
+    const testSpec = {
+      paths: {
+        '/agents/search': {
+          post: {
+            operationId: 'platform-agents-search',
+            'x-glean-experimental': {
+              id: 'exp-uuid-1',
+              introduced: '2026-05-12',
+            },
+          },
+        },
+        '/stable': {
+          get: { operationId: 'stable-get' },
+        },
+      },
+    };
+
+    transformGleanExperimental(testSpec);
+    const transformedSpec = transformGleanExperimental(testSpec);
+
+    // Experimental op has exactly one reference (no duplicates on re-run).
+    const refs = transformedSpec.paths['/agents/search'].post.parameters.filter(
+      (p) =>
+        p.$ref === '#/components/parameters/xGleanIncludeExperimentalHeader',
+    );
+    expect(refs).toHaveLength(1);
+
+    // Global registered exactly once.
+    expect(transformedSpec['x-speakeasy-globals'].parameters).toHaveLength(1);
+
+    // Non-experimental op is untouched.
+    expect(transformedSpec.paths['/stable'].get.parameters).toBeUndefined();
+  });
+
+  test('transformGleanExperimental makes no changes when no experimental operations exist', () => {
+    const testSpec = {
+      paths: {
+        '/stable': { get: { operationId: 'stable-get' } },
+      },
+    };
+
+    const transformedSpec = transformGleanExperimental(testSpec);
+
+    expect(transformedSpec['x-speakeasy-globals']).toBeUndefined();
+    expect(transformedSpec.components).toBeUndefined();
+    expect(transformedSpec.paths['/stable'].get.parameters).toBeUndefined();
   });
 });

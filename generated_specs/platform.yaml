@@ -57,6 +57,8 @@ paths:
           $ref: "#/components/responses/PlatformServiceUnavailable"
       x-speakeasy-group: agents
       x-speakeasy-name-override: search
+      parameters:
+        - $ref: "#/components/parameters/xGleanIncludeExperimentalHeader"
   /api/agents/{agent_id}:
     get:
       tags:
@@ -77,6 +79,7 @@ paths:
           schema:
             type: string
             minLength: 1
+        - $ref: "#/components/parameters/xGleanIncludeExperimentalHeader"
       responses:
         "200":
           description: Successful response.
@@ -129,6 +132,7 @@ paths:
           schema:
             type: boolean
             default: false
+        - $ref: "#/components/parameters/xGleanIncludeExperimentalHeader"
       responses:
         "200":
           description: Successful response.
@@ -175,6 +179,7 @@ paths:
           schema:
             type: string
             minLength: 1
+        - $ref: "#/components/parameters/xGleanIncludeExperimentalHeader"
       requestBody:
         required: true
         content:
@@ -264,6 +269,8 @@ paths:
           $ref: "#/components/responses/PlatformServiceUnavailable"
       x-speakeasy-group: search
       x-speakeasy-name-override: query
+      parameters:
+        - $ref: "#/components/parameters/xGleanIncludeExperimentalHeader"
 components:
   securitySchemes:
     APIToken:
@@ -832,3 +839,16 @@ components:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/PlatformProblemDetail"
+  parameters:
+    xGleanIncludeExperimentalHeader:
+      name: X-Glean-Include-Experimental
+      in: header
+      required: false
+      description: Opt in to experimental Glean API endpoints. Set once when constructing the SDK.
+      x-speakeasy-globals-hidden: true
+      x-speakeasy-name-override: includeExperimental
+      schema:
+        type: boolean
+x-speakeasy-globals:
+  parameters:
+    - $ref: "#/components/parameters/xGleanIncludeExperimentalHeader"

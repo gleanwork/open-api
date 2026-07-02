@@ -282,12 +282,103 @@ function transformPlatformOperations(spec) {
   }
 }
 
+const EXPERIMENTAL_HEADER_COMPONENT = 'xGleanIncludeExperimentalHeader';
+const EXPERIMENTAL_HEADER_REF = `#/components/parameters/${EXPERIMENTAL_HEADER_COMPONENT}`;
+const experimentalHttpMethods = new Set([
+  'get',
+  'put',
+  'post',
+  'delete',
+  'patch',
+  'options',
+  'head',
+  'trace',
+]);
+
+/**
+ * Turns x-glean-experimental annotations into an opt-in SDK-level header.
+ *
+ * For every operation annotated with x-glean-experimental, this attaches an
+ * X-Glean-Include-Experimental header modeled as a hidden Speakeasy global
+ * (x-speakeasy-globals + x-speakeasy-globals-hidden). Users set it once when
+ * constructing the SDK; it is then auto-populated on experimental operations
+ * only and hidden from individual method signatures.
+ *
+ * The header is opt-in: the schema has no default, so a user who never sets it
+ * sends nothing. The original x-glean-experimental annotation is preserved for
+ * downstream doc consumers.
+ *
+ * @param {Object} spec The OpenAPI spec object
+ * @returns {Object} Transformed spec object
+ */
+export function transformGleanExperimental(spec) {
+  if (!spec.paths) return spec;
+
+  let anyExperimental = false;
+  for (const pathItem of Object.values(spec.paths)) {
+    if (!pathItem || typeof pathItem !== 'object') continue;
+
+    for (const [method, operation] of Object.entries(pathItem)) {
+      if (
+        !experimentalHttpMethods.has(method) ||
+        !operation ||
+        typeof operation !== 'object'
+      ) {
+        continue;
+      }
+      if (!operation['x-glean-experimental']) continue;
+
+      anyExperimental = true;
+      operation.parameters = operation.parameters || [];
+      const alreadyReferenced = operation.parameters.some(
+        (p) => p && p.$ref === EXPERIMENTAL_HEADER_REF,
+      );
+      if (!alreadyReferenced) {
+        operation.parameters.push({ $ref: EXPERIMENTAL_HEADER_REF });
+      }
+    }
+  }
+
+  if (!anyExperimental) return spec;
+
+  // Define the shared component parameter that backs the global.
+  spec.components = spec.components || {};
+  spec.components.parameters = spec.components.parameters || {};
+  spec.components.parameters[EXPERIMENTAL_HEADER_COMPONENT] = {
+    name: 'X-Glean-Include-Experimental',
+    in: 'header',
+    required: false,
+    description:
+      'Opt in to experimental Glean API endpoints. Set once when constructing the SDK.',
+    'x-speakeasy-globals-hidden': true,
+    'x-speakeasy-name-override': 'includeExperimental',
+    schema: { type: 'boolean' },
+  };
+
+  // Register it as an SDK-level global parameter so Speakeasy surfaces it as a
+  // one-time client option rather than a per-method argument.
+  spec['x-speakeasy-globals'] = spec['x-speakeasy-globals'] || {};
+  spec['x-speakeasy-globals'].parameters =
+    spec['x-speakeasy-globals'].parameters || [];
+  const alreadyRegistered = spec['x-speakeasy-globals'].parameters.some(
+    (p) => p && p.$ref === EXPERIMENTAL_HEADER_REF,
+  );
+  if (!alreadyRegistered) {
+    spec['x-speakeasy-globals'].parameters.push({
+      $ref: EXPERIMENTAL_HEADER_REF,
+    });
+  }
+
+  return spec;
+}
+
 export function transformPlatformSpec(spec) {
   transformPlatformTagGroups(spec);
   transformPlatformSchemas(spec);
   transformPlatformResponses(spec);
   transformPlatformApiTokenSecurity(spec);
   transformPlatformOperations(spec);
+  transformGleanExperimental(spec);
 
   return spec;
 }
