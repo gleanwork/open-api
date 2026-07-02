@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 7c4df5e27207f62db1aa30bc859b83b10733120c
+  x-source-commit-sha: 45cf1612467e6d18655d1b9abb71df5af41745c8
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -4259,6 +4259,44 @@ components:
         editUrl:
           type: string
           description: The URL using which the user can access the edit page of the shortcut.
+    UgcType:
+      enum:
+        - AGENT_TYPE
+        - ANNOUNCEMENTS_TYPE
+        - ANSWERS_TYPE
+        - CHATS_TYPE
+        - COLLECTIONS_TYPE
+        - EMAIL_TYPE
+        - HTML_CODE_TYPE
+        - IMAGE_TYPE
+        - MESSAGE_TYPE
+        - PAPER_TYPE
+        - PRISM_VIEWS_TYPE
+        - PROMPT_TEMPLATES_TYPE
+        - PINS_TYPE
+        - SCRIBES_TYPE
+        - SHORTCUTS_TYPE
+        - SLIDE_TYPE
+        - SPREADSHEET_TYPE
+        - INLINE_HTML_TYPE
+        - PODCAST_TYPE
+        - WORKFLOWS_TYPE
+    FavoriteInfo:
+      type: object
+      properties:
+        ugcType:
+          $ref: '#/components/schemas/UgcType'
+        id:
+          type: string
+          description: Opaque id of the UGC.
+        count:
+          type: integer
+          x-includeEmpty: true
+          description: Number of users this object has been favorited by.
+        favoritedByUser:
+          type: boolean
+          x-includeEmpty: true
+          description: If the requesting user has favorited this object.
     Shortcut:
       allOf:
         - $ref: '#/components/schemas/UserGeneratedContentId'
@@ -4280,6 +4318,8 @@ components:
               description: A list of user roles for the Go Link.
               items:
                 $ref: '#/components/schemas/UserRoleSpecification'
+            favoriteInfo:
+              $ref: '#/components/schemas/FavoriteInfo'
     Collection:
       allOf:
         - $ref: '#/components/schemas/CollectionMutableProperties'
@@ -4332,6 +4372,8 @@ components:
               description: A list of user roles for the Collection.
               items:
                 $ref: '#/components/schemas/UserRoleSpecification'
+            favoriteInfo:
+              $ref: '#/components/schemas/FavoriteInfo'
     CollectionItem:
       allOf:
         - $ref: '#/components/schemas/CollectionItemMutableProperties'
@@ -5133,6 +5175,8 @@ components:
             updateTime:
               type: string
               format: date-time
+            favoriteInfo:
+              $ref: '#/components/schemas/FavoriteInfo'
     PersonTeam:
       description: Use `id` if you index teams via Glean, and use `name` and `externalLink` if you want to use your own team pages
       properties:
@@ -5939,6 +5983,8 @@ components:
             isPublished:
               type: boolean
               description: Whether or not the announcement is published.
+            favoriteInfo:
+              $ref: '#/components/schemas/FavoriteInfo'
     DeleteAnnouncementRequest:
       required:
         - id
@@ -6026,6 +6072,8 @@ components:
             introduced: '2026-05-07'
             message: Use `answer.trackingToken` instead.
             removal: '2027-01-15'
+        favoriteInfo:
+          $ref: '#/components/schemas/FavoriteInfo'
     GetAnswerError:
       properties:
         errorType:
@@ -9167,44 +9215,6 @@ components:
               description: A list of roles for this prompt template explicitly granted.
               items:
                 $ref: '#/components/schemas/UserRoleSpecification'
-    UgcType:
-      enum:
-        - AGENT_TYPE
-        - ANNOUNCEMENTS_TYPE
-        - ANSWERS_TYPE
-        - CHATS_TYPE
-        - COLLECTIONS_TYPE
-        - EMAIL_TYPE
-        - HTML_CODE_TYPE
-        - IMAGE_TYPE
-        - MESSAGE_TYPE
-        - PAPER_TYPE
-        - PRISM_VIEWS_TYPE
-        - PROMPT_TEMPLATES_TYPE
-        - PINS_TYPE
-        - SCRIBES_TYPE
-        - SHORTCUTS_TYPE
-        - SLIDE_TYPE
-        - SPREADSHEET_TYPE
-        - INLINE_HTML_TYPE
-        - PODCAST_TYPE
-        - WORKFLOWS_TYPE
-    FavoriteInfo:
-      type: object
-      properties:
-        ugcType:
-          $ref: '#/components/schemas/UgcType'
-        id:
-          type: string
-          description: Opaque id of the UGC.
-        count:
-          type: integer
-          x-includeEmpty: true
-          description: Number of users this object has been favorited by.
-        favoritedByUser:
-          type: boolean
-          x-includeEmpty: true
-          description: If the requesting user has favorited this object.
     PromptTemplateResult:
       properties:
         promptTemplate:
