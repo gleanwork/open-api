@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 25b3777ca585fd0312844a68b43f9843c8a6859c
+  x-source-commit-sha: 158aafa656d1619ab050fb5e80aa4016eb87d841
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -526,6 +526,7 @@ components:
           $ref: '#/components/schemas/MessageRole'
         content:
           type: array
+          minItems: 1
           description: Content blocks in the message.
           items:
             $ref: '#/components/schemas/MessageTextBlock'
