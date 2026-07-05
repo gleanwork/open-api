@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: a7b574a101222ae02faecd27505711446618649d
+  x-source-commit-sha: 33bf057cf0f948a83126e81582717aebdb622bfa
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -8881,6 +8881,7 @@ components:
               - ZERO_STATE_WORKFLOW_SUGGESTION
               - PERSONALIZED_CHAT_SUGGESTION
               - DAILY_DIGEST
+              - PODCAST
               - TASK
               - PLAN_MY_DAY
               - END_MY_DAY
@@ -9312,6 +9313,7 @@ components:
             - ZERO_STATE_AGENT_SUGGESTION
             - PERSONALIZED_CHAT_SUGGESTION
             - DAILY_DIGEST
+            - PODCAST
             - TASK
             - PLAN_MY_DAY
             - END_MY_DAY
@@ -9405,6 +9407,7 @@ components:
             - ZERO_STATE_WORKFLOW_SUGGESTION
             - PERSONALIZED_CHAT_SUGGESTION
             - DAILY_DIGEST
+            - PODCAST
             - TASK
             - PLAN_MY_DAY
             - END_MY_DAY
