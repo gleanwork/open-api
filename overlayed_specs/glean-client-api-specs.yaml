@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 33bf057cf0f948a83126e81582717aebdb622bfa
+  x-source-commit-sha: c70b186f95d488a7568f213e4cb88b052ed019dd
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: f5245e430a3578e1540117c92889ddcf2cb18c90
+  x-open-api-commit-sha: 4f7ef80c26421f9923ca6ce89664993282098e4a
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -2705,6 +2705,89 @@ paths:
       security:
         - APIToken: []
       x-speakeasy-name-override: authorizeActionPack
+      x-speakeasy-group: client.tools
+  /rest/api/v1/tool-servers/{serverId}/auth:
+    parameters:
+      - in: path
+        name: serverId
+        required: true
+        description: Unique identifier of the tool server.
+        schema:
+          type: string
+    get:
+      tags:
+        - Tools
+      summary: Get end-user authentication status for a tool server.
+      description: |
+        Returns display information and the calling user's current authentication status
+        for the specified tool server.
+      operationId: getToolServerAuthStatus
+      x-visibility: Preview
+      x-glean-experimental:
+        id: 52fde6ec-c18b-4de6-b761-f82008542ae7
+        introduced: "2026-07-02"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ToolServerAuthStatusResponse"
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "404":
+          description: Tool server not found
+        "429":
+          description: Too Many Requests
+      security:
+        - APIToken: []
+      x-speakeasy-name-override: retrieveToolServerAuthStatus
+      x-speakeasy-group: client.tools
+    post:
+      tags:
+        - Tools
+      summary: Start the OAuth authorization flow for a tool server.
+      description: |
+        Initiates the third-party OAuth flow for the specified tool server and returns the
+        authorization URL that the client should navigate the end user to. After the OAuth
+        callback completes, the user's browser is redirected back to `returnUrl` with query
+        parameters indicating the result.
+
+        `returnUrl` must match the tenant's configured return URL allowlist; otherwise the
+        request is rejected with 400.
+      operationId: authorizeToolServer
+      x-visibility: Preview
+      x-glean-experimental:
+        id: 1935476e-ecaf-4c1f-a9fd-1e768cf68f30
+        introduced: "2026-07-02"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthorizeToolServerRequest"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorizeToolServerResponse"
+        "400":
+          description: Invalid request (e.g. returnUrl not in allowlist, unsupported auth type)
+        "401":
+          description: Unauthorized
+        "403":
+          description: User not entitled to the tool server
+        "404":
+          description: Tool server not found
+        "429":
+          description: Too Many Requests
+      security:
+        - APIToken: []
+      x-speakeasy-name-override: authorizeToolServer
       x-speakeasy-group: client.tools
   /rest/api/v1/governance/data/policies/{id}:
     get:
@@ -11077,6 +11160,51 @@ components:
           type: string
           description: |
             URL that the customer UI should navigate the end user to in order to begin the third-party OAuth flow.
+            After the user consents, control returns to `returnUrl` from the request.
+    ToolServerAuthStatus:
+      type: string
+      description: Authentication status for the calling user.
+      enum:
+        - AWAITING_AUTH
+        - AUTHORIZED
+    ToolServerAuthStatusResponse:
+      type: object
+      required:
+        - authStatus
+        - authType
+      properties:
+        displayName:
+          type: string
+          description: Human-readable name of the tool server.
+        logoUrl:
+          type: string
+          description: Logo URL for the tool server.
+        description:
+          type: string
+          description: Brief description of the tool server.
+        authStatus:
+          $ref: "#/components/schemas/ToolServerAuthStatus"
+        authType:
+          $ref: "#/components/schemas/ActionAuthType"
+    AuthorizeToolServerRequest:
+      type: object
+      required:
+        - returnUrl
+      properties:
+        returnUrl:
+          type: string
+          description: |
+            URL to redirect the end user's browser back to after the OAuth flow completes.
+            Must be present in the tenant's configured return URL allowlist.
+    AuthorizeToolServerResponse:
+      type: object
+      required:
+        - authorizationUrl
+      properties:
+        authorizationUrl:
+          type: string
+          description: |
+            URL that the client should navigate the end user to in order to begin the OAuth flow.
             After the user consents, control returns to `returnUrl` from the request.
     SensitiveInfoType:
       properties:
