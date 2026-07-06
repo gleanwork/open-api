@@ -1,4 +1,4 @@
-speakeasyVersion: 1.675.2
+speakeasyVersion: 1.788.1
 sources:
     glean-api-specs:
         sourceNamespace: glean-api-specs
@@ -31,8 +31,8 @@ sources:
             - 0.9.0
     glean-client-merged-code-samples-spec:
         sourceNamespace: glean-client-merged-code-samples-spec
-        sourceRevisionDigest: sha256:fcdb939580f1bc110d1e24ac020dc456a7d0b8e5ae92a8819af4aee243df9fd9
-        sourceBlobDigest: sha256:4f6a8a7379b9e0722c305eecfb820104c4808f417de95c3a46f7b8e3daef8596
+        sourceRevisionDigest: sha256:cf2480bd3a0bfd0530cc8c6153cd17f52842b873084854c6fd2e7f65c72bc682
+        sourceBlobDigest: sha256:64616626967260301b503fb8a1d2402ba8b0c34d9cd345480470307a282e4ae8
         tags:
             - latest
             - main
@@ -46,16 +46,16 @@ sources:
             - 0.9.0
     glean-index-merged-code-samples-spec:
         sourceNamespace: glean-index-merged-code-samples-spec
-        sourceRevisionDigest: sha256:2b993482ca65b225a5b6442a1869d2df4bce9ec2612e939d286cfbb5fdaf06d3
-        sourceBlobDigest: sha256:65cee3ca4855773d72b4494c29e5342e921356df31b9326561c6e06913e0c172
+        sourceRevisionDigest: sha256:78d4d6cb432738ba2ac09951d111a77cd50f8f320de769197145eb092435b473
+        sourceBlobDigest: sha256:29a77bd0510cc41636ab1178d31bc8a852406195fa71c604e7a9d36c7e81dfc1
         tags:
             - latest
             - main
             - 0.9.0
     glean-platform-merged-code-samples-spec:
         sourceNamespace: glean-platform-merged-code-samples-spec
-        sourceRevisionDigest: sha256:6733ad0ba2d6a5fc32c777f7d2d2308d09d39084be0525c591f03d8350d36e1c
-        sourceBlobDigest: sha256:14e9da71f629f99e9560292f6366cc38cb11485acc2a06f206e92e2dfac66ee0
+        sourceRevisionDigest: sha256:8fb2e90e4cf4810227ea1c5086f7afe1ac66512cbda601f5a141a0af6f0df231
+        sourceBlobDigest: sha256:6d62b8741495fd77d6961032668470d68fa6a6be7bfe18f06ebbadb918d7a217
         tags:
             - latest
             - main
