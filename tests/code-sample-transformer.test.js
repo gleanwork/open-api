@@ -286,4 +286,161 @@ paths:
       `);
     });
   });
+
+  describe('experimentalCodeSnippets', () => {
+    test('yields samples only for operations marked x-glean-experimental', () => {
+      const spec = yaml.load(
+        readFixture('example-with-experimental-code-samples.yaml'),
+      );
+
+      const experimentalLangs = [];
+      for (const [, pathSpec] of codeSampleTransformer.path(spec)) {
+        for (const [lang] of codeSampleTransformer.experimentalCodeSnippets(
+          pathSpec,
+        )) {
+          experimentalLangs.push(lang);
+        }
+      }
+
+      // Only the /api/agents/search (experimental) samples should be yielded,
+      // not the /api/agents/stable ones.
+      expect(experimentalLangs).toMatchInlineSnapshot(`
+        [
+          "python",
+          "typescript",
+          "go",
+          "java",
+        ]
+      `);
+    });
+  });
+
+  describe('addIncludeExperimentalToCodeSamples', () => {
+    let spec;
+
+    beforeEach(() => {
+      spec = yaml.load(
+        readFixture('example-with-experimental-code-samples.yaml'),
+      );
+      // Mirror the production order: server URL is injected first, then the
+      // experimental flag is anchored onto it.
+      codeSampleTransformer.addServerURLToCodeSamples(spec);
+      codeSampleTransformer.addIncludeExperimentalToCodeSamples(spec);
+    });
+
+    test('adds include_experimental to the experimental Python sample', () => {
+      const experimentalSpec = spec.paths['/api/agents/search'];
+
+      expect(
+        codeSampleTransformer.extractCodeSnippet(experimentalSpec, 'python')
+          .source,
+      ).toMatchInlineSnapshot(`
+        "from glean.api_client import Glean
+        import os
+
+
+        with Glean(
+            api_token=os.getenv("GLEAN_API_TOKEN", ""),
+            server_url="https://mycompany-be.glean.com",
+            include_experimental=True,
+        ) as glean:
+
+            res = glean.agents.search(name="HR Policy Agent")
+
+            # Handle response
+            print(res)"
+      `);
+    });
+
+    test('adds includeExperimental to the experimental TypeScript sample', () => {
+      const experimentalSpec = spec.paths['/api/agents/search'];
+
+      expect(
+        codeSampleTransformer.extractCodeSnippet(experimentalSpec, 'typescript')
+          .source,
+      ).toMatchInlineSnapshot(`
+        "import { Glean } from "@gleanwork/api-client";
+
+        const glean = new Glean({
+          apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+          serverURL: "https://mycompany-be.glean.com",
+          includeExperimental: true,
+        });
+
+        async function run() {
+          const result = await glean.agents.search({
+            name: "HR Policy Agent",
+          });
+
+          console.log(result);
+        }
+
+        run();"
+      `);
+    });
+
+    test('adds WithIncludeExperimental to the experimental Go sample', () => {
+      const experimentalSpec = spec.paths['/api/agents/search'];
+
+      expect(
+        codeSampleTransformer.extractCodeSnippet(experimentalSpec, 'go').source,
+      ).toContain('apiclientgo.WithIncludeExperimental(true),');
+    });
+
+    test('swaps to GleanBuilder and adds includeExperimental in the experimental Java sample', () => {
+      const experimentalSpec = spec.paths['/api/agents/search'];
+
+      expect(
+        codeSampleTransformer.extractCodeSnippet(experimentalSpec, 'java')
+          .source,
+      ).toMatchInlineSnapshot(`
+        "package hello.world;
+
+        import com.glean.api_client.glean_api_client.Glean;
+        import com.glean.api_client.glean_api_client.hooks.GleanBuilder;
+        import com.glean.api_client.glean_api_client.models.components.PlatformAgentsSearchRequest;
+        import com.glean.api_client.glean_api_client.models.operations.PlatformAgentsSearchResponse;
+        import java.lang.Exception;
+
+        public class Application {
+
+            public static void main(String[] args) throws Exception {
+
+                Glean sdk = GleanBuilder.create()
+                        .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
+                        .includeExperimental(true)
+                    .build();
+
+                PlatformAgentsSearchResponse res = sdk.agents().search()
+                        .request(PlatformAgentsSearchRequest.builder()
+                            .name("HR Policy Agent")
+                            .build())
+                        .call();
+
+                if (res.platformAgentsSearchResponse().isPresent()) {
+                    System.out.println(res.platformAgentsSearchResponse().get());
+                }
+            }
+        }"
+      `);
+    });
+
+    test('does not modify non-experimental samples', () => {
+      const stableSpec = spec.paths['/api/agents/stable'];
+
+      const python = codeSampleTransformer.extractCodeSnippet(
+        stableSpec,
+        'python',
+      ).source;
+      const java = codeSampleTransformer.extractCodeSnippet(
+        stableSpec,
+        'java',
+      ).source;
+
+      expect(python).not.toContain('include_experimental');
+      expect(java).not.toContain('includeExperimental');
+      expect(java).not.toContain('GleanBuilder');
+      expect(java).toContain('Glean.builder()');
+    });
+  });
 });

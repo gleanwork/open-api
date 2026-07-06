@@ -1,0 +1,168 @@
+openapi: 3.0.0
+info:
+  version: 0.9.0
+  title: Glean Platform API
+  x-speakeasy-name: 'Glean Platform API'
+servers:
+  - url: https://{instance}-be.glean.com
+    variables:
+      instance:
+        default: instance-name
+security:
+  - APIToken: []
+paths:
+  /api/agents/search:
+    post:
+      tags:
+        - Agents
+      summary: Search agents
+      operationId: platform-agents-search
+      x-visibility: Public
+      x-glean-experimental:
+        id: 4abc1e17-8e06-490b-99a7-e8f97592405a
+        introduced: '2026-05-12'
+      x-speakeasy-group: agents
+      x-speakeasy-name-override: search
+      responses:
+        '200':
+          description: OK
+      x-codeSamples:
+        - lang: python
+          label: Python (API Client)
+          source: |-
+            from glean.api_client import Glean
+            import os
+
+
+            with Glean(
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
+            ) as glean:
+
+                res = glean.agents.search(name="HR Policy Agent")
+
+                # Handle response
+                print(res)
+        - lang: typescript
+          label: Typescript (API Client)
+          source: |-
+            import { Glean } from "@gleanwork/api-client";
+
+            const glean = new Glean({
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+            });
+
+            async function run() {
+              const result = await glean.agents.search({
+                name: "HR Policy Agent",
+              });
+
+              console.log(result);
+            }
+
+            run();
+        - lang: go
+          label: Go (API Client)
+          source: |-
+            package main
+
+            import(
+            	"context"
+            	"os"
+            	apiclientgo "github.com/gleanwork/api-client-go"
+            	"github.com/gleanwork/api-client-go/models/components"
+            	"log"
+            )
+
+            func main() {
+                ctx := context.Background()
+
+                s := apiclientgo.New(
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
+                )
+
+                res, err := s.Agents.Search(ctx, components.PlatformAgentsSearchRequest{
+                    Name: apiclientgo.Pointer("HR Policy Agent"),
+                })
+                if err != nil {
+                    log.Fatal(err)
+                }
+                if res.PlatformAgentsSearchResponse != nil {
+                    // handle response
+                }
+            }
+        - lang: java
+          label: Java (API Client)
+          source: |-
+            package hello.world;
+
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.PlatformAgentsSearchRequest;
+            import com.glean.api_client.glean_api_client.models.operations.PlatformAgentsSearchResponse;
+            import java.lang.Exception;
+
+            public class Application {
+
+                public static void main(String[] args) throws Exception {
+
+                    Glean sdk = Glean.builder()
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
+                        .build();
+
+                    PlatformAgentsSearchResponse res = sdk.agents().search()
+                            .request(PlatformAgentsSearchRequest.builder()
+                                .name("HR Policy Agent")
+                                .build())
+                            .call();
+
+                    if (res.platformAgentsSearchResponse().isPresent()) {
+                        System.out.println(res.platformAgentsSearchResponse().get());
+                    }
+                }
+            }
+  /api/agents/stable:
+    post:
+      tags:
+        - Agents
+      summary: Stable (non-experimental) endpoint
+      operationId: platform-agents-stable
+      x-visibility: Public
+      x-speakeasy-group: agents
+      x-speakeasy-name-override: stable
+      responses:
+        '200':
+          description: OK
+      x-codeSamples:
+        - lang: python
+          label: Python (API Client)
+          source: |-
+            from glean.api_client import Glean
+            import os
+
+
+            with Glean(
+                api_token=os.getenv("GLEAN_API_TOKEN", ""),
+            ) as glean:
+
+                res = glean.agents.stable()
+
+                # Handle response
+                print(res)
+        - lang: java
+          label: Java (API Client)
+          source: |-
+            package hello.world;
+
+            import com.glean.api_client.glean_api_client.Glean;
+            import java.lang.Exception;
+
+            public class Application {
+
+                public static void main(String[] args) throws Exception {
+
+                    Glean sdk = Glean.builder()
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
+                        .build();
+
+                    sdk.agents().stable().call();
+                }
+            }
