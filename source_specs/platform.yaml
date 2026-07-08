@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 1ccc408fdb2c210e136239b5b42a53c7b9b4abe5
+  x-source-commit-sha: 9bca005a03d53a6cd35c7439b108282c26317ff8
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -919,3 +919,6 @@ x-tagGroups:
   - name: Data Retrieval
     tags:
       - Search
+  - name: Automation
+    tags:
+      - Triggers
