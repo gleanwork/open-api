@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: 86a3d25c98922e44038e228af50e87d8fac9cff2
-  x-open-api-commit-sha: edcc92aa9dc66fc0bcf4d0d592af9173b5a4c509
+  x-source-commit-sha: 270b693d49bac2f68e751b2345bac0c267741119
+  x-open-api-commit-sha: 592aec2b4913505edb8161645eaf9a72b5286f20
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -5533,12 +5533,21 @@ components:
       additionalProperties: false
       required:
         - query
+      example:
+        query: quarterly planning 2026
+        datasources:
+          - confluence
+          - google_drive
+        filters:
+          - field: type
+            values:
+              - spreadsheet
+              - presentation
       properties:
         query:
           type: string
           description: |
             The search query string. Supports inline operators such as `from:jane type:document app:confluence`. Inline operators are AND'd with structured `filters`.
-          example: quarterly planning 2026
         page_size:
           type: integer
           minimum: 1
@@ -5556,18 +5565,12 @@ components:
             type: string
           description: |
             Restrict results to specific datasources. Requests must not specify both `datasources` and `datasource_instances`.
-          example:
-            - confluence
-            - google_drive
         datasource_instances:
           type: array
           items:
             type: string
           description: |
             Restrict results to specific datasource instances. Values are datasource instance identifiers returned by `GET /api/search/filters`. Requests must not specify both `datasources` and `datasource_instances`.
-          example:
-            - slack_acme
-            - slack_eu
         filters:
           type: array
           items:
