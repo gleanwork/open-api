@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: e9e573455d8b69cccaa4f3b32d291d65ac6bece6
+  x-source-commit-sha: 2baaf8ec24700650e4332596dc636747348deab2
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -6520,6 +6520,22 @@ components:
             - REDIRECT
             - EXECUTION
             - MCP
+        actionTypeSource:
+          type: string
+          description: |
+            Analytics-only signal (product snapshot) describing WHERE the action's
+            read/write determination came from. Complementary to the effective
+            read/write value (the tool's ToolType, which drives HITL): the value says
+            read-or-write, this says how confident that is. MCP_ANNOTATION = from the
+            tool's read-only/destructive hints; ADMIN_OVERRIDE = an admin set it;
+            NONE = no usable hint (the effective value then defaults to write);
+            NATIVE_TOOL_DEFINITION = from a curated native tool (snapshot-derived).
+            Does not affect runtime behavior.
+          enum:
+            - MCP_ANNOTATION
+            - ADMIN_OVERRIDE
+            - NONE
+            - NATIVE_TOOL_DEFINITION
         authType:
           type: string
           enum:
