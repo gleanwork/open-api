@@ -32,7 +32,7 @@
     "js-yaml": "^4.3.0"
   },
   "devDependencies": {
-    "prettier": "^3.9.4",
+    "prettier": "^3.9.5",
     "vitest": "^4.1.10"
   }
 }
