@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'source_specs/**'
+      - 'tests/post_transform_smoke.test.js'
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
