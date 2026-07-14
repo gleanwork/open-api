@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 270b693d49bac2f68e751b2345bac0c267741119
+  x-source-commit-sha: 2e2d3269b7d70d7a987985956e264bfc087d1a0d
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 592aec2b4913505edb8161645eaf9a72b5286f20
+  x-open-api-commit-sha: 5dd85b126df60437ca4a2ba2061b79d4a7d3fe40
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -7520,6 +7520,22 @@ components:
             - REDIRECT
             - EXECUTION
             - MCP
+        actionTypeSource:
+          type: string
+          description: |
+            Analytics-only signal (product snapshot) describing WHERE the action's
+            read/write determination came from. Complementary to the effective
+            read/write value (the tool's ToolType, which drives HITL): the value says
+            read-or-write, this says how confident that is. MCP_ANNOTATION = from the
+            tool's read-only/destructive hints; ADMIN_OVERRIDE = an admin set it;
+            NONE = no usable hint (the effective value then defaults to write);
+            NATIVE_TOOL_DEFINITION = from a curated native tool (snapshot-derived).
+            Does not affect runtime behavior.
+          enum:
+            - MCP_ANNOTATION
+            - ADMIN_OVERRIDE
+            - NONE
+            - NATIVE_TOOL_DEFINITION
         authType:
           type: string
           enum:
