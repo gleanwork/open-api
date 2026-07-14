@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: fa494c4a6000a69d033f75815984c4d961aaf100
+  x-source-commit-sha: 2e2d3269b7d70d7a987985956e264bfc087d1a0d
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -237,7 +237,7 @@ paths:
       operationId: platform-skills-list
       x-visibility: Public
       x-glean-sdk:
-        group: platform.skills
+        group: skills
         method: list
       x-glean-experimental:
         id: 3eb65937-03a3-472b-9a00-be713f302b5f
@@ -291,7 +291,7 @@ paths:
       operationId: platform-skills-get
       x-visibility: Public
       x-glean-sdk:
-        group: platform.skills
+        group: skills
         method: retrieve
       x-glean-experimental:
         id: 8f8d1c92-a484-4769-9903-200613dc8a72
