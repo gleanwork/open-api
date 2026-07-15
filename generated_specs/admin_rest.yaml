@@ -2,14 +2,14 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: 2e2d3269b7d70d7a987985956e264bfc087d1a0d
+  x-source-commit-sha: 9b5c3c870d83601832ec00a5da6e9a06213bb831
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
     operations. These offer limited exposure to the admin APIs through rest endpoints.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 5dd85b126df60437ca4a2ba2061b79d4a7d3fe40
+  x-open-api-commit-sha: 4759e7952b268576ba78788786530bbccf44acab
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -1087,13 +1087,14 @@ components:
             $ref: "#/components/schemas/DocumentVisibilityUpdateResult"
     DlpSeverity:
       type: string
-      description: Severity levels for DLP findings and analyses.
+      description: Severity levels for DLP findings and analyses. FALSE_POSITIVE ranks below LOW and marks analyses that concluded every flagged entity is a detector false positive.
       x-include-enum-class-prefix: true
       enum:
         - UNSPECIFIED
         - LOW
         - MEDIUM
         - HIGH
+        - FALSE_POSITIVE
     DlpIssueStatus:
       type: string
       description: Status of a DLP issue.
