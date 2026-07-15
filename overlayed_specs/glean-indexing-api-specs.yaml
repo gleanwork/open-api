@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 9b5c3c870d83601832ec00a5da6e9a06213bb831
+  x-source-commit-sha: c166707038af061986428f63498621969b336e54
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 4759e7952b268576ba78788786530bbccf44acab
+  x-open-api-commit-sha: 0f4c9f25af773f1d2658a255024b57acb7dcc010
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -1089,6 +1089,67 @@ paths:
           description: Too Many Requests
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: debugEvents
+  /rest/api/index/submissions/{datasourceInstance}/{type}:
+    servers:
+      - url: https://{instance}-be.glean.com
+        variables:
+          instance:
+            default: instance-name
+            description: The instance name (typically the email domain without the TLD) that determines the deployment backend.
+    parameters:
+      - name: datasourceInstance
+        in: path
+        description: Datasource instance that should process the submission
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: path
+        description: Submission type registered for the datasource
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Submit datasource data
+      description: Validates and asynchronously processes a datasource-specific submission.
+      tags:
+        - Datasources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+        required: true
+        x-exportParamName: SubmissionRequest
+      responses:
+        "202":
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  requestId:
+                    type: string
+                required:
+                  - requestId
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "405":
+          description: Method Not Allowed
+        "413":
+          description: Payload Too Large
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+        "503":
+          description: Service Unavailable
+      x-speakeasy-name-override: submit
+      x-speakeasy-group: indexing.datasources
   /rest/api/index/document/{docId}/custom-metadata/{groupName}:
     servers:
       - url: https://{instance}-be.glean.com
