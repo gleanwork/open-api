@@ -22,6 +22,11 @@ actions:
       x-speakeasy-name-override: add
       x-speakeasy-group: indexing.datasources
 
+  - target: $["paths"]["/rest/api/index/submissions/{datasourceInstance}/{type}"]["post"]
+    update:
+      x-speakeasy-name-override: submit
+      x-speakeasy-group: indexing.datasources
+
   # Documents
   - target: $["paths"]["/api/index/v1/deletedocument"]["post"]
     update:
