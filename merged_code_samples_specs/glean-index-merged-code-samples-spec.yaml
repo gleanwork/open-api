@@ -4988,6 +4988,37 @@ paths:
                     }
                 }
             }
+        - lang: go
+          label: Go (API Client)
+          source: |-
+            package main
+
+            import(
+            	"context"
+            	"os"
+            	apiclientgo "github.com/gleanwork/api-client-go"
+            	"log"
+            )
+
+            func main() {
+                ctx := context.Background()
+
+                s := apiclientgo.New(
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
+                )
+
+                res, err := s.Indexing.Datasources.Submit(ctx, "<value>", "<value>", map[string]any{
+                    "key": "<value>",
+                    "key1": "<value>",
+                    "key2": "<value>",
+                })
+                if err != nil {
+                    log.Fatal(err)
+                }
+                if res.Object != nil {
+                    // handle response
+                }
+            }
   /rest/api/index/document/{docId}/custom-metadata/{groupName}:
     servers:
       - url: https://{instance}-be.glean.com
