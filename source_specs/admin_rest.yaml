@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: a72f073a87f9c960e74bad84ba92f63403c94e06
+  x-source-commit-sha: 5171489e389fd7b3f003296768e62481fa1640a9
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
@@ -1149,11 +1149,31 @@ components:
           description: Filter by one or more issue statuses.
         assigneeId:
           type: string
-          description: Filter by assignee user ID.
+          deprecated: true
+          description: Filter by a single assignee user ID. Deprecated; use assigneeIds.
+        assigneeIds:
+          type: array
+          items:
+            type: string
+          description: Filter by one or more assignee user IDs. Use the sentinel value "UNASSIGNED" to match issues with no assignee.
         infoType:
           type: string
+          deprecated: true
+          description: Filter by a single built-in info type. Deprecated; use infoTypes.
+        infoTypes:
+          type: array
+          items:
+            type: string
+          description: Filter by one or more built-in info types.
         regexId:
           type: string
+          deprecated: true
+          description: Filter by a single regex rule ID. Deprecated; use regexIds.
+        regexIds:
+          type: array
+          items:
+            type: string
+          description: Filter by one or more regex rule IDs.
         reportIds:
           type: array
           items:
@@ -1163,6 +1183,13 @@ components:
           type: string
         datasource:
           type: string
+          deprecated: true
+          description: Filter by a single datasource. Deprecated; use datasources.
+        datasources:
+          type: array
+          items:
+            type: string
+          description: Filter by one or more datasources.
         visibility:
           type: string
         severities:
