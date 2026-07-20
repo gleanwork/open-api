@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 933a34153a2d3f41a02bfc848e579ab054c1d5c5
+  x-source-commit-sha: 8ae886b878c82ecff12d95a51eb90cc4ac276414
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -228,6 +228,52 @@ paths:
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
   /skills:
+    post:
+      tags:
+        - Skills
+      summary: Create skill
+      description: |
+        Create a skill from an uploaded SKILL.md, .zip, or .skill bundle. If the authenticated user already has a skill with the same name, the existing skill is superseded with a new version.
+      operationId: platform-skills-create
+      x-visibility: Public
+      x-glean-sdk:
+        group: skills
+        method: create
+      x-glean-experimental:
+        id: 3cd55572-0d5c-4898-9ecf-1b86c520d1c7
+        introduced: '2026-06-24'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SkillCreateRequest'
+        x-codegen-request-body-name: request
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillCreateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
     get:
       tags:
         - Skills
@@ -281,6 +327,53 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
+  /skills/validation:
+    post:
+      tags:
+        - Skills
+      summary: Validate skill bundle
+      description: |
+        Validate a skill bundle without persisting it. Accepts a SKILL.md, .zip, or .skill upload and returns parsed metadata plus the normalized file layout.
+      operationId: platform-skills-validate
+      x-visibility: Public
+      x-glean-sdk:
+        group: skills
+        method: validate
+      x-glean-experimental:
+        id: 0b086fa6-30f8-4279-8d11-10ab0059c14a
+        introduced: '2026-06-24'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SkillValidationRequest'
+        x-codegen-request-body-name: request
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillValidationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
   /skills/{skill_id}:
     get:
       tags:
@@ -311,6 +404,287 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SkillGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /skills/{skill_id}/content:
+    get:
+      tags:
+        - Skills
+      summary: Download skill content
+      description: |
+        Download the latest installable bundle for a skill available to the authenticated user.
+      operationId: platform-skills-get-content
+      x-visibility: Public
+      x-glean-sdk:
+        group: skills
+        method: retrieveContent
+      x-glean-experimental:
+        id: fd6908d8-f230-4cd5-bf45-f71e69266b1d
+        introduced: '2026-06-24'
+      parameters:
+        - name: skill_id
+          in: path
+          required: true
+          description: Glean skill ID.
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        '200':
+          description: Successful response.
+          headers:
+            Content-Disposition:
+              description: Attachment filename for the skill bundle.
+              schema:
+                type: string
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /skills/{skill_id}/versions:
+    post:
+      tags:
+        - Skills
+      summary: Create skill version
+      description: |
+        Create a new immutable version for an existing caller-managed skill from an uploaded SKILL.md, .zip, or .skill bundle.
+      operationId: platform-skills-create-version
+      x-visibility: Public
+      x-glean-sdk:
+        group: skills
+        method: createVersion
+      x-glean-experimental:
+        id: 0d5e48e2-7a41-4d54-b3aa-5026f0dd65df
+        introduced: '2026-06-24'
+      parameters:
+        - name: skill_id
+          in: path
+          required: true
+          description: Glean skill ID.
+          schema:
+            type: string
+            minLength: 1
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SkillVersionCreateRequest'
+        x-codegen-request-body-name: request
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillVersionCreateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    get:
+      tags:
+        - Skills
+      summary: List skill versions
+      description: |
+        List versions for a skill available to the authenticated user.
+      operationId: platform-skills-list-versions
+      x-visibility: Public
+      x-glean-sdk:
+        group: skills
+        method: listVersions
+      x-glean-experimental:
+        id: 9efbb8a3-d546-4304-a653-09bb427e3681
+        introduced: '2026-06-24'
+      parameters:
+        - name: skill_id
+          in: path
+          required: true
+          description: Glean skill ID.
+          schema:
+            type: string
+            minLength: 1
+        - in: query
+          name: page_size
+          description: Maximum number of versions to return.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - in: query
+          name: cursor
+          description: Opaque pagination cursor from a previous response.
+          required: false
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillVersionsListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /skills/{skill_id}/versions/{version}:
+    get:
+      tags:
+        - Skills
+      summary: Retrieve skill version
+      description: |
+        Retrieve metadata for a skill version available to the authenticated user.
+      operationId: platform-skills-get-version
+      x-visibility: Public
+      x-glean-sdk:
+        group: skills
+        method: retrieveVersion
+      x-glean-experimental:
+        id: d70986b1-ad80-48dd-8e52-f294e7251dda
+        introduced: '2026-06-24'
+      parameters:
+        - name: skill_id
+          in: path
+          required: true
+          description: Glean skill ID.
+          schema:
+            type: string
+            minLength: 1
+        - name: version
+          in: path
+          required: true
+          description: Major version number.
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillVersionGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /skills/{skill_id}/versions/{version}/content:
+    get:
+      tags:
+        - Skills
+      summary: Download skill version content
+      description: |
+        Download the installable bundle for a skill version available to the authenticated user.
+      operationId: platform-skills-get-version-content
+      x-visibility: Public
+      x-glean-sdk:
+        group: skills
+        method: retrieveVersionContent
+      x-glean-experimental:
+        id: 70c85692-7042-403a-a3a5-5b315576432a
+        introduced: '2026-06-24'
+      parameters:
+        - name: skill_id
+          in: path
+          required: true
+          description: Glean skill ID.
+          schema:
+            type: string
+            minLength: 1
+        - name: version
+          in: path
+          required: true
+          description: Major version number.
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Successful response.
+          headers:
+            Content-Disposition:
+              description: Attachment filename for the skill bundle.
+              schema:
+                type: string
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -888,6 +1262,100 @@ components:
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
+    SkillCreateRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - file
+      properties:
+        file:
+          type: string
+          format: binary
+          description: SKILL.md, .zip, or .skill bundle to create.
+    SkillCreateResponse:
+      type: object
+      required:
+        - skill
+        - request_id
+      properties:
+        skill:
+          $ref: '#/components/schemas/Skill'
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
+    SkillValidationRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - file
+      properties:
+        file:
+          type: string
+          format: binary
+          description: SKILL.md, .zip, or .skill bundle to validate.
+    SkillValidationMetadata:
+      type: object
+      required:
+        - display_name
+        - description
+      properties:
+        display_name:
+          type: string
+          description: Skill name parsed from SKILL.md frontmatter.
+        description:
+          type: string
+          description: Skill description parsed from SKILL.md frontmatter.
+    SkillValidationFile:
+      type: object
+      required:
+        - path
+        - size_bytes
+        - is_manifest
+      properties:
+        path:
+          type: string
+          description: Normalized relative path in the skill bundle.
+        size_bytes:
+          type: integer
+          description: File size in bytes.
+        is_manifest:
+          type: boolean
+          description: Whether this file is the skill manifest.
+    SkillValidationWarning:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Stable warning code.
+        message:
+          type: string
+          description: Human-readable warning message.
+    SkillValidationResponse:
+      type: object
+      required:
+        - metadata
+        - files
+        - warnings
+        - request_id
+      properties:
+        metadata:
+          $ref: '#/components/schemas/SkillValidationMetadata'
+        files:
+          type: array
+          description: Normalized files in the bundle after stripping an optional single root folder.
+          items:
+            $ref: '#/components/schemas/SkillValidationFile'
+        warnings:
+          type: array
+          description: Non-blocking validation warnings.
+          items:
+            $ref: '#/components/schemas/SkillValidationWarning'
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
     SkillGetResponse:
       type: object
       required:
@@ -896,6 +1364,96 @@ components:
       properties:
         skill:
           $ref: '#/components/schemas/Skill'
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
+    SkillVersion:
+      type: object
+      required:
+        - skill_id
+        - version
+        - minor_version
+        - is_latest
+        - created_by
+        - created_at
+        - updated_at
+      properties:
+        skill_id:
+          type: string
+          description: Glean skill ID.
+        version:
+          type: integer
+          description: Major version number.
+        minor_version:
+          type: integer
+          description: Minor version number.
+        is_latest:
+          type: boolean
+          description: Whether this is the latest version of the skill.
+        created_by:
+          $ref: '#/components/schemas/PersonReference'
+        created_at:
+          type: string
+          format: date-time
+          description: Time this version was created.
+        updated_at:
+          type: string
+          format: date-time
+          description: Time this version was last updated.
+        source_provenance:
+          $ref: '#/components/schemas/SkillSourceProvenance'
+    SkillVersionsListResponse:
+      type: object
+      required:
+        - versions
+        - has_more
+        - next_cursor
+        - request_id
+      properties:
+        versions:
+          type: array
+          description: Versions available for the skill.
+          items:
+            $ref: '#/components/schemas/SkillVersion'
+        has_more:
+          type: boolean
+          description: Whether additional results are available.
+        next_cursor:
+          type: string
+          nullable: true
+          description: Cursor for the next page, or null when no more results are available.
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
+    SkillVersionCreateRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - file
+      properties:
+        file:
+          type: string
+          format: binary
+          description: SKILL.md, .zip, or .skill bundle to store as a new version.
+    SkillVersionCreateResponse:
+      type: object
+      required:
+        - version
+        - request_id
+      properties:
+        version:
+          $ref: '#/components/schemas/SkillVersion'
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
+    SkillVersionGetResponse:
+      type: object
+      required:
+        - version
+        - request_id
+      properties:
+        version:
+          $ref: '#/components/schemas/SkillVersion'
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
