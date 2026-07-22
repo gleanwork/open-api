@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: fc06a927d215490babcaa783176e533a57e9b370
-  x-open-api-commit-sha: 6e14d7fe196fffa123e6fbfc0d594ad77b2f965e
+  x-source-commit-sha: e4d5a02207c6a1fe93766ca3818206abcc01da09
+  x-open-api-commit-sha: 6d72937439a68f74f9265587e3a9f24139ac86ef
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -5640,6 +5640,24 @@ components:
       description: >-
         HTTP bearer token. Accepts a Glean-issued API token, an OAuth access token from the Glean OAuth Authorization Server (including Dynamic Client Registration clients), or an OAuth access token issued by an external identity provider. External-IdP OAuth tokens must also include the `X-Glean-Auth-Type: OAUTH` request header. OAuth is supported on the Client API only; the Indexing API requires a Glean-issued token.
   schemas:
+    PlatformWarning:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - message
+      description: Non-blocking warning attached to a successful Platform response.
+      properties:
+        code:
+          type: string
+          minLength: 1
+          description: |
+            Open snake_case warning code. Clients must tolerate unknown values; the set of codes is not a closed enum.
+          example: results_incomplete
+        message:
+          type: string
+          minLength: 1
+          description: Human-readable warning message.
     PlatformAgentsSearchRequest:
       type: object
       additionalProperties: false
@@ -6205,18 +6223,6 @@ components:
         is_manifest:
           type: boolean
           description: Whether this file is the skill manifest.
-    PlatformSkillValidationWarning:
-      type: object
-      required:
-        - code
-        - message
-      properties:
-        code:
-          type: string
-          description: Stable warning code.
-        message:
-          type: string
-          description: Human-readable warning message.
     PlatformSkillValidationResponse:
       type: object
       required:
@@ -6236,7 +6242,7 @@ components:
           type: array
           description: Non-blocking validation warnings.
           items:
-            $ref: "#/components/schemas/PlatformSkillValidationWarning"
+            $ref: "#/components/schemas/PlatformWarning"
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
@@ -6499,6 +6505,7 @@ components:
         - has_more
         - next_cursor
         - request_id
+        - warnings
       properties:
         results:
           type: array
@@ -6515,6 +6522,12 @@ components:
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
+        warnings:
+          type: array
+          description: |
+            Non-blocking warnings for this response. Always present; empty means `[]`. Clients must tolerate unknown warning codes.
+          items:
+            $ref: "#/components/schemas/PlatformWarning"
     ActivityEventParams:
       properties:
         bodyContent:
