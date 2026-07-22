@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 3306e2f99e70e78b28f9a4fcd0c9d577f20e5178
+  x-source-commit-sha: e4d5a02207c6a1fe93766ca3818206abcc01da09
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -1321,17 +1321,23 @@ components:
         is_manifest:
           type: boolean
           description: Whether this file is the skill manifest.
-    SkillValidationWarning:
+    PlatformWarning:
       type: object
+      additionalProperties: false
       required:
         - code
         - message
+      description: Non-blocking warning attached to a successful Platform response.
       properties:
         code:
           type: string
-          description: Stable warning code.
+          minLength: 1
+          description: |
+            Open snake_case warning code. Clients must tolerate unknown values; the set of codes is not a closed enum.
+          example: results_incomplete
         message:
           type: string
+          minLength: 1
           description: Human-readable warning message.
     SkillValidationResponse:
       type: object
@@ -1352,7 +1358,7 @@ components:
           type: array
           description: Non-blocking validation warnings.
           items:
-            $ref: '#/components/schemas/SkillValidationWarning'
+            $ref: '#/components/schemas/PlatformWarning'
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
@@ -1615,6 +1621,7 @@ components:
         - has_more
         - next_cursor
         - request_id
+        - warnings
       properties:
         results:
           type: array
@@ -1631,6 +1638,12 @@ components:
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
+        warnings:
+          type: array
+          description: |
+            Non-blocking warnings for this response. Always present; empty means `[]`. Clients must tolerate unknown warning codes.
+          items:
+            $ref: '#/components/schemas/PlatformWarning'
   responses:
     BadRequest:
       description: Invalid request (malformed JSON, invalid parameter values, unknown fields).
