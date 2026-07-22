@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 8f5fba10678398b9e439e891ed613bea8234970e
+  x-source-commit-sha: 4f466121cbd991c2e99f41443b16fc68693c7acc
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -375,6 +375,62 @@ paths:
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
   /skills/{skill_id}:
+    patch:
+      tags:
+        - Skills
+      summary: Update skill
+      description: |
+        Update mutable metadata for a skill. V1 supports enabling or disabling a skill without changing its content.
+      operationId: platform-skills-update
+      x-visibility: Public
+      x-glean-sdk:
+        group: skills
+        method: update
+      x-glean-experimental:
+        id: 262e1f6b-6c2d-4d6d-943b-fc251d2fb38b
+        introduced: '2026-07-20'
+      parameters:
+        - name: skill_id
+          in: path
+          required: true
+          description: Glean skill ID.
+          schema:
+            type: string
+            minLength: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillUpdateRequest'
+        x-codegen-request-body-name: request
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
     get:
       tags:
         - Skills
@@ -1363,6 +1419,31 @@ components:
           type: string
           description: Platform-generated request ID for support correlation.
     SkillGetResponse:
+      type: object
+      required:
+        - skill
+        - request_id
+      properties:
+        skill:
+          $ref: '#/components/schemas/Skill'
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
+    SkillUpdateStatus:
+      type: string
+      enum:
+        - ENABLED
+        - DISABLED
+      description: New status for the skill.
+    SkillUpdateRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+      properties:
+        status:
+          $ref: '#/components/schemas/SkillUpdateStatus'
+    SkillUpdateResponse:
       type: object
       required:
         - skill
