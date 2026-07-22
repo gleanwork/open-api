@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: e4d5a02207c6a1fe93766ca3818206abcc01da09
-  x-open-api-commit-sha: 6d72937439a68f74f9265587e3a9f24139ac86ef
+  x-source-commit-sha: 4f466121cbd991c2e99f41443b16fc68693c7acc
+  x-open-api-commit-sha: 69a8f3207019d75701b0203e2a6cfcdae7fd96f9
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -369,6 +369,61 @@ paths:
       x-speakeasy-group: skills
       x-speakeasy-name-override: validate
   /api/skills/{skill_id}:
+    patch:
+      tags:
+        - Skills
+      summary: Update skill
+      description: |
+        Update mutable metadata for a skill. V1 supports enabling or disabling a skill without changing its content.
+      operationId: platform-skills-update
+      x-visibility: Public
+      x-glean-experimental:
+        id: 262e1f6b-6c2d-4d6d-943b-fc251d2fb38b
+        introduced: "2026-07-20"
+      parameters:
+        - name: skill_id
+          in: path
+          required: true
+          description: Glean skill ID.
+          schema:
+            type: string
+            minLength: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlatformSkillUpdateRequest"
+        x-codegen-request-body-name: request
+      responses:
+        "200":
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformSkillUpdateResponse"
+        "400":
+          $ref: "#/components/responses/PlatformBadRequest"
+        "401":
+          $ref: "#/components/responses/PlatformUnauthorized"
+        "403":
+          $ref: "#/components/responses/PlatformForbidden"
+        "404":
+          $ref: "#/components/responses/PlatformNotFound"
+        "408":
+          $ref: "#/components/responses/PlatformRequestTimeout"
+        "409":
+          $ref: "#/components/responses/PlatformConflict"
+        "413":
+          $ref: "#/components/responses/PlatformRequestTooLarge"
+        "429":
+          $ref: "#/components/responses/PlatformTooManyRequests"
+        "500":
+          $ref: "#/components/responses/PlatformInternalServerError"
+        "503":
+          $ref: "#/components/responses/PlatformServiceUnavailable"
+      x-speakeasy-group: skills
+      x-speakeasy-name-override: update
     get:
       tags:
         - Skills
@@ -1350,6 +1405,31 @@ components:
           type: string
           description: Platform-generated request ID for support correlation.
     PlatformSkillGetResponse:
+      type: object
+      required:
+        - skill
+        - request_id
+      properties:
+        skill:
+          $ref: "#/components/schemas/PlatformSkill"
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
+    PlatformSkillUpdateStatus:
+      type: string
+      enum:
+        - ENABLED
+        - DISABLED
+      description: New status for the skill.
+    PlatformSkillUpdateRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+      properties:
+        status:
+          $ref: "#/components/schemas/PlatformSkillUpdateStatus"
+    PlatformSkillUpdateResponse:
       type: object
       required:
         - skill
