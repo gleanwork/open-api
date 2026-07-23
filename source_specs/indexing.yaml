@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Indexing API
-  x-source-commit-sha: 50e024e0d2d6b1f03e6d3f009b350cea72b5a124
+  x-source-commit-sha: 0a7acf0cb7018c0cc9d6da01724637d061e6ac07
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -2827,6 +2827,8 @@ components:
             - ENTITY
             - CALENDAR
             - AGENTS
+            - AI_CONVERSATION
+            - AI_ARTIFACT
           description: The document category of this object type.
         propertyDefinitions:
           type: array
@@ -2963,6 +2965,8 @@ components:
             - ENTITY
             - CALENDAR
             - AGENTS
+            - AI_CONVERSATION
+            - AI_ARTIFACT
           default: UNCATEGORIZED
           description: The type of this datasource. It is an important signal for relevance and must be specified and cannot be UNCATEGORIZED. Please refer to [this](https://developers.glean.com/docs/indexing_api_datasource_category/) for more details.
         urlRegex:
