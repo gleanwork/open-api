@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: 0a7acf0cb7018c0cc9d6da01724637d061e6ac07
-  x-open-api-commit-sha: 678917897897ea11458d1a09b8e87a68e72f2916
+  x-source-commit-sha: fe2aa82d8f3552d7aa2ff08115f88e5729240075
+  x-open-api-commit-sha: e807e0f31d2abd9df3afa1d273aac2d73b279256
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -796,7 +796,7 @@ paths:
         - Search
       summary: Search
       description: |
-        Execute a search query and retrieve ranked results. This is the data retrieval variant of the search API and returns only results and pagination state. Structured filters accept exact public built-ins and free-form custom fields.
+        Execute a search query and retrieve ranked results. This is the data retrieval variant of the search API and returns only results and pagination state. Structured filters accept the eleven exact lowercase public built-ins and free-form custom fields. Custom and unknown fields are forwarded without spelling, existence, type, ambiguity, or operator-compatibility validation, so behavior is backend-dependent.
         Successful responses always include a non-nullable `warnings` array (`[]` when empty). When results are incomplete for the requested datasource scope, the response remains HTTP 200 with `results`, `has_more`, and `next_cursor` preserved and a `results_incomplete` warning. Query outcomes that cannot be honored return HTTP 422 `unprocessable_query` and suppress results and cursor; invalid inline operators may include a nested `/query` `invalid_filter` issue. Backend work and audit logging may already have occurred before such a 422 replaces a result-bearing response. Structural and representability failures remain HTTP 400. Rate limits return HTTP 429 with `Retry-After`. Temporary backend unavailability returns HTTP 503.
       operationId: platform-search
       x-visibility: Public
@@ -6510,13 +6510,13 @@ components:
         - field
         - values
       description: |
-        A single filter criterion. For `EQUALS`, multiple values within a filter are OR'd. For `NOT_EQUALS`, multiple values exclude all listed values. Filters are AND'd with each other and with any inline query operators.
+        A single filter criterion. For `EQUALS`, multiple values within a filter are OR'd. For `NOT_EQUALS`, multiple values exclude all listed values. Filters are AND'd with each other and with any inline query operators. Repeated same-field `EQUALS` filters are rejected because separate filters represent conjunction.
       properties:
         field:
           type: string
           minLength: 1
           description: |
-            The field to filter on. Accepts built-in filter field names such as `type`, `owner`, `from`, `author`, `channel`, `status`, `assignee`, `reporter`, `component`, `mentions`, and `collection`, plus custom datasource property names.
+            Exact lowercase public built-in names are case-sensitive and limited to `type`, `owner`, `from`, `author`, `channel`, `status`, `assignee`, `reporter`, `component`, `mentions`, and `collection`. Any other nonblank name is forwarded as a possible custom field without spelling, existence, type, ambiguity, or operator-compatibility validation.
           example: type
         values:
           type: array
@@ -6532,7 +6532,7 @@ components:
           allOf:
             - $ref: "#/components/schemas/PlatformFilterOperator"
           description: |
-            Comparison operator to apply to this filter. Defaults to `EQUALS`. `GT`, `GTE`, `LT`, and `LTE` range operators require exactly one value; express bounded ranges with multiple filters on the same field.
+            Comparison operator to apply to this filter. Defaults to `EQUALS`. Exact public built-ins support only `EQUALS` and `NOT_EQUALS`. `GT`, `GTE`, `LT`, and `LTE` range operators require exactly one value; express bounded ranges with multiple filters on the same field. For non-built-in fields, operator compatibility is backend-dependent.
     PlatformTimeRange:
       type: object
       additionalProperties: false
@@ -6592,7 +6592,7 @@ components:
           items:
             $ref: "#/components/schemas/PlatformFilter"
           description: |
-            Structured filters applied to search results. Equality operators OR multiple values within a filter. Multiple filters are AND'd together, including range filters on the same field. Filters are AND'd with any inline operators in `query`. Note that conflicting constraints on the same field (e.g., `type:document` in the query and `type: spreadsheet` in a filter) produce an empty result set. Exact public built-ins receive the public operator contract; other nonblank fields pass through as possible custom fields.
+            Structured filters applied to search results. Equality operators OR multiple values within a filter. Multiple filters are AND'd together, including range filters on the same field. Filters are AND'd with any inline operators in `query`. Note that conflicting constraints on the same field (e.g., `type:document` in the query and `type: spreadsheet` in a filter) produce an empty result set. Exact lowercase public built-ins (`type`, `owner`, `from`, `author`, `channel`, `status`, `assignee`, `reporter`, `component`, `mentions`, and `collection`) accept only `EQUALS` and `NOT_EQUALS`. Repeated same-field `EQUALS` filters are rejected because separate filters represent conjunction. Every other nonblank field name is forwarded unchanged as a possible custom field without spelling, existence, type, ambiguity, or operator-compatibility checks; resulting behavior is backend-dependent.
         time_range:
           $ref: "#/components/schemas/PlatformTimeRange"
     PlatformResult:
