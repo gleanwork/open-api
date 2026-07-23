@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: fe2aa82d8f3552d7aa2ff08115f88e5729240075
-  x-open-api-commit-sha: e807e0f31d2abd9df3afa1d273aac2d73b279256
+  x-source-commit-sha: 4b7243c660801e4b055d51c4b49fa04416849ab5
+  x-open-api-commit-sha: 8a3ecaa3f53c2a80e8af09963724483919bdffad
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -849,7 +849,7 @@ paths:
       summary: List search filters
       description: |
         Discover caller-visible datasources and common built-in filter fields that can be used with Platform Search. This is a best-effort common catalog, not an authoritative inventory of every field search may accept.
-        Without `query`, the response returns datasource rows and field metadata without executing search. With a nonblank `query`, exactly one `datasources` value is required and the response may include bounded, non-exhaustive facet values for matching public fields.
+        Without `query`, the response returns datasource rows and field metadata without executing search. With a nonblank `query`, exactly one `datasources` value is required and the response may include bounded, non-exhaustive facet values for matching public fields. Query-backed values preserve QE order and duplicate occurrences, ignore grouping metadata including nonempty `GroupName` (broad field/value semantics rather than exact UI group selection), and omit blank option strings. Query-backed discovery does not apply POST search typed-issue adaptation and does not expose warning objects. Rate limits return HTTP 429 with `Retry-After`. Temporary backend unavailability returns HTTP 503.
       operationId: platform-search-filters
       x-visibility: Public
       x-glean-experimental:
@@ -878,6 +878,13 @@ paths:
       responses:
         "200":
           description: Search filter metadata.
+          headers:
+            Cache-Control:
+              description: |
+                Present as `no-store` for query-backed discovery responses. Catalog-only responses omit this endpoint-specific override.
+              schema:
+                type: string
+                example: no-store
           content:
             application/json:
               schema:
@@ -6707,7 +6714,7 @@ components:
         values:
           type: array
           description: |
-            Bounded, non-exhaustive facet values for this field. Omitted in catalog-only responses. Present as an array, including `[]`, when query-backed discovery executes. An empty array does not imply that no valid value exists.
+            Bounded, non-exhaustive facet values for this field. Omitted in catalog-only responses. Present as an array, including `[]`, when query-backed discovery executes. Values are the exact QE `FacetOption.Option` strings in QE order, including duplicates. Blank options are omitted. Nonempty `GroupName` and other grouping metadata are ignored, so values have broad field/value semantics rather than exact UI group selection. An empty array does not imply that no valid value exists. Backend support varies; federated and MCP values may be page-derived or unavailable. Platform does not truncate below the QE-owned facet bucket bound.
           items:
             type: string
             minLength: 1
