@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: 4f466121cbd991c2e99f41443b16fc68693c7acc
-  x-open-api-commit-sha: 69a8f3207019d75701b0203e2a6cfcdae7fd96f9
+  x-source-commit-sha: b70281f98f4403a16e65ff5b116c53f31e04d991
+  x-open-api-commit-sha: 1764e80882c1f59cc361eb96d17df99dddc6fcb9
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -750,7 +750,8 @@ paths:
         - Search
       summary: Search
       description: |
-        Execute a search query and retrieve ranked results. This is the data retrieval variant of the search API and returns only results and pagination state.
+        Execute a search query and retrieve ranked results. This is the data retrieval variant of the search API and returns only results and pagination state. Structured filters accept exact public built-ins and free-form custom fields.
+        Successful responses always include a non-nullable `warnings` array (`[]` when empty). When results are incomplete for the requested datasource scope, the response remains HTTP 200 with `results`, `has_more`, and `next_cursor` preserved and a `results_incomplete` warning. Query outcomes that cannot be honored return HTTP 422 `unprocessable_query` and suppress results and cursor; invalid inline operators may include a nested `/query` `invalid_filter` issue. Backend work and audit logging may already have occurred before such a 422 replaces a result-bearing response. Structural and representability failures remain HTTP 400. Rate limits return HTTP 429 with `Retry-After`. Temporary backend unavailability returns HTTP 503.
       operationId: platform-search
       x-visibility: Public
       x-glean-experimental:
@@ -765,7 +766,8 @@ paths:
               $ref: "#/components/schemas/PlatformSearchRequest"
       responses:
         "200":
-          description: Successful search.
+          description: |
+            Successful search. Always includes `warnings` (`[]` when empty). A `results_incomplete` warning may be present while results and cursor remain available.
           content:
             application/json:
               schema:
@@ -782,6 +784,8 @@ paths:
           $ref: "#/components/responses/PlatformRequestTimeout"
         "413":
           $ref: "#/components/responses/PlatformRequestTooLarge"
+        "422":
+          $ref: "#/components/responses/PlatformUnprocessableEntity"
         "429":
           $ref: "#/components/responses/PlatformTooManyRequests"
         "500":
@@ -790,6 +794,64 @@ paths:
           $ref: "#/components/responses/PlatformServiceUnavailable"
       x-speakeasy-group: search
       x-speakeasy-name-override: query
+  /api/search/filters:
+    get:
+      tags:
+        - Search
+      summary: List search filters
+      description: |
+        Discover caller-visible datasources and common built-in filter fields that can be used with Platform Search. This is a best-effort common catalog, not an authoritative inventory of every field search may accept.
+        Without `query`, the response returns datasource rows and field metadata without executing search. With a nonblank `query`, exactly one `datasources` value is required and the response may include bounded, non-exhaustive facet values for matching public fields.
+      operationId: platform-search-filters
+      x-visibility: Public
+      x-glean-experimental:
+        id: 0b585621-13fb-4544-bf20-5e1c99452735
+        introduced: "2026-05-12"
+      parameters:
+        - in: query
+          name: datasources
+          description: |
+            Restrict metadata to one or more canonical normalized datasource identifiers. With a nonblank `query`, exactly one datasource is required.
+          required: false
+          schema:
+            type: array
+            minItems: 1
+            items:
+              type: string
+              minLength: 1
+        - in: query
+          name: query
+          description: |
+            Optional search query used to request bounded facet values for the selected datasource. When present it must be nonblank.
+          required: false
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        "200":
+          description: Search filter metadata.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformSearchFiltersResponse"
+        "400":
+          $ref: "#/components/responses/PlatformBadRequest"
+        "401":
+          $ref: "#/components/responses/PlatformUnauthorized"
+        "403":
+          $ref: "#/components/responses/PlatformForbidden"
+        "404":
+          $ref: "#/components/responses/PlatformNotFound"
+        "408":
+          $ref: "#/components/responses/PlatformRequestTimeout"
+        "429":
+          $ref: "#/components/responses/PlatformTooManyRequests"
+        "500":
+          $ref: "#/components/responses/PlatformInternalServerError"
+        "503":
+          $ref: "#/components/responses/PlatformServiceUnavailable"
+      x-speakeasy-group: search
+      x-speakeasy-name-override: listFilters
 components:
   securitySchemes:
     APIToken:
@@ -1542,6 +1604,7 @@ components:
         - LTE
     PlatformFilter:
       type: object
+      additionalProperties: false
       required:
         - field
         - values
@@ -1550,6 +1613,7 @@ components:
       properties:
         field:
           type: string
+          minLength: 1
           description: |
             The field to filter on. Accepts built-in filter field names such as `type`, `owner`, `from`, `author`, `channel`, `status`, `assignee`, `reporter`, `component`, `mentions`, and `collection`, plus custom datasource property names.
           example: type
@@ -1558,6 +1622,7 @@ components:
           minItems: 1
           items:
             type: string
+            minLength: 1
           description: One or more values to match.
           example:
             - spreadsheet
@@ -1569,6 +1634,7 @@ components:
             Comparison operator to apply to this filter. Defaults to `EQUALS`. `GT`, `GTE`, `LT`, and `LTE` range operators require exactly one value; express bounded ranges with multiple filters on the same field.
     PlatformTimeRange:
       type: object
+      additionalProperties: false
       description: Filter results to those last updated within this range.
       properties:
         start:
@@ -1597,6 +1663,7 @@ components:
       properties:
         query:
           type: string
+          minLength: 1
           description: |
             The search query string. Supports inline operators such as `from:jane type:document app:confluence`. Inline operators are AND'd with structured `filters`.
         page_size:
@@ -1612,26 +1679,24 @@ components:
             Opaque pagination token from a previous response's `next_cursor` field. Omit on the first request.
         datasources:
           type: array
+          minItems: 1
           items:
             type: string
+            minLength: 1
           description: |
-            Restrict results to specific datasources. Requests must not specify both `datasources` and `datasource_instances`.
-        datasource_instances:
-          type: array
-          items:
-            type: string
-          description: |
-            Restrict results to specific datasource instances. Values are datasource instance identifiers returned by `GET /api/search/filters`. Requests must not specify both `datasources` and `datasource_instances`.
+            Restrict results to specific canonical normalized datasource identifiers.
         filters:
           type: array
+          minItems: 1
           items:
             $ref: "#/components/schemas/PlatformFilter"
           description: |
-            Structured filters applied to search results. Equality operators OR multiple values within a filter. Multiple filters are AND'd together, including range filters on the same field. Filters are AND'd with any inline operators in `query`. Note that conflicting constraints on the same field (e.g., `type:document` in the query and `type: spreadsheet` in a filter) produce an empty result set.
+            Structured filters applied to search results. Equality operators OR multiple values within a filter. Multiple filters are AND'd together, including range filters on the same field. Filters are AND'd with any inline operators in `query`. Note that conflicting constraints on the same field (e.g., `type:document` in the query and `type: spreadsheet` in a filter) produce an empty result set. Exact public built-ins receive the public operator contract; other nonblank fields pass through as possible custom fields.
         time_range:
           $ref: "#/components/schemas/PlatformTimeRange"
     PlatformResult:
       type: object
+      additionalProperties: false
       required:
         - url
         - title
@@ -1640,31 +1705,31 @@ components:
         url:
           type: string
           format: uri
+          minLength: 1
           description: Canonical URL of the result.
           example: https://company.atlassian.net/wiki/spaces/ENG/pages/12345
         title:
           type: string
+          minLength: 1
           description: Result title.
           example: Q2 2026 Platform Roadmap
         snippets:
           type: array
           items:
             type: string
+            minLength: 1
           description: Query-relevant plain-text excerpts from the result body.
           example:
             - The platform team will focus on API stability and...
         datasource:
           type: string
+          minLength: 1
           description: The datasource this result originates from.
           example: confluence
-        datasource_instance:
-          type: string
-          nullable: true
-          description: The datasource instance this result originates from, if known.
-          example: confluence_acme
         document_type:
           type: string
           nullable: true
+          minLength: 1
           description: The document type within the datasource.
           example: page
         creator:
@@ -1683,6 +1748,7 @@ components:
           description: When the result was created.
     PlatformSearchResponse:
       type: object
+      additionalProperties: false
       required:
         - results
         - has_more
@@ -1704,13 +1770,82 @@ components:
           description: Opaque token to pass as `cursor` in the next request.
         request_id:
           type: string
+          minLength: 1
           description: Platform-generated request ID for support correlation.
         warnings:
           type: array
           description: |
-            Non-blocking warnings for this response. Always present; empty means `[]`. Clients must tolerate unknown warning codes.
+            Non-blocking warnings for this response. Always present; empty means `[]`. Clients must tolerate unknown warning codes. Current code `results_incomplete` means some results may be unavailable for the requested datasource scope; results, `has_more`, and `next_cursor` remain present.
           items:
             $ref: "#/components/schemas/PlatformWarning"
+    PlatformFilterFieldInfo:
+      type: object
+      additionalProperties: false
+      required:
+        - field
+        - type
+        - operators
+      properties:
+        field:
+          type: string
+          minLength: 1
+          description: Field name usable in the `filters` array for `POST /api/search`.
+          example: status
+        type:
+          type: string
+          minLength: 1
+          description: |
+            Open field-type string. Current values are `STRING` and `USER`. Clients must tolerate unknown values.
+          example: STRING
+        operators:
+          type: array
+          minItems: 1
+          description: Supported comparison operators for this field.
+          items:
+            $ref: "#/components/schemas/PlatformFilterOperator"
+        values:
+          type: array
+          description: |
+            Bounded, non-exhaustive facet values for this field. Omitted in catalog-only responses. Present as an array, including `[]`, when query-backed discovery executes. An empty array does not imply that no valid value exists.
+          items:
+            type: string
+            minLength: 1
+    PlatformDatasourceFilterInfo:
+      type: object
+      additionalProperties: false
+      required:
+        - datasource
+        - filters
+      properties:
+        datasource:
+          type: string
+          minLength: 1
+          description: |
+            Stable canonical normalized datasource identifier usable in `POST /api/search` `datasources`.
+          example: jira
+        filters:
+          type: array
+          description: |
+            Common built-in filter fields for this datasource. May be empty. Absence of a public built-in here does not make that field invalid in `POST /api/search`.
+          items:
+            $ref: "#/components/schemas/PlatformFilterFieldInfo"
+    PlatformSearchFiltersResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - datasources
+        - request_id
+      properties:
+        datasources:
+          type: array
+          description: |
+            Datasource metadata visible to the authenticated caller. Each `datasource` value is a canonical normalized identifier usable in `POST /api/search` `datasources`. Empty means no visible datasources.
+          items:
+            $ref: "#/components/schemas/PlatformDatasourceFilterInfo"
+        request_id:
+          type: string
+          minLength: 1
+          description: Platform-generated request ID for support correlation.
   responses:
     PlatformBadRequest:
       description: Invalid request (malformed JSON, invalid parameter values, unknown fields).
@@ -1768,6 +1903,12 @@ components:
             $ref: "#/components/schemas/PlatformProblemDetail"
     PlatformConflict:
       description: Request conflicts with current state of the resource.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/PlatformProblemDetail"
+    PlatformUnprocessableEntity:
+      description: Syntactically valid but semantically incorrect request.
       content:
         application/problem+json:
           schema:
