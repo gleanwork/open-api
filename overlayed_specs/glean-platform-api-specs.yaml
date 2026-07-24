@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: 4b7243c660801e4b055d51c4b49fa04416849ab5
-  x-open-api-commit-sha: 8a3ecaa3f53c2a80e8af09963724483919bdffad
+  x-source-commit-sha: b5bdcc40e1dbd991f2df13c3e4a53b9a7f4a2678
+  x-open-api-commit-sha: 2ff538a3eafa1a5ed45aa40ac69975bb5d16c5c5
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -750,8 +750,8 @@ paths:
         - Search
       summary: Search
       description: |
-        Execute a search query and retrieve ranked results. This is the data retrieval variant of the search API and returns only results and pagination state. Structured filters accept the eleven exact lowercase public built-ins and free-form custom fields. Custom and unknown fields are forwarded without spelling, existence, type, ambiguity, or operator-compatibility validation, so behavior is backend-dependent.
-        Successful responses always include a non-nullable `warnings` array (`[]` when empty). When results are incomplete for the requested datasource scope, the response remains HTTP 200 with `results`, `has_more`, and `next_cursor` preserved and a `results_incomplete` warning. Query outcomes that cannot be honored return HTTP 422 `unprocessable_query` and suppress results and cursor; invalid inline operators may include a nested `/query` `invalid_filter` issue. Backend work and audit logging may already have occurred before such a 422 replaces a result-bearing response. Structural and representability failures remain HTTP 400. Rate limits return HTTP 429 with `Retry-After`. Temporary backend unavailability returns HTTP 503.
+        Search your organization's connected content and return ranked document results with cursor pagination. Use `GET /api/search/filters` to discover datasource identifiers and common filter fields. Built-in filter names are validated; other field names are accepted as custom filters and behavior depends on your Glean configuration and connected sources.
+        Errors: HTTP 422 `unprocessable_query` returns no `results` or `next_cursor`. See `warnings` on the response for non-blocking issues such as partially available results. Not every query issue produces a warning or error.
       operationId: platform-search
       x-visibility: Public
       x-glean-experimental:
@@ -766,8 +766,7 @@ paths:
               $ref: "#/components/schemas/PlatformSearchRequest"
       responses:
         "200":
-          description: |
-            Successful search. Always includes `warnings` (`[]` when empty). A `results_incomplete` warning may be present while results and cursor remain available.
+          description: Successful response.
           content:
             application/json:
               schema:
@@ -800,8 +799,8 @@ paths:
         - Search
       summary: List search filters
       description: |
-        Discover caller-visible datasources and common built-in filter fields that can be used with Platform Search. This is a best-effort common catalog, not an authoritative inventory of every field search may accept.
-        Without `query`, the response returns datasource rows and field metadata without executing search. With a nonblank `query`, exactly one `datasources` value is required and the response may include bounded, non-exhaustive facet values for matching public fields. Query-backed values preserve QE order and duplicate occurrences, ignore grouping metadata including nonempty `GroupName` (broad field/value semantics rather than exact UI group selection), and omit blank option strings. Query-backed discovery does not apply POST search typed-issue adaptation and does not expose warning objects. Rate limits return HTTP 429 with `Retry-After`. Temporary backend unavailability returns HTTP 503.
+        List datasources and common built-in filter fields visible to the authenticated user. This is a best-effort catalog, not an exhaustive list of every filter search accepts.
+        Without `query`, returns field metadata only and does not run a search. With a nonblank `query`, provide exactly one `datasources` value to request suggested filter values for that query; no documents are returned and this endpoint does not include warning objects. See `FilterFieldInfo.values` for limitations on suggested values. Rate-limited requests return HTTP 429 with `Retry-After`; temporary backend unavailability returns HTTP 503.
       operationId: platform-search-filters
       x-visibility: Public
       x-glean-experimental:
@@ -811,7 +810,7 @@ paths:
         - in: query
           name: datasources
           description: |
-            Restrict metadata to one or more canonical normalized datasource identifiers. With a nonblank `query`, exactly one datasource is required.
+            Restrict metadata to one or more datasource identifiers as returned by this endpoint (for example, `jira`). With a nonblank `query`, exactly one datasource is required. Unknown or inaccessible identifiers return `invalid_datasource`.
           required: false
           schema:
             type: array
@@ -822,14 +821,14 @@ paths:
         - in: query
           name: query
           description: |
-            Optional search query used to request bounded facet values for the selected datasource. When present it must be nonblank.
+            Optional search query that requests suggested filter values for the selected datasource. Must be nonblank when present. Triggers a search for facet values only; does not return documents.
           required: false
           schema:
             type: string
             minLength: 1
       responses:
         "200":
-          description: Search filter metadata.
+          description: Successful response.
           headers:
             Cache-Control:
               description: |
@@ -1616,13 +1615,13 @@ components:
         - field
         - values
       description: |
-        A single filter criterion. For `EQUALS`, multiple values within a filter are OR'd. For `NOT_EQUALS`, multiple values exclude all listed values. Filters are AND'd with each other and with any inline query operators. Repeated same-field `EQUALS` filters are rejected because separate filters represent conjunction.
+        A single filter criterion. For `EQUALS`, multiple values within a filter are OR'd; for `NOT_EQUALS`, listed values are excluded. Separate filters are AND'd with each other and with inline operators in `query`. Repeated same-field `EQUALS` filters are rejected.
       properties:
         field:
           type: string
           minLength: 1
           description: |
-            Exact lowercase public built-in names are case-sensitive and limited to `type`, `owner`, `from`, `author`, `channel`, `status`, `assignee`, `reporter`, `component`, `mentions`, and `collection`. Any other nonblank name is forwarded as a possible custom field without spelling, existence, type, ambiguity, or operator-compatibility validation.
+            Filter field name. Built-in names (case-sensitive, lowercase only): `type`, `owner`, `from`, `author`, `channel`, `status`, `assignee`, `reporter`, `component`, `mentions`, and `collection`. Built-ins accept only `EQUALS` and `NOT_EQUALS`. Any other nonblank name is accepted as a custom filter without spelling, existence, or type checks; behavior depends on your connected sources.
           example: type
         values:
           type: array
@@ -1630,7 +1629,8 @@ components:
           items:
             type: string
             minLength: 1
-          description: One or more values to match.
+          description: |
+            One or more values to match. Prefer values returned by filter discovery unchanged. For people (`USER`) fields, values may be email addresses or display names.
           example:
             - spreadsheet
             - presentation
@@ -1638,7 +1638,7 @@ components:
           allOf:
             - $ref: "#/components/schemas/PlatformFilterOperator"
           description: |
-            Comparison operator to apply to this filter. Defaults to `EQUALS`. Exact public built-ins support only `EQUALS` and `NOT_EQUALS`. `GT`, `GTE`, `LT`, and `LTE` range operators require exactly one value; express bounded ranges with multiple filters on the same field. For non-built-in fields, operator compatibility is backend-dependent.
+            Comparison operator. Defaults to `EQUALS`. Built-in fields support only `EQUALS` and `NOT_EQUALS`. Range operators (`GT`, `GTE`, `LT`, `LTE`) require exactly one value; express ranges with multiple filters on the same field. Custom fields may support different operators depending on the data source.
     PlatformTimeRange:
       type: object
       additionalProperties: false
@@ -1691,14 +1691,14 @@ components:
             type: string
             minLength: 1
           description: |
-            Restrict results to specific canonical normalized datasource identifiers.
+            Restrict results to specific datasource identifiers returned by `GET /api/search/filters`. Scopes by datasource type and may include results from multiple instances of that type.
         filters:
           type: array
           minItems: 1
           items:
             $ref: "#/components/schemas/PlatformFilter"
           description: |
-            Structured filters applied to search results. Equality operators OR multiple values within a filter. Multiple filters are AND'd together, including range filters on the same field. Filters are AND'd with any inline operators in `query`. Note that conflicting constraints on the same field (e.g., `type:document` in the query and `type: spreadsheet` in a filter) produce an empty result set. Exact lowercase public built-ins (`type`, `owner`, `from`, `author`, `channel`, `status`, `assignee`, `reporter`, `component`, `mentions`, and `collection`) accept only `EQUALS` and `NOT_EQUALS`. Repeated same-field `EQUALS` filters are rejected because separate filters represent conjunction. Every other nonblank field name is forwarded unchanged as a possible custom field without spelling, existence, type, ambiguity, or operator-compatibility checks; resulting behavior is backend-dependent.
+            Structured filters applied to search results. Multiple values within a filter with `EQUALS` are OR'd; separate filters are AND'd. Conflicting constraints on the same field (for example, `type:document` in `query` and `type:spreadsheet` in a filter) return an empty result set. See `Filter.field` for built-in field names and operators. Other nonblank field names are accepted as custom filters without validation; behavior depends on your connected sources.
         time_range:
           $ref: "#/components/schemas/PlatformTimeRange"
     PlatformResult:
@@ -1767,7 +1767,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PlatformResult"
-          description: Ordered list of search results.
+          description: |
+            Ordered list of ranked document results. People cards, Q&A blocks, and other UI-only result types are not included.
         has_more:
           type: boolean
           description: Indicates whether additional pages of results are available.
@@ -1782,7 +1783,7 @@ components:
         warnings:
           type: array
           description: |
-            Non-blocking warnings for this response. Always present; empty means `[]`. Clients must tolerate unknown warning codes. Current code `results_incomplete` means some results may be unavailable for the requested datasource scope; results, `has_more`, and `next_cursor` remain present.
+            Non-blocking warnings for this response. Required; use `[]` when there are none. Clients must tolerate unknown warning codes. `results_incomplete` means some results may be unavailable for the requested datasource scope while `results`, `has_more`, and `next_cursor` remain present. Warning messages are generic and do not include query text or internal identifiers.
           items:
             $ref: "#/components/schemas/PlatformWarning"
     PlatformFilterFieldInfo:
@@ -1802,18 +1803,19 @@ components:
           type: string
           minLength: 1
           description: |
-            Open field-type string. Current values are `STRING` and `USER`. Clients must tolerate unknown values.
+            Open field-type string. Current values are `STRING` for text and keyword fields and `USER` for people fields (`owner`, `from`, `author`, `assignee`, `reporter`, `mentions`). Clients must tolerate unknown values.
           example: STRING
         operators:
           type: array
           minItems: 1
-          description: Supported comparison operators for this field.
+          description: |
+            Comparison operators supported for this field. Built-in fields expose `EQUALS` and `NOT_EQUALS`.
           items:
             $ref: "#/components/schemas/PlatformFilterOperator"
         values:
           type: array
           description: |
-            Bounded, non-exhaustive facet values for this field. Omitted in catalog-only responses. Present as an array, including `[]`, when query-backed discovery executes. Values are the exact QE `FacetOption.Option` strings in QE order, including duplicates. Blank options are omitted. Nonempty `GroupName` and other grouping metadata are ignored, so values have broad field/value semantics rather than exact UI group selection. An empty array does not imply that no valid value exists. Backend support varies; federated and MCP values may be page-derived or unavailable. Platform does not truncate below the QE-owned facet bucket bound.
+            Suggested filter values observed for the supplied `query`. Omitted in catalog-only responses. Present as an array, including `[]`, when `query` is provided. Values are a bounded, non-exhaustive sample in search-provider order and may include duplicates; blank values are omitted. No additional endpoint-specific truncation is applied. Grouping in the search UI is not preserved; each value applies to the field broadly. An empty array does not mean no valid value exists. Availability varies by data source; federated and MCP integrations may return page-derived values or none at all. Reusing a suggested value in `POST /api/search` does not guarantee matching results or identical filter behavior. For `USER` fields, values may be email addresses or display names.
           items:
             type: string
             minLength: 1
@@ -1828,12 +1830,12 @@ components:
           type: string
           minLength: 1
           description: |
-            Stable canonical normalized datasource identifier usable in `POST /api/search` `datasources`.
+            Datasource identifier usable in `POST /api/search` `datasources`.
           example: jira
         filters:
           type: array
           description: |
-            Common built-in filter fields for this datasource. May be empty. Absence of a public built-in here does not make that field invalid in `POST /api/search`.
+            Common built-in filter fields for this datasource. May be empty. A built-in omitted here can still be valid in `POST /api/search`; see `Filter.field` for the full built-in name list.
           items:
             $ref: "#/components/schemas/PlatformFilterFieldInfo"
     PlatformSearchFiltersResponse:
@@ -1846,7 +1848,7 @@ components:
         datasources:
           type: array
           description: |
-            Datasource metadata visible to the authenticated caller. Each `datasource` value is a canonical normalized identifier usable in `POST /api/search` `datasources`. Empty means no visible datasources.
+            Datasources visible to the authenticated user. Each `datasource` is an identifier you can pass to `POST /api/search` `datasources`. An empty array means no visible datasources.
           items:
             $ref: "#/components/schemas/PlatformDatasourceFilterInfo"
         request_id:
