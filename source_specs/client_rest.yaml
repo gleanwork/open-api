@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 98e972b21c7e6ee52ad067d13d8f3fc816bcae84
+  x-source-commit-sha: 0d4f9cecbfd84a8dce9b08eb209784ad568798ae
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -670,6 +670,10 @@ paths:
           description: Not Authorized
         '403':
           description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessRequestPermissionDeniedResponse'
         '429':
           description: Too Many Requests
   /listchats:
@@ -6958,6 +6962,26 @@ components:
       properties:
         chatResult:
           $ref: '#/components/schemas/ChatResult'
+    AccessRequestPermissionDeniedResponse:
+      type: object
+      required:
+        - errorType
+        - createdBy
+        - requestableRoles
+        - hasPendingRequest
+      properties:
+        errorType:
+          type: string
+          enum:
+            - PERMISSION_DENIED
+        createdBy:
+          $ref: '#/components/schemas/Person'
+        requestableRoles:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserRole'
+        hasPendingRequest:
+          type: boolean
     ChatMetadataResult:
       properties:
         chat:
