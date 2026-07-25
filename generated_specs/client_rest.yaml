@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: b5bdcc40e1dbd991f2df13c3e4a53b9a7f4a2678
+  x-source-commit-sha: 0d4f9cecbfd84a8dce9b08eb209784ad568798ae
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 2ff538a3eafa1a5ed45aa40ac69975bb5d16c5c5
+  x-open-api-commit-sha: 874e4612f1051fc231728056ded523ddec69a2fe
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -672,6 +672,10 @@ paths:
           description: Not Authorized
         "403":
           description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccessRequestPermissionDeniedResponse"
         "429":
           description: Too Many Requests
   /rest/api/v1/listchats:
@@ -7081,6 +7085,26 @@ components:
       properties:
         chatResult:
           $ref: "#/components/schemas/ChatResult"
+    AccessRequestPermissionDeniedResponse:
+      type: object
+      required:
+        - errorType
+        - createdBy
+        - requestableRoles
+        - hasPendingRequest
+      properties:
+        errorType:
+          type: string
+          enum:
+            - PERMISSION_DENIED
+        createdBy:
+          $ref: "#/components/schemas/Person"
+        requestableRoles:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserRole"
+        hasPendingRequest:
+          type: boolean
     ChatMetadataResult:
       properties:
         chat:
