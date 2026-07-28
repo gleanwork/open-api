@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 21a3460a107d1d6269c77aa3637ee4afb3cb224a
+  x-source-commit-sha: 563942e78a1054ee46527def6cca76a85d8e28ab
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -6466,6 +6466,19 @@ components:
             - none
             - private_key_jwt
           description: The OAuth 2.0 token endpoint authentication method (RFC 7591). Determines how the client authenticates when exchanging an authorization code for a token. client_secret_post sends credentials as form fields, client_secret_basic sends them via Authorization header, none omits client secret and relies on PKCE only, and private_key_jwt authenticates with a JWT client assertion signed by the client's private key (RFC 7523 Section 2.2 / OIDC Core Section 9). Values use lowercase to match the OAuth 2.0 wire format (RFC 7591 Section 2).
+        authHeaderType:
+          type: string
+          description: Defines the header structure for sending the API key or token to the server. Defaults to AUTHORIZATION_BEARER. Select the specific header format the server expects for transmitting the key.
+          enum:
+            - AUTHORIZATION_BEARER
+            - AUTHORIZATION_TOKEN
+            - AUTHORIZATION_API_KEY
+            - X_API_KEY
+          x-enumDescriptions:
+            - AUTHORIZATION_BEARER: 'Sends "Authorization: Bearer <key>".'
+            - AUTHORIZATION_TOKEN: 'Sends "Authorization: Token <key>".'
+            - AUTHORIZATION_API_KEY: 'Sends "Authorization: ApiKey <key>".'
+            - X_API_KEY: 'Sends "X-API-Key: <key>". No Authorization header is sent.'
         lastAuthorizedAt:
           type: string
           format: date-time
