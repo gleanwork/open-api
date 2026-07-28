@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 46ef310be6c9fb964be2cd4b95173b5fece89d7f
+  x-source-commit-sha: 94372c129bc617e86ce87ef926b28ab14eee4d91
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -364,6 +364,68 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /skills/sources/preview:
+    post:
+      tags:
+        - Skills
+      summary: Preview a GitHub skill source
+      description: |
+        Inspect a GitHub URL without persisting a source or any discovered skills. Set stream to true to receive repository scan progress as server-sent events; otherwise the response contains the completed preview.
+      operationId: platform-skills-preview-source
+      x-visibility: Public
+      x-glean-sdk:
+        group: skills
+        method: previewSource
+      x-glean-experimental:
+        id: 1629009b-244a-400a-bf55-c441dfbc586c
+        introduced: '2026-07-23'
+      x-codegen-request-body-name: request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillSourcePreviewRequest'
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillSourcePreviewResponse'
+            text/event-stream:
+              schema:
+                type: string
+                description: |
+                  Server-sent scan, progress, skill, and result events. A failed stream
+                  emits `data: {"type":"error","code":"service_unavailable","message":"GitHub is temporarily unavailable."}`
+                  followed by `data: [DONE]` instead of a result event.
+                example: |
+                  data: {"type":"scan","total":1,"skill_paths":["https://github.com/acme/skills/tree/main/skills/example"]}
+
+                  data: {"type":"progress","completed":1,"total":1,"current_skill":"skills/example/SKILL.md"}
+
+                  data: {"type":"skill","skill":{"display_name":"Example","description":"Example skill","source_url":"https://github.com/acme/skills/tree/main/skills/example","commit_sha":"abc123","main_content":"---\nname: Example\n---","files":[],"file_tree":["SKILL.md"]}}
+
+                  data: {"type":"result","response":{"skills":[{"display_name":"Example","description":"Example skill","source_url":"https://github.com/acme/skills/tree/main/skills/example","commit_sha":"abc123","main_content":"---\nname: Example\n---","files":[],"file_tree":["SKILL.md"]}],"failures":[],"request_id":"req-123"}}
+
+                  data: [DONE]
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
         '408':
           $ref: '#/components/responses/RequestTimeout'
         '413':
@@ -1484,6 +1546,111 @@ components:
           description: Non-blocking validation warnings.
           items:
             $ref: '#/components/schemas/PlatformWarning'
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
+    SkillSourcePreviewRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - source_url
+      properties:
+        source_url:
+          type: string
+          minLength: 1
+          maxLength: 2048
+          description: GitHub URL for a skill directory, SKILL.md file, or repository to inspect.
+        stream:
+          type: boolean
+          default: false
+          description: Whether to stream repository scan progress using server-sent events.
+    SkillSourcePreviewFile:
+      type: object
+      required:
+        - path
+        - content
+      properties:
+        path:
+          type: string
+          description: Relative path within the skill bundle.
+        content:
+          type: string
+          description: UTF-8 file content.
+    SkillSourcePreview:
+      type: object
+      required:
+        - display_name
+        - description
+        - source_url
+        - commit_sha
+        - main_content
+        - files
+        - file_tree
+      properties:
+        display_name:
+          type: string
+          description: Skill name parsed from SKILL.md frontmatter.
+        description:
+          type: string
+          description: Skill description parsed from SKILL.md frontmatter.
+        source_url:
+          type: string
+          description: Resolved URL for this skill within the source.
+        commit_sha:
+          type: string
+          description: Commit SHA used to produce the preview.
+        main_content:
+          type: string
+          description: SKILL.md content fetched as part of the preview.
+        files:
+          type: array
+          description: Supporting files fetched with the skill.
+          items:
+            $ref: '#/components/schemas/SkillSourcePreviewFile'
+        file_tree:
+          type: array
+          description: Relative paths discovered for the skill.
+          items:
+            type: string
+    SkillSourcePreviewFailureCode:
+      type: string
+      enum:
+        - INVALID_SKILL
+        - SKILL_FETCH_FAILED
+      description: Stable machine-readable reason a discovered entry was excluded.
+    SkillSourcePreviewFailure:
+      type: object
+      required:
+        - source_url
+        - code
+        - detail
+      properties:
+        source_url:
+          type: string
+          description: Resolved URL for the entry that could not be previewed.
+        code:
+          $ref: '#/components/schemas/SkillSourcePreviewFailureCode'
+        detail:
+          type: string
+          description: Safe explanation of why the entry was excluded.
+    SkillSourcePreviewResponse:
+      type: object
+      required:
+        - skills
+        - failures
+        - request_id
+      properties:
+        skills:
+          type: array
+          minItems: 1
+          description: Valid skills discovered at the source URL.
+          items:
+            $ref: '#/components/schemas/SkillSourcePreview'
+        failures:
+          type: array
+          description: Discovered entries that could not be included in the preview.
+          items:
+            $ref: '#/components/schemas/SkillSourcePreviewFailure'
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
