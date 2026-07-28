@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Indexing API
-  x-source-commit-sha: 787e56cc4264d9668ab5990fbad5fc9f1b91094b
+  x-source-commit-sha: 075a063ba1ccb9377420730e1b98b2b38f250e02
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -428,7 +428,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json; charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/DebugDatasourceStatusResponse'
         '400':
@@ -455,7 +455,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json; charset=UTF-8:
+          application/json:
             schema:
               $ref: '#/components/schemas/DebugDocumentRequest'
         required: true
@@ -464,7 +464,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json; charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/DebugDocumentResponse'
         '400':
@@ -491,7 +491,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json; charset=UTF-8:
+          application/json:
             schema:
               $ref: '#/components/schemas/DebugDocumentsRequest'
         required: true
@@ -500,7 +500,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json; charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/DebugDocumentsResponse'
         '400':
@@ -527,7 +527,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json; charset=UTF-8:
+          application/json:
             schema:
               $ref: '#/components/schemas/DebugUserRequest'
         required: true
@@ -536,7 +536,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json; charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/DebugUserResponse'
         '400':
@@ -1000,7 +1000,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json; charset=UTF-8:
+          application/json:
             schema:
               $ref: '#/components/schemas/DebugDocumentLifecycleRequest'
         required: true
@@ -1009,7 +1009,7 @@ paths:
         '200':
           description: OK
           content:
-            application/json; charset=UTF-8:
+            application/json:
               schema:
                 $ref: '#/components/schemas/DebugDocumentLifecycleResponse'
         '400':
