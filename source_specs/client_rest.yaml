@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 83cf0dc4607b2cb8a6ab829c7c4550ec1efa67a4
+  x-source-commit-sha: 1d550ca334919cff65cd6a3fb7c3c87aecca8eec
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -1135,11 +1135,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '422':
-          description: Validation Error
+          description: Returned when the agent has tools the caller has not authorized. The response body enumerates the tools that need connecting.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/UnauthorizedAgentToolsError'
         '500':
           description: Internal server error
   /agents/runs/wait:
@@ -1172,7 +1172,11 @@ paths:
         '409':
           description: Conflict
         '422':
-          description: Validation Error
+          description: Returned when the agent has tools the caller has not authorized. The response body enumerates the tools that need connecting.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedAgentToolsError'
         '500':
           description: Internal server error
   /addcollectionitems:
@@ -7349,6 +7353,22 @@ components:
           title: Metadata
           description: The metadata to pass to the agent.
           additionalProperties: true
+    UnauthorizedAgentToolsError:
+      title: UnauthorizedAgentToolsError
+      description: Returned when the agent has tools the caller must authorize before the run can start. Each entry in `authenticationSuggestions` names one such tool; POST its `serverId` to `/tool-servers/{serverId}/auth` with `returnUrl` in the request body to obtain an `authorizationUrl` to redirect the end user to, then retry the run once OAuth completes.
+      type: object
+      required:
+        - message
+        - authenticationSuggestions
+      properties:
+        message:
+          type: string
+          description: Human-readable description of the failure.
+        authenticationSuggestions:
+          type: array
+          description: One entry per tool the caller must authorize.
+          items:
+            $ref: '#/components/schemas/ServerToolRequest'
     AgentExecutionStatus:
       description: The status of the run. One of 'error', 'success'.
       type: string
