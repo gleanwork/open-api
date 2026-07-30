@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 7aedb21e7b939de2bfd94897e3a7f9a676b70c86
+  x-source-commit-sha: 83cf0dc4607b2cb8a6ab829c7c4550ec1efa67a4
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -9146,6 +9146,7 @@ components:
               - PLAN_MY_DAY
               - END_MY_DAY
               - STARTER_KIT
+              - MEETING_PREP_AUTOMATION
               - MID_DAY_CATCH_UP
               - QUERY_SUGGESTION
               - COWORK_CUJ_PROMO
@@ -9582,6 +9583,7 @@ components:
             - STARTER_KIT_ORG_CHART
             - STARTER_KIT_ADD_DOC
             - MEETING_RECAP
+            - MEETING_PREP_AUTOMATION
             - ACTIVE_DISCUSSION
             - MID_DAY_CATCH_UP
             - QUERY_SUGGESTION
@@ -9674,6 +9676,7 @@ components:
             - PLAN_MY_DAY
             - END_MY_DAY
             - STARTER_KIT
+            - MEETING_PREP_AUTOMATION
             - MID_DAY_CATCH_UP
             - QUERY_SUGGESTION
             - COWORK_CUJ_PROMO
