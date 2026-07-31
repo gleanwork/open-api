@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 8e53db2c0aad95500d09d3376bcece47a777eb9b
+  x-source-commit-sha: 1b5d877b2821c746c1af7307e8f73609f0f53ad5
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -5552,6 +5552,9 @@ components:
         department:
           type: string
           description: An organizational unit where everyone has a similar task, e.g. `Engineering`.
+        jobFunction:
+          type: string
+          description: Normalized job-function category assigned by Entity Builder from the source department and, when available, job title. Unlike `department`, which preserves the company-specific organizational unit, this field groups departments into configured categories such as `Engineering`, `Sales`, or `IT`; it may be `Unknown` when the mapping is inconclusive.
         teams:
           description: Info about the employee's team(s).
           type: array
