@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 522b49586679389b4faf91bfa74737d4e6e70559
+  x-source-commit-sha: 88402acdad788496f3a32c09a0d19a251f266be6
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -1035,6 +1035,54 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '422':
           description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+  /agents/{agent_id}/import:
+    post:
+      tags:
+        - Agents
+      summary: Import an agent
+      description: 'Imports an [agent](https://developers.glean.com/agents/agents-api) from its on-disk folder representation (spec.yaml, instructions.md, skills/, subagents/) packaged as a zip, and creates or updates the agent. Inverse of the export flow: the folder-to-schema conversion runs server-side. The bundle must contain only regular files; symlinks are resolved by the caller at packaging time.'
+      operationId: importAgent
+      x-visibility: Preview
+      parameters:
+        - $ref: '#/components/parameters/xGleanActAsHeader'
+        - $ref: '#/components/parameters/xGleanAuthTypeHeader'
+        - $ref: '#/components/parameters/locale'
+        - $ref: '#/components/parameters/timezoneOffset'
+        - description: The ID of the agent to create or update.
+          required: true
+          schema:
+            type: string
+            title: Agent ID
+            description: The ID of the agent to create or update.
+          name: agent_id
+          in: path
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ImportAgentRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImportAgentResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Not Authorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
           content:
             application/json:
               schema:
@@ -7288,6 +7336,52 @@ components:
         - output_schema
       title: AgentSchemas
       description: Defines the structure and properties of an agent.
+    ImportAgentSyncMode:
+      type: string
+      enum:
+        - STAGED
+        - PUBLISHED
+      description: |
+        Whether the imported version is staged (saved without updating the live version) or published directly to the live version.
+    ImportAgentRequest:
+      type: object
+      required:
+        - bundle
+      properties:
+        bundle:
+          type: string
+          format: binary
+          description: |
+            Zip of the agent folder (spec.yaml, instructions.md, skills/, subagents/) with symlinks dereferenced.
+        gitCommitSha:
+          type: string
+          description: Optional Git commit SHA to associate with this import.
+        gitAuthorId:
+          type: string
+          description: Optional VCS commit author ID to associate with this import.
+        commitMessage:
+          type: string
+          description: Optional commit message for the imported version.
+        syncMode:
+          $ref: '#/components/schemas/ImportAgentSyncMode'
+        isDraft:
+          type: boolean
+          description: |
+            When true, validates and stores a draft preview without publishing (used for PR preview links). Takes precedence over `syncMode`: when `isDraft` is true, `syncMode` is ignored.
+    ImportAgentStatus:
+      type: string
+      enum:
+        - CREATED
+        - UPDATED
+        - DRAFT_PREVIEW
+      description: Outcome of the import for the target agent.
+    ImportAgentResponse:
+      type: object
+      properties:
+        workflowResult:
+          $ref: '#/components/schemas/WorkflowResult'
+        status:
+          $ref: '#/components/schemas/ImportAgentStatus'
     SearchAgentsRequest:
       type: object
       properties:
