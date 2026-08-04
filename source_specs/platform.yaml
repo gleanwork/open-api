@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 7fc77f65eb43f9cf8f197225c9162fd883650b4a
+  x-source-commit-sha: 791445e5f9ba72ba5db79545b986fd80ce9e98da
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -24,9 +24,6 @@ paths:
       x-glean-sdk:
         group: agents
         method: search
-      x-glean-experimental:
-        id: 4abc1e17-8e06-490b-99a7-e8f97592405a
-        introduced: '2026-05-12'
       x-codegen-request-body-name: payload
       requestBody:
         required: true
@@ -71,9 +68,6 @@ paths:
       x-glean-sdk:
         group: agents
         method: get
-      x-glean-experimental:
-        id: 009b3e94-694b-4deb-b80a-c67011173715
-        introduced: '2026-05-12'
       parameters:
         - in: path
           name: agent_id
@@ -117,9 +111,6 @@ paths:
       x-glean-sdk:
         group: agents
         method: getSchemas
-      x-glean-experimental:
-        id: b40b4dd3-3839-48e6-9e45-7e63e8148b49
-        introduced: '2026-05-12'
       parameters:
         - in: path
           name: agent_id
@@ -170,9 +161,6 @@ paths:
       x-glean-sdk:
         group: agents
         method: createRun
-      x-glean-experimental:
-        id: 26bba669-2e92-4e5d-9798-6a532fae4e9f
-        introduced: '2026-05-12'
       x-codegen-request-body-name: payload
       parameters:
         - in: path
