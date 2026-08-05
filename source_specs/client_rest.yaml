@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 7466d32f85c7ac8f53b1d15674fb81cf74236c18
+  x-source-commit-sha: 642a9ab938f3c5996b88d6245d3a488f95da7afb
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -6578,10 +6578,10 @@ components:
             - none
             - private_key_jwt
           x-enumDescriptions:
-            - client_secret_post: Send client_id and client_secret as form fields in the token request body.
-            - client_secret_basic: Send client_id and client_secret via the HTTP Basic Authorization header.
-            - none: Public client - omit the client secret and authenticate with the PKCE code_verifier only.
-            - private_key_jwt: Authenticate with a JWT client assertion signed by the client's private key (RFC 7523 Section 2.2 / OIDC Core Section 9). Requires a key pair pre-registered with the authorization server.
+            client_secret_post: Send client_id and client_secret as form fields in the token request body.
+            client_secret_basic: Send client_id and client_secret via the HTTP Basic Authorization header.
+            none: Public client - omit the client secret and authenticate with the PKCE code_verifier only.
+            private_key_jwt: Authenticate with a JWT client assertion signed by the client's private key (RFC 7523 Section 2.2 / OIDC Core Section 9). Requires a key pair pre-registered with the authorization server.
           description: The OAuth 2.0 token endpoint authentication method (RFC 7591). Determines how the client authenticates when exchanging an authorization code for a token. Values use lowercase to match the OAuth 2.0 wire format (RFC 7591 Section 2).
         authHeaderType:
           type: string
