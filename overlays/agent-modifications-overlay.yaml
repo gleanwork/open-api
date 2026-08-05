@@ -39,3 +39,8 @@ actions:
     update:
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: runStream
+
+  - target: $["paths"]["/rest/api/v1/agents/{agent_id}/import"]["post"]
+    update:
+      x-speakeasy-group: client.agents
+      x-speakeasy-name-override: import
