@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Indexing API
-  x-source-commit-sha: f7901d44d45ee81a4b6eeaab7f6771425f26a965
+  x-source-commit-sha: 2c376e3fdbfa39c9eb5191ea9ec77145df3a3b7b
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -12,7 +12,7 @@ info:
     with a 6-month sunset period for anything that requires developers to adopt the new versions.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 79e9891cc4c0dc8c2c833f34e85e8a9aa722d103
+  x-open-api-commit-sha: cf8f51abd7a44f4cfc3316c397f105d46d668b9e
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -429,7 +429,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json; charset=UTF-8:
+            application/json:
               schema:
                 $ref: "#/components/schemas/DebugDatasourceStatusResponse"
         "400":
@@ -456,7 +456,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json; charset=UTF-8:
+          application/json:
             schema:
               $ref: "#/components/schemas/DebugDocumentRequest"
         required: true
@@ -465,7 +465,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json; charset=UTF-8:
+            application/json:
               schema:
                 $ref: "#/components/schemas/DebugDocumentResponse"
         "400":
@@ -492,7 +492,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json; charset=UTF-8:
+          application/json:
             schema:
               $ref: "#/components/schemas/DebugDocumentsRequest"
         required: true
@@ -501,7 +501,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json; charset=UTF-8:
+            application/json:
               schema:
                 $ref: "#/components/schemas/DebugDocumentsResponse"
         "400":
@@ -528,7 +528,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json; charset=UTF-8:
+          application/json:
             schema:
               $ref: "#/components/schemas/DebugUserRequest"
         required: true
@@ -537,7 +537,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json; charset=UTF-8:
+            application/json:
               schema:
                 $ref: "#/components/schemas/DebugUserResponse"
         "400":
@@ -1006,7 +1006,7 @@ paths:
             type: string
       requestBody:
         content:
-          application/json; charset=UTF-8:
+          application/json:
             schema:
               $ref: "#/components/schemas/DebugDocumentLifecycleRequest"
         required: true
@@ -1015,7 +1015,7 @@ paths:
         "200":
           description: OK
           content:
-            application/json; charset=UTF-8:
+            application/json:
               schema:
                 $ref: "#/components/schemas/DebugDocumentLifecycleResponse"
         "400":

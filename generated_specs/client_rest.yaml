@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: f7901d44d45ee81a4b6eeaab7f6771425f26a965
+  x-source-commit-sha: 2c376e3fdbfa39c9eb5191ea9ec77145df3a3b7b
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 79e9891cc4c0dc8c2c833f34e85e8a9aa722d103
+  x-open-api-commit-sha: cf8f51abd7a44f4cfc3316c397f105d46d668b9e
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -1043,6 +1043,54 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: Internal server error
+  /rest/api/v1/agents/{agent_id}/import:
+    post:
+      tags:
+        - Agents
+      summary: Import an agent
+      description: "Imports an [agent](https://developers.glean.com/agents/agents-api) from its on-disk folder representation (spec.yaml, instructions.md, skills/, subagents/) packaged as a zip, and creates or updates the agent. Inverse of the export flow: the folder-to-schema conversion runs server-side. The bundle must contain only regular files; symlinks are resolved by the caller at packaging time."
+      operationId: importAgent
+      x-visibility: Preview
+      parameters:
+        - $ref: "#/components/parameters/xGleanActAsHeader"
+        - $ref: "#/components/parameters/xGleanAuthTypeHeader"
+        - $ref: "#/components/parameters/locale"
+        - $ref: "#/components/parameters/timezoneOffset"
+        - description: The ID of the agent to create or update.
+          required: true
+          schema:
+            type: string
+            title: Agent ID
+            description: The ID of the agent to create or update.
+          name: agent_id
+          in: path
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/ImportAgentRequest"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportAgentResponse"
+        "400":
+          description: Bad request
+        "401":
+          description: Not Authorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
   /rest/api/v1/agents/search:
     post:
       tags:
@@ -1137,11 +1185,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
         "422":
-          description: Validation Error
+          description: Returned when the agent has tools the caller has not authorized. The response body enumerates the tools that need connecting.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: "#/components/schemas/UnauthorizedAgentToolsError"
         "500":
           description: Internal server error
   /rest/api/v1/agents/runs/wait:
@@ -1174,7 +1222,11 @@ paths:
         "409":
           description: Conflict
         "422":
-          description: Validation Error
+          description: Returned when the agent has tools the caller has not authorized. The response body enumerates the tools that need connecting.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnauthorizedAgentToolsError"
         "500":
           description: Internal server error
   /rest/api/v1/addcollectionitems:
@@ -2638,6 +2690,61 @@ paths:
           description: Tool server not found
         "429":
           description: Too Many Requests
+  /rest/api/v1/tool-servers/{serverId}/tools:
+    parameters:
+      - in: path
+        name: serverId
+        required: true
+        description: Unique identifier of the tool server.
+        schema:
+          type: string
+    get:
+      tags:
+        - Tools
+      summary: Get tool definitions from a tool server.
+      description: |
+        Returns the name, description and JSON input schema for the named tools on the
+        specified tool server. Works for both action packs and MCP servers.
+
+        `toolNames` is required. Names that do not exist on the server are returned in
+        `notFound` rather than failing the request, so a single bad name does not force
+        callers into one-at-a-time retries. Matching is case-insensitive and treats `-`
+        and `_` as equivalent.
+
+        Native tools are not served; `serverId=native` returns 404.
+      operationId: getToolServerTools
+      x-visibility: Preview
+      x-glean-experimental:
+        id: 332eb38f-1b5d-4896-88e3-59db5e96e4e1
+        introduced: "2026-07-30"
+      parameters:
+        - in: query
+          name: toolNames
+          required: true
+          description: Tool names to look up on this server. Maximum 100.
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ToolDefinitionsResponse"
+        "400":
+          description: Invalid request (e.g. missing toolNames, or more than 100 names)
+        "401":
+          description: Unauthorized
+        "404":
+          description: Tool server not found
+        "429":
+          description: Too Many Requests
+        "503":
+          description: Tool schemas could not be resolved from the server
 components:
   securitySchemes:
     APIToken:
@@ -2849,6 +2956,8 @@ components:
               - RESULTS_HELPFUL
               - RESULTS_POOR_ORDER
               - TOO_MUCH_ONE_KIND
+              - NOT_A_QUESTION
+              - UNSURE_IF_CORRECT
         imageUrls:
           type: array
           items:
@@ -5624,6 +5733,9 @@ components:
         department:
           type: string
           description: An organizational unit where everyone has a similar task, e.g. `Engineering`.
+        jobFunction:
+          type: string
+          description: Normalized job-function category assigned by Entity Builder from the source department and, when available, job title. Unlike `department`, which preserves the company-specific organizational unit, this field groups departments into configured categories such as `Engineering`, `Sales`, or `IT`; it may be `Unknown` when the mapping is inconclusive.
         teams:
           description: Info about the employee's team(s).
           type: array
@@ -6563,7 +6675,35 @@ components:
             - client_secret_basic
             - none
             - private_key_jwt
-          description: The OAuth 2.0 token endpoint authentication method (RFC 7591). Determines how the client authenticates when exchanging an authorization code for a token. client_secret_post sends credentials as form fields, client_secret_basic sends them via Authorization header, none omits client secret and relies on PKCE only, and private_key_jwt authenticates with a JWT client assertion signed by the client's private key (RFC 7523 Section 2.2 / OIDC Core Section 9). Values use lowercase to match the OAuth 2.0 wire format (RFC 7591 Section 2).
+          x-enumDescriptions:
+            client_secret_post: Send client_id and client_secret as form fields in the token request body.
+            client_secret_basic: Send client_id and client_secret via the HTTP Basic Authorization header.
+            none: Public client - omit the client secret and authenticate with the PKCE code_verifier only.
+            private_key_jwt: Authenticate with a JWT client assertion signed by the client's private key (RFC 7523 Section 2.2 / OIDC Core Section 9). Requires a key pair pre-registered with the authorization server.
+          description: The OAuth 2.0 token endpoint authentication method (RFC 7591). Determines how the client authenticates when exchanging an authorization code for a token. Values use lowercase to match the OAuth 2.0 wire format (RFC 7591 Section 2).
+          x-speakeasy-enum-descriptions:
+            client_secret_post: Send client_id and client_secret as form fields in the token request body.
+            client_secret_basic: Send client_id and client_secret via the HTTP Basic Authorization header.
+            none: Public client - omit the client secret and authenticate with the PKCE code_verifier only.
+            private_key_jwt: Authenticate with a JWT client assertion signed by the client's private key (RFC 7523 Section 2.2 / OIDC Core Section 9). Requires a key pair pre-registered with the authorization server.
+        authHeaderType:
+          type: string
+          description: Defines the header structure for sending the API key or token to the server. Defaults to AUTHORIZATION_BEARER. Select the specific header format the server expects for transmitting the key.
+          enum:
+            - AUTHORIZATION_BEARER
+            - AUTHORIZATION_TOKEN
+            - AUTHORIZATION_API_KEY
+            - X_API_KEY
+          x-enumDescriptions:
+            AUTHORIZATION_BEARER: "Sends \"Authorization: Bearer <key>\"."
+            AUTHORIZATION_TOKEN: "Sends \"Authorization: Token <key>\"."
+            AUTHORIZATION_API_KEY: "Sends \"Authorization: ApiKey <key>\"."
+            X_API_KEY: "Sends \"X-API-Key: <key>\". No Authorization header is sent."
+          x-speakeasy-enum-descriptions:
+            AUTHORIZATION_BEARER: "Sends \"Authorization: Bearer <key>\"."
+            AUTHORIZATION_TOKEN: "Sends \"Authorization: Token <key>\"."
+            AUTHORIZATION_API_KEY: "Sends \"Authorization: ApiKey <key>\"."
+            X_API_KEY: "Sends \"X-API-Key: <key>\". No Authorization header is sent."
         lastAuthorizedAt:
           type: string
           format: date-time
@@ -7384,6 +7524,52 @@ components:
         - output_schema
       title: AgentSchemas
       description: Defines the structure and properties of an agent.
+    ImportAgentSyncMode:
+      type: string
+      enum:
+        - STAGED
+        - PUBLISHED
+      description: |
+        Whether the imported version is staged (saved without updating the live version) or published directly to the live version.
+    ImportAgentRequest:
+      type: object
+      required:
+        - bundle
+      properties:
+        bundle:
+          type: string
+          format: binary
+          description: |
+            Zip of the agent folder (spec.yaml, instructions.md, skills/, subagents/) with symlinks dereferenced.
+        gitCommitSha:
+          type: string
+          description: Optional Git commit SHA to associate with this import.
+        gitAuthorId:
+          type: string
+          description: Optional VCS commit author ID to associate with this import.
+        commitMessage:
+          type: string
+          description: Optional commit message for the imported version.
+        syncMode:
+          $ref: "#/components/schemas/ImportAgentSyncMode"
+        isDraft:
+          type: boolean
+          description: |
+            When true, validates and stores a draft preview without publishing (used for PR preview links). Takes precedence over `syncMode`: when `isDraft` is true, `syncMode` is ignored.
+    ImportAgentStatus:
+      type: string
+      enum:
+        - CREATED
+        - UPDATED
+        - DRAFT_PREVIEW
+      description: Outcome of the import for the target agent.
+    ImportAgentResponse:
+      type: object
+      properties:
+        workflowResult:
+          $ref: "#/components/schemas/WorkflowResult"
+        status:
+          $ref: "#/components/schemas/ImportAgentStatus"
     SearchAgentsRequest:
       type: object
       properties:
@@ -7452,6 +7638,22 @@ components:
           title: Metadata
           description: The metadata to pass to the agent.
           additionalProperties: true
+    UnauthorizedAgentToolsError:
+      title: UnauthorizedAgentToolsError
+      description: Returned when the agent has tools the caller must authorize before the run can start. Each entry in `authenticationSuggestions` names one such tool; POST its `serverId` to `/tool-servers/{serverId}/auth` with `returnUrl` in the request body to obtain an `authorizationUrl` to redirect the end user to, then retry the run once OAuth completes.
+      type: object
+      required:
+        - message
+        - authenticationSuggestions
+      properties:
+        message:
+          type: string
+          description: Human-readable description of the failure.
+        authenticationSuggestions:
+          type: array
+          description: One entry per tool the caller must authorize.
+          items:
+            $ref: "#/components/schemas/ServerToolRequest"
     AgentExecutionStatus:
       description: The status of the run. One of 'error', 'success'.
       type: string
@@ -9252,6 +9454,7 @@ components:
               - PLAN_MY_DAY
               - END_MY_DAY
               - STARTER_KIT
+              - MEETING_PREP_AUTOMATION
               - MID_DAY_CATCH_UP
               - QUERY_SUGGESTION
               - COWORK_CUJ_PROMO
@@ -9695,6 +9898,7 @@ components:
             - STARTER_KIT_ORG_CHART
             - STARTER_KIT_ADD_DOC
             - MEETING_RECAP
+            - MEETING_PREP_AUTOMATION
             - ACTIVE_DISCUSSION
             - MID_DAY_CATCH_UP
             - QUERY_SUGGESTION
@@ -9787,6 +9991,7 @@ components:
             - PLAN_MY_DAY
             - END_MY_DAY
             - STARTER_KIT
+            - MEETING_PREP_AUTOMATION
             - MID_DAY_CATCH_UP
             - QUERY_SUGGESTION
             - COWORK_CUJ_PROMO
@@ -10476,6 +10681,84 @@ components:
           description: |
             URL that the client should navigate the end user to in order to begin the OAuth flow.
             After the user consents, control returns to `returnUrl` from the request.
+    ToolAnnotations:
+      type: object
+      description: |
+        Behavioural hints for the tool, exactly as declared by the tool server. No
+        defaults are filled in — see the per-field notes for what an absent value means.
+
+        Per the MCP specification, clients MUST treat these hints as untrusted unless
+        the tool server is itself trusted. They are advisory metadata, not an
+        authorization signal, and must not be the sole basis of a security decision.
+      properties:
+        title:
+          type: string
+        readOnlyHint:
+          type: boolean
+          x-includeEmpty: true
+          description: |
+            True if the tool does not modify its environment. Always present. MCP
+            defines no distinction between an undeclared value and `false` here, so
+            `false` means "not declared read-only" rather than "declared mutating".
+        destructiveHint:
+          type: boolean
+          nullable: true
+          description: |
+            True if the tool may perform destructive updates. **Absent means the server
+            did not declare it**, for which the MCP default is `true`. Only meaningful
+            when `readOnlyHint` is `false`.
+        idempotentHint:
+          type: boolean
+          x-includeEmpty: true
+          description: |
+            True if repeated calls with the same arguments have no additional effect.
+            Always present; as with `readOnlyHint`, `false` means "not declared
+            idempotent". Only meaningful when `readOnlyHint` is `false`.
+        openWorldHint:
+          type: boolean
+          nullable: true
+          description: |
+            True if the tool interacts with an open world of external entities. **Absent
+            means the server did not declare it**, for which the MCP default is `true`.
+    ToolDefinition:
+      type: object
+      required:
+        - serverId
+        - name
+      properties:
+        serverId:
+          type: string
+          description: Tool server this tool belongs to.
+        name:
+          type: string
+          description: Name to invoke the tool by.
+        displayName:
+          type: string
+          description: Human-readable name of the tool.
+        description:
+          type: string
+          description: What the tool does, as surfaced to a model.
+        inputSchema:
+          type: object
+          additionalProperties: true
+          description: JSON Schema for the tool's input parameters.
+        annotations:
+          $ref: "#/components/schemas/ToolAnnotations"
+    ToolDefinitionsResponse:
+      type: object
+      required:
+        - tools
+      properties:
+        tools:
+          type: array
+          description: Definitions for the requested tools that exist on this server.
+          items:
+            $ref: "#/components/schemas/ToolDefinition"
+        notFound:
+          type: array
+          description: Requested names that do not exist on this server.
+          items:
+            type: string
   parameters:
     xGleanActAsHeader:
       name: X-Glean-ActAs
