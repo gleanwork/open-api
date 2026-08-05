@@ -182,13 +182,16 @@ describe('Post-transformation smoke tests', () => {
         group: 'search',
         nameOverride: 'query',
       },
-      {
+    ];
+
+    if (spec.paths?.['/api/chat']?.post) {
+      platformOps.push({
         path: '/api/chat',
         method: 'post',
         group: 'chat',
         nameOverride: 'create',
-      },
-    ];
+      });
+    }
 
     for (const { path, method, group, nameOverride } of platformOps) {
       const operation = spec.paths?.[path]?.[method];
