@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: bacbe1e365e0f9a331bec2cbbc70fb03d550bc58
-  x-open-api-commit-sha: abe0ecedc7ee6a419b70d546bfbf6de413ff29c6
+  x-source-commit-sha: 7a82cb818d032eca9f42d56706dd9e0a65418d45
+  x-open-api-commit-sha: 987c3f6458420f6a99420d808bdccea74ab84dad
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -431,6 +431,52 @@ paths:
           $ref: "#/components/responses/PlatformServiceUnavailable"
       x-speakeasy-group: skills
       x-speakeasy-name-override: validate
+  /api/skills/import:
+    post:
+      tags:
+        - Skills
+      summary: Import skills from GitHub
+      description: |
+        Import one or more skills selected from a GitHub source preview. Each source URL is fetched and persisted as an independent skill with source provenance. This operation does not create a durable source resource. The import is atomic: if any source cannot be fetched, validated, or persisted, no skills are created.
+      operationId: platform-skills-import
+      x-visibility: Public
+      x-glean-experimental:
+        id: 9162d790-e101-437d-a9a0-25e4687d150b
+        introduced: "2026-07-28"
+      x-codegen-request-body-name: request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlatformSkillImportRequest"
+      responses:
+        "200":
+          description: Skills imported successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformSkillImportResponse"
+        "400":
+          $ref: "#/components/responses/PlatformBadRequest"
+        "401":
+          $ref: "#/components/responses/PlatformUnauthorized"
+        "403":
+          $ref: "#/components/responses/PlatformForbidden"
+        "408":
+          $ref: "#/components/responses/PlatformRequestTimeout"
+        "409":
+          $ref: "#/components/responses/PlatformConflict"
+        "413":
+          $ref: "#/components/responses/PlatformRequestTooLarge"
+        "429":
+          $ref: "#/components/responses/PlatformTooManyRequests"
+        "500":
+          $ref: "#/components/responses/PlatformInternalServerError"
+        "503":
+          $ref: "#/components/responses/PlatformServiceUnavailable"
+      x-speakeasy-group: skills
+      x-speakeasy-name-override: import
   /api/skills/sources/preview:
     post:
       tags:
@@ -548,6 +594,46 @@ paths:
           $ref: "#/components/responses/PlatformServiceUnavailable"
       x-speakeasy-group: skills
       x-speakeasy-name-override: update
+    delete:
+      tags:
+        - Skills
+      summary: Delete skill
+      description: |
+        Delete a skill the authenticated caller is allowed to manage. This operation permanently removes all versions of the skill.
+      operationId: platform-skills-delete
+      x-visibility: Public
+      x-glean-experimental:
+        id: c4351fd0-4d28-4ad4-ab93-587ca4778173
+        introduced: "2026-07-31"
+      parameters:
+        - name: skill_id
+          in: path
+          required: true
+          description: Glean skill ID.
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        "204":
+          description: Skill deleted. No content.
+        "400":
+          $ref: "#/components/responses/PlatformBadRequest"
+        "401":
+          $ref: "#/components/responses/PlatformUnauthorized"
+        "403":
+          $ref: "#/components/responses/PlatformForbidden"
+        "404":
+          $ref: "#/components/responses/PlatformNotFound"
+        "408":
+          $ref: "#/components/responses/PlatformRequestTimeout"
+        "429":
+          $ref: "#/components/responses/PlatformTooManyRequests"
+        "500":
+          $ref: "#/components/responses/PlatformInternalServerError"
+        "503":
+          $ref: "#/components/responses/PlatformServiceUnavailable"
+      x-speakeasy-group: skills
+      x-speakeasy-name-override: delete
     get:
       tags:
         - Skills
@@ -643,6 +729,55 @@ paths:
           $ref: "#/components/responses/PlatformServiceUnavailable"
       x-speakeasy-group: skills
       x-speakeasy-name-override: retrieveContent
+  /api/skills/{skill_id}/sync:
+    post:
+      tags:
+        - Skills
+      summary: Sync a GitHub-imported skill
+      description: |
+        Refresh one GitHub-imported skill from its stored source URL. If the skill content has changed, this operation creates a new skill version. If the skill is no longer present upstream, the stored skill is left unchanged and must be deleted explicitly.
+      operationId: platform-skills-sync
+      x-visibility: Public
+      x-glean-experimental:
+        id: 568aa3f8-2af8-449c-9e4f-818ed4b877ef
+        introduced: "2026-08-03"
+      parameters:
+        - name: skill_id
+          in: path
+          required: true
+          description: ID of the GitHub-imported skill to sync.
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        "200":
+          description: Skill sync completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformSkillSyncResponse"
+        "400":
+          $ref: "#/components/responses/PlatformBadRequest"
+        "401":
+          $ref: "#/components/responses/PlatformUnauthorized"
+        "403":
+          $ref: "#/components/responses/PlatformForbidden"
+        "404":
+          $ref: "#/components/responses/PlatformNotFound"
+        "408":
+          $ref: "#/components/responses/PlatformRequestTimeout"
+        "409":
+          $ref: "#/components/responses/PlatformConflict"
+        "413":
+          $ref: "#/components/responses/PlatformRequestTooLarge"
+        "429":
+          $ref: "#/components/responses/PlatformTooManyRequests"
+        "500":
+          $ref: "#/components/responses/PlatformInternalServerError"
+        "503":
+          $ref: "#/components/responses/PlatformServiceUnavailable"
+      x-speakeasy-group: skills
+      x-speakeasy-name-override: sync
   /api/skills/{skill_id}/versions:
     post:
       tags:
@@ -1906,6 +2041,37 @@ components:
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
+    PlatformSkillImportRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - source_urls
+      properties:
+        source_urls:
+          type: array
+          minItems: 1
+          maxItems: 100
+          uniqueItems: true
+          description: Resolved GitHub skill URLs selected from a source preview.
+          items:
+            type: string
+            minLength: 1
+            maxLength: 2048
+    PlatformSkillImportResponse:
+      type: object
+      required:
+        - skills
+        - request_id
+      properties:
+        skills:
+          type: array
+          minItems: 1
+          description: Independently persisted skills in request order.
+          items:
+            $ref: "#/components/schemas/PlatformSkill"
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
     PlatformSkillSourcePreviewRequest:
       type: object
       additionalProperties: false
@@ -2044,6 +2210,31 @@ components:
       properties:
         skill:
           $ref: "#/components/schemas/PlatformSkill"
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
+    PlatformSkillSyncResultStatus:
+      type: string
+      enum:
+        - UP_TO_DATE
+      description: Synchronization status after a successful refresh.
+    PlatformSkillSyncResponse:
+      type: object
+      required:
+        - sync_status
+        - commit_sha
+        - updated
+        - request_id
+      properties:
+        sync_status:
+          $ref: "#/components/schemas/PlatformSkillSyncResultStatus"
+        commit_sha:
+          type: string
+          minLength: 1
+          description: Git commit SHA now associated with the skill.
+        updated:
+          type: boolean
+          description: Whether this request created a new skill version.
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
