@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: 2c376e3fdbfa39c9eb5191ea9ec77145df3a3b7b
-  x-open-api-commit-sha: cf8f51abd7a44f4cfc3316c397f105d46d668b9e
+  x-source-commit-sha: 5239e2c2a10977d437924181dc4c1327ec9e2832
+  x-open-api-commit-sha: 596868e6726e60114c5b8324f66098310204d6f5
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -2215,6 +2215,7 @@ components:
           nullable: true
           description: |
             Opaque pagination token from a previous response's `next_cursor` field. Omit on the first request.
+          example: ""
         datasources:
           type: array
           minItems: 1

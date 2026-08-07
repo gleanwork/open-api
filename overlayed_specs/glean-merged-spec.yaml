@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: 2c376e3fdbfa39c9eb5191ea9ec77145df3a3b7b
-  x-open-api-commit-sha: cf8f51abd7a44f4cfc3316c397f105d46d668b9e
+  x-source-commit-sha: 5239e2c2a10977d437924181dc4c1327ec9e2832
+  x-open-api-commit-sha: 596868e6726e60114c5b8324f66098310204d6f5
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -7237,6 +7237,7 @@ components:
           nullable: true
           description: |
             Opaque pagination token from a previous response's `next_cursor` field. Omit on the first request.
+          example: ""
         datasources:
           type: array
           minItems: 1
@@ -8289,12 +8290,16 @@ components:
         facetFilters:
           - fieldName: fieldName
             values:
-              - fieldValues
-              - fieldValues
+              - value: fieldValues
+                relationType: EQUALS
+              - value: fieldValues
+                relationType: EQUALS
           - fieldName: fieldName
             values:
-              - fieldValues
-              - fieldValues
+              - value: fieldValues
+                relationType: EQUALS
+              - value: fieldValues
+                relationType: EQUALS
     TextRange:
       properties:
         startIndex:
@@ -9467,6 +9472,7 @@ components:
         cursor:
           type: string
           description: An opaque cursor representing the search request
+          example: ""
         trackingToken:
           type: string
           description: An opaque token that represents this particular result in this particular query. To be used for /feedback reporting.
@@ -9561,8 +9567,9 @@ components:
         url: https://example.com/foo/bar
         nativeAppUrl: slack://foo/bar
         mustIncludeSuggestions:
-          - missingTerm: container
-            query: container
+          suggestions:
+            - missingTerm: container
+              query: container
     ExtractedQnA:
       properties:
         heading:
@@ -10536,7 +10543,7 @@ components:
         department: Movies
         email: george@example.com
         location: Hollywood, CA
-        phone: 6505551234
+        phone: "6505551234"
         photoUrl: https://example.com/george.jpg
         startDate: "2000-01-23"
         title: Actor
@@ -10786,10 +10793,10 @@ components:
         components:
           - Backend
           - Networking
-        status:
-          - Done
+        status: Done
         customData:
-          someCustomField: someCustomValue
+          someCustomField:
+            stringValue: someCustomValue
     DocumentSection:
       type: object
       properties:
@@ -11248,10 +11255,7 @@ components:
     objectName:
       type: string
       description: Name of the generated object. This will be used to indicate to the end user what the generated object contains.
-      example:
-        - HR ticket
-        - Email
-        - Chat message
+      example: HR ticket
     PersonObject:
       properties:
         name:
@@ -11918,6 +11922,7 @@ components:
         cursor:
           type: string
           description: An opaque cursor for fetching the next page of results. If empty, there are no more results.
+          example: ""
     GetChatApplicationRequest:
       properties:
         id:
@@ -12614,6 +12619,7 @@ components:
         cursor:
           type: string
           description: Pagination cursor. A previously received opaque token representing the position in the overall results at which to start.
+          example: ""
       required:
         - filterSets
     GetDocumentsByFacetsResponse:
@@ -12629,6 +12635,7 @@ components:
         cursor:
           type: string
           description: Cursor that indicates the start of the next page of results. To be passed in "more" requests for this query.
+          example: ""
     InsightsOverviewRequest:
       properties:
         departments:
@@ -13619,6 +13626,7 @@ components:
             cursor:
               type: string
               description: Cursor that indicates the start of the next page of results. To be passed in "more" requests for this query.
+              example: ""
             hasMoreResults:
               type: boolean
               description: Whether more results are available. Use cursor to retrieve them.
@@ -13697,12 +13705,16 @@ components:
         rewrittenFacetFilters:
           - fieldName: fieldName
             values:
-              - fieldValues
-              - fieldValues
+              - value: fieldValues
+                relationType: EQUALS
+              - value: fieldValues
+                relationType: EQUALS
           - fieldName: fieldName
             values:
-              - fieldValues
-              - fieldValues
+              - value: fieldValues
+                relationType: EQUALS
+              - value: fieldValues
+                relationType: EQUALS
     MessagesResponse:
       properties:
         hasMore:
@@ -13787,6 +13799,7 @@ components:
             cursor:
               type: string
               description: Pagination cursor. A previously received opaque token representing the position in the overall results at which to start.
+              example: ""
             resultTabIds:
               type: array
               items:
@@ -14803,6 +14816,7 @@ components:
         cursor:
           type: string
           description: Pagination cursor. A previously received opaque token representing the position in the overall results at which to start.
+          example: ""
         source:
           type: string
           description: A string denoting the search surface from which the endpoint is called.
@@ -14852,6 +14866,7 @@ components:
         cursor:
           type: string
           description: Pagination cursor. A previously received opaque token representing the position in the overall results at which to start.
+          example: ""
         totalCount:
           type: integer
           description: The total number of entities available
@@ -14998,6 +15013,7 @@ components:
         cursor:
           type: string
           description: A token specifying the position in the overall results to start at. Received from the endpoint and iterated back. Currently being used as page no (as we implement offset pagination)
+          example: ""
         filters:
           type: array
           items:
@@ -15016,6 +15032,7 @@ components:
         cursor:
           type: string
           description: Cursor indicates the start of the next page of results
+          example: ""
         hasNextPage:
           type: boolean
         totalItemCount:
