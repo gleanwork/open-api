@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: 5239e2c2a10977d437924181dc4c1327ec9e2832
-  x-open-api-commit-sha: 596868e6726e60114c5b8324f66098310204d6f5
+  x-source-commit-sha: bacbe1e365e0f9a331bec2cbbc70fb03d550bc58
+  x-open-api-commit-sha: abe0ecedc7ee6a419b70d546bfbf6de413ff29c6
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -1078,10 +1078,12 @@ components:
         - authentication_required
         - token_expired
         - insufficient_permissions
+        - spend_limit_exceeded
         - resource_not_found
         - method_not_allowed
         - request_timeout
         - request_too_large
+        - token_limit_exceeded
         - conflict
         - gone
         - unprocessable_query
@@ -1120,6 +1122,9 @@ components:
         insufficient_permissions:
           status: 403
           title: Insufficient Permissions
+        spend_limit_exceeded:
+          status: 403
+          title: Spend Limit Exceeded
         resource_not_found:
           status: 404
           title: Resource Not Found
@@ -1132,6 +1137,9 @@ components:
         request_too_large:
           status: 413
           title: Request Too Large
+        token_limit_exceeded:
+          status: 413
+          title: Token Limit Exceeded
         conflict:
           status: 409
           title: Conflict
