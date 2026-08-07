@@ -1,6 +1,123 @@
 import yaml from 'js-yaml';
 
 /**
+ * Repairs `example` values that contradict the schema they are attached to.
+ *
+ * These examples are not decorative. Anything that builds a request body from the
+ * spec copies them verbatim — the developer site's interactive "try it" panel
+ * prefills exactly these values — so an example whose type does not match its
+ * schema ships a request the API rejects, and the first click on the page returns
+ * an error. Speakeasy's SDK samples mask the same defect by passing examples
+ * through typed models that silently coerce whatever does not fit, which is why a
+ * broken example can look correct in the Python tab and fail in the panel beside it.
+ *
+ * Each repair is guarded so it only fires on the wrong shape: once the upstream
+ * spec is corrected at source, every one of these becomes a no-op rather than
+ * clobbering a now-valid example. `validate-examples.js` is the general net that
+ * fails CI when a new mismatch appears; this function fixes the known ones.
+ *
+ * @param {Object} spec The OpenAPI spec object
+ * @returns {Object} The same spec, repaired in place
+ */
+export function transformInvalidExamples(spec) {
+  const schemas = spec.components?.schemas;
+  if (!schemas) return spec;
+
+  // `values` items are FacetFilterValue objects, not bare strings. Applies to
+  // every schema carrying a facet-filter example, request and response alike.
+  const repairFacetFilterValues = (filters) => {
+    if (!Array.isArray(filters)) return;
+    for (const filter of filters) {
+      if (!Array.isArray(filter?.values)) continue;
+      filter.values = filter.values.map((v) =>
+        typeof v === 'string' ? { value: v, relationType: 'EQUALS' } : v,
+      );
+    }
+  };
+  for (const schema of Object.values(schemas)) {
+    if (!schema?.example) continue;
+    repairFacetFilterValues(schema.example.facetFilters);
+    repairFacetFilterValues(schema.example.rewrittenFacetFilters);
+  }
+
+  // `status` is a single string ("Done"), not a list.
+  const documentMetadata = schemas.DocumentMetadata;
+  if (Array.isArray(documentMetadata?.example?.status)) {
+    documentMetadata.example.status = documentMetadata.example.status[0];
+  }
+
+  // CustomData maps a field name to a CustomDataValue object, so a bare string
+  // has to become the object's stringValue.
+  const customData = documentMetadata?.example?.customData;
+  if (customData && typeof customData === 'object') {
+    for (const [key, value] of Object.entries(customData)) {
+      if (typeof value === 'string') customData[key] = { stringValue: value };
+    }
+  }
+
+  // The schema calls this a "phone number as a number string" — so, a string.
+  const personMetadata = schemas.PersonMetadata;
+  if (typeof personMetadata?.example?.phone === 'number') {
+    personMetadata.example.phone = String(personMetadata.example.phone);
+  }
+
+  // objectName is a single string. Its example listed several candidate names,
+  // which reads as "any of these" but validates as none of them.
+  const objectName = schemas.objectName;
+  if (objectName?.type === 'string' && Array.isArray(objectName.example)) {
+    objectName.example = objectName.example[0];
+  }
+
+  // mustIncludeSuggestions is a QuerySuggestionList — the wrapper object, not the
+  // bare suggestion array the example supplied.
+  const suggestions = schemas.SearchResult?.example?.mustIncludeSuggestions;
+  if (Array.isArray(suggestions)) {
+    schemas.SearchResult.example.mustIncludeSuggestions = {
+      suggestions,
+    };
+  }
+
+  return spec;
+}
+
+/**
+ * Gives pagination `cursor` properties an empty-string example.
+ *
+ * A cursor has no example, so a renderer synthesizing a request body from the
+ * schema fills the placeholder `"string"` — and the API answers HTTP 500 to a
+ * malformed cursor rather than ignoring it, so the very first request a reader
+ * sends from the docs fails. An empty cursor means "start from the beginning",
+ * which is exactly what a first request wants, and is the only value that is both
+ * type-correct and semantically valid: any literal token we could invent would be
+ * expired or forged.
+ *
+ * The 500 is worth fixing at the API too — a bad cursor is a client error — but
+ * that would still leave the docs sending a request that fails, so the example is
+ * needed either way.
+ *
+ * @param {Object} spec The OpenAPI spec object
+ * @returns {Object} The same spec, updated in place
+ */
+export function transformCursorExamples(spec) {
+  const visit = (node, seen) => {
+    if (!node || typeof node !== 'object' || seen.has(node)) return;
+    seen.add(node);
+    const cursor = node.properties?.cursor;
+    if (
+      cursor &&
+      cursor.type === 'string' &&
+      cursor.example === undefined &&
+      !cursor.$ref
+    ) {
+      cursor.example = '';
+    }
+    for (const child of Object.values(node)) visit(child, seen);
+  };
+  visit(spec, new WeakSet());
+  return spec;
+}
+
+/**
  * Extracts the base path from a server URL
  * @param {string} url Server URL with variables
  * @returns {string} The base path
@@ -852,6 +969,12 @@ export function transform(content, filename, commitSha) {
   if (filename === 'admin_rest.yaml') {
     transformActAsBearerTokenToAPIToken(spec);
   }
+
+  // Repair examples that contradict their own schema, for all files
+  transformInvalidExamples(spec);
+
+  // Give pagination cursors an example the API accepts, for all files
+  transformCursorExamples(spec);
 
   // Inject open-api commit SHA if provided
   if (commitSha) {
