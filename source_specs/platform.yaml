@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 66e889e3f491eda2000fcb68fe34112fd3946154
+  x-source-commit-sha: 6619999514df1dba7b0ec686a8cc9e2a4b5baf7a
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -261,14 +261,18 @@ paths:
                   data: {"type":"response.created","response_id":"resp_e65a0a77-97a2-4c91-be60-eae7f6238015"}
 
                   id: 2
+                  event: response.progress
+                  data: {"type":"response.progress","response_id":"resp_e65a0a77-97a2-4c91-be60-eae7f6238015","text":"**Searching:** foo"}
+
+                  id: 3
                   event: response.output_text.delta
                   data: {"type":"response.output_text.delta","response_id":"resp_e65a0a77-97a2-4c91-be60-eae7f6238015","delta":"Hello"}
 
-                  id: 3
+                  id: 4
                   event: response.output_text.done
                   data: {"type":"response.output_text.done","response_id":"resp_e65a0a77-97a2-4c91-be60-eae7f6238015","text":"Hello"}
 
-                  id: 4
+                  id: 5
                   event: response.completed
                   data: {"type":"response.completed","response_id":"resp_e65a0a77-97a2-4c91-be60-eae7f6238015","response":{"id":"resp_e65a0a77-97a2-4c91-be60-eae7f6238015","object":"response","status":"completed","output":[{"type":"message","role":"assistant","content":[{"type":"output_text","text":"Hello"}]}],"store":true,"request_id":"req_123","created_at":"2026-07-14T20:00:00Z"}}
         '400':
