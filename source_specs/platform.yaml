@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: c5ad0025ab01c713d0d076bbc4823dc981a7ba38
+  x-source-commit-sha: 7a33df282888a2eafa9705bd867e06908c802c53
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -186,7 +186,8 @@ paths:
             text/event-stream:
               schema:
                 type: string
-                description: Server-sent events emitted by the running agent.
+                description: |
+                  Server-sent events emitted by the running agent. Successful runs emit `message` events. A terminal failure after the stream has started emits exactly one `run.failed` event whose `data` is an `AgentRunFailedEventData` payload, then closes.
                 example: |
                   id: 1
                   event: message
@@ -195,6 +196,10 @@ paths:
                   id: 2
                   event: message
                   data: {"messages":[{"role":"GLEAN_AI","content":[{"text":", I can help with HR policy questions.","type":"text"}]}]}
+
+                  id: 3
+                  event: run.failed
+                  data: {"error":{"type":"https://developers.glean.com/errors/spend-limit-exceeded","title":"Spend Limit Exceeded","status":403,"detail":"You've reached the monthly limit set by your admin.","code":"spend_limit_exceeded","request_id":"req_123","documentation_url":"https://developers.glean.com/errors/spend-limit-exceeded"}}
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
