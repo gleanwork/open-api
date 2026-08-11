@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: 6619999514df1dba7b0ec686a8cc9e2a4b5baf7a
-  x-open-api-commit-sha: f8615a1b13b161183a87a2f958a0a4a8a2069ffe
+  x-source-commit-sha: 7a33df282888a2eafa9705bd867e06908c802c53
+  x-open-api-commit-sha: 594cbd5887b95487f38c53551589100b488c4bb0
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -205,7 +205,8 @@ paths:
             text/event-stream:
               schema:
                 type: string
-                description: Server-sent events emitted by the running agent.
+                description: |
+                  Server-sent events emitted by the running agent. Successful runs emit `message` events. A terminal failure after the stream has started emits exactly one `run.failed` event whose `data` is an `AgentRunFailedEventData` payload, then closes.
                 example: |
                   id: 1
                   event: message
@@ -214,6 +215,10 @@ paths:
                   id: 2
                   event: message
                   data: {"messages":[{"role":"GLEAN_AI","content":[{"text":", I can help with HR policy questions.","type":"text"}]}]}
+
+                  id: 3
+                  event: run.failed
+                  data: {"error":{"type":"https://developers.glean.com/errors/spend-limit-exceeded","title":"Spend Limit Exceeded","status":403,"detail":"You've reached the monthly limit set by your admin.","code":"spend_limit_exceeded","request_id":"req_123","documentation_url":"https://developers.glean.com/errors/spend-limit-exceeded"}}
         "400":
           $ref: "#/components/responses/PlatformBadRequest"
         "401":
