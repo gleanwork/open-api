@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 7a33df282888a2eafa9705bd867e06908c802c53
+  x-source-commit-sha: d21cc175fcadae0744cb414a1774f5dc4d54afce
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -9333,6 +9333,7 @@ components:
               - OOO_PLANNER
               - OOO_CATCH_UP
               - ADMIN_HEALTH_CENTER
+              - KNOWLEDGE_GAP
           description: Categories of content requested. An allowlist gives flexibility to request content separately or together.
         requestOptions:
           $ref: '#/components/schemas/FeedRequestOptions'
@@ -9771,6 +9772,7 @@ components:
             - OOO_PLANNER
             - OOO_CATCH_UP
             - ADMIN_HEALTH_CENTER
+            - KNOWLEDGE_GAP
           description: Type of the justification.
         justification:
           type: string
@@ -9863,6 +9865,7 @@ components:
             - OOO_PLANNER
             - OOO_CATCH_UP
             - ADMIN_HEALTH_CENTER
+            - KNOWLEDGE_GAP
           description: Category of the result, one of the requested categories in incoming request.
         primaryEntry:
           $ref: '#/components/schemas/FeedEntry'
@@ -9879,7 +9882,8 @@ components:
           enum:
             - ORGANIC
             - PROMO
-          description: Placement source for ranked feed results. ORGANIC means the card was emitted by normal feed ranking. PROMO means the card was inserted by the homepage cards promo framework.
+            - PINNED
+          description: Placement source for ranked feed results. ORGANIC means the card was emitted by normal feed ranking. PROMO means the card was inserted by the homepage cards promo framework. PINNED means the card was moved to the head of the ranked stack (e.g. knowledge-gap pilot cards).
     FeedResponse:
       required:
         - serverTimestamp
