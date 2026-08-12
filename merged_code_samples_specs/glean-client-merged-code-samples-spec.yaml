@@ -240269,6 +240269,8 @@ paths:
       summary: Chat
       description: Have a conversation with Glean AI.
       operationId: chatStream
+      security:
+        - APIToken: []
       x-visibility: Public
       x-codegen-request-body-name: payload
       parameters:
