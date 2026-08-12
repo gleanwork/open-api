@@ -188,6 +188,12 @@ describe('Post-transformation smoke tests', () => {
         group: 'search',
         nameOverride: 'query',
       },
+      {
+        path: '/api/chat',
+        method: 'post',
+        group: 'chat',
+        nameOverride: 'create',
+      },
     ];
 
     if (spec.paths?.['/api/chat']?.post) {
