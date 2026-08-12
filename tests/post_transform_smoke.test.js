@@ -41,6 +41,12 @@ describe('Post-transformation smoke tests', () => {
     expect('cookieAuth' in schemes).toBe(false);
   });
 
+  test('chat stream requires APIToken security', () => {
+    expect(spec.paths?.['/rest/api/v1/chat#stream']?.post?.security).toEqual([
+      { APIToken: [] },
+    ]);
+  });
+
   test('contains IndexingShortcut component', () => {
     const schemas = spec.components?.schemas ?? {};
 
