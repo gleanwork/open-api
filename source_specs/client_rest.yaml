@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 6c9689b48a11c6533caa365849dddad6b61ac8ea
+  x-source-commit-sha: d7a707a5673a26f9b4db18dd33cf688392f066c6
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -2710,8 +2710,7 @@ paths:
         callers into one-at-a-time retries. Matching is case-insensitive and treats `-`
         and `_` as equivalent.
 
-        Use `serverId=native` for Glean's built-in tools. Their names are matched
-        exactly.
+        Use `serverId=native` for Glean's built-in tools.
       operationId: getToolServerTools
       x-visibility: Preview
       x-glean-experimental:
