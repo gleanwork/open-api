@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: 26582d482fd365bb6e08720a096edc8336b2322e
-  x-open-api-commit-sha: ba805dad43d06e3a084ffb35806144d0ad946bcc
+  x-source-commit-sha: 37d0966388f1c350036839324d2aa59b73d6279e
+  x-open-api-commit-sha: f20856498c59a1bcfcb506d2be2ee7577aa68472
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -4008,14 +4008,16 @@ paths:
       summary: Get tool definitions from a tool server.
       description: |
         Returns the name, description and JSON input schema for the named tools on the
-        specified tool server. Works for both action packs and MCP servers.
+        specified tool server. Works for Glean's built-in tools, tool packs and MCP
+        servers.
 
         `toolNames` is required. Names that do not exist on the server are returned in
         `notFound` rather than failing the request, so a single bad name does not force
         callers into one-at-a-time retries. Matching is case-insensitive and treats `-`
         and `_` as equivalent.
 
-        Native tools are not served; `serverId=native` returns 404.
+        Use `serverId=native` for Glean's built-in tools. Their names are matched
+        exactly.
       tags:
         - Tools
       security:
