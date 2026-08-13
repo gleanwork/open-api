@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 2304258bce7f85de9d9fe374b92fb313215fa56b
+  x-source-commit-sha: 37d0966388f1c350036839324d2aa59b73d6279e
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -2702,14 +2702,16 @@ paths:
       summary: Get tool definitions from a tool server.
       description: |
         Returns the name, description and JSON input schema for the named tools on the
-        specified tool server. Works for both action packs and MCP servers.
+        specified tool server. Works for Glean's built-in tools, tool packs and MCP
+        servers.
 
         `toolNames` is required. Names that do not exist on the server are returned in
         `notFound` rather than failing the request, so a single bad name does not force
         callers into one-at-a-time retries. Matching is case-insensitive and treats `-`
         and `_` as equivalent.
 
-        Native tools are not served; `serverId=native` returns 404.
+        Use `serverId=native` for Glean's built-in tools. Their names are matched
+        exactly.
       operationId: getToolServerTools
       x-visibility: Preview
       x-glean-experimental:
