@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: 7bb0d12b647e7c04adc4a6c139734de85fd157dc
+  x-source-commit-sha: 738bedca74325879034a2f7c498728774665e6f4
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
