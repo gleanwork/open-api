@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: bc54bdb3f2efd134441763950e1a31446b1da9b1
+  x-source-commit-sha: 4ea70b725723173f6f2113c139a2c8f8826dfb1f
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -3413,6 +3413,52 @@ components:
         request_id:
           type: string
           description: Unique identifier for this request, for support and debugging.
+    TriggerPresetSummary:
+      type: object
+      required:
+        - preset_id
+        - datasource
+        - display_name
+      properties:
+        preset_id:
+          type: string
+          description: ID of the preset. Pass this when creating a trigger.
+          example: jira_high_priority_bug
+        datasource:
+          type: string
+          description: Datasource the preset fires on.
+          example: jira
+        display_name:
+          type: string
+          description: Human-readable preset name.
+          example: High-priority Jira bugs
+        description:
+          type: string
+          description: Human-readable description of when the preset fires.
+          example: Fires when a high-priority bug is created.
+    TriggerPresetListResponse:
+      type: object
+      required:
+        - results
+        - has_more
+        - next_cursor
+        - request_id
+      properties:
+        results:
+          type: array
+          description: Trigger presets available to the caller.
+          items:
+            $ref: '#/components/schemas/TriggerPresetSummary'
+        has_more:
+          type: boolean
+          description: Whether additional results are available.
+        next_cursor:
+          type: string
+          nullable: true
+          description: Cursor for the next page, or null when no more results are available.
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
     TriggerPresetInputType:
       type: string
       description: Type of a preset input.
@@ -3468,57 +3514,17 @@ components:
           description: |
             Whether additional selectable values were omitted from `values`. When true, use GET /trigger-presets/{preset_id}/input-values with a query to narrow the result set.
     TriggerPreset:
-      type: object
-      required:
-        - preset_id
-        - datasource
-        - display_name
-        - inputs
-      properties:
-        preset_id:
-          type: string
-          description: ID of the preset. Pass this when creating a trigger.
-          example: jira_high_priority_bug
-        datasource:
-          type: string
-          description: Datasource the preset fires on.
-          example: jira
-        display_name:
-          type: string
-          description: Human-readable preset name.
-          example: High-priority Jira bugs
-        description:
-          type: string
-          description: Human-readable description of when the preset fires.
-          example: Fires when a high-priority bug is created.
-        inputs:
-          type: array
-          description: Inputs the caller may supply when creating a trigger from this preset.
-          items:
-            $ref: '#/components/schemas/TriggerPresetInput'
-    TriggerPresetListResponse:
-      type: object
-      required:
-        - results
-        - has_more
-        - next_cursor
-        - request_id
-      properties:
-        results:
-          type: array
-          description: Trigger presets available to the caller.
-          items:
-            $ref: '#/components/schemas/TriggerPreset'
-        has_more:
-          type: boolean
-          description: Whether additional results are available.
-        next_cursor:
-          type: string
-          nullable: true
-          description: Cursor for the next page, or null when no more results are available.
-        request_id:
-          type: string
-          description: Platform-generated request ID for support correlation.
+      allOf:
+        - $ref: '#/components/schemas/TriggerPresetSummary'
+        - type: object
+          required:
+            - inputs
+          properties:
+            inputs:
+              type: array
+              description: Inputs the caller may supply when creating a trigger from this preset.
+              items:
+                $ref: '#/components/schemas/TriggerPresetInput'
     TriggerPresetGetResponse:
       type: object
       required:
