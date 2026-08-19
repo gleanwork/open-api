@@ -237,7 +237,13 @@ describe('Post-transformation smoke tests', () => {
     // without a group silently falls back to its `tags` and leaks a method to
     // the SDK top level. The top level is reserved for the Platform API, so
     // client/indexing operations must be nested under `client.*` / `indexing.*`.
-    const platformSegments = new Set(['agents', 'chat', 'search', 'skills']);
+    const platformSegments = new Set([
+      'agents',
+      'chat',
+      'search',
+      'skills',
+      'triggers',
+    ]);
     const allowedTopLevelSegments = new Set([
       'client',
       'indexing',
