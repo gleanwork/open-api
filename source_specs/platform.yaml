@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 4ea70b725723173f6f2113c139a2c8f8826dfb1f
+  x-source-commit-sha: a90ed2e4fa26ceb7a2a7e800f6a494c0a2f0750d
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -1168,6 +1168,41 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TriggerCreateRequest'
+      callbacks:
+        triggerEvent:
+          '{$request.body#/delivery/webhook_url}':
+            post:
+              tags:
+                - Triggers
+              summary: Receive a trigger event
+              description: Delivery uses at-least-once semantics, so the same event can be sent more than once. Return any 2xx status after accepting the event. Network failures, 408, 429, and 5xx responses are retried; other non-2xx responses, including redirects, are terminal. The `webhook-id` remains stable across attempts and can be used for deduplication, while `webhook-timestamp` and `webhook-signature` are generated for each attempt.
+              operationId: trigger-webhook-event
+              security:
+                - {}
+                - TriggerWebhookBearerAuth: []
+              parameters:
+                - $ref: '#/components/parameters/TriggerWebhookId'
+                - $ref: '#/components/parameters/TriggerWebhookTimestamp'
+                - $ref: '#/components/parameters/TriggerWebhookSignature'
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/TriggerWebhookEvent'
+              responses:
+                '408':
+                  description: Request timeout. Glean retries the delivery.
+                '429':
+                  description: Rate limited. Glean retries the delivery.
+                2XX:
+                  description: Event accepted. Glean does not retry the delivery.
+                3XX:
+                  description: Redirects are not followed and the delivery is not retried.
+                4XX:
+                  description: Client error other than 408 or 429. Glean does not retry.
+                5XX:
+                  description: Server error. Glean retries the delivery.
       responses:
         '201':
           description: Trigger created.
@@ -3154,7 +3189,7 @@ components:
           type: string
           writeOnly: true
           description: Secret credential value. Write-only; never returned on reads.
-          example: a8f5f167f44f4964e6c998dee827110c
+          example: secret_test_123
     TriggerDelivery:
       type: object
       additionalProperties: false
@@ -3164,7 +3199,8 @@ components:
         webhook_url:
           type: string
           format: uri
-          description: URL that signed events are delivered to.
+          pattern: ^https://
+          description: HTTPS URL that signed events are delivered to.
           example: https://customer.app/webhook
         auth:
           $ref: '#/components/schemas/TriggerAuth'
@@ -3181,7 +3217,7 @@ components:
         trigger_id:
           type: string
           description: ID of the trigger.
-          example: 2f8a9b0c1d2e4f5a6b7c8d9e0f1a2b3c
+          example: trigger_test_123
         preset_id:
           type: string
           description: ID of the preset this trigger was created from.
@@ -3263,8 +3299,9 @@ components:
           properties:
             signing_secret:
               type: string
-              description: Secret for verifying webhook signatures. Returned only at creation.
+              pattern: ^whsec_[A-Za-z0-9+/=]+$
               example: whsec_xxx
+              description: Secret for verifying webhook signatures, serialized as `whsec_<base64-encoded key>` following Standard Webhooks. Returned only when the trigger is created and cannot be retrieved later. Store it securely.
     TriggerCreateResponse:
       type: object
       required:
@@ -3276,6 +3313,122 @@ components:
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
+    TriggerWebhookEventBase:
+      type: object
+      required:
+        - version
+        - trigger_id
+        - event_type
+        - datasource
+        - reason
+        - doc_type
+        - doc_id
+        - view_url
+        - title
+      properties:
+        version:
+          type: string
+          description: Webhook payload schema version.
+          pattern: ^1$
+        trigger_id:
+          type: string
+          description: ID of the Platform trigger that produced the event.
+          example: trigger_test_123
+        event_type:
+          type: string
+          description: Kind of trigger event.
+        datasource:
+          type: string
+          description: Datasource the event originated from.
+          example: GITHUB
+        reason:
+          type: string
+          description: Why the event fired.
+          example: REVIEW_REQUESTED
+        doc_type:
+          type: string
+          description: Datasource-specific object type.
+          example: pull
+        doc_id:
+          type: string
+          description: Identifier of the document the event is about.
+          example: GITHUB_pull_123
+        view_url:
+          type: string
+          description: Link to the document in its source system.
+          example: https://github.com/acme/payments-api/pull/123
+        title:
+          type: string
+          description: Title of the document, or the subject for email.
+          example: 'Bug: login fails on Safari'
+        event_time:
+          type: string
+          format: date-time
+          description: Relevant event time. Document changes use the source-observed time when available and otherwise the document ingestion time; content schedules use the scheduled time. Omitted when no timestamp is available.
+    DocumentChangeWebhookEvent:
+      allOf:
+        - $ref: '#/components/schemas/TriggerWebhookEventBase'
+        - type: object
+          required:
+            - event_type
+          properties:
+            event_type:
+              type: string
+              pattern: ^DOCUMENT_CHANGE$
+            content:
+              type: string
+              description: Email body content when the event is for an email document.
+            content_truncated:
+              type: boolean
+              description: Present and true when source content exceeded the delivery size limit.
+      example:
+        version: '1'
+        trigger_id: trigger_test_123
+        event_type: DOCUMENT_CHANGE
+        datasource: GITHUB
+        reason: REVIEW_REQUESTED
+        doc_type: pull
+        doc_id: GITHUB_pull_123
+        view_url: https://github.com/acme/payments-api/pull/123
+        title: Add retry backoff to the crawler
+        event_time: '2025-04-23T11:00:00Z'
+    ContentScheduleWebhookEvent:
+      allOf:
+        - $ref: '#/components/schemas/TriggerWebhookEventBase'
+        - type: object
+          required:
+            - event_type
+            - time_offset_seconds
+          properties:
+            event_type:
+              type: string
+              pattern: ^CONTENT_SCHEDULE$
+            time_offset_seconds:
+              type: integer
+              format: int32
+              description: Offset in seconds from the scheduled time at which the trigger fired.
+      example:
+        version: '1'
+        trigger_id: trigger_test_123
+        event_type: CONTENT_SCHEDULE
+        datasource: GOOGLECALENDAR
+        reason: CONTENT_SCHEDULE
+        doc_type: event
+        doc_id: GCAL_event_123
+        view_url: https://calendar.google.com/event?eid=abc
+        title: Weekly Sync
+        event_time: '2025-04-23T12:00:00Z'
+        time_offset_seconds: 1800
+    TriggerWebhookEvent:
+      description: Every delivered webhook is one of these two variants. A trigger with a cron schedule carries no document and so cannot be delivered over a webhook.
+      oneOf:
+        - $ref: '#/components/schemas/DocumentChangeWebhookEvent'
+        - $ref: '#/components/schemas/ContentScheduleWebhookEvent'
+      discriminator:
+        propertyName: event_type
+        mapping:
+          DOCUMENT_CHANGE: '#/components/schemas/DocumentChangeWebhookEvent'
+          CONTENT_SCHEDULE: '#/components/schemas/ContentScheduleWebhookEvent'
     TriggerGetResponse:
       type: object
       required:
@@ -3393,7 +3546,7 @@ components:
         event_time:
           type: string
           format: date-time
-          description: When the event occurred.
+          description: 'When the event happened at the source: the document''s own change timestamp for a document change, and the scheduled time for a content schedule. Omitted when the source did not supply one.'
     TriggerEventSearchResponse:
       type: object
       required:
@@ -3477,7 +3630,7 @@ components:
           type: string
           description: |
             The exact value to send in the trigger's `inputs` for this choice (e.g. a channel name, a user's email, etc).
-          example: test.user@glean.com
+          example: person@example.com
         display_name:
           type: string
           description: Human-readable name for this value.
@@ -3640,6 +3793,47 @@ components:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/ProblemDetail'
+  parameters:
+    TriggerWebhookId:
+      name: webhook-id
+      in: header
+      required: true
+      description: Opaque delivery ID. It remains stable across retries of the same event and can be used as an idempotency key.
+      schema:
+        type: string
+        minLength: 1
+      example: msg_test_123
+    TriggerWebhookTimestamp:
+      name: webhook-timestamp
+      in: header
+      required: true
+      description: Unix time in seconds when this delivery attempt was signed.
+      schema:
+        type: integer
+        format: int64
+      example: 1700000000
+    TriggerWebhookSignature:
+      name: webhook-signature
+      in: header
+      required: true
+      description: |
+        `v1,` followed by the standard Base64-encoded HMAC-SHA256 digest. To verify it, remove the
+        `whsec_` prefix from `signing_secret`, standard-Base64-decode the remainder, and use those
+        bytes as the HMAC key. Sign the UTF-8 bytes of `webhook-id + "." + webhook-timestamp + "."
+        + raw request body`. Verify the signature against the unmodified request body before
+        parsing JSON, and use a constant-time comparison.
+
+        Fixed test vector (the raw body is one line with no trailing newline):
+
+        - decoded signing key bytes (UTF-8; test only): `test_webhook_signing_secret_1234`
+        - `webhook-id`: `81e6dc877ac553ef96ecbc939c1e46431159491991ba55cd131fbd0e3746c6bc`
+        - `webhook-timestamp`: `1700000000`
+        - `raw request body`: `{"version":"1","trigger_id":"trigger_test_123","datasource":"GITHUB","reason":"REVIEW_REQUESTED","doc_type":"pull","event_type":"DOCUMENT_CHANGE","doc_id":"GITHUB_pull_123","view_url":"https://github.com/acme/payments-api/pull/123","title":"Add retry backoff to the crawler","event_time":"2025-04-23T11:00:00Z"}`
+        - `webhook-signature`: `v1,JqvHW0dwAOSLndiwQdXLUS/P+2RvOO8x4sOWgA/w0Gs=`
+      schema:
+        type: string
+        pattern: ^v1,[A-Za-z0-9+/=]+$
+      example: v1,xxx
 x-tagGroups:
   - name: AI
     tags:
