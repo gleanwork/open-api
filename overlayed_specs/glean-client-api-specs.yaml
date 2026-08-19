@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 6d4e1596db97076588d1eb03265ddf03bb70e08f
+  x-source-commit-sha: 9cbf8e48840ea13c1be8e61cbc378c2e446ec220
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 2702331fe8f8c57a89d43decb82baa2ca768c03f
+  x-open-api-commit-sha: bf898f02464f73f7f83cfe1bd21ce62f53a03749
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -10421,6 +10421,19 @@ components:
         showNewIndicator:
           type: boolean
           description: show a "New" pill next to the item
+    CalendarRoomBookingStatus:
+      type: string
+      description: The current booking status of the room resource associated with an event.
+      enum:
+        - NONE
+        - ACCEPTED
+        - DECLINED
+        - PENDING
+      x-enum-varnames:
+        - CALENDAR_ROOM_BOOKING_STATUS_NONE
+        - CALENDAR_ROOM_BOOKING_STATUS_ACCEPTED
+        - CALENDAR_ROOM_BOOKING_STATUS_DECLINED
+        - CALENDAR_ROOM_BOOKING_STATUS_PENDING
     ConferenceData:
       required:
         - provider
@@ -10528,6 +10541,15 @@ components:
               description: A permalink for this calendar event
             attendees:
               $ref: "#/components/schemas/CalendarAttendees"
+            isOrganizer:
+              type: boolean
+              nullable: true
+              description: Whether the requesting user is the organizer of this event.
+            roomBookingStatus:
+              $ref: "#/components/schemas/CalendarRoomBookingStatus"
+            roomName:
+              type: string
+              description: The display name of the room resource associated with this event.
             location:
               type: string
               description: The location that this event is taking place at.
@@ -10827,6 +10849,7 @@ components:
             - STARTER_KIT_ORG_CHART
             - STARTER_KIT_ADD_DOC
             - MEETING_RECAP
+            - MEETING_ROOM
             - MEETING_PREP_AUTOMATION
             - ACTIVE_DISCUSSION
             - MID_DAY_CATCH_UP
