@@ -1,4 +1,4 @@
-speakeasyVersion: 1.795.0
+speakeasyVersion: 1.795.1
 sources:
     glean-api-specs:
         sourceNamespace: glean-api-specs
