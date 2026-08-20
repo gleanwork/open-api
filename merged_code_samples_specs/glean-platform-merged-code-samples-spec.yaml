@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: a612d513ddd97dce2c612d0d7490adf579df1c87
-  x-open-api-commit-sha: ae24ab21e364fe99f6473f57bb9072c3d4f258a7
+  x-source-commit-sha: fc1b050971735332d0b799f4048fe801553dd8dd
+  x-open-api-commit-sha: f34359dbb304911e06d4a7a3a8aca6162436d542
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -5266,10 +5266,10 @@ components:
       discriminator:
         propertyName: type
         mapping:
-          DOCUMENT: "#/components/schemas/ChatDocumentSource"
-          PERSON: "#/components/schemas/ChatPersonSource"
-          FILE: "#/components/schemas/ChatFileSource"
-          CUSTOM_ENTITY: "#/components/schemas/ChatCustomEntitySource"
+          DOCUMENT: "#/components/schemas/PlatformChatDocumentSource"
+          PERSON: "#/components/schemas/PlatformChatPersonSource"
+          FILE: "#/components/schemas/PlatformChatFileSource"
+          CUSTOM_ENTITY: "#/components/schemas/PlatformChatCustomEntitySource"
     PlatformChatCitationSnippet:
       type: object
       additionalProperties: false
@@ -6402,8 +6402,8 @@ components:
       discriminator:
         propertyName: event_type
         mapping:
-          DOCUMENT_CHANGE: "#/components/schemas/DocumentChangeWebhookEvent"
-          CONTENT_SCHEDULE: "#/components/schemas/ContentScheduleWebhookEvent"
+          DOCUMENT_CHANGE: "#/components/schemas/PlatformDocumentChangeWebhookEvent"
+          CONTENT_SCHEDULE: "#/components/schemas/PlatformContentScheduleWebhookEvent"
     PlatformTriggerGetResponse:
       type: object
       required:
