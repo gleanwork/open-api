@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: a612d513ddd97dce2c612d0d7490adf579df1c87
-  x-open-api-commit-sha: ae24ab21e364fe99f6473f57bb9072c3d4f258a7
+  x-source-commit-sha: fc1b050971735332d0b799f4048fe801553dd8dd
+  x-open-api-commit-sha: f34359dbb304911e06d4a7a3a8aca6162436d542
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -7313,10 +7313,10 @@ components:
       discriminator:
         propertyName: type
         mapping:
-          DOCUMENT: "#/components/schemas/ChatDocumentSource"
-          PERSON: "#/components/schemas/ChatPersonSource"
-          FILE: "#/components/schemas/ChatFileSource"
-          CUSTOM_ENTITY: "#/components/schemas/ChatCustomEntitySource"
+          DOCUMENT: "#/components/schemas/PlatformChatDocumentSource"
+          PERSON: "#/components/schemas/PlatformChatPersonSource"
+          FILE: "#/components/schemas/PlatformChatFileSource"
+          CUSTOM_ENTITY: "#/components/schemas/PlatformChatCustomEntitySource"
     PlatformChatCitationSnippet:
       type: object
       additionalProperties: false
@@ -8449,8 +8449,8 @@ components:
       discriminator:
         propertyName: event_type
         mapping:
-          DOCUMENT_CHANGE: "#/components/schemas/DocumentChangeWebhookEvent"
-          CONTENT_SCHEDULE: "#/components/schemas/ContentScheduleWebhookEvent"
+          DOCUMENT_CHANGE: "#/components/schemas/PlatformDocumentChangeWebhookEvent"
+          CONTENT_SCHEDULE: "#/components/schemas/PlatformContentScheduleWebhookEvent"
     PlatformTriggerGetResponse:
       type: object
       required:
