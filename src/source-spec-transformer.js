@@ -187,9 +187,32 @@ const httpMethods = new Set([
 
 const platformSdkGroupPattern = /^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)*$/;
 const platformSdkMethodPattern = /^[a-z][A-Za-z0-9]*$/;
+const schemaRefPrefix = '#/components/schemas/';
+
+function rewriteDiscriminatorMapping(obj, refMap) {
+  const mapping = obj.discriminator?.mapping;
+  if (!mapping || typeof mapping !== 'object' || Array.isArray(mapping)) return;
+
+  // Mapping targets are values rather than $ref fields; dangling targets also
+  // suppress the docs renderer's oneOf fallback.
+  for (const [key, target] of Object.entries(mapping)) {
+    if (typeof target !== 'string') continue;
+
+    const isRef = target.startsWith(schemaRefPrefix);
+    const ref = isRef ? target : `${schemaRefPrefix}${target}`;
+    if (!Object.hasOwn(refMap, ref)) continue;
+
+    const renamedRef = refMap[ref];
+    mapping[key] = isRef
+      ? renamedRef
+      : renamedRef.slice(schemaRefPrefix.length);
+  }
+}
 
 function rewriteRefs(obj, refMap) {
   if (!obj || typeof obj !== 'object') return;
+
+  rewriteDiscriminatorMapping(obj, refMap);
 
   // Component refs can appear in request bodies, responses, nested schemas, and
   // examples, so renames have to be applied across the whole document tree.

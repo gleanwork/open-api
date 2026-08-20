@@ -531,6 +531,40 @@ describe('OpenAPI YAML Transformer', () => {
     );
   });
 
+  test('transformPlatformSpec keeps discriminator mapping targets resolvable', () => {
+    const spec = yaml.load(readFixture('platform.yaml'));
+    // Exercise the schema-name form in addition to the URI form used by source.
+    spec.components.schemas.ChatCitationSource.discriminator.mapping.PERSON =
+      'ChatPersonSource';
+
+    transformPlatformSpec(spec);
+
+    const schemas = spec.components.schemas;
+    const schemaRefPrefix = '#/components/schemas/';
+    const mappingTargets = [];
+    const visit = (node, seen) => {
+      if (!node || typeof node !== 'object' || seen.has(node)) return;
+      seen.add(node);
+      mappingTargets.push(...Object.values(node.discriminator?.mapping ?? {}));
+      for (const child of Object.values(node)) visit(child, seen);
+    };
+    visit(spec, new WeakSet());
+
+    const unresolvedTargets = mappingTargets.filter((target) => {
+      if (typeof target !== 'string') return true;
+      const schemaName = target.startsWith(schemaRefPrefix)
+        ? target.slice(schemaRefPrefix.length)
+        : /^[A-Za-z0-9._-]+$/.test(target)
+          ? target
+          : undefined;
+      return schemaName !== undefined && !Object.hasOwn(schemas, schemaName);
+    });
+    expect(unresolvedTargets).toEqual([]);
+    expect(
+      schemas.PlatformChatCitationSource.discriminator.mapping.PERSON,
+    ).toBe('PlatformChatPersonSource');
+  });
+
   test('transformPlatformSpec rejects operations without x-glean-sdk metadata', () => {
     expect(() =>
       transformPlatformSpec({
