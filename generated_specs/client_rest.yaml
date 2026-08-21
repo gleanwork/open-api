@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 30a80d7e600a644100b33a5bd88675885f52e302
+  x-source-commit-sha: ae20e37cc1d6786192c975f846fbe57527d94d7e
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 46e6b7a853c54d90121f2fff42ee2da71874a34c
+  x-open-api-commit-sha: 68a8939fe1b80a3a659ea78c778a5ddfdcb8e999
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -6564,6 +6564,22 @@ components:
           example: sample.pdf
         metadata:
           $ref: "#/components/schemas/ChatFileMetadata"
+    ChatSkill:
+      type: object
+      description: A skill cited by Assistant.
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          minLength: 1
+          description: Artifact ID of the skill.
+        name:
+          type: string
+          description: Name of the skill.
+        url:
+          type: string
+          description: URL for viewing the skill.
     ReferenceRange:
       description: Each text range from the response can correspond to an array of snippets from the citation source.
       properties:
@@ -6587,6 +6603,8 @@ components:
           $ref: "#/components/schemas/Person"
         sourceCustomEntity:
           $ref: "#/components/schemas/CustomEntity"
+        sourceSkill:
+          $ref: "#/components/schemas/ChatSkill"
         referenceRanges:
           description: Each reference range and its corresponding snippets
           type: array
