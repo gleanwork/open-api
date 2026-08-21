@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: ae20e37cc1d6786192c975f846fbe57527d94d7e
-  x-open-api-commit-sha: 68a8939fe1b80a3a659ea78c778a5ddfdcb8e999
+  x-source-commit-sha: d96a5da69d9d1247157a9a110ae70d6ed80c20b3
+  x-open-api-commit-sha: fe8dfb74e2edcaae013f328b2b481d070cc7408c
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -1696,6 +1696,8 @@ components:
     PlatformAgentsSearchRequest:
       type: object
       additionalProperties: false
+      example:
+        name: HR Policy Agent
       properties:
         name:
           type: string
@@ -2019,6 +2021,12 @@ components:
       additionalProperties: false
       description: |
         Request to run an agent. A request MUST supply either `messages` (a non-empty conversation) or `input` (for input-form triggered agents).
+      example:
+        messages:
+          - role: USER
+            content:
+              - text: What is our parental leave policy?
+                type: text
       properties:
         input:
           type: object
@@ -2135,6 +2143,8 @@ components:
       additionalProperties: false
       required:
         - input
+      example:
+        input: What is our parental leave policy?
       properties:
         input:
           description: |
@@ -2535,6 +2545,9 @@ components:
       additionalProperties: false
       required:
         - source_urls
+      example:
+        source_urls:
+          - https://github.com/anthropics/skills/tree/main/skills/skill-creator
       properties:
         source_urls:
           type: array
@@ -2627,6 +2640,8 @@ components:
       additionalProperties: false
       required:
         - source_url
+      example:
+        source_url: https://github.com/anthropics/skills
       properties:
         source_url:
           type: string
@@ -2749,6 +2764,8 @@ components:
       additionalProperties: false
       required:
         - status
+      example:
+        status: ENABLED
       properties:
         status:
           $ref: "#/components/schemas/PlatformSkillUpdateStatus"
