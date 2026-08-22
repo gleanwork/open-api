@@ -2,8 +2,8 @@ openapi: 3.0.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: ae20e37cc1d6786192c975f846fbe57527d94d7e
-  x-open-api-commit-sha: 68a8939fe1b80a3a659ea78c778a5ddfdcb8e999
+  x-source-commit-sha: d96a5da69d9d1247157a9a110ae70d6ed80c20b3
+  x-open-api-commit-sha: fe8dfb74e2edcaae013f328b2b481d070cc7408c
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -507,7 +507,12 @@ paths:
                 res = glean.agents.create_run(agent_id="<id>", messages=[
                     {
                         "role": models.PlatformMessageRole.USER,
-                        "content": [],
+                        "content": [
+                            {
+                                "text": "What is our parental leave policy?",
+                                "type": models.PlatformContentType.TEXT,
+                            },
+                        ],
                     },
                 ], stream=False)
 
@@ -527,7 +532,12 @@ paths:
                 messages: [
                   {
                     role: "USER",
-                    content: [],
+                    content: [
+                      {
+                        text: "What is our parental leave policy?",
+                        type: "text",
+                      },
+                    ],
                   },
                 ],
               }, "<id>");
@@ -560,7 +570,12 @@ paths:
                     Messages: []components.PlatformMessage{
                         components.PlatformMessage{
                             Role: components.PlatformMessageRoleUser,
-                            Content: []components.PlatformMessageTextBlock{},
+                            Content: []components.PlatformMessageTextBlock{
+                                components.PlatformMessageTextBlock{
+                                    Text: "What is our parental leave policy?",
+                                    Type: components.PlatformContentTypeText,
+                                },
+                            },
                         },
                     },
                 })
@@ -598,7 +613,11 @@ paths:
                                 .messages(List.of(
                                     PlatformMessage.builder()
                                         .role(PlatformMessageRole.USER)
-                                        .content(List.of())
+                                        .content(List.of(
+                                            PlatformMessageTextBlock.builder()
+                                                .text("What is our parental leave policy?")
+                                                .type(PlatformContentType.TEXT)
+                                                .build()))
                                         .build()))
                                 .build())
                             .call();
@@ -693,7 +712,7 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as glean:
 
-                res = glean.chat.create(input="<value>", stream=False, store=True)
+                res = glean.chat.create(input="What is our parental leave policy?", stream=False, store=True)
 
                 # Handle response
                 print(res)
@@ -708,7 +727,7 @@ paths:
 
             async function run() {
               const result = await glean.chat.create({
-                input: "<value>",
+                input: "What is our parental leave policy?",
               });
 
               console.log(result);
@@ -737,7 +756,7 @@ paths:
 
                 res, err := s.Chat.Create(ctx, components.PlatformChatCreateRequest{
                     Input: components.CreateInputStr(
-                        "<value>",
+                        "What is our parental leave policy?",
                     ),
                 })
                 if err != nil {
@@ -768,7 +787,7 @@ paths:
                         .build();
 
                     PlatformChatCreateRequest req = PlatformChatCreateRequest.builder()
-                            .input(Input.of("<value>"))
+                            .input(Input.of("What is our parental leave policy?"))
                             .build();
 
                     PlatformChatCreateResponse res = sdk.chat().create()
@@ -1133,7 +1152,7 @@ paths:
             ) as glean:
 
                 res = glean.skills.import_(source_urls=[
-                    "<value 1>",
+                    "https://github.com/anthropics/skills/tree/main/skills/skill-creator",
                 ])
 
                 # Handle response
@@ -1150,7 +1169,7 @@ paths:
             async function run() {
               const result = await glean.skills.import({
                 source_urls: [
-                  "<value 1>",
+                  "https://github.com/anthropics/skills/tree/main/skills/skill-creator",
                 ],
               });
 
@@ -1180,7 +1199,7 @@ paths:
 
                 res, err := s.Skills.Import(ctx, components.PlatformSkillImportRequest{
                     SourceUrls: []string{
-                        "<value 1>",
+                        "https://github.com/anthropics/skills/tree/main/skills/skill-creator",
                     },
                 })
                 if err != nil {
@@ -1212,7 +1231,7 @@ paths:
 
                     PlatformSkillImportRequest req = PlatformSkillImportRequest.builder()
                             .sourceUrls(List.of(
-                                "<value 1>"))
+                                "https://github.com/anthropics/skills/tree/main/skills/skill-creator"))
                             .build();
 
                     PlatformSkillsImportResponse res = sdk.skills().import_()
@@ -1454,7 +1473,7 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as glean:
 
-                res = glean.skills.preview_source(source_url="https://ugly-information.name/", stream=False)
+                res = glean.skills.preview_source(source_url="https://github.com/anthropics/skills", stream=False)
 
                 # Handle response
                 print(res)
@@ -1469,7 +1488,7 @@ paths:
 
             async function run() {
               const result = await glean.skills.previewSource({
-                source_url: "https://ugly-information.name/",
+                source_url: "https://github.com/anthropics/skills",
               });
 
               console.log(result);
@@ -1497,7 +1516,7 @@ paths:
                 )
 
                 res, err := s.Skills.PreviewSource(ctx, components.PlatformSkillSourcePreviewRequest{
-                    SourceURL: "https://ugly-information.name/",
+                    SourceURL: "https://github.com/anthropics/skills",
                 })
                 if err != nil {
                     log.Fatal(err)
@@ -1526,7 +1545,7 @@ paths:
                         .build();
 
                     PlatformSkillSourcePreviewRequest req = PlatformSkillSourcePreviewRequest.builder()
-                            .sourceUrl("https://ugly-information.name/")
+                            .sourceUrl("https://github.com/anthropics/skills")
                             .build();
 
                     PlatformSkillsPreviewSourceResponse res = sdk.skills().previewSource()
@@ -1606,7 +1625,7 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as glean:
 
-                res = glean.skills.update(skill_id="<id>", status=models.PlatformSkillUpdateStatus.DISABLED)
+                res = glean.skills.update(skill_id="<id>", status=models.PlatformSkillUpdateStatus.ENABLED)
 
                 # Handle response
                 print(res)
@@ -1621,7 +1640,7 @@ paths:
 
             async function run() {
               const result = await glean.skills.update({
-                status: "DISABLED",
+                status: "ENABLED",
               }, "<id>");
 
               console.log(result);
@@ -1649,7 +1668,7 @@ paths:
                 )
 
                 res, err := s.Skills.Update(ctx, "<id>", components.PlatformSkillUpdateRequest{
-                    Status: components.PlatformSkillUpdateStatusDisabled,
+                    Status: components.PlatformSkillUpdateStatusEnabled,
                 })
                 if err != nil {
                     log.Fatal(err)
@@ -1681,7 +1700,7 @@ paths:
                     PlatformSkillsUpdateResponse res = sdk.skills().update()
                             .skillId("<id>")
                             .platformSkillUpdateRequest(PlatformSkillUpdateRequest.builder()
-                                .status(PlatformSkillUpdateStatus.DISABLED)
+                                .status(PlatformSkillUpdateStatus.ENABLED)
                                 .build())
                             .call();
 
@@ -4700,6 +4719,8 @@ components:
     PlatformAgentsSearchRequest:
       type: object
       additionalProperties: false
+      example:
+        name: HR Policy Agent
       properties:
         name:
           type: string
@@ -5023,6 +5044,12 @@ components:
       additionalProperties: false
       description: |
         Request to run an agent. A request MUST supply either `messages` (a non-empty conversation) or `input` (for input-form triggered agents).
+      example:
+        messages:
+          - role: USER
+            content:
+              - text: What is our parental leave policy?
+                type: text
       properties:
         input:
           type: object
@@ -5139,6 +5166,8 @@ components:
       additionalProperties: false
       required:
         - input
+      example:
+        input: What is our parental leave policy?
       properties:
         input:
           description: |
@@ -5539,6 +5568,9 @@ components:
       additionalProperties: false
       required:
         - source_urls
+      example:
+        source_urls:
+          - https://github.com/anthropics/skills/tree/main/skills/skill-creator
       properties:
         source_urls:
           type: array
@@ -5631,6 +5663,8 @@ components:
       additionalProperties: false
       required:
         - source_url
+      example:
+        source_url: https://github.com/anthropics/skills
       properties:
         source_url:
           type: string
@@ -5753,6 +5787,8 @@ components:
       additionalProperties: false
       required:
         - status
+      example:
+        status: ENABLED
       properties:
         status:
           $ref: "#/components/schemas/PlatformSkillUpdateStatus"
