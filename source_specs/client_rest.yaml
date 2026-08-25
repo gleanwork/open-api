@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: ac2603fe36644788b52d98edd13ec2e73b2e25cb
+  x-source-commit-sha: 57c5ed97e505b6f223d7a45ad5a2a341e256c949
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -6784,10 +6784,12 @@ components:
             EXECUTION: Request for approving execution of the tool.
             AUTHENTICATION_SUGGESTION: Request for authenticating to a tool, provided as a (tool) suggestion.
             VOTE_SUGGESTION: Suggestion to vote for enabling an available-but-not-enabled tool.
+            SANDBOX_EGRESS: Request to approve an outbound/egress call from the sandbox.
           enum:
             - EXECUTION
             - AUTHENTICATION_SUGGESTION
             - VOTE_SUGGESTION
+            - SANDBOX_EGRESS
         requestId:
           type: string
           description: Unique identifier for this request.
@@ -6856,6 +6858,9 @@ components:
 
         For VOTE_SUGGESTION requests:
         - voted: whether the user voted for this tool
+
+        For SANDBOX_EGRESS requests:
+        - isGranted: whether the sandbox egress call is approved
       allOf:
         - $ref: '#/components/schemas/ServerToolBase'
         - type: object
