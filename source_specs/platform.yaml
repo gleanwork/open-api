@@ -1,8 +1,8 @@
-openapi: 3.0.0
+openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: ef0c8ec052c9d7f253fa653c7eb99052d58f72e4
+  x-source-commit-sha: b7b05515ec2dd7d566cc6c6e235bb124e9d07ea2
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -2298,8 +2298,9 @@ components:
           type: string
           minLength: 1
         page_number:
-          type: integer
-          nullable: true
+          type:
+            - integer
+            - 'null'
     ChatCitationAnnotation:
       type: object
       additionalProperties: false
@@ -2317,16 +2318,19 @@ components:
           items:
             $ref: '#/components/schemas/ChatCitationSource'
         start_index:
-          type: integer
+          type:
+            - integer
+            - 'null'
           minimum: 0
-          nullable: true
         end_index:
-          type: integer
+          type:
+            - integer
+            - 'null'
           minimum: 0
-          nullable: true
         snippets:
-          type: array
-          nullable: true
+          type:
+            - array
+            - 'null'
           items:
             $ref: '#/components/schemas/ChatCitationSnippet'
     ChatOutputTextContent:
@@ -2403,9 +2407,10 @@ components:
         store:
           type: boolean
         conversation_id:
-          type: string
+          type:
+            - string
+            - 'null'
           minLength: 1
-          nullable: true
           description: Present when the interaction was persisted.
         request_id:
           type: string
@@ -2525,8 +2530,9 @@ components:
           type: boolean
           description: Whether additional results are available.
         next_cursor:
-          type: string
-          nullable: true
+          type:
+            - string
+            - 'null'
           description: Cursor for the next page, or null when no more results are available.
         request_id:
           type: string
@@ -2887,8 +2893,9 @@ components:
           type: boolean
           description: Whether additional results are available.
         next_cursor:
-          type: string
-          nullable: true
+          type:
+            - string
+            - 'null'
           description: Cursor for the next page, or null when no more results are available.
         request_id:
           type: string
@@ -3007,8 +3014,9 @@ components:
           default: 10
           description: Number of results to return per page.
         cursor:
-          type: string
-          nullable: true
+          type:
+            - string
+            - 'null'
           description: |
             Opaque pagination token from a previous response's `next_cursor` field. Omit on the first request.
         datasources:
@@ -3061,8 +3069,9 @@ components:
           description: The datasource this result originates from.
           example: confluence
         document_type:
-          type: string
-          nullable: true
+          type:
+            - string
+            - 'null'
           minLength: 1
           description: The document type within the datasource.
           example: page
@@ -3071,14 +3080,16 @@ components:
         owner:
           $ref: '#/components/schemas/PersonReference'
         updated_at:
-          type: string
+          type:
+            - string
+            - 'null'
           format: date-time
-          nullable: true
           description: When the result was last modified.
         created_at:
-          type: string
+          type:
+            - string
+            - 'null'
           format: date-time
-          nullable: true
           description: When the result was created.
     SearchResponse:
       type: object
@@ -3100,8 +3111,9 @@ components:
           type: boolean
           description: Indicates whether additional pages of results are available.
         next_cursor:
-          type: string
-          nullable: true
+          type:
+            - string
+            - 'null'
           description: Opaque token to pass as `cursor` in the next request.
         request_id:
           type: string
@@ -3278,8 +3290,9 @@ components:
           type: boolean
           description: Whether additional results are available.
         next_cursor:
-          type: string
-          nullable: true
+          type:
+            - string
+            - 'null'
           description: Cursor for the next page, or null when no more results are available.
         request_id:
           type: string
@@ -3623,8 +3636,9 @@ components:
           type: boolean
           description: Whether additional results are available.
         next_cursor:
-          type: string
-          nullable: true
+          type:
+            - string
+            - 'null'
           description: Cursor for the next page, or null when no more results are available.
         request_id:
           type: string
