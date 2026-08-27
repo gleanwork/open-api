@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 76ddab9917c47c86d62ffd698c50d51e707be1f4
+  x-source-commit-sha: af1b4d6aee0115bc6cff834b70b34841688d178b
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -7447,7 +7447,7 @@ components:
         isDraft:
           type: boolean
           description: |
-            When true, validates and stores a draft preview without publishing (used for PR preview links). Takes precedence over `syncMode`: when `isDraft` is true, `syncMode` is ignored.
+            Deprecated. Draft mutation semantics are not supported for transient previews. Use transient and parentWorkflowId instead.
     ImportAgentStatus:
       type: string
       enum:
