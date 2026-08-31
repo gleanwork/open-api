@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 23dfa71d48e45d97f8fb4e2266ba4b3f800fc8c5
+  x-source-commit-sha: 196c283981fb2d7b4f9bb7f2bb3520faabe3bdfb
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -952,6 +952,12 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: Internal server error
+      x-glean-deprecated:
+        docs: https://developers.glean.com/api/platform-api/agents-overview
+        id: e01a59ea-5de0-481f-97b6-d28dd65379e6
+        introduced: '2026-08-25'
+        message: Use GET /api/agents/{agent_id} instead.
+        removal: '2027-04-15'
     post:
       tags:
         - Agents
@@ -1041,6 +1047,12 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: Internal server error
+      x-glean-deprecated:
+        docs: https://developers.glean.com/api/platform-api/agents-overview
+        id: 9ca398ba-cf22-4523-9d9c-86e5f82d6ec7
+        introduced: '2026-08-25'
+        message: Use GET /api/agents/{agent_id}/schemas instead.
+        removal: '2027-04-15'
   /agents/{agent_id}/import:
     post:
       tags:
@@ -1128,6 +1140,12 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: Internal server error
+      x-glean-deprecated:
+        docs: https://developers.glean.com/api/platform-api/agents-overview
+        id: 3ab6f4c0-0b97-4a0b-b5da-e888e4bb7706
+        introduced: '2026-08-25'
+        message: Use POST /api/agents/search instead.
+        removal: '2027-04-15'
   /agents/runs/stream:
     post:
       tags:
@@ -1190,6 +1208,12 @@ paths:
                 $ref: '#/components/schemas/UnauthorizedAgentToolsError'
         '500':
           description: Internal server error
+      x-glean-deprecated:
+        docs: https://developers.glean.com/api/platform-api/agents-overview
+        id: db3f42a5-8820-451e-b57a-14bf6ca3915c
+        introduced: '2026-08-25'
+        message: Use POST /api/agents/{agent_id}/runs with stream=true instead.
+        removal: '2027-04-15'
   /agents/runs/wait:
     post:
       tags:
@@ -1227,6 +1251,12 @@ paths:
                 $ref: '#/components/schemas/UnauthorizedAgentToolsError'
         '500':
           description: Internal server error
+      x-glean-deprecated:
+        docs: https://developers.glean.com/api/platform-api/agents-overview
+        id: 683b90e1-48d3-4d7a-a32d-b48eb194fcf0
+        introduced: '2026-08-25'
+        message: Use POST /api/agents/{agent_id}/runs instead.
+        removal: '2027-04-15'
   /addcollectionitems:
     post:
       tags:
