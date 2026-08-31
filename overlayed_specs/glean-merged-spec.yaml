@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: af1b4d6aee0115bc6cff834b70b34841688d178b
-  x-open-api-commit-sha: 0ac3ee5ea61948cc9059de8e1a2f4a52fafefe4a
+  x-source-commit-sha: 196c283981fb2d7b4f9bb7f2bb3520faabe3bdfb
+  x-open-api-commit-sha: eb0f1c9baa539b870837efe424517af506937c7a
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -2709,7 +2709,15 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         "500":
           description: Internal server error
+      deprecated: true
       x-visibility: Preview
+      x-glean-deprecated:
+        docs: https://developers.glean.com/api/platform-api/agents-overview
+        id: e01a59ea-5de0-481f-97b6-d28dd65379e6
+        introduced: "2026-08-25"
+        message: Use GET /api/agents/{agent_id} instead.
+        removal: "2027-04-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-08-25, removal scheduled for 2027-04-15: Use GET /api/agents/{agent_id} instead."
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: retrieve
     post:
@@ -2802,7 +2810,15 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         "500":
           description: Internal server error
+      deprecated: true
       x-visibility: Preview
+      x-glean-deprecated:
+        docs: https://developers.glean.com/api/platform-api/agents-overview
+        id: 9ca398ba-cf22-4523-9d9c-86e5f82d6ec7
+        introduced: "2026-08-25"
+        message: Use GET /api/agents/{agent_id}/schemas instead.
+        removal: "2027-04-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-08-25, removal scheduled for 2027-04-15: Use GET /api/agents/{agent_id}/schemas instead."
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: retrieveSchemas
   /rest/api/v1/agents/{agent_id}/import:
@@ -2895,7 +2911,15 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         "500":
           description: Internal server error
+      deprecated: true
       x-visibility: Preview
+      x-glean-deprecated:
+        docs: https://developers.glean.com/api/platform-api/agents-overview
+        id: 3ab6f4c0-0b97-4a0b-b5da-e888e4bb7706
+        introduced: "2026-08-25"
+        message: Use POST /api/agents/search instead.
+        removal: "2027-04-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-08-25, removal scheduled for 2027-04-15: Use POST /api/agents/search instead."
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: list
   /rest/api/v1/agents/runs/stream:
@@ -2961,7 +2985,15 @@ paths:
                 $ref: '#/components/schemas/UnauthorizedAgentToolsError'
         "500":
           description: Internal server error
+      deprecated: true
       x-visibility: Preview
+      x-glean-deprecated:
+        docs: https://developers.glean.com/api/platform-api/agents-overview
+        id: db3f42a5-8820-451e-b57a-14bf6ca3915c
+        introduced: "2026-08-25"
+        message: Use POST /api/agents/{agent_id}/runs with stream=true instead.
+        removal: "2027-04-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-08-25, removal scheduled for 2027-04-15: Use POST /api/agents/{agent_id}/runs with stream=true instead."
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: runStream
   /rest/api/v1/agents/runs/wait:
@@ -3002,7 +3034,15 @@ paths:
                 $ref: '#/components/schemas/UnauthorizedAgentToolsError'
         "500":
           description: Internal server error
+      deprecated: true
       x-visibility: Preview
+      x-glean-deprecated:
+        docs: https://developers.glean.com/api/platform-api/agents-overview
+        id: 683b90e1-48d3-4d7a-a32d-b48eb194fcf0
+        introduced: "2026-08-25"
+        message: Use POST /api/agents/{agent_id}/runs instead.
+        removal: "2027-04-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-08-25, removal scheduled for 2027-04-15: Use POST /api/agents/{agent_id}/runs instead."
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: run
   /rest/api/v1/addcollectionitems:
