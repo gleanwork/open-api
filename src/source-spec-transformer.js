@@ -187,6 +187,13 @@ const httpMethods = new Set([
 
 const platformSdkGroupPattern = /^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)*$/;
 const platformSdkMethodPattern = /^[a-z][A-Za-z0-9]*$/;
+const platformSdkFragmentPattern = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
+const platformSdkVariantKeys = new Set([
+  'fragment',
+  'method',
+  'request-body-overrides',
+  'response-media-type',
+]);
 const schemaRefPrefix = '#/components/schemas/';
 
 function rewriteDiscriminatorMapping(obj, refMap) {
@@ -359,17 +366,236 @@ function transformPlatformApiTokenSecurity(spec) {
   }
 }
 
-function transformPlatformOperations(spec) {
-  if (!spec.paths) {
-    return;
+function isSuccessfulResponseStatus(status) {
+  return /^2(?:\d{2}|XX)$/i.test(String(status));
+}
+
+function operationHasResponseMediaType(operation, mediaType) {
+  return Object.entries(operation.responses ?? {}).some(
+    ([status, response]) =>
+      isSuccessfulResponseStatus(status) &&
+      response &&
+      typeof response === 'object' &&
+      !Array.isArray(response) &&
+      Object.hasOwn(response.content ?? {}, mediaType),
+  );
+}
+
+function resolvePlatformSchema(spec, schema, seenRefs = new Set()) {
+  if (!schema?.$ref) return schema;
+  if (!schema.$ref.startsWith(schemaRefPrefix) || seenRefs.has(schema.$ref)) {
+    return undefined;
+  }
+  seenRefs.add(schema.$ref);
+  return resolvePlatformSchema(
+    spec,
+    spec.components?.schemas?.[schema.$ref.slice(schemaRefPrefix.length)],
+    seenRefs,
+  );
+}
+
+function platformSchemaHasProperty(spec, schema, propertyName) {
+  const resolved = resolvePlatformSchema(spec, schema);
+  if (!resolved || typeof resolved !== 'object') return false;
+  if (Object.hasOwn(resolved.properties ?? {}, propertyName)) return true;
+  return (resolved.allOf ?? []).some((item) =>
+    platformSchemaHasProperty(spec, item, propertyName),
+  );
+}
+
+function validateRequestBodyOverrides(spec, operation, overrides, location) {
+  if (overrides === undefined) return;
+  if (
+    !overrides ||
+    typeof overrides !== 'object' ||
+    Array.isArray(overrides) ||
+    Object.keys(overrides).length === 0
+  ) {
+    throw new Error(
+      `Platform operation ${location} has invalid request-body-overrides; expected non-empty object`,
+    );
   }
 
-  // Missing SDK metadata should fail here instead of letting Speakeasy invent a
-  // default method name or forcing a follow-up mapping change in this repo.
-  const sdkMethods = new Map();
+  const schema = operation.requestBody?.content?.['application/json']?.schema;
+  if (!schema) {
+    throw new Error(
+      `Platform operation ${location} declares request-body-overrides without an application/json request schema`,
+    );
+  }
+  for (const [propertyName, value] of Object.entries(overrides)) {
+    if (!platformSchemaHasProperty(spec, schema, propertyName)) {
+      throw new Error(
+        `Platform operation ${location} request-body override ${JSON.stringify(propertyName)} does not match a request schema property`,
+      );
+    }
+    if (
+      value === null ||
+      !['boolean', 'number', 'string'].includes(typeof value)
+    ) {
+      throw new Error(
+        `Platform operation ${location} request-body override ${JSON.stringify(propertyName)} must be a string, number, or boolean`,
+      );
+    }
+  }
+}
+
+function fixedValueSchema(value) {
+  const type =
+    typeof value === 'number' && Number.isInteger(value)
+      ? 'integer'
+      : typeof value;
+  return { type, const: value, default: value };
+}
+
+function applyRequestBodyOverrides(operation, overrides) {
+  if (overrides === undefined) return;
+  const mediaType = operation.requestBody.content['application/json'];
+  mediaType.schema = {
+    allOf: [
+      mediaType.schema,
+      {
+        type: 'object',
+        required: Object.keys(overrides),
+        properties: Object.fromEntries(
+          Object.entries(overrides).map(([name, value]) => [
+            name,
+            fixedValueSchema(value),
+          ]),
+        ),
+      },
+    ],
+  };
+}
+
+function wrapServerSentEventSchema(spec, operation) {
+  for (const [status, response] of Object.entries(operation.responses ?? {})) {
+    if (!isSuccessfulResponseStatus(status)) continue;
+    const mediaType = response?.content?.['text/event-stream'];
+    if (!mediaType?.schema) continue;
+
+    const payloadSchema = resolvePlatformSchema(spec, mediaType.schema);
+    if (
+      payloadSchema?.properties?.data ||
+      payloadSchema?.discriminator?.propertyName === 'event'
+    ) {
+      continue;
+    }
+
+    const payloadRef = mediaType.schema.$ref;
+    const mapping = payloadSchema?.discriminator?.mapping;
+    if (
+      typeof payloadRef !== 'string' ||
+      !payloadRef.startsWith(schemaRefPrefix) ||
+      !mapping ||
+      typeof mapping !== 'object' ||
+      Array.isArray(mapping) ||
+      Object.keys(mapping).length === 0
+    ) {
+      mediaType.schema = {
+        type: 'object',
+        required: ['data'],
+        properties: { data: mediaType.schema },
+      };
+      continue;
+    }
+
+    const eventSchemaName = `${payloadRef.slice(schemaRefPrefix.length)}ServerSentEvent`;
+    const eventMapping = {};
+    const oneOf = [];
+    for (const [eventName, mappedPayloadRef] of Object.entries(mapping)) {
+      if (typeof mappedPayloadRef !== 'string') {
+        throw new Error(
+          `Platform SSE discriminator mapping for ${eventName} must target a schema`,
+        );
+      }
+      const normalizedPayloadRef = mappedPayloadRef.startsWith(schemaRefPrefix)
+        ? mappedPayloadRef
+        : `${schemaRefPrefix}${mappedPayloadRef}`;
+      const payloadName = normalizedPayloadRef.slice(schemaRefPrefix.length);
+      const envelopeName = `${payloadName}ServerSentEvent`;
+      const envelopeRef = `${schemaRefPrefix}${envelopeName}`;
+      const envelopeSchema = {
+        type: 'object',
+        required: ['event', 'data'],
+        properties: {
+          id: { type: 'string' },
+          event: { type: 'string', const: eventName },
+          data: { $ref: normalizedPayloadRef },
+        },
+      };
+      const existingEnvelope = spec.components.schemas[envelopeName];
+      if (
+        existingEnvelope &&
+        JSON.stringify(existingEnvelope) !== JSON.stringify(envelopeSchema)
+      ) {
+        throw new Error(
+          `Platform SSE envelope schema ${envelopeName} already exists with a different definition`,
+        );
+      }
+      spec.components.schemas[envelopeName] = envelopeSchema;
+      oneOf.push({ $ref: envelopeRef });
+      eventMapping[eventName] = envelopeRef;
+    }
+
+    const eventSchema = {
+      description: 'A typed server-sent event.',
+      oneOf,
+      discriminator: { propertyName: 'event', mapping: eventMapping },
+    };
+    const existingEventSchema = spec.components.schemas[eventSchemaName];
+    if (
+      existingEventSchema &&
+      JSON.stringify(existingEventSchema) !== JSON.stringify(eventSchema)
+    ) {
+      throw new Error(
+        `Platform SSE schema ${eventSchemaName} already exists with a different definition`,
+      );
+    }
+    spec.components.schemas[eventSchemaName] = eventSchema;
+    mediaType.schema = { $ref: `${schemaRefPrefix}${eventSchemaName}` };
+  }
+}
+
+function selectResponseMediaType(operation, mediaType) {
+  for (const [status, response] of Object.entries(operation.responses ?? {})) {
+    if (
+      !isSuccessfulResponseStatus(status) ||
+      !response?.content ||
+      typeof response.content !== 'object' ||
+      Array.isArray(response.content)
+    ) {
+      continue;
+    }
+    if (!Object.hasOwn(response.content, mediaType)) {
+      delete operation.responses[status];
+      continue;
+    }
+    response.content = { [mediaType]: response.content[mediaType] };
+  }
+}
+
+function setPlatformSdkName(operation, group, method) {
+  operation['x-speakeasy-group'] = group;
+  operation['x-speakeasy-name-override'] = method;
+  delete operation['x-glean-sdk'];
+}
+
+function clonePathItemMetadata(pathItem) {
+  return Object.fromEntries(
+    Object.entries(pathItem)
+      .filter(([key]) => !httpMethods.has(key))
+      .map(([key, value]) => [key, structuredClone(value)]),
+  );
+}
+
+function transformPlatformOperations(spec) {
+  if (!spec.paths) return;
+
+  // Validate every source operation and derived variant before mutating paths.
+  const operations = [];
+  const operationIds = new Set();
   for (const [path, pathItem] of Object.entries(spec.paths)) {
     if (!pathItem || typeof pathItem !== 'object') continue;
-
     for (const [method, operation] of Object.entries(pathItem)) {
       if (
         !httpMethods.has(method) ||
@@ -378,46 +604,205 @@ function transformPlatformOperations(spec) {
       ) {
         continue;
       }
+      operations.push({ path, pathItem, method, operation });
+      if (typeof operation.operationId === 'string') {
+        operationIds.add(operation.operationId);
+      }
+    }
+  }
 
-      const location = `${method.toUpperCase()} ${path} with operationId ${operation.operationId || '<missing>'}`;
-      const sdk = operation['x-glean-sdk'];
-      if (!sdk || typeof sdk !== 'object' || Array.isArray(sdk)) {
+  const sdkMethods = new Map();
+  const variantPaths = new Set();
+  const plans = [];
+  const registerSdkMethod = (group, method, location) => {
+    const key = `${group}.${method}`;
+    if (sdkMethods.has(key)) {
+      throw new Error(
+        `Platform operation ${location} declares duplicate SDK method ${key}; already used by ${sdkMethods.get(key)}`,
+      );
+    }
+    sdkMethods.set(key, location);
+  };
+
+  for (const { path, pathItem, method, operation } of operations) {
+    const location = `${method.toUpperCase()} ${path} with operationId ${operation.operationId || '<missing>'}`;
+    const sdk = operation['x-glean-sdk'];
+    if (!sdk || typeof sdk !== 'object' || Array.isArray(sdk)) {
+      throw new Error(
+        `Platform operation ${location} must declare x-glean-sdk.group and x-glean-sdk.method`,
+      );
+    }
+    if (
+      typeof sdk.group !== 'string' ||
+      !platformSdkGroupPattern.test(sdk.group)
+    ) {
+      throw new Error(
+        `Platform operation ${location} has invalid x-glean-sdk.group ${JSON.stringify(sdk.group)}; expected lowercase dot-separated identifiers`,
+      );
+    }
+    if (
+      typeof sdk.method !== 'string' ||
+      !platformSdkMethodPattern.test(sdk.method)
+    ) {
+      throw new Error(
+        `Platform operation ${location} has invalid x-glean-sdk.method ${JSON.stringify(sdk.method)}; expected lower-camel identifier`,
+      );
+    }
+    registerSdkMethod(sdk.group, sdk.method, location);
+
+    const variants = sdk.variants;
+    if (variants === undefined) {
+      plans.push({ path, pathItem, method, operation, sdk, variants: [] });
+      continue;
+    }
+    if (!Array.isArray(variants) || variants.length === 0) {
+      throw new Error(
+        `Platform operation ${location} has invalid x-glean-sdk.variants; expected non-empty array`,
+      );
+    }
+    if (
+      typeof sdk['response-media-type'] !== 'string' ||
+      sdk['response-media-type'].length === 0
+    ) {
+      throw new Error(
+        `Platform operation ${location} with SDK variants must declare x-glean-sdk.response-media-type`,
+      );
+    }
+    if (!operationHasResponseMediaType(operation, sdk['response-media-type'])) {
+      throw new Error(
+        `Platform operation ${location} response media type ${JSON.stringify(sdk['response-media-type'])} was not found in a successful response`,
+      );
+    }
+    validateRequestBodyOverrides(
+      spec,
+      operation,
+      sdk['request-body-overrides'],
+      location,
+    );
+
+    const declaredMediaTypes = new Set([sdk['response-media-type']]);
+    const plannedVariants = variants.map((variant, index) => {
+      const variantLocation = `${location} x-glean-sdk.variants[${index}]`;
+      if (!variant || typeof variant !== 'object' || Array.isArray(variant)) {
         throw new Error(
-          `Platform operation ${location} must declare x-glean-sdk.group and x-glean-sdk.method`,
+          `Platform operation ${variantLocation} must be an object`,
         );
       }
-
+      const unknownKeys = Object.keys(variant).filter(
+        (key) => !platformSdkVariantKeys.has(key),
+      );
+      if (unknownKeys.length > 0) {
+        throw new Error(
+          `Platform operation ${variantLocation} has unknown keys: ${unknownKeys.sort().join(', ')}`,
+        );
+      }
       if (
-        typeof sdk.group !== 'string' ||
-        !platformSdkGroupPattern.test(sdk.group)
+        typeof variant.fragment !== 'string' ||
+        !platformSdkFragmentPattern.test(variant.fragment)
       ) {
         throw new Error(
-          `Platform operation ${location} has invalid x-glean-sdk.group ${JSON.stringify(sdk.group)}; expected lowercase dot-separated identifiers`,
+          `Platform operation ${variantLocation} has invalid fragment ${JSON.stringify(variant.fragment)}; expected lower-kebab identifier without #`,
         );
       }
-
       if (
-        typeof sdk.method !== 'string' ||
-        !platformSdkMethodPattern.test(sdk.method)
+        typeof variant.method !== 'string' ||
+        !platformSdkMethodPattern.test(variant.method)
       ) {
         throw new Error(
-          `Platform operation ${location} has invalid x-glean-sdk.method ${JSON.stringify(sdk.method)}; expected lower-camel identifier`,
+          `Platform operation ${variantLocation} has invalid method ${JSON.stringify(variant.method)}; expected lower-camel identifier`,
         );
       }
-
-      const sdkMethodKey = `${sdk.group}.${sdk.method}`;
-      if (sdkMethods.has(sdkMethodKey)) {
+      if (
+        typeof variant['response-media-type'] !== 'string' ||
+        variant['response-media-type'].length === 0
+      ) {
         throw new Error(
-          `Platform operation ${location} declares duplicate SDK method ${sdkMethodKey}; already used by ${sdkMethods.get(sdkMethodKey)}`,
+          `Platform operation ${variantLocation} has missing response-media-type`,
         );
       }
-      sdkMethods.set(sdkMethodKey, location);
+      if (declaredMediaTypes.has(variant['response-media-type'])) {
+        throw new Error(
+          `Platform operation ${variantLocation} declares duplicate response media type ${JSON.stringify(variant['response-media-type'])}`,
+        );
+      }
+      declaredMediaTypes.add(variant['response-media-type']);
+      if (
+        !operationHasResponseMediaType(
+          operation,
+          variant['response-media-type'],
+        )
+      ) {
+        throw new Error(
+          `Platform operation ${variantLocation} response media type ${JSON.stringify(variant['response-media-type'])} was not found in a successful response`,
+        );
+      }
+      validateRequestBodyOverrides(
+        spec,
+        operation,
+        variant['request-body-overrides'],
+        variantLocation,
+      );
+      registerSdkMethod(sdk.group, variant.method, variantLocation);
 
-      operation['x-speakeasy-group'] = sdk.group;
-      operation['x-speakeasy-name-override'] = sdk.method;
-      // x-glean-sdk is a source contract between scio and this transform; the
-      // generated public spec only needs the Speakeasy extensions it derives.
-      delete operation['x-glean-sdk'];
+      const variantPath = `${path}#${variant.fragment}`;
+      if (spec.paths[variantPath] || variantPaths.has(variantPath)) {
+        throw new Error(
+          `Platform operation ${variantLocation} would overwrite existing path ${variantPath}`,
+        );
+      }
+      variantPaths.add(variantPath);
+
+      if (typeof operation.operationId !== 'string' || !operation.operationId) {
+        throw new Error(
+          `Platform operation ${variantLocation} requires a non-empty operationId`,
+        );
+      }
+      const operationId = `${operation.operationId}-${variant.fragment}`;
+      if (operationIds.has(operationId)) {
+        throw new Error(
+          `Platform operation ${variantLocation} derives duplicate operationId ${operationId}`,
+        );
+      }
+      operationIds.add(operationId);
+      return { ...variant, path: variantPath, operationId };
+    });
+    plans.push({
+      path,
+      pathItem,
+      method,
+      operation,
+      sdk,
+      variants: plannedVariants,
+    });
+  }
+
+  for (const { path, pathItem, method, operation, sdk, variants } of plans) {
+    if (variants.length === 0) {
+      setPlatformSdkName(operation, sdk.group, sdk.method);
+      continue;
+    }
+
+    const baseOperation = structuredClone(operation);
+    selectResponseMediaType(baseOperation, sdk['response-media-type']);
+    wrapServerSentEventSchema(spec, baseOperation);
+    applyRequestBodyOverrides(baseOperation, sdk['request-body-overrides']);
+    setPlatformSdkName(baseOperation, sdk.group, sdk.method);
+    spec.paths[path][method] = baseOperation;
+
+    for (const variant of variants) {
+      const variantOperation = structuredClone(operation);
+      variantOperation.operationId = variant.operationId;
+      selectResponseMediaType(variantOperation, variant['response-media-type']);
+      wrapServerSentEventSchema(spec, variantOperation);
+      applyRequestBodyOverrides(
+        variantOperation,
+        variant['request-body-overrides'],
+      );
+      setPlatformSdkName(variantOperation, sdk.group, variant.method);
+      spec.paths[variant.path] = {
+        ...clonePathItemMetadata(pathItem),
+        [method]: variantOperation,
+      };
     }
   }
 }
