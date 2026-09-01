@@ -195,6 +195,9 @@ const platformSdkVariantKeys = new Set([
   'response-media-type',
 ]);
 const schemaRefPrefix = '#/components/schemas/';
+const eventStreamMediaType = 'text/event-stream';
+const sdkOnlyOperationPrefix =
+  'SDK-only logical operation. HTTP clients must call the base path; the URL fragment is not sent.';
 
 function rewriteDiscriminatorMapping(obj, refMap) {
   const mapping = obj.discriminator?.mapping;
@@ -394,17 +397,116 @@ function resolvePlatformSchema(spec, schema, seenRefs = new Set()) {
   );
 }
 
-function platformSchemaHasProperty(spec, schema, propertyName) {
-  const resolved = resolvePlatformSchema(spec, schema);
-  if (!resolved || typeof resolved !== 'object') return false;
-  if (Object.hasOwn(resolved.properties ?? {}, propertyName)) return true;
-  return (resolved.allOf ?? []).some((item) =>
-    platformSchemaHasProperty(spec, item, propertyName),
+function platformSchemaProperty(
+  spec,
+  schema,
+  propertyName,
+  seenRefs = new Set(),
+) {
+  const resolved = resolvePlatformSchema(spec, schema, seenRefs);
+  if (!resolved || typeof resolved !== 'object') return undefined;
+  if (Object.hasOwn(resolved.properties ?? {}, propertyName)) {
+    return resolved.properties[propertyName];
+  }
+  for (const item of resolved.allOf ?? []) {
+    const found = platformSchemaProperty(spec, item, propertyName, seenRefs);
+    if (found !== undefined) return found;
+  }
+  for (const key of ['oneOf', 'anyOf']) {
+    for (const item of resolved[key] ?? []) {
+      const found = platformSchemaProperty(spec, item, propertyName, seenRefs);
+      if (found !== undefined) return found;
+    }
+  }
+  return undefined;
+}
+
+function openApiValuesEqual(left, right) {
+  if ((typeof left === 'boolean') !== (typeof right === 'boolean')) {
+    return false;
+  }
+  return left === right;
+}
+
+function valueMatchesOpenApiType(value, typeName) {
+  if (typeName === 'boolean') return typeof value === 'boolean';
+  if (typeName === 'string') return typeof value === 'string';
+  if (typeName === 'integer') {
+    return typeof value === 'number' && Number.isInteger(value);
+  }
+  if (typeName === 'number') return typeof value === 'number';
+  return false;
+}
+
+function valueMatchesPropertySchema(spec, value, propertySchema) {
+  if (value === null) return false;
+  const resolved = resolvePlatformSchema(spec, propertySchema);
+  if (!resolved || typeof resolved !== 'object') {
+    return ['boolean', 'number', 'string'].includes(typeof value);
+  }
+  if (Object.hasOwn(resolved, 'const')) {
+    return openApiValuesEqual(value, resolved.const);
+  }
+  if (Array.isArray(resolved.enum)) {
+    return resolved.enum.some((member) => openApiValuesEqual(value, member));
+  }
+  if (resolved.type == null) {
+    return ['boolean', 'number', 'string'].includes(typeof value);
+  }
+  const types = Array.isArray(resolved.type) ? resolved.type : [resolved.type];
+  return types.some(
+    (typeName) =>
+      typeName !== 'null' && valueMatchesOpenApiType(value, typeName),
   );
 }
 
-function validateRequestBodyOverrides(spec, operation, overrides, location) {
-  if (overrides === undefined) return;
+function jsonRequestSchema(operation) {
+  return operation.requestBody?.content?.['application/json']?.schema;
+}
+
+function validateEventStreamSchemaRef(operation, mediaType, location) {
+  if (mediaType !== eventStreamMediaType) return;
+  for (const [status, response] of Object.entries(operation.responses ?? {})) {
+    if (!isSuccessfulResponseStatus(status)) continue;
+    const content = response?.content;
+    if (!content || typeof content !== 'object' || Array.isArray(content)) {
+      continue;
+    }
+    if (!Object.hasOwn(content, eventStreamMediaType)) continue;
+    const schema = content[eventStreamMediaType]?.schema;
+    const ref = schema?.$ref;
+    if (typeof ref !== 'string' || !ref.startsWith(schemaRefPrefix)) {
+      throw new Error(
+        `Platform operation ${location} ${eventStreamMediaType} schema must be a $ref starting with ${schemaRefPrefix}`,
+      );
+    }
+  }
+}
+
+function prefixSdkOnlyDocs(operation) {
+  operation.summary = operation.summary
+    ? `${sdkOnlyOperationPrefix} ${operation.summary}`
+    : sdkOnlyOperationPrefix;
+  operation.description = operation.description
+    ? `${sdkOnlyOperationPrefix} ${operation.description}`
+    : sdkOnlyOperationPrefix;
+}
+
+function validateRequestBodyOverrides(
+  spec,
+  operation,
+  overrides,
+  location,
+  { required = false } = {},
+) {
+  if (overrides === undefined) {
+    if (required) {
+      throw new Error(
+        `Platform operation ${location} has invalid request-body-overrides; expected non-empty object`,
+      );
+    }
+    return;
+  }
   if (
     !overrides ||
     typeof overrides !== 'object' ||
@@ -416,24 +518,22 @@ function validateRequestBodyOverrides(spec, operation, overrides, location) {
     );
   }
 
-  const schema = operation.requestBody?.content?.['application/json']?.schema;
+  const schema = jsonRequestSchema(operation);
   if (!schema) {
     throw new Error(
       `Platform operation ${location} declares request-body-overrides without an application/json request schema`,
     );
   }
   for (const [propertyName, value] of Object.entries(overrides)) {
-    if (!platformSchemaHasProperty(spec, schema, propertyName)) {
+    const propertySchema = platformSchemaProperty(spec, schema, propertyName);
+    if (propertySchema === undefined) {
       throw new Error(
         `Platform operation ${location} request-body override ${JSON.stringify(propertyName)} does not match a request schema property`,
       );
     }
-    if (
-      value === null ||
-      !['boolean', 'number', 'string'].includes(typeof value)
-    ) {
+    if (!valueMatchesPropertySchema(spec, value, propertySchema)) {
       throw new Error(
-        `Platform operation ${location} request-body override ${JSON.stringify(propertyName)} must be a string, number, or boolean`,
+        `Platform operation ${location} request-body override ${JSON.stringify(propertyName)} does not match the request schema property type`,
       );
     }
   }
@@ -470,7 +570,7 @@ function applyRequestBodyOverrides(operation, overrides) {
 function wrapServerSentEventSchema(spec, operation) {
   for (const [status, response] of Object.entries(operation.responses ?? {})) {
     if (!isSuccessfulResponseStatus(status)) continue;
-    const mediaType = response?.content?.['text/event-stream'];
+    const mediaType = response?.content?.[eventStreamMediaType];
     if (!mediaType?.schema) continue;
 
     const payloadSchema = resolvePlatformSchema(spec, mediaType.schema);
@@ -673,11 +773,18 @@ function transformPlatformOperations(spec) {
         `Platform operation ${location} response media type ${JSON.stringify(sdk['response-media-type'])} was not found in a successful response`,
       );
     }
+    validateEventStreamSchemaRef(
+      operation,
+      sdk['response-media-type'],
+      location,
+    );
+    const requireOverrides = jsonRequestSchema(operation) != null;
     validateRequestBodyOverrides(
       spec,
       operation,
       sdk['request-body-overrides'],
       location,
+      { required: requireOverrides },
     );
 
     const declaredMediaTypes = new Set([sdk['response-media-type']]);
@@ -736,11 +843,17 @@ function transformPlatformOperations(spec) {
           `Platform operation ${variantLocation} response media type ${JSON.stringify(variant['response-media-type'])} was not found in a successful response`,
         );
       }
+      validateEventStreamSchemaRef(
+        operation,
+        variant['response-media-type'],
+        variantLocation,
+      );
       validateRequestBodyOverrides(
         spec,
         operation,
         variant['request-body-overrides'],
         variantLocation,
+        { required: requireOverrides },
       );
       registerSdkMethod(sdk.group, variant.method, variantLocation);
 
@@ -792,6 +905,7 @@ function transformPlatformOperations(spec) {
     for (const variant of variants) {
       const variantOperation = structuredClone(operation);
       variantOperation.operationId = variant.operationId;
+      prefixSdkOnlyDocs(variantOperation);
       selectResponseMediaType(variantOperation, variant['response-media-type']);
       wrapServerSentEventSchema(spec, variantOperation);
       applyRequestBodyOverrides(

@@ -609,6 +609,8 @@ describe('OpenAPI YAML Transformer', () => {
           parameters: [{ name: 'version', in: 'header' }],
           post: {
             tags: ['Chat'],
+            summary: 'Create a chat response',
+            description: 'Run an assistant turn.',
             operationId: 'platform-chat-create',
             security: [{ ApiToken: [] }],
             'x-glean-experimental': { id: 'experiment' },
@@ -653,7 +655,11 @@ describe('OpenAPI YAML Transformer', () => {
               },
               202: {
                 description: 'stream only',
-                content: { 'text/event-stream': {} },
+                content: {
+                  'text/event-stream': {
+                    schema: { $ref: '#/components/schemas/ChatEvent' },
+                  },
+                },
               },
               400: {
                 description: 'bad request',
@@ -682,7 +688,13 @@ describe('OpenAPI YAML Transformer', () => {
       'x-glean-experimental': { id: 'experiment' },
       'x-speakeasy-group': 'chat',
       'x-speakeasy-name-override': 'createStream',
+      summary:
+        'SDK-only logical operation. HTTP clients must call the base path; the URL fragment is not sent. Create a chat response',
+      description:
+        'SDK-only logical operation. HTTP clients must call the base path; the URL fragment is not sent. Run an assistant turn.',
     });
+    expect(create.summary).toBe('Create a chat response');
+    expect(create.description).toBe('Run an assistant turn.');
     expect(spec.paths['/api/chat#stream']).toMatchObject({
       summary: 'Chat path',
       'x-owners': 'assistant_core',
@@ -844,6 +856,11 @@ describe('OpenAPI YAML Transformer', () => {
   test('transformPlatformSpec rejects SDK variant path collisions', () => {
     expect(() =>
       transformPlatformSpec({
+        components: {
+          schemas: {
+            ChatEvent: { type: 'object' },
+          },
+        },
         paths: {
           '/api/chat': {
             post: {
@@ -864,7 +881,9 @@ describe('OpenAPI YAML Transformer', () => {
                 200: {
                   content: {
                     'application/json': {},
-                    'text/event-stream': {},
+                    'text/event-stream': {
+                      schema: { $ref: '#/components/schemas/ChatEvent' },
+                    },
                   },
                 },
               },
@@ -879,6 +898,11 @@ describe('OpenAPI YAML Transformer', () => {
   test('transformPlatformSpec rejects derived operation ID collisions', () => {
     expect(() =>
       transformPlatformSpec({
+        components: {
+          schemas: {
+            ChatEvent: { type: 'object' },
+          },
+        },
         paths: {
           '/api/chat': {
             post: {
@@ -899,7 +923,9 @@ describe('OpenAPI YAML Transformer', () => {
                 200: {
                   content: {
                     'application/json': {},
-                    'text/event-stream': {},
+                    'text/event-stream': {
+                      schema: { $ref: '#/components/schemas/ChatEvent' },
+                    },
                   },
                 },
               },
@@ -964,6 +990,522 @@ describe('OpenAPI YAML Transformer', () => {
     ).toThrow(
       'Platform SSE discriminator mapping for RESPONSE_CREATED must target a schema',
     );
+  });
+
+  test('transformPlatformSpec keeps mixed JSON and SSE media types without variants', () => {
+    const spec = {
+      components: {
+        schemas: {
+          ChatResponse: { type: 'object' },
+          ChatEvent: { type: 'object' },
+        },
+      },
+      paths: {
+        '/api/chat': {
+          post: {
+            operationId: 'platform-chat-create',
+            'x-glean-sdk': { group: 'chat', method: 'create' },
+            responses: {
+              200: {
+                content: {
+                  'application/json': {
+                    schema: { $ref: '#/components/schemas/ChatResponse' },
+                  },
+                  'text/event-stream': {
+                    schema: { $ref: '#/components/schemas/ChatEvent' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    transformPlatformSpec(spec);
+
+    expect(
+      Object.keys(spec.paths['/api/chat'].post.responses[200].content),
+    ).toEqual(['application/json', 'text/event-stream']);
+    expect(spec.paths['/api/chat#stream']).toBeUndefined();
+  });
+
+  test('transformPlatformSpec rejects string override on boolean request property', () => {
+    expect(() =>
+      transformPlatformSpec({
+        components: {
+          schemas: {
+            ChatRequest: {
+              type: 'object',
+              properties: { stream: { type: 'boolean' } },
+            },
+            ChatEvent: { type: 'object' },
+          },
+        },
+        paths: {
+          '/api/chat': {
+            post: {
+              operationId: 'platform-chat-create',
+              'x-glean-sdk': {
+                group: 'chat',
+                method: 'create',
+                'response-media-type': 'application/json',
+                'request-body-overrides': { stream: 'false' },
+                variants: [
+                  {
+                    fragment: 'stream',
+                    method: 'createStream',
+                    'response-media-type': 'text/event-stream',
+                    'request-body-overrides': { stream: true },
+                  },
+                ],
+              },
+              requestBody: {
+                content: {
+                  'application/json': {
+                    schema: { $ref: '#/components/schemas/ChatRequest' },
+                  },
+                },
+              },
+              responses: {
+                200: {
+                  content: {
+                    'application/json': {},
+                    'text/event-stream': {
+                      schema: { $ref: '#/components/schemas/ChatEvent' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      }),
+    ).toThrow(
+      'request-body override "stream" does not match the request schema property type',
+    );
+  });
+
+  test('transformPlatformSpec rejects missing overrides when variants have a JSON body', () => {
+    expect(() =>
+      transformPlatformSpec({
+        components: {
+          schemas: {
+            ChatRequest: {
+              type: 'object',
+              properties: { stream: { type: 'boolean' } },
+            },
+            ChatEvent: { type: 'object' },
+          },
+        },
+        paths: {
+          '/api/chat': {
+            post: {
+              operationId: 'platform-chat-create',
+              'x-glean-sdk': {
+                group: 'chat',
+                method: 'create',
+                'response-media-type': 'application/json',
+                variants: [
+                  {
+                    fragment: 'stream',
+                    method: 'createStream',
+                    'response-media-type': 'text/event-stream',
+                  },
+                ],
+              },
+              requestBody: {
+                content: {
+                  'application/json': {
+                    schema: { $ref: '#/components/schemas/ChatRequest' },
+                  },
+                },
+              },
+              responses: {
+                200: {
+                  content: {
+                    'application/json': {},
+                    'text/event-stream': {
+                      schema: { $ref: '#/components/schemas/ChatEvent' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      }),
+    ).toThrow('has invalid request-body-overrides; expected non-empty object');
+  });
+
+  test('transformPlatformSpec rejects inline event-stream schema', () => {
+    expect(() =>
+      transformPlatformSpec({
+        components: {
+          schemas: {
+            ChatRequest: {
+              type: 'object',
+              properties: { stream: { type: 'boolean' } },
+            },
+          },
+        },
+        paths: {
+          '/api/chat': {
+            post: {
+              operationId: 'platform-chat-create',
+              'x-glean-sdk': {
+                group: 'chat',
+                method: 'create',
+                'response-media-type': 'application/json',
+                'request-body-overrides': { stream: false },
+                variants: [
+                  {
+                    fragment: 'stream',
+                    method: 'createStream',
+                    'response-media-type': 'text/event-stream',
+                    'request-body-overrides': { stream: true },
+                  },
+                ],
+              },
+              requestBody: {
+                content: {
+                  'application/json': {
+                    schema: { $ref: '#/components/schemas/ChatRequest' },
+                  },
+                },
+              },
+              responses: {
+                200: {
+                  content: {
+                    'application/json': {},
+                    'text/event-stream': {
+                      schema: { type: 'object' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      }),
+    ).toThrow(
+      'text/event-stream schema must be a $ref starting with #/components/schemas/',
+    );
+  });
+
+  test('transformPlatformSpec rejects $ref success responses for media-type lookup', () => {
+    expect(() =>
+      transformPlatformSpec({
+        components: {
+          schemas: {
+            ChatRequest: {
+              type: 'object',
+              properties: { stream: { type: 'boolean' } },
+            },
+          },
+          responses: {
+            Ok: {
+              content: {
+                'application/json': {},
+                'text/event-stream': {
+                  schema: { $ref: '#/components/schemas/ChatEvent' },
+                },
+              },
+            },
+          },
+        },
+        paths: {
+          '/api/chat': {
+            post: {
+              operationId: 'platform-chat-create',
+              'x-glean-sdk': {
+                group: 'chat',
+                method: 'create',
+                'response-media-type': 'application/json',
+                'request-body-overrides': { stream: false },
+                variants: [
+                  {
+                    fragment: 'stream',
+                    method: 'createStream',
+                    'response-media-type': 'text/event-stream',
+                    'request-body-overrides': { stream: true },
+                  },
+                ],
+              },
+              requestBody: {
+                content: {
+                  'application/json': {
+                    schema: { $ref: '#/components/schemas/ChatRequest' },
+                  },
+                },
+              },
+              responses: {
+                200: { $ref: '#/components/responses/Ok' },
+              },
+            },
+          },
+        },
+      }),
+    ).toThrow('was not found in a successful response');
+  });
+
+  test('transformPlatformSpec wraps SSE payload $ref without discriminator as data', () => {
+    const spec = {
+      components: {
+        schemas: {
+          ChatRequest: {
+            type: 'object',
+            properties: { stream: { type: 'boolean' } },
+          },
+          ChatEvent: { type: 'object' },
+        },
+      },
+      paths: {
+        '/api/chat': {
+          post: {
+            operationId: 'platform-chat-create',
+            'x-glean-sdk': {
+              group: 'chat',
+              method: 'create',
+              'response-media-type': 'application/json',
+              'request-body-overrides': { stream: false },
+              variants: [
+                {
+                  fragment: 'stream',
+                  method: 'createStream',
+                  'response-media-type': 'text/event-stream',
+                  'request-body-overrides': { stream: true },
+                },
+              ],
+            },
+            requestBody: {
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/ChatRequest' },
+                },
+              },
+            },
+            responses: {
+              200: {
+                content: {
+                  'application/json': {},
+                  'text/event-stream': {
+                    schema: { $ref: '#/components/schemas/ChatEvent' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    transformPlatformSpec(spec);
+
+    expect(
+      spec.paths['/api/chat#stream'].post.responses[200].content[
+        'text/event-stream'
+      ].schema,
+    ).toEqual({
+      type: 'object',
+      required: ['data'],
+      properties: { data: { $ref: '#/components/schemas/PlatformChatEvent' } },
+    });
+  });
+
+  test('transformPlatformSpec skips SSE wrap when payload already has data', () => {
+    const spec = {
+      components: {
+        schemas: {
+          ChatRequest: {
+            type: 'object',
+            properties: { stream: { type: 'boolean' } },
+          },
+          ChatEvent: {
+            type: 'object',
+            properties: { data: { type: 'object' } },
+          },
+        },
+      },
+      paths: {
+        '/api/chat': {
+          post: {
+            operationId: 'platform-chat-create',
+            'x-glean-sdk': {
+              group: 'chat',
+              method: 'create',
+              'response-media-type': 'application/json',
+              'request-body-overrides': { stream: false },
+              variants: [
+                {
+                  fragment: 'stream',
+                  method: 'createStream',
+                  'response-media-type': 'text/event-stream',
+                  'request-body-overrides': { stream: true },
+                },
+              ],
+            },
+            requestBody: {
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/ChatRequest' },
+                },
+              },
+            },
+            responses: {
+              200: {
+                content: {
+                  'application/json': {},
+                  'text/event-stream': {
+                    schema: { $ref: '#/components/schemas/ChatEvent' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    transformPlatformSpec(spec);
+
+    expect(
+      spec.paths['/api/chat#stream'].post.responses[200].content[
+        'text/event-stream'
+      ].schema,
+    ).toEqual({ $ref: '#/components/schemas/PlatformChatEvent' });
+  });
+
+  test('transformPlatformSpec skips SSE wrap when discriminator property is event', () => {
+    const spec = {
+      components: {
+        schemas: {
+          ChatRequest: {
+            type: 'object',
+            properties: { stream: { type: 'boolean' } },
+          },
+          ChatEvent: {
+            oneOf: [{ $ref: '#/components/schemas/ChatCreated' }],
+            discriminator: {
+              propertyName: 'event',
+              mapping: {
+                RESPONSE_CREATED: '#/components/schemas/ChatCreated',
+              },
+            },
+          },
+          ChatCreated: { type: 'object' },
+        },
+      },
+      paths: {
+        '/api/chat': {
+          post: {
+            operationId: 'platform-chat-create',
+            'x-glean-sdk': {
+              group: 'chat',
+              method: 'create',
+              'response-media-type': 'application/json',
+              'request-body-overrides': { stream: false },
+              variants: [
+                {
+                  fragment: 'stream',
+                  method: 'createStream',
+                  'response-media-type': 'text/event-stream',
+                  'request-body-overrides': { stream: true },
+                },
+              ],
+            },
+            requestBody: {
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/ChatRequest' },
+                },
+              },
+            },
+            responses: {
+              200: {
+                content: {
+                  'application/json': {},
+                  'text/event-stream': {
+                    schema: { $ref: '#/components/schemas/ChatEvent' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    transformPlatformSpec(spec);
+
+    expect(
+      spec.paths['/api/chat#stream'].post.responses[200].content[
+        'text/event-stream'
+      ].schema,
+    ).toEqual({ $ref: '#/components/schemas/PlatformChatEvent' });
+    expect(
+      spec.components.schemas.PlatformChatEventServerSentEvent,
+    ).toBeUndefined();
+  });
+
+  test('transformPlatformSpec prefixes missing variant summary and description', () => {
+    const spec = {
+      components: {
+        schemas: {
+          ChatRequest: {
+            type: 'object',
+            properties: { stream: { type: 'boolean' } },
+          },
+          ChatEvent: { type: 'object' },
+        },
+      },
+      paths: {
+        '/api/chat': {
+          post: {
+            operationId: 'platform-chat-create',
+            'x-glean-sdk': {
+              group: 'chat',
+              method: 'create',
+              'response-media-type': 'application/json',
+              'request-body-overrides': { stream: false },
+              variants: [
+                {
+                  fragment: 'stream',
+                  method: 'createStream',
+                  'response-media-type': 'text/event-stream',
+                  'request-body-overrides': { stream: true },
+                },
+              ],
+            },
+            requestBody: {
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/ChatRequest' },
+                },
+              },
+            },
+            responses: {
+              200: {
+                content: {
+                  'application/json': {},
+                  'text/event-stream': {
+                    schema: { $ref: '#/components/schemas/ChatEvent' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    transformPlatformSpec(spec);
+
+    const prefix =
+      'SDK-only logical operation. HTTP clients must call the base path; the URL fragment is not sent.';
+    expect(spec.paths['/api/chat#stream'].post.summary).toBe(prefix);
+    expect(spec.paths['/api/chat#stream'].post.description).toBe(prefix);
+    expect(spec.paths['/api/chat'].post.summary).toBeUndefined();
   });
 
   test('transformPlatformSpec rejects operations without x-glean-sdk metadata', () => {
