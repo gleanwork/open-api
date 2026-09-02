@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 27a303dd550b3539ecb2dad844cdfc780e7d36b8
+  x-source-commit-sha: a33cae8bf6e967f606e5124d5b3032e67c1b707c
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -238,6 +238,15 @@ paths:
       x-glean-sdk:
         group: chat
         method: create
+        response-media-type: application/json
+        request-body-overrides:
+          stream: false
+        variants:
+          - fragment: stream
+            method: createStream
+            response-media-type: text/event-stream
+            request-body-overrides:
+              stream: true
       x-glean-experimental:
         id: e65a0a77-97a2-4c91-be60-eae7f6238015
         introduced: '2026-07-14'
@@ -257,29 +266,7 @@ paths:
                 $ref: '#/components/schemas/ChatCompletedResponse'
             text/event-stream:
               schema:
-                type: string
-                description: |
-                  Server-sent events for a streaming chat run. Event payloads are documented under ChatStream* schemas.
-                example: |
-                  id: 1
-                  event: RESPONSE_CREATED
-                  data: {"type":"RESPONSE_CREATED","response_id":"resp_e65a0a77-97a2-4c91-be60-eae7f6238015"}
-
-                  id: 2
-                  event: RESPONSE_PROGRESS
-                  data: {"type":"RESPONSE_PROGRESS","response_id":"resp_e65a0a77-97a2-4c91-be60-eae7f6238015","text":"**Searching:** foo"}
-
-                  id: 3
-                  event: RESPONSE_OUTPUT_TEXT_DELTA
-                  data: {"type":"RESPONSE_OUTPUT_TEXT_DELTA","response_id":"resp_e65a0a77-97a2-4c91-be60-eae7f6238015","delta":"Hello"}
-
-                  id: 4
-                  event: RESPONSE_OUTPUT_TEXT_DONE
-                  data: {"type":"RESPONSE_OUTPUT_TEXT_DONE","response_id":"resp_e65a0a77-97a2-4c91-be60-eae7f6238015","text":"Hello"}
-
-                  id: 5
-                  event: RESPONSE_COMPLETED
-                  data: {"type":"RESPONSE_COMPLETED","response_id":"resp_e65a0a77-97a2-4c91-be60-eae7f6238015","response":{"id":"resp_e65a0a77-97a2-4c91-be60-eae7f6238015","object":"RESPONSE","status":"COMPLETED","output":[{"type":"MESSAGE","role":"ASSISTANT","content":[{"type":"OUTPUT_TEXT","text":"Hello"}]}],"store":true,"request_id":"req_123","created_at":"2026-07-14T20:00:00Z"}}
+                $ref: '#/components/schemas/ChatStreamEvent'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -2415,6 +2402,188 @@ components:
         request_id:
           type: string
           minLength: 1
+    ChatStreamResponseCreated:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - response_id
+      properties:
+        type:
+          type: string
+          enum:
+            - RESPONSE_CREATED
+        response_id:
+          $ref: '#/components/schemas/ChatStreamResponseId'
+    ChatStreamProgress:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - response_id
+        - text
+      properties:
+        type:
+          type: string
+          enum:
+            - RESPONSE_PROGRESS
+        response_id:
+          $ref: '#/components/schemas/ChatStreamResponseId'
+        text:
+          type: string
+          minLength: 1
+          description: |
+            Verbatim concatenated fragment text from an assistant UPDATE wire message. Display-oriented passthrough only; not part of the final answer and not present on terminal response snapshots.
+    ChatStreamOutputTextDelta:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - response_id
+        - delta
+      properties:
+        type:
+          type: string
+          enum:
+            - RESPONSE_OUTPUT_TEXT_DELTA
+        response_id:
+          $ref: '#/components/schemas/ChatStreamResponseId'
+        delta:
+          type: string
+    ChatStreamOutputTextDone:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - response_id
+        - text
+      properties:
+        type:
+          type: string
+          enum:
+            - RESPONSE_OUTPUT_TEXT_DONE
+        response_id:
+          $ref: '#/components/schemas/ChatStreamResponseId'
+        text:
+          type: string
+    ChatStreamResponseCompleted:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - response_id
+        - response
+      properties:
+        type:
+          type: string
+          enum:
+            - RESPONSE_COMPLETED
+        response_id:
+          $ref: '#/components/schemas/ChatStreamResponseId'
+        response:
+          $ref: '#/components/schemas/ChatCompletedResponse'
+    ChatResponseError:
+      type: object
+      additionalProperties: false
+      required:
+        - message
+      properties:
+        code:
+          type:
+            - string
+            - 'null'
+          description: |
+            Open snake_case error code aligned with ProblemDetail codes when present. Clients must tolerate unknown values; the set of codes is not a closed enum. Limit failures use `spend_limit_exceeded` (billing spend limit) and `token_limit_exceeded` (model context/token limit).
+          example: spend_limit_exceeded
+        message:
+          type: string
+          minLength: 1
+    ChatFailedResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - object
+        - created_at
+        - status
+        - output
+        - store
+        - request_id
+        - error
+      properties:
+        id:
+          $ref: '#/components/schemas/ChatStreamResponseId'
+        object:
+          type: string
+          enum:
+            - RESPONSE
+        created_at:
+          type: string
+          format: date-time
+          description: RFC 3339 UTC timestamp when the response was created.
+        status:
+          type: string
+          enum:
+            - FAILED
+        output:
+          type: array
+          maxItems: 1
+          items:
+            $ref: '#/components/schemas/ChatOutputMessage'
+        store:
+          type: boolean
+        conversation_id:
+          type:
+            - string
+            - 'null'
+          minLength: 1
+          description: Present when the interaction was persisted.
+        request_id:
+          type: string
+          minLength: 1
+        error:
+          $ref: '#/components/schemas/ChatResponseError'
+    ChatStreamResponseFailed:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - response_id
+        - response
+      properties:
+        type:
+          type: string
+          enum:
+            - RESPONSE_FAILED
+        response_id:
+          $ref: '#/components/schemas/ChatStreamResponseId'
+        response:
+          $ref: '#/components/schemas/ChatFailedResponse'
+    ChatStreamEvent:
+      description: |
+        JSON object written to the SSE `data` field. This schema is the payload for SDK transform, not the raw HTTP body. Do not run JSON response conformance on stream bodies. A typical wire frame is:
+        id: 1
+        event: RESPONSE_CREATED
+        data: {"type":"RESPONSE_CREATED","response_id":"resp_e65a0a77-97a2-4c91-be60-eae7f6238015"}
+      example:
+        type: RESPONSE_CREATED
+        response_id: resp_e65a0a77-97a2-4c91-be60-eae7f6238015
+      oneOf:
+        - $ref: '#/components/schemas/ChatStreamResponseCreated'
+        - $ref: '#/components/schemas/ChatStreamProgress'
+        - $ref: '#/components/schemas/ChatStreamOutputTextDelta'
+        - $ref: '#/components/schemas/ChatStreamOutputTextDone'
+        - $ref: '#/components/schemas/ChatStreamResponseCompleted'
+        - $ref: '#/components/schemas/ChatStreamResponseFailed'
+      discriminator:
+        propertyName: type
+        mapping:
+          RESPONSE_CREATED: '#/components/schemas/ChatStreamResponseCreated'
+          RESPONSE_PROGRESS: '#/components/schemas/ChatStreamProgress'
+          RESPONSE_OUTPUT_TEXT_DELTA: '#/components/schemas/ChatStreamOutputTextDelta'
+          RESPONSE_OUTPUT_TEXT_DONE: '#/components/schemas/ChatStreamOutputTextDone'
+          RESPONSE_COMPLETED: '#/components/schemas/ChatStreamResponseCompleted'
+          RESPONSE_FAILED: '#/components/schemas/ChatStreamResponseFailed'
     SkillStatus:
       type: string
       enum:
