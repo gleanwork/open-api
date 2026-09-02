@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: 5385fd04e94476a27a2fbb6d7dc806af5c4d61c8
-  x-open-api-commit-sha: 78c3048aaa90e6293ba0522adee1866a5613da27
+  x-source-commit-sha: 6c454c6b185ebe58e74e781a36041222f47897e0
+  x-open-api-commit-sha: 0df5939226dc378b392825655b036df1e08909a7
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -70,6 +70,7 @@ paths:
           name: agent_id
           description: ID of the agent to retrieve.
           required: true
+          example: "{agent_id}"
           schema:
             type: string
             minLength: 1
@@ -112,6 +113,7 @@ paths:
           name: agent_id
           description: ID of the agent whose schemas should be retrieved.
           required: true
+          example: "{agent_id}"
           schema:
             type: string
             minLength: 1
@@ -162,6 +164,7 @@ paths:
           name: agent_id
           description: ID of the agent to run.
           required: true
+          example: "{agent_id}"
           schema:
             type: string
             minLength: 1
@@ -548,6 +551,7 @@ paths:
           in: path
           required: true
           description: Glean skill ID.
+          example: "{skill_id}"
           schema:
             type: string
             minLength: 1
@@ -603,6 +607,7 @@ paths:
           in: path
           required: true
           description: Glean skill ID.
+          example: "{skill_id}"
           schema:
             type: string
             minLength: 1
@@ -643,6 +648,7 @@ paths:
           in: path
           required: true
           description: Glean skill ID.
+          example: "{skill_id}"
           schema:
             type: string
             minLength: 1
@@ -688,6 +694,7 @@ paths:
           in: path
           required: true
           description: Glean skill ID.
+          example: "{skill_id}"
           schema:
             type: string
             minLength: 1
@@ -739,6 +746,7 @@ paths:
           in: path
           required: true
           description: ID of the GitHub-imported skill to sync.
+          example: "{skill_id}"
           schema:
             type: string
             minLength: 1
@@ -788,6 +796,7 @@ paths:
           in: path
           required: true
           description: Glean skill ID.
+          example: "{skill_id}"
           schema:
             type: string
             minLength: 1
@@ -843,6 +852,7 @@ paths:
           in: path
           required: true
           description: Glean skill ID.
+          example: "{skill_id}"
           schema:
             type: string
             minLength: 1
@@ -903,6 +913,7 @@ paths:
           in: path
           required: true
           description: Glean skill ID.
+          example: "{skill_id}"
           schema:
             type: string
             minLength: 1
@@ -910,6 +921,7 @@ paths:
           in: path
           required: true
           description: Major version number.
+          example: 1
           schema:
             type: integer
             minimum: 1
@@ -955,6 +967,7 @@ paths:
           in: path
           required: true
           description: Glean skill ID.
+          example: "{skill_id}"
           schema:
             type: string
             minLength: 1
@@ -962,6 +975,7 @@ paths:
           in: path
           required: true
           description: Major version number.
+          example: 1
           schema:
             type: integer
             minimum: 1
@@ -1261,6 +1275,7 @@ paths:
           name: trigger_id
           description: ID of the trigger to retrieve.
           required: true
+          example: "{trigger_id}"
           schema:
             type: string
             minLength: 1
@@ -1306,6 +1321,7 @@ paths:
           name: trigger_id
           description: ID of the trigger to update.
           required: true
+          example: "{trigger_id}"
           schema:
             type: string
             minLength: 1
@@ -1358,6 +1374,7 @@ paths:
           name: trigger_id
           description: ID of the trigger to delete.
           required: true
+          example: "{trigger_id}"
           schema:
             type: string
             minLength: 1
@@ -1399,6 +1416,7 @@ paths:
           name: trigger_id
           description: ID of the trigger whose events to search.
           required: true
+          example: "{trigger_id}"
           schema:
             type: string
             minLength: 1
@@ -1511,6 +1529,7 @@ paths:
           name: preset_id
           description: ID of the preset to retrieve.
           required: true
+          example: "{preset_id}"
           schema:
             type: string
             minLength: 1
@@ -1556,6 +1575,7 @@ paths:
           name: preset_id
           description: ID of the preset the input belongs to.
           required: true
+          example: "{preset_id}"
           schema:
             type: string
             minLength: 1
@@ -1563,6 +1583,7 @@ paths:
           name: field
           description: Field identifier of the input whose values to list.
           required: true
+          example: "{field}"
           schema:
             type: string
             minLength: 1
@@ -1615,6 +1636,7 @@ paths:
           name: preset_id
           description: ID of the preset to preview.
           required: true
+          example: "{preset_id}"
           schema:
             type: string
             minLength: 1
@@ -3186,14 +3208,6 @@ components:
         - query
       example:
         query: quarterly planning 2026
-        datasources:
-          - confluence
-          - google_drive
-        filters:
-          - field: type
-            values:
-              - spreadsheet
-              - presentation
       properties:
         query:
           type: string
@@ -3496,6 +3510,12 @@ components:
       required:
         - preset_id
         - delivery
+      example:
+        preset_id: GITHUB_1
+        inputs:
+          repository: "{repository}"
+        delivery:
+          webhook_url: https://example.com/webhook
       properties:
         preset_id:
           type: string
@@ -3667,6 +3687,11 @@ components:
       type: object
       additionalProperties: false
       description: Partial update. Only the supplied fields are changed.
+      example:
+        inputs:
+          repository: "{repository}"
+        delivery:
+          webhook_url: https://example.com/webhook
       properties:
         status:
           $ref: "#/components/schemas/PlatformTriggerStatus"
@@ -3685,6 +3710,8 @@ components:
     PlatformTriggerEventSearchRequest:
       type: object
       additionalProperties: false
+      example:
+        page_size: 10
       properties:
         page_size:
           type: integer
@@ -3951,6 +3978,10 @@ components:
     PlatformTriggerPresetEventSearchRequest:
       type: object
       additionalProperties: false
+      example:
+        inputs:
+          repository: "{repository}"
+        page_size: 10
       properties:
         inputs:
           type: object
