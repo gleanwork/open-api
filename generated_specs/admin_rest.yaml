@@ -2,14 +2,14 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: 607c4a4291218dcc0edb79494bf20e6ac3362cf9
+  x-source-commit-sha: a33cae8bf6e967f606e5124d5b3032e67c1b707c
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
     operations. These offer limited exposure to the admin APIs through rest endpoints.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: efc6383f39292ed5941021d5bd19afeca4e04a38
+  x-open-api-commit-sha: 6f64bb032af09da256fa04051b97186a0255f24c
 servers:
   - url: https://{instance}-be.glean.com
     variables:
