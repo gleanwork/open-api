@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 5466f502134b80b23f38908bc64369113503fdea
+  x-source-commit-sha: 5385fd04e94476a27a2fbb6d7dc806af5c4d61c8
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -232,7 +232,7 @@ paths:
         - Chat
       summary: Create a chat response
       description: |
-        Run an assistant turn. Set `stream` to true to receive server-sent events; otherwise the response is a typed JSON response object.
+        Run an assistant turn. The default response is JSON. HTTP clients request server-sent events by setting `stream` to true in the JSON body. An `Accept: text/event-stream` header does not replace `stream`.
       operationId: platform-chat-create
       x-visibility: Public
       x-glean-sdk:
@@ -2158,7 +2158,7 @@ components:
         stream:
           type: boolean
           description: |
-            When true, respond with `text/event-stream`. When false or omitted, respond with `application/json`.
+            When true, the HTTP response is `text/event-stream`. When false or omitted, the HTTP response is `application/json`.
           default: false
         store:
           type: boolean
