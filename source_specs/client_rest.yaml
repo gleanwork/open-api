@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: a33cae8bf6e967f606e5124d5b3032e67c1b707c
+  x-source-commit-sha: 5466f502134b80b23f38908bc64369113503fdea
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -6915,7 +6915,7 @@ components:
               $ref: '#/components/schemas/AuthContext'
               description: Context for AUTHENTICATION_SUGGESTION responses. Required when requestType is AUTHENTICATION_SUGGESTION.
     ChatMessageFragment:
-      description: Represents a part of a ChatMessage that originates from a single action/tool. It is designed to support rich data formats beyond simple text, allowing for a more dynamic and interactive chat experience. Each fragment can include various types of content, such as text, search queries, action information, and more. Also, each ChatMessageFragment should only have one of structuredResults, querySuggestion, writeAction, followupAction, agentRecommendation, followupRoutingSuggestion or file.
+      description: A typed fragment within a chat message that carries text or structured content such as citations, actions, and tool output.
       allOf:
         - $ref: '#/components/schemas/Result'
         - type: object
