@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Indexing API
-  x-source-commit-sha: a33cae8bf6e967f606e5124d5b3032e67c1b707c
+  x-source-commit-sha: 5466f502134b80b23f38908bc64369113503fdea
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -12,7 +12,7 @@ info:
     with a 6-month sunset period for anything that requires developers to adopt the new versions.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 6f64bb032af09da256fa04051b97186a0255f24c
+  x-open-api-commit-sha: deb9f3c416b47e6ae3ae9af44a4b6a8ba8f61089
 servers:
   - url: https://{instance}-be.glean.com
     variables:

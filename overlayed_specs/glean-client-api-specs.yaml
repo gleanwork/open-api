@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: a33cae8bf6e967f606e5124d5b3032e67c1b707c
+  x-source-commit-sha: 5466f502134b80b23f38908bc64369113503fdea
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 6f64bb032af09da256fa04051b97186a0255f24c
+  x-open-api-commit-sha: deb9f3c416b47e6ae3ae9af44a4b6a8ba8f61089
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -7955,7 +7955,7 @@ components:
               $ref: "#/components/schemas/AuthContext"
               description: Context for AUTHENTICATION_SUGGESTION responses. Required when requestType is AUTHENTICATION_SUGGESTION.
     ChatMessageFragment:
-      description: Represents a part of a ChatMessage that originates from a single action/tool. It is designed to support rich data formats beyond simple text, allowing for a more dynamic and interactive chat experience. Each fragment can include various types of content, such as text, search queries, action information, and more. Also, each ChatMessageFragment should only have one of structuredResults, querySuggestion, writeAction, followupAction, agentRecommendation, followupRoutingSuggestion or file.
+      description: A typed fragment within a chat message that carries text or structured content such as citations, actions, and tool output.
       allOf:
         - $ref: "#/components/schemas/Result"
         - type: object
