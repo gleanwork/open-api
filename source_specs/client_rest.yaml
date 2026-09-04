@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 94372d7988cd0c87d6320eca42c8a0f33367c451
+  x-source-commit-sha: 89ed57f1ce6641a99f780c996813b1584c06c9d3
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -9387,6 +9387,7 @@ components:
               - PROJECT_NEXT_STEP
               - DEMO_CARD
               - RESOLVE_MEETING_CONFLICT
+              - FINDING_MEETING_ROOM
               - OOO_PLANNER
               - OOO_CATCH_UP
               - ADMIN_HEALTH_CENTER
@@ -9850,6 +9851,7 @@ components:
             - PROJECT_NEXT_STEP
             - DEMO_CARD
             - RESOLVE_MEETING_CONFLICT
+            - FINDING_MEETING_ROOM
             - OOO_PLANNER
             - OOO_CATCH_UP
             - ADMIN_HEALTH_CENTER
@@ -9944,6 +9946,7 @@ components:
             - PROJECT_NEXT_STEP
             - DEMO_CARD
             - RESOLVE_MEETING_CONFLICT
+            - FINDING_MEETING_ROOM
             - OOO_PLANNER
             - OOO_CATCH_UP
             - ADMIN_HEALTH_CENTER
