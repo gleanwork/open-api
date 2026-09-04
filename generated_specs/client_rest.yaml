@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 44ecdf386badc05a2a870ecee8d15b4d75d30155
+  x-source-commit-sha: 89ed57f1ce6641a99f780c996813b1584c06c9d3
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: af01c6e765fd7b9ee67cf5ed99bb83075fea4e70
+  x-open-api-commit-sha: a1601657757686745ce800e6c8222f806974ce57
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -9546,6 +9546,7 @@ components:
               - PROJECT_NEXT_STEP
               - DEMO_CARD
               - RESOLVE_MEETING_CONFLICT
+              - FINDING_MEETING_ROOM
               - OOO_PLANNER
               - OOO_CATCH_UP
               - ADMIN_HEALTH_CENTER
@@ -10016,6 +10017,7 @@ components:
             - PROJECT_NEXT_STEP
             - DEMO_CARD
             - RESOLVE_MEETING_CONFLICT
+            - FINDING_MEETING_ROOM
             - OOO_PLANNER
             - OOO_CATCH_UP
             - ADMIN_HEALTH_CENTER
@@ -10110,6 +10112,7 @@ components:
             - PROJECT_NEXT_STEP
             - DEMO_CARD
             - RESOLVE_MEETING_CONFLICT
+            - FINDING_MEETING_ROOM
             - OOO_PLANNER
             - OOO_CATCH_UP
             - ADMIN_HEALTH_CENTER
