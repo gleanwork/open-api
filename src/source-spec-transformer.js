@@ -189,10 +189,12 @@ const platformSdkGroupPattern = /^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)*$/;
 const platformSdkMethodPattern = /^[a-z][A-Za-z0-9]*$/;
 const platformSdkFragmentPattern = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 const platformSdkVariantKeys = new Set([
+  'description',
   'fragment',
   'method',
   'request-body-overrides',
   'response-media-type',
+  'summary',
 ]);
 const schemaRefPrefix = '#/components/schemas/';
 const eventStreamMediaType = 'text/event-stream';
@@ -483,12 +485,30 @@ function validateEventStreamSchemaRef(operation, mediaType, location) {
   }
 }
 
-function prefixSdkOnlyDocs(operation) {
-  operation.summary = operation.summary
-    ? `${sdkOnlyOperationPrefix} ${operation.summary}`
-    : sdkOnlyOperationPrefix;
-  operation.description = operation.description
-    ? `${sdkOnlyOperationPrefix} ${operation.description}`
+/**
+ * Applies a variant's own docs and the SDK-only caveat to a derived operation.
+ *
+ * The summary is what the developer site renders as the page title and H1, so the
+ * caveat has to stay out of it — prefixing it there replaced the title of
+ * platform-chat-create-stream with boilerplate. A variant supplies its own summary
+ * when it needs a title distinct from the parent's; otherwise the parent summary
+ * carries over unprefixed.
+ *
+ * The caveat still leads the description, where it is prose rather than a heading.
+ * It describes the fragment path itself, not the source text, so it applies even
+ * when the variant overrides the description.
+ */
+function applySdkVariantDocs(operation, variant) {
+  if (variant.summary !== undefined) {
+    operation.summary = variant.summary;
+  }
+
+  const description =
+    variant.description !== undefined
+      ? variant.description
+      : operation.description;
+  operation.description = description
+    ? `${sdkOnlyOperationPrefix} ${description}`
     : sdkOnlyOperationPrefix;
 }
 
@@ -827,6 +847,16 @@ function transformPlatformOperations(spec) {
           `Platform operation ${variantLocation} has missing response-media-type`,
         );
       }
+      for (const key of ['summary', 'description']) {
+        if (
+          variant[key] !== undefined &&
+          (typeof variant[key] !== 'string' || variant[key].length === 0)
+        ) {
+          throw new Error(
+            `Platform operation ${variantLocation} has invalid ${key} ${JSON.stringify(variant[key])}; expected non-empty string`,
+          );
+        }
+      }
       if (declaredMediaTypes.has(variant['response-media-type'])) {
         throw new Error(
           `Platform operation ${variantLocation} declares duplicate response media type ${JSON.stringify(variant['response-media-type'])}`,
@@ -905,7 +935,7 @@ function transformPlatformOperations(spec) {
     for (const variant of variants) {
       const variantOperation = structuredClone(operation);
       variantOperation.operationId = variant.operationId;
-      prefixSdkOnlyDocs(variantOperation);
+      applySdkVariantDocs(variantOperation, variant);
       selectResponseMediaType(variantOperation, variant['response-media-type']);
       wrapServerSentEventSchema(spec, variantOperation);
       applyRequestBodyOverrides(

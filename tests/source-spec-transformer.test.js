@@ -688,8 +688,7 @@ describe('OpenAPI YAML Transformer', () => {
       'x-glean-experimental': { id: 'experiment' },
       'x-speakeasy-group': 'chat',
       'x-speakeasy-name-override': 'createStream',
-      summary:
-        'SDK-only logical operation. HTTP clients must call the base path; the URL fragment is not sent. Create a chat response',
+      summary: 'Create a chat response',
       description:
         'SDK-only logical operation. HTTP clients must call the base path; the URL fragment is not sent. Run an assistant turn.',
     });
@@ -1448,7 +1447,7 @@ describe('OpenAPI YAML Transformer', () => {
     ).toBeUndefined();
   });
 
-  test('transformPlatformSpec prefixes missing variant summary and description', () => {
+  test('transformPlatformSpec keeps the SDK-only caveat out of the variant summary', () => {
     const spec = {
       components: {
         schemas: {
@@ -1503,9 +1502,118 @@ describe('OpenAPI YAML Transformer', () => {
 
     const prefix =
       'SDK-only logical operation. HTTP clients must call the base path; the URL fragment is not sent.';
-    expect(spec.paths['/api/chat#stream'].post.summary).toBe(prefix);
+    expect(spec.paths['/api/chat#stream'].post.summary).toBeUndefined();
     expect(spec.paths['/api/chat#stream'].post.description).toBe(prefix);
     expect(spec.paths['/api/chat'].post.summary).toBeUndefined();
+  });
+
+  test('transformPlatformSpec applies variant summary and description overrides', () => {
+    const spec = {
+      components: {
+        schemas: {
+          ChatRequest: {
+            type: 'object',
+            properties: { stream: { type: 'boolean' } },
+          },
+          ChatEvent: { type: 'object' },
+        },
+      },
+      paths: {
+        '/api/chat': {
+          post: {
+            operationId: 'platform-chat-create',
+            summary: 'Create a chat response',
+            description: 'Run an assistant turn.',
+            'x-glean-sdk': {
+              group: 'chat',
+              method: 'create',
+              'response-media-type': 'application/json',
+              'request-body-overrides': { stream: false },
+              variants: [
+                {
+                  fragment: 'stream',
+                  method: 'createStream',
+                  summary: 'Create a streaming chat response',
+                  description: 'Run an assistant turn as server-sent events.',
+                  'response-media-type': 'text/event-stream',
+                  'request-body-overrides': { stream: true },
+                },
+              ],
+            },
+            requestBody: {
+              content: {
+                'application/json': {
+                  schema: { $ref: '#/components/schemas/ChatRequest' },
+                },
+              },
+            },
+            responses: {
+              200: {
+                content: {
+                  'application/json': {},
+                  'text/event-stream': {
+                    schema: { $ref: '#/components/schemas/ChatEvent' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    transformPlatformSpec(spec);
+
+    const createStream = spec.paths['/api/chat#stream'].post;
+    expect(createStream.summary).toBe('Create a streaming chat response');
+    expect(createStream.description).toBe(
+      'SDK-only logical operation. HTTP clients must call the base path; the URL fragment is not sent. Run an assistant turn as server-sent events.',
+    );
+    expect(spec.paths['/api/chat'].post.summary).toBe('Create a chat response');
+    expect(spec.paths['/api/chat'].post.description).toBe(
+      'Run an assistant turn.',
+    );
+    expect(createStream).not.toHaveProperty('x-glean-sdk');
+  });
+
+  test('transformPlatformSpec rejects a non-string variant summary', () => {
+    expect(() =>
+      transformPlatformSpec({
+        components: {
+          schemas: { ChatEvent: { type: 'object' } },
+        },
+        paths: {
+          '/api/chat': {
+            post: {
+              operationId: 'platform-chat-create',
+              'x-glean-sdk': {
+                group: 'chat',
+                method: 'create',
+                'response-media-type': 'application/json',
+                variants: [
+                  {
+                    fragment: 'stream',
+                    method: 'createStream',
+                    summary: '',
+                    'response-media-type': 'text/event-stream',
+                  },
+                ],
+              },
+              responses: {
+                200: {
+                  content: {
+                    'application/json': {},
+                    'text/event-stream': {
+                      schema: { $ref: '#/components/schemas/ChatEvent' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      }),
+    ).toThrow('has invalid summary ""; expected non-empty string');
   });
 
   test('transformPlatformSpec rejects operations without x-glean-sdk metadata', () => {
