@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 3bdadfcc5a4065b7ad79af7228d56e8bb7103242
+  x-source-commit-sha: be488aad3aab1450b2ec01f91d1b5c4d45a10b93
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -9393,6 +9393,7 @@ components:
               - ADMIN_HEALTH_CENTER
               - KNOWLEDGE_GAP
               - ARTIFACT_CREATION
+              - EDIT_DOC
           description: Categories of content requested. An allowlist gives flexibility to request content separately or together.
         requestOptions:
           $ref: '#/components/schemas/FeedRequestOptions'
@@ -9858,6 +9859,7 @@ components:
             - ADMIN_HEALTH_CENTER
             - KNOWLEDGE_GAP
             - ARTIFACT_CREATION
+            - EDIT_DOC
           description: Type of the justification.
         justification:
           type: string
@@ -9954,6 +9956,7 @@ components:
             - ADMIN_HEALTH_CENTER
             - KNOWLEDGE_GAP
             - ARTIFACT_CREATION
+            - EDIT_DOC
           description: Category of the result, one of the requested categories in incoming request.
         primaryEntry:
           $ref: '#/components/schemas/FeedEntry'
