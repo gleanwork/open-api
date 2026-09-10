@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: c7223f0e466c632820e8ef482ecdbb03a025224a
+  x-source-commit-sha: 31a8965bc9e49871a44c872a19d7442c25790b41
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -253,9 +253,6 @@ paths:
             response-media-type: text/event-stream
             request-body-overrides:
               stream: true
-      x-glean-experimental:
-        id: e65a0a77-97a2-4c91-be60-eae7f6238015
-        introduced: '2026-07-14'
       x-codegen-request-body-name: payload
       requestBody:
         required: true
@@ -1047,9 +1044,6 @@ paths:
       x-glean-sdk:
         group: search
         method: query
-      x-glean-experimental:
-        id: 5ab612fc-ed50-4419-bec3-e5fe83934653
-        introduced: '2026-04-08'
       x-codegen-request-body-name: payload
       requestBody:
         required: true
@@ -1097,9 +1091,6 @@ paths:
       x-glean-sdk:
         group: search
         method: listFilters
-      x-glean-experimental:
-        id: 0b585621-13fb-4544-bf20-5e1c99452735
-        introduced: '2026-05-12'
       parameters:
         - in: query
           name: datasources
