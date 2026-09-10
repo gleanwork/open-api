@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 108dcb8bfb8a05cf9a78a4862083b47de37c8fd5
+  x-source-commit-sha: c7223f0e466c632820e8ef482ecdbb03a025224a
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -247,6 +247,9 @@ paths:
         variants:
           - fragment: stream
             method: createStream
+            summary: Create a streaming chat response
+            description: |
+              Run an assistant turn as server-sent events. HTTP clients request this mode by setting `stream` to true in the JSON body.
             response-media-type: text/event-stream
             request-body-overrides:
               stream: true
