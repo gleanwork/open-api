@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 3c1cf531c33d687e24337bf94172fc60d8a98d78
+  x-source-commit-sha: f9160a39c7009a3ee726f51bdbc64bd0b94f716d
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -7475,6 +7475,10 @@ components:
           description: Optional commit message for the imported version.
         syncMode:
           $ref: '#/components/schemas/ImportAgentSyncMode'
+        publishedBaselineHash:
+          type: string
+          description: |
+            Optional baseline hash of the currently published agent definition. When publish hash validation is enabled, an import updating an existing agent with syncMode PUBLISHED is rejected with HTTP 409 if the current published definition hash is nonempty and does not match this baseline. Leading and trailing whitespace is trimmed; omitted or blank values skip validation. Ignored for STAGED imports, new agents, and transient previews.
         isDraft:
           type: boolean
           description: |
