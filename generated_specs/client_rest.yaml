@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 99c6e96c00d5142079cd28890a2e09062e4657e9
+  x-source-commit-sha: f9160a39c7009a3ee726f51bdbc64bd0b94f716d
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 98a85cce6e906da65e0e36012c3887292ffc0720
+  x-open-api-commit-sha: da7ae0a1055d0b4b92037d7165f4a0de4e96ef20
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -7623,6 +7623,10 @@ components:
           description: Optional commit message for the imported version.
         syncMode:
           $ref: "#/components/schemas/ImportAgentSyncMode"
+        publishedBaselineHash:
+          type: string
+          description: |
+            Optional baseline hash of the currently published agent definition. When publish hash validation is enabled, an import updating an existing agent with syncMode PUBLISHED is rejected with HTTP 409 if the current published definition hash is nonempty and does not match this baseline. Leading and trailing whitespace is trimmed; omitted or blank values skip validation. Ignored for STAGED imports, new agents, and transient previews.
         isDraft:
           type: boolean
           description: |
