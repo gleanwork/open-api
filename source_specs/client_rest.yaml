@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: a231a2fcbf4a250f5e1363ae62a8ef1ae62a4cfd
+  x-source-commit-sha: c9f64159b0fcbd20279395b5d03077a34dc9e169
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -7475,6 +7475,14 @@ components:
           description: Optional commit message for the imported version.
         syncMode:
           $ref: '#/components/schemas/ImportAgentSyncMode'
+        versionSource:
+          type: string
+          enum:
+            - GIT
+            - USER
+          default: USER
+          description: |
+            Provenance recorded on the staged commit or published version this import produces. Doesn't change the agent's management mode (workflowSource). GIT: synced from a Git repository. USER: uploaded by a user. Defaults to USER when omitted. Ignored for transient imports.
         publishedBaselineHash:
           type: string
           description: |
