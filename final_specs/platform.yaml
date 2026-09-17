@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: 8c82ff2d5a1fb95d5a775e340d134af34021c042
-  x-open-api-commit-sha: 418016b883e810865e4342dd9193697d8c4927d9
+  x-source-commit-sha: c9f64159b0fcbd20279395b5d03077a34dc9e169
+  x-open-api-commit-sha: 56105f48f41bb2eb1d866e7569f8cfd330d464a8
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -484,7 +484,7 @@ paths:
             run();
         - lang: go
           label: Go (API Client)
-          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithServerURL(\"https://mycompany-be.glean.com\"),\n    )\n\n    res, err := s.Agents.CreateRun(ctx, \"{agent_id}\", components.PlatformAgentRunCreateRequest{\n        Messages: []components.PlatformMessage{\n            components.PlatformMessage{\n                Role: components.PlatformMessageRoleUser,\n                Content: []components.PlatformMessageTextBlock{\n                    components.PlatformMessageTextBlock{\n                        Text: \"What is our parental leave policy?\",\n                        Type: components.PlatformContentTypeText,\n                    },\n                },\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.PlatformAgentRunWaitResponse != nil {\n        // handle response\n    }\n}"
+          source: "package main\n\nimport(\n\t\"context\"\n\t\"os\"\n\tapiclientgo \"github.com/gleanwork/api-client-go\"\n\t\"github.com/gleanwork/api-client-go/models/components\"\n\t\"log\"\n)\n\nfunc main() {\n    ctx := context.Background()\n\n    s := apiclientgo.New(\n        apiclientgo.WithSecurity(os.Getenv(\"GLEAN_API_TOKEN\")),\n        apiclientgo.WithServerURL(\"https://mycompany-be.glean.com\"),\n    )\n\n    res, err := s.Agents.CreateRun(ctx, \"{agent_id}\", components.PlatformAgentRunCreateRequest{\n        Messages: []components.PlatformMessageInput{\n            components.PlatformMessageInput{\n                Role: components.PlatformMessageRoleUser,\n                Content: []components.PlatformMessageTextBlockInput{\n                    components.PlatformMessageTextBlockInput{\n                        Text: \"What is our parental leave policy?\",\n                        Type: components.PlatformContentTypeText,\n                    },\n                },\n            },\n        },\n    })\n    if err != nil {\n        log.Fatal(err)\n    }\n    if res.PlatformAgentRunWaitResponse != nil {\n        // handle response\n    }\n}"
         - lang: java
           label: Java (API Client)
           source: |-
@@ -510,10 +510,10 @@ paths:
                             .agentId("{agent_id}")
                             .platformAgentRunCreateRequest(PlatformAgentRunCreateRequest.builder()
                                 .messages(List.of(
-                                    PlatformMessage.builder()
+                                    PlatformMessageInput.builder()
                                         .role(PlatformMessageRole.USER)
                                         .content(List.of(
-                                            PlatformMessageTextBlock.builder()
+                                            PlatformMessageTextBlockInput.builder()
                                                 .text("What is our parental leave policy?")
                                                 .type(PlatformContentType.TEXT)
                                                 .build()))
@@ -4396,6 +4396,163 @@ components:
       type: string
       enum:
         - text
+    PlatformChatDocumentSource:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          x-discriminator: true
+          enum:
+            - DOCUMENT
+        document_id:
+          type: string
+          minLength: 1
+        url:
+          type: string
+          minLength: 1
+        title:
+          type: string
+        datasource:
+          type: string
+      anyOf:
+        - required:
+            - document_id
+          properties:
+            document_id:
+              type: string
+              minLength: 1
+        - required:
+            - url
+          properties:
+            url:
+              type: string
+              minLength: 1
+    PlatformChatPersonSource:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - person_id
+      properties:
+        type:
+          type: string
+          x-discriminator: true
+          enum:
+            - PERSON
+        person_id:
+          type: string
+          minLength: 1
+        name:
+          type: string
+        url:
+          type: string
+    PlatformChatFileSource:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - file_id
+      properties:
+        type:
+          type: string
+          x-discriminator: true
+          enum:
+            - FILE
+        file_id:
+          type: string
+          minLength: 1
+        title:
+          type: string
+        url:
+          type: string
+        datasource:
+          type: string
+    PlatformChatCustomEntitySource:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - entity_id
+      properties:
+        type:
+          type: string
+          x-discriminator: true
+          enum:
+            - CUSTOM_ENTITY
+        entity_id:
+          type: string
+          minLength: 1
+        name:
+          type: string
+        title:
+          type: string
+        url:
+          type: string
+        datasource:
+          type: string
+    PlatformChatCitationSource:
+      description: Four-variant citation source union.
+      x-multiple-discriminators: true
+      oneOf:
+        - $ref: "#/components/schemas/PlatformChatDocumentSource"
+        - $ref: "#/components/schemas/PlatformChatPersonSource"
+        - $ref: "#/components/schemas/PlatformChatFileSource"
+        - $ref: "#/components/schemas/PlatformChatCustomEntitySource"
+      discriminator:
+        propertyName: type
+        mapping:
+          DOCUMENT: "#/components/schemas/PlatformChatDocumentSource"
+          PERSON: "#/components/schemas/PlatformChatPersonSource"
+          FILE: "#/components/schemas/PlatformChatFileSource"
+          CUSTOM_ENTITY: "#/components/schemas/PlatformChatCustomEntitySource"
+    PlatformChatCitationSnippet:
+      type: object
+      additionalProperties: false
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          minLength: 1
+        page_number:
+          type:
+            - integer
+            - "null"
+    PlatformChatCitationAnnotation:
+      type: object
+      additionalProperties: false
+      required:
+        - type
+        - sources
+      properties:
+        type:
+          type: string
+          enum:
+            - CITATION
+        sources:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/PlatformChatCitationSource"
+        start_index:
+          type:
+            - integer
+            - "null"
+          minimum: 0
+        end_index:
+          type:
+            - integer
+            - "null"
+          minimum: 0
+        snippets:
+          type:
+            - array
+            - "null"
+          items:
+            $ref: "#/components/schemas/PlatformChatCitationSnippet"
     PlatformMessageTextBlock:
       type: object
       required:
@@ -4407,6 +4564,11 @@ components:
           description: Text content.
         type:
           $ref: "#/components/schemas/PlatformContentType"
+        annotations:
+          type: array
+          readOnly: true
+          items:
+            $ref: "#/components/schemas/PlatformChatCitationAnnotation"
     PlatformMessage:
       type: object
       required:
@@ -4582,150 +4744,6 @@ components:
       pattern: ^resp_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$
       description: |
         Platform-owned, non-persisted response envelope identifier in `resp_<uuid>` form. The same identifier is used for every event in one streamed response.
-    PlatformChatDocumentSource:
-      type: object
-      additionalProperties: false
-      required:
-        - type
-      properties:
-        type:
-          type: string
-          enum:
-            - DOCUMENT
-        document_id:
-          type: string
-          minLength: 1
-        url:
-          type: string
-          minLength: 1
-        title:
-          type: string
-        datasource:
-          type: string
-      anyOf:
-        - required:
-            - document_id
-        - required:
-            - url
-    PlatformChatPersonSource:
-      type: object
-      additionalProperties: false
-      required:
-        - type
-        - person_id
-      properties:
-        type:
-          type: string
-          enum:
-            - PERSON
-        person_id:
-          type: string
-          minLength: 1
-        name:
-          type: string
-        url:
-          type: string
-    PlatformChatFileSource:
-      type: object
-      additionalProperties: false
-      required:
-        - type
-        - file_id
-      properties:
-        type:
-          type: string
-          enum:
-            - FILE
-        file_id:
-          type: string
-          minLength: 1
-        title:
-          type: string
-        url:
-          type: string
-        datasource:
-          type: string
-    PlatformChatCustomEntitySource:
-      type: object
-      additionalProperties: false
-      required:
-        - type
-        - entity_id
-      properties:
-        type:
-          type: string
-          enum:
-            - CUSTOM_ENTITY
-        entity_id:
-          type: string
-          minLength: 1
-        name:
-          type: string
-        title:
-          type: string
-        url:
-          type: string
-        datasource:
-          type: string
-    PlatformChatCitationSource:
-      description: Four-variant citation source union.
-      oneOf:
-        - $ref: "#/components/schemas/PlatformChatDocumentSource"
-        - $ref: "#/components/schemas/PlatformChatPersonSource"
-        - $ref: "#/components/schemas/PlatformChatFileSource"
-        - $ref: "#/components/schemas/PlatformChatCustomEntitySource"
-      discriminator:
-        propertyName: type
-        mapping:
-          DOCUMENT: "#/components/schemas/PlatformChatDocumentSource"
-          PERSON: "#/components/schemas/PlatformChatPersonSource"
-          FILE: "#/components/schemas/PlatformChatFileSource"
-          CUSTOM_ENTITY: "#/components/schemas/PlatformChatCustomEntitySource"
-    PlatformChatCitationSnippet:
-      type: object
-      additionalProperties: false
-      required:
-        - text
-      properties:
-        text:
-          type: string
-          minLength: 1
-        page_number:
-          type:
-            - integer
-            - "null"
-    PlatformChatCitationAnnotation:
-      type: object
-      additionalProperties: false
-      required:
-        - type
-        - sources
-      properties:
-        type:
-          type: string
-          enum:
-            - CITATION
-        sources:
-          type: array
-          minItems: 1
-          items:
-            $ref: "#/components/schemas/PlatformChatCitationSource"
-        start_index:
-          type:
-            - integer
-            - "null"
-          minimum: 0
-        end_index:
-          type:
-            - integer
-            - "null"
-          minimum: 0
-        snippets:
-          type:
-            - array
-            - "null"
-          items:
-            $ref: "#/components/schemas/PlatformChatCitationSnippet"
     PlatformChatOutputTextContent:
       type: object
       additionalProperties: false
