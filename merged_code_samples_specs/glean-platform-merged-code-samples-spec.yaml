@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: f48ffe1febb9065be985fab6ce718b324b69e9f5
-  x-open-api-commit-sha: 26e595ebe7c0366d3e1e7ff9ab6fae96a58ed509
+  x-source-commit-sha: cc70da4b874505308a45e85f609fa18587067cbf
+  x-open-api-commit-sha: 6446870bcd3126d795a07eedf83f09f10bdb52fa
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -688,7 +688,7 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean.api_client import Glean
+            from glean.api_client import Glean, models
             import os
 
 
@@ -696,7 +696,28 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as glean:
 
-                res = glean.chat.create(input="What is our parental leave policy?", store=True)
+                res = glean.chat.create(input="Summarize our parental leave policy as JSON.", store=True, text={
+                    "format_": {
+                        "type": models.PlatformChatJSONSchemaFormatType.JSON_SCHEMA,
+                        "name": "policy_summary",
+                        "schema_": {
+                            "type": "object",
+                            "properties": {
+                                "eligible_employees": {
+                                    "type": "string",
+                                },
+                                "duration_weeks": {
+                                    "type": "integer",
+                                },
+                            },
+                            "required": [
+                                "eligible_employees",
+                                "duration_weeks",
+                            ],
+                        },
+                        "strict": True,
+                    },
+                })
 
                 # Handle response
                 print(res)
@@ -711,7 +732,29 @@ paths:
 
             async function run() {
               const result = await glean.chat.create({
-                input: "What is our parental leave policy?",
+                input: "Summarize our parental leave policy as JSON.",
+                text: {
+                  format: {
+                    type: "JSON_SCHEMA",
+                    name: "policy_summary",
+                    schema: {
+                      "type": "object",
+                      "properties": {
+                        "eligible_employees": {
+                          "type": "string",
+                        },
+                        "duration_weeks": {
+                          "type": "integer",
+                        },
+                      },
+                      "required": [
+                        "eligible_employees",
+                        "duration_weeks",
+                      ],
+                    },
+                    strict: true,
+                  },
+                },
               });
 
               console.log(result);
@@ -728,6 +771,7 @@ paths:
             	"os"
             	apiclientgo "github.com/gleanwork/api-client-go"
             	"github.com/gleanwork/api-client-go/models/operations"
+            	"github.com/gleanwork/api-client-go/models/components"
             	"log"
             )
 
@@ -740,8 +784,31 @@ paths:
 
                 res, err := s.Chat.Create(ctx, operations.PlatformChatCreateRequest{
                     Input: operations.CreatePlatformChatCreateInputStr(
-                        "What is our parental leave policy?",
+                        "Summarize our parental leave policy as JSON.",
                     ),
+                    Text: &operations.PlatformChatCreateText{
+                        Format: apiclientgo.Pointer(operations.CreatePlatformChatCreateFormatPlatformChatJSONSchemaFormat(
+                            components.PlatformChatJSONSchemaFormat{
+                                Type: components.PlatformChatJSONSchemaFormatTypeJSONSchema,
+                                Name: "policy_summary",
+                                Schema: map[string]any{
+                                    "type": "object",
+                                    "properties": map[string]any{
+                                        "eligible_employees": map[string]any{
+                                            "type": "string",
+                                        },
+                                        "duration_weeks": map[string]any{
+                                            "type": "integer",
+                                        },
+                                    },
+                                    "required": []any{
+                                        "eligible_employees",
+                                        "duration_weeks",
+                                    },
+                                },
+                            },
+                        )),
+                    },
                 })
                 if err != nil {
                     log.Fatal(err)
@@ -756,9 +823,13 @@ paths:
             package hello.world;
 
             import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.PlatformChatJsonSchemaFormat;
+            import com.glean.api_client.glean_api_client.models.components.PlatformChatJsonSchemaFormatType;
             import com.glean.api_client.glean_api_client.models.errors.PlatformProblemDetailException;
             import com.glean.api_client.glean_api_client.models.operations.*;
             import java.lang.Exception;
+            import java.util.List;
+            import java.util.Map;
 
             public class Application {
 
@@ -769,7 +840,23 @@ paths:
                         .build();
 
                     PlatformChatCreateRequest req = PlatformChatCreateRequest.builder()
-                            .input(PlatformChatCreateInput.of("What is our parental leave policy?"))
+                            .input(PlatformChatCreateInput.of("Summarize our parental leave policy as JSON."))
+                            .text(PlatformChatCreateText.builder()
+                                .format(PlatformChatCreateFormat.of(PlatformChatJsonSchemaFormat.builder()
+                                    .type(PlatformChatJsonSchemaFormatType.JSON_SCHEMA)
+                                    .name("policy_summary")
+                                    .schema(Map.ofEntries(
+                                        Map.entry("type", "object"),
+                                        Map.entry("properties", Map.ofEntries(
+                                            Map.entry("eligible_employees", Map.ofEntries(
+                                                Map.entry("type", "string"))),
+                                            Map.entry("duration_weeks", Map.ofEntries(
+                                                Map.entry("type", "integer"))))),
+                                        Map.entry("required", List.of(
+                                            "eligible_employees",
+                                            "duration_weeks"))))
+                                    .build()))
+                                .build())
                             .build();
 
                     PlatformChatCreateResponse res = sdk.chat().create()
@@ -4667,7 +4754,7 @@ paths:
         - lang: python
           label: Python (API Client)
           source: |-
-            from glean.api_client import Glean
+            from glean.api_client import Glean, models
             import os
 
 
@@ -4675,7 +4762,28 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as glean:
 
-                res = glean.chat.create_stream(input="What is our parental leave policy?", store=True)
+                res = glean.chat.create_stream(input="Summarize our parental leave policy as JSON.", store=True, text={
+                    "format_": {
+                        "type": models.PlatformChatJSONSchemaFormatType.JSON_SCHEMA,
+                        "name": "policy_summary",
+                        "schema_": {
+                            "type": "object",
+                            "properties": {
+                                "eligible_employees": {
+                                    "type": "string",
+                                },
+                                "duration_weeks": {
+                                    "type": "integer",
+                                },
+                            },
+                            "required": [
+                                "eligible_employees",
+                                "duration_weeks",
+                            ],
+                        },
+                        "strict": True,
+                    },
+                })
 
                 with res as event_stream:
                     for event in event_stream:
@@ -4692,7 +4800,29 @@ paths:
 
             async function run() {
               const result = await glean.chat.createStream({
-                input: "What is our parental leave policy?",
+                input: "Summarize our parental leave policy as JSON.",
+                text: {
+                  format: {
+                    type: "JSON_SCHEMA",
+                    name: "policy_summary",
+                    schema: {
+                      "type": "object",
+                      "properties": {
+                        "eligible_employees": {
+                          "type": "string",
+                        },
+                        "duration_weeks": {
+                          "type": "integer",
+                        },
+                      },
+                      "required": [
+                        "eligible_employees",
+                        "duration_weeks",
+                      ],
+                    },
+                    strict: true,
+                  },
+                },
               });
 
               for await (const event of result) {
@@ -4711,6 +4841,7 @@ paths:
             	"os"
             	apiclientgo "github.com/gleanwork/api-client-go"
             	"github.com/gleanwork/api-client-go/models/operations"
+            	"github.com/gleanwork/api-client-go/models/components"
             	"log"
             )
 
@@ -4723,8 +4854,31 @@ paths:
 
                 res, err := s.Chat.CreateStream(ctx, operations.PlatformChatCreateStreamRequest{
                     Input: operations.CreatePlatformChatCreateStreamInputStr(
-                        "What is our parental leave policy?",
+                        "Summarize our parental leave policy as JSON.",
                     ),
+                    Text: &operations.PlatformChatCreateStreamText{
+                        Format: apiclientgo.Pointer(operations.CreatePlatformChatCreateStreamFormatPlatformChatJSONSchemaFormat(
+                            components.PlatformChatJSONSchemaFormat{
+                                Type: components.PlatformChatJSONSchemaFormatTypeJSONSchema,
+                                Name: "policy_summary",
+                                Schema: map[string]any{
+                                    "type": "object",
+                                    "properties": map[string]any{
+                                        "eligible_employees": map[string]any{
+                                            "type": "string",
+                                        },
+                                        "duration_weeks": map[string]any{
+                                            "type": "integer",
+                                        },
+                                    },
+                                    "required": []any{
+                                        "eligible_employees",
+                                        "duration_weeks",
+                                    },
+                                },
+                            },
+                        )),
+                    },
                 })
                 if err != nil {
                     log.Fatal(err)
@@ -4745,11 +4899,13 @@ paths:
             package hello.world;
 
             import com.glean.api_client.glean_api_client.Glean;
-            import com.glean.api_client.glean_api_client.models.components.PlatformChatStreamEventServerSentEvent;
+            import com.glean.api_client.glean_api_client.models.components.*;
             import com.glean.api_client.glean_api_client.models.errors.PlatformProblemDetailException;
             import com.glean.api_client.glean_api_client.models.operations.*;
             import com.glean.api_client.glean_api_client.utils.EventStream;
             import java.lang.Exception;
+            import java.util.List;
+            import java.util.Map;
             import java.util.stream.Stream;
 
             public class Application {
@@ -4761,7 +4917,23 @@ paths:
                         .build();
 
                     PlatformChatCreateStreamRequest req = PlatformChatCreateStreamRequest.builder()
-                            .input(PlatformChatCreateStreamInput.of("What is our parental leave policy?"))
+                            .input(PlatformChatCreateStreamInput.of("Summarize our parental leave policy as JSON."))
+                            .text(PlatformChatCreateStreamText.builder()
+                                .format(PlatformChatCreateStreamFormat.of(PlatformChatJsonSchemaFormat.builder()
+                                    .type(PlatformChatJsonSchemaFormatType.JSON_SCHEMA)
+                                    .name("policy_summary")
+                                    .schema(Map.ofEntries(
+                                        Map.entry("type", "object"),
+                                        Map.entry("properties", Map.ofEntries(
+                                            Map.entry("eligible_employees", Map.ofEntries(
+                                                Map.entry("type", "string"))),
+                                            Map.entry("duration_weeks", Map.ofEntries(
+                                                Map.entry("type", "integer"))))),
+                                        Map.entry("required", List.of(
+                                            "eligible_employees",
+                                            "duration_weeks"))))
+                                    .build()))
+                                .build())
                             .build();
 
                     PlatformChatCreateStreamResponse res = sdk.chat().createStream()
@@ -5415,13 +5587,72 @@ components:
         content:
           type: string
           minLength: 1
+    PlatformChatTextFormat:
+      type: object
+      additionalProperties: false
+      description: Unconstrained plain-text assistant output.
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          description: Discriminator. Must be TEXT.
+          enum:
+            - TEXT
+    PlatformChatJsonSchemaFormat:
+      type: object
+      additionalProperties: false
+      description: Constrains the assistant response to a caller-supplied JSON Schema.
+      required:
+        - type
+        - name
+        - schema
+      properties:
+        type:
+          type: string
+          description: Discriminator. Must be JSON_SCHEMA.
+          enum:
+            - JSON_SCHEMA
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+          description: A stable identifier for the schema.
+        description:
+          type: string
+          maxLength: 1024
+          description: An optional human-readable description of the schema.
+        schema:
+          type: object
+          additionalProperties: true
+          description: A JSON Schema object describing the desired output shape.
+        strict:
+          type: boolean
+          default: true
+          description: |
+            When true, the provider validates the response against the schema. Unsupported by some providers; defaults to true.
     PlatformChatCreateRequest:
       type: object
       additionalProperties: false
       required:
         - input
       example:
-        input: What is our parental leave policy?
+        input: Summarize our parental leave policy as JSON.
+        text:
+          format:
+            type: JSON_SCHEMA
+            name: policy_summary
+            schema:
+              type: object
+              properties:
+                eligible_employees:
+                  type: string
+                duration_weeks:
+                  type: integer
+              required:
+                - eligible_employees
+                - duration_weeks
+            strict: true
       properties:
         input:
           description: |
@@ -5448,6 +5679,18 @@ components:
           minLength: 1
           description: |
             Continue an existing stored conversation. Incompatible with message-array `input` and with `store: false`.
+        text:
+          type: object
+          additionalProperties: false
+          description: |
+            Optional configuration for the assistant's text response. When `format.type` is `JSON_SCHEMA`, the response is constrained to the supplied JSON schema and returned in `output[*].content[*].structured_output`. Structured output is not supported when `stream` is true.
+          properties:
+            format:
+              description: |
+                Output format for the assistant text. TEXT is unconstrained. JSON_SCHEMA constrains the response to the supplied schema.
+              oneOf:
+                - $ref: "#/components/schemas/PlatformChatTextFormat"
+                - $ref: "#/components/schemas/PlatformChatJsonSchemaFormat"
     PlatformChatStreamResponseId:
       type: string
       minLength: 1
@@ -5467,6 +5710,12 @@ components:
             - OUTPUT_TEXT
         text:
           type: string
+        structured_output:
+          type:
+            - object
+            - "null"
+          description: |
+            Parsed and validated JSON object when structured output was requested. Present only when the request included `text.format.type: JSON_SCHEMA`.
         annotations:
           type: array
           items:
