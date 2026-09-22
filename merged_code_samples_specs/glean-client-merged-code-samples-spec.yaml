@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 717c039c2fd74cbe81fc6a9c0b1e690e4e1f55af
+  x-source-commit-sha: e8f438ce5a6250368b2fae2c7e92ee53c7cffcac
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 33b9c3f1c98d9d8365a25ef3a884dff3007cd759
+  x-open-api-commit-sha: d61ec8776f9391cdf71e244b5a418146d1531d79
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -211004,7 +211004,7 @@ paths:
       summary: Gets the metadata for a custom Chat application
       description: Gets the Chat application details for the specified application ID.
       operationId: getchatapplication
-      x-visibility: Preview
+      x-visibility: Public
       x-codegen-request-body-name: payload
       parameters:
         - $ref: "#/components/parameters/locale"
@@ -211687,7 +211687,7 @@ paths:
       summary: Create an agent
       description: Create an agent.
       operationId: createAgent
-      x-visibility: Preview
+      x-visibility: Public
       parameters:
         - $ref: "#/components/parameters/locale"
         - $ref: "#/components/parameters/timezoneOffset"
@@ -211811,7 +211811,7 @@ paths:
       summary: Retrieve an agent
       description: Returns details of an [agent](https://developers.glean.com/agents/agents-api) created in the Agent Builder.
       operationId: getAgent
-      x-visibility: Preview
+      x-visibility: Public
       parameters:
         - $ref: "#/components/parameters/locale"
         - $ref: "#/components/parameters/timezoneOffset"
@@ -211860,7 +211860,7 @@ paths:
       summary: Edit an agent
       description: Creates a draft or publishes an [agent](https://developers.glean.com/agents/agents-api). Use `isDraft=true` to save a draft, or `isDraft=false` (or omit) to publish immediately. Only draft and publish modes are supported.
       operationId: editAgent
-      x-visibility: Preview
+      x-visibility: Public
       parameters:
         - $ref: "#/components/parameters/locale"
         - $ref: "#/components/parameters/timezoneOffset"
@@ -211993,7 +211993,7 @@ paths:
       summary: List an agent's schemas
       description: Return [agent](https://developers.glean.com/agents/agents-api)'s input and output schemas. You can use these schemas to detect changes to an agent's input or output structure.
       operationId: getAgentSchemas
-      x-visibility: Preview
+      x-visibility: Public
       parameters:
         - $ref: "#/components/parameters/locale"
         - $ref: "#/components/parameters/timezoneOffset"
@@ -212049,7 +212049,7 @@ paths:
       summary: Import an agent
       description: "Imports an [agent](https://developers.glean.com/agents/agents-api) from its on-disk folder representation (spec.yaml, instructions.md, skills/, subagents/) packaged as a zip, and creates or updates the agent. Inverse of the export flow: the folder-to-schema conversion runs server-side. The bundle must contain only regular files; symlinks are resolved by the caller at packaging time."
       operationId: importAgent
-      x-visibility: Preview
+      x-visibility: Public
       parameters:
         - $ref: "#/components/parameters/locale"
         - $ref: "#/components/parameters/timezoneOffset"
@@ -212209,7 +212209,7 @@ paths:
       summary: Search agents
       description: Search for [agents](https://developers.glean.com/agents/agents-api) by agent name.
       operationId: searchAgents
-      x-visibility: Preview
+      x-visibility: Public
       requestBody:
         required: true
         content:
@@ -212260,7 +212260,7 @@ paths:
       summary: Create an agent run and stream the response
       description: "Executes an [agent](https://developers.glean.com/agents/agents-api) run and returns the result as a stream of server-sent events (SSE). **Note**: If the agent uses an input form trigger, all form fields (including optional fields) must be included in the `input` object."
       operationId: createAndStreamRun
-      x-visibility: Preview
+      x-visibility: Public
       requestBody:
         content:
           application/json:
@@ -212334,7 +212334,7 @@ paths:
       summary: Create an agent run and wait for the response
       description: "Executes an [agent](https://developers.glean.com/agents/agents-api) run and returns the final response. **Note**: If the agent uses an input form trigger, all form fields (including optional fields) must be included in the `input` object."
       operationId: createAndWaitRun
-      x-visibility: Preview
+      x-visibility: Public
       requestBody:
         content:
           application/json:
@@ -218262,7 +218262,7 @@ paths:
       summary: Read Collection
       description: Read the details of a Collection given its ID. Does not fetch items in this Collection.
       operationId: getcollection
-      x-visibility: Preview
+      x-visibility: Public
       x-codegen-request-body-name: payload
       parameters:
         - $ref: "#/components/parameters/locale"
@@ -218515,7 +218515,7 @@ paths:
       summary: Read document permissions
       description: Read the emails of all users who have access to the given document.
       operationId: getdocpermissions
-      x-visibility: Preview
+      x-visibility: Public
       x-codegen-request-body-name: payload
       parameters:
         - $ref: "#/components/parameters/locale"
@@ -218761,7 +218761,7 @@ paths:
       summary: Read documents by facets
       description: Read the documents including metadata (does not include enhanced metadata via `/documentmetadata`) macthing the given facet conditions.
       operationId: getdocumentsbyfacets
-      x-visibility: Preview
+      x-visibility: Public
       x-codegen-request-body-name: payload
       parameters:
         - $ref: "#/components/parameters/locale"
@@ -219139,7 +219139,7 @@ paths:
       summary: Read messages
       description: Retrieves list of messages from messaging/chat datasources (e.g. Slack, Teams).
       operationId: messages
-      x-visibility: Preview
+      x-visibility: Public
       x-codegen-request-body-name: payload
       parameters:
         - $ref: "#/components/parameters/locale"
@@ -220009,7 +220009,7 @@ paths:
       summary: Search the index (admin)
       description: Retrieves results for search query without respect for permissions. This is available only to privileged users.
       operationId: adminsearch
-      x-visibility: Preview
+      x-visibility: Public
       x-codegen-request-body-name: payload
       parameters:
         - $ref: "#/components/parameters/locale"
@@ -220619,7 +220619,7 @@ paths:
       summary: Recommend documents
       description: Retrieve recommended documents for the given URL or Glean Document ID.
       operationId: recommendations
-      x-visibility: Preview
+      x-visibility: Public
       x-codegen-request-body-name: payload
       parameters:
         - $ref: "#/components/parameters/locale"
@@ -236644,7 +236644,7 @@ paths:
         - Tools
       summary: List available tools
       description: Returns a filtered set of available tools based on optional tool name parameters. If no filters are provided, all available tools are returned.
-      x-visibility: Preview
+      x-visibility: Public
       parameters:
         - in: query
           name: toolNames
@@ -236766,7 +236766,7 @@ paths:
         - Tools
       summary: Execute the specified tool
       description: Execute the specified tool with provided parameters
-      x-visibility: Preview
+      x-visibility: Public
       requestBody:
         required: true
         content:
@@ -236925,7 +236925,7 @@ paths:
         tool backing the specified action pack. Intended for headless / server-driven clients
         that render an "Authorize" prompt when the user has not yet consented to the tool.
       operationId: getActionPackAuthStatus
-      x-visibility: Preview
+      x-visibility: Public
       responses:
         "200":
           description: Successful operation
@@ -237043,7 +237043,7 @@ paths:
         `returnUrl` must match the tenant's configured return URL allowlist; otherwise the
         request is rejected with 400.
       operationId: authorizeActionPack
-      x-visibility: Preview
+      x-visibility: Public
       requestBody:
         required: true
         content:
@@ -237181,7 +237181,7 @@ paths:
         Returns display information and the calling user's current authentication status
         for the specified tool server.
       operationId: getToolServerAuthStatus
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-experimental:
         id: 52fde6ec-c18b-4de6-b761-f82008542ae7
         introduced: "2026-07-02"
@@ -237302,7 +237302,7 @@ paths:
         `returnUrl` must match the tenant's configured return URL allowlist; otherwise the
         request is rejected with 400.
       operationId: authorizeToolServer
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-experimental:
         id: 1935476e-ecaf-4c1f-a9fd-1e768cf68f30
         introduced: "2026-07-02"
@@ -237451,7 +237451,7 @@ paths:
 
         Use `serverId=native` for Glean's built-in tools.
       operationId: getToolServerTools
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-experimental:
         id: 332eb38f-1b5d-4896-88e3-59db5e96e4e1
         introduced: "2026-07-30"
@@ -239262,7 +239262,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      x-visibility: Preview
+      x-visibility: Public
       x-speakeasy-group: client.datasources
       x-speakeasy-name-override: retrieveConfiguration
       x-codeSamples:
@@ -239397,7 +239397,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      x-visibility: Preview
+      x-visibility: Public
       x-speakeasy-group: client.datasources
       x-speakeasy-name-override: updateConfiguration
       x-codeSamples:
@@ -239552,7 +239552,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      x-visibility: Preview
+      x-visibility: Public
       x-speakeasy-group: client.datasources
       x-speakeasy-name-override: retrieveCredentialStatus
       x-codeSamples:
@@ -239687,7 +239687,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      x-visibility: Preview
+      x-visibility: Public
       x-speakeasy-group: client.datasources
       x-speakeasy-name-override: rotateCredentials
       x-codeSamples:
@@ -244201,7 +244201,7 @@ components:
           additionalProperties:
             $ref: "#/components/schemas/WriteActionParameter"
     ServerToolBase:
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-experimental:
         id: 4e3ee791-45e0-4125-845f-4b7701aa983c
         introduced: "2026-07-02"
@@ -244242,7 +244242,7 @@ components:
           type: string
           description: Short summary of what this specific tool invocation will do.
     ServerToolRequest:
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-experimental:
         id: 8544e887-4569-4b14-bde0-d1be9e90dbc3
         introduced: "2026-07-02"
@@ -244267,7 +244267,7 @@ components:
               description: Preview information for this tool request.
               $ref: "#/components/schemas/ActionPreview"
     AuthContext:
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-experimental:
         id: a7c1d3e5-9f42-4b8a-b6e0-2d4f8a1c3e5b
         introduced: "2026-07-09"
@@ -244279,7 +244279,7 @@ components:
           type: string
           description: ID of the MCP server (populated when toolType is MCP).
     ServerToolResponse:
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-experimental:
         id: 3eae3ee7-2c06-4027-be14-98260a3ce608
         introduced: "2026-07-02"
