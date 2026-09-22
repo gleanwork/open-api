@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 90a404994c9b9e9c894965935cb53f8332fbe8ee
+  x-source-commit-sha: 0567955c577b9e280c36bf6b66198b361268a1be
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -195,7 +195,6 @@ paths:
                   id: 1
                   event: message
                   data: {"messages":[{"role":"GLEAN_AI","content":[{"text":"Hello","type":"text"}]}]}
-
                   id: 2
                   event: message
                   data: {"messages":[{"role":"GLEAN_AI","content":[{"text":", I can help with HR policy questions.","type":"text"}]}]}
@@ -223,6 +222,60 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/UnauthorizedAgentToolsProblem'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /agents/{agent_id}/runs/{run_id}:
+    get:
+      tags:
+        - Agents
+      summary: Get agent run
+      description: |
+        Retrieve a persisted workflow execution owned by the authenticated user. The run must belong to the specified agent, and the user must still have access to that agent. Unknown runs, runs owned by another user, and mismatched agent/run identifiers return 404. Requires the agents.run scope. Executions without a persisted workflow record are not available through this endpoint.
+      operationId: platform-agents-get-run
+      x-visibility: Public
+      x-glean-sdk:
+        group: agents
+        method: getRun
+      parameters:
+        - in: path
+          name: agent_id
+          description: ID of the agent that owns the run.
+          required: true
+          example: '{agent_id}'
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 256
+        - in: path
+          name: run_id
+          description: ID of the durable run to retrieve.
+          required: true
+          example: '{run_id}'
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 256
+      responses:
+        '200':
+          description: Current persisted run snapshot. A failed execution is still a successful retrieval.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentRunResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
         '429':
           $ref: '#/components/responses/TooManyRequests'
         '500':
@@ -2300,6 +2353,124 @@ components:
               description: One entry per tool the caller must authorize.
               items:
                 $ref: '#/components/schemas/AuthenticationSuggestion'
+    AgentRunState:
+      type: string
+      enum:
+        - QUEUED
+        - RUNNING
+        - REQUIRES_INPUT
+        - SUCCEEDED
+        - FAILED
+        - CANCELLING
+        - CANCELLED
+        - EXPIRED
+      description: State of the persisted workflow execution. REQUIRES_INPUT is nonterminal.
+    AgentRunToolApproval:
+      type: object
+      description: Pending approval for a specific persisted tool invocation and its arguments.
+      required:
+        - interaction_id
+        - type
+        - display_name
+        - description
+        - arguments
+      properties:
+        interaction_id:
+          type: string
+          description: Identifies this specific invocation approval, not the tool definition.
+        type:
+          type: string
+          enum:
+            - TOOL_APPROVAL
+          description: Interaction type identifying a tool execution approval request.
+        tool_id:
+          type: string
+          description: Platform tool identifier when recorded. Omitted for requests without one, such as some MCP tools.
+        display_name:
+          type: string
+          description: Display name of the tool requesting approval.
+        description:
+          type: string
+          description: Description of the tool associated with this approval request.
+        arguments:
+          type: object
+          additionalProperties: true
+          description: Arguments from the persisted approval request. Older platform tools use flattened parameters.
+        expires_at:
+          type: string
+          format: date-time
+          description: Approval deadline, when one is set. Omitted when the approval has no expiration.
+    AgentRunError:
+      type: object
+      description: Caller-safe details of an agent run execution failure.
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Machine-readable execution failure code.
+        message:
+          type: string
+          description: Caller-safe execution failure description.
+    DurableAgentRun:
+      type: object
+      description: Agent run state, pending tool approvals, and output available independently of the creation request.
+      required:
+        - run_id
+        - agent_id
+        - state
+        - created_at
+        - updated_at
+        - pending_interactions
+      properties:
+        run_id:
+          type: string
+          description: ID of the run, preserved across approval continuations.
+        agent_id:
+          type: string
+          description: ID of the agent that owns the run.
+        state:
+          $ref: '#/components/schemas/AgentRunState'
+          description: Current lifecycle state of the run.
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the run was first persisted.
+        updated_at:
+          type: string
+          format: date-time
+          description: |
+            Latest persisted activity timestamp across the execution and its messages, including checkpoint messages. This is not a worker heartbeat or an exact state-transition timestamp.
+        expires_at:
+          type: string
+          format: date-time
+          description: Execution deadline, when one is set. Not the run history retention deadline.
+        pending_interactions:
+          type: array
+          description: Unanswered tool approvals when the run is in REQUIRES_INPUT. Empty in other states.
+          items:
+            $ref: '#/components/schemas/AgentRunToolApproval'
+        output:
+          type: object
+          additionalProperties: true
+          description: Accumulated text-only agent output under the messages key, when available.
+        error:
+          $ref: '#/components/schemas/AgentRunError'
+          description: Caller-safe failure details when the run is in FAILED.
+    AgentRunResponse:
+      type: object
+      description: Persisted agent run snapshot with a request ID for support correlation.
+      required:
+        - run
+        - request_id
+      properties:
+        run:
+          $ref: '#/components/schemas/DurableAgentRun'
+          description: Current persisted snapshot of the requested agent run.
+        request_id:
+          type: string
+          description: Platform-generated request ID for support correlation.
     ChatInputMessage:
       type: object
       additionalProperties: false
