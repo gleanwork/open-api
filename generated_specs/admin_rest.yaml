@@ -2,14 +2,14 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: 8f42e777806876b3b03e36e55819028289be3f93
+  x-source-commit-sha: 12511629ff53153d0075e1fdb6b586a197475b2b
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
     operations. These offer limited exposure to the admin APIs through rest endpoints.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: d5ffe37692ede6640ab35274e0ee5aad842dfa03
+  x-open-api-commit-sha: 3ac3c08ff516741891515d0d45a12dca57213cfe
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -394,7 +394,7 @@ paths:
         Gets the greenlisted configuration values for a datasource instance. Returns only configuration keys that are exposed via the public API greenlist.
       summary: Get datasource instance configuration
       operationId: getDatasourceInstanceConfiguration
-      x-visibility: Preview
+      x-visibility: Public
       tags:
         - Datasources
       parameters:
@@ -432,7 +432,7 @@ paths:
         Updates the greenlisted configuration values for a datasource instance. Only configuration keys that are exposed via the public API greenlist may be set. Returns the full greenlisted configuration after the update is applied.
       summary: Update datasource instance configuration
       operationId: updateDatasourceInstanceConfiguration
-      x-visibility: Preview
+      x-visibility: Public
       tags:
         - Datasources
       parameters:
@@ -477,7 +477,7 @@ paths:
         Returns the current credential status for a datasource instance. Access is limited to callers with the ADMIN scope; the handler enforces this check.
       summary: Get datasource instance credential status
       operationId: getDatasourceCredentialStatus
-      x-visibility: Preview
+      x-visibility: Public
       tags:
         - Datasources
       parameters:
@@ -516,7 +516,7 @@ paths:
         Only keys recognized as credential material for the datasource type may be set in `credentials.values` (e.g. `clientSecret`, `apiToken`, `privateKey`, depending on the configured auth method). Unrecognized keys, or keys that correspond to non-credential configuration, cause a 400; other instance configuration must be updated via PATCH /configure/datasources/{datasourceId}/instances/{instanceId}.
       summary: Rotate datasource instance credentials
       operationId: rotateDatasourceCredentials
-      x-visibility: Preview
+      x-visibility: Public
       tags:
         - Datasources
       parameters:

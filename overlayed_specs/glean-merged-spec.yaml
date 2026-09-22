@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: 8f42e777806876b3b03e36e55819028289be3f93
-  x-open-api-commit-sha: d5ffe37692ede6640ab35274e0ee5aad842dfa03
+  x-source-commit-sha: 12511629ff53153d0075e1fdb6b586a197475b2b
+  x-open-api-commit-sha: 3ac3c08ff516741891515d0d45a12dca57213cfe
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -2593,7 +2593,7 @@ paths:
           description: Not Authorized
         "403":
           description: Forbidden
-      x-visibility: Preview
+      x-visibility: Public
       x-codegen-request-body-name: payload
       x-speakeasy-name-override: retrieveApplication
       x-speakeasy-group: client.chat
@@ -2781,7 +2781,7 @@ paths:
           description: Forbidden
         "500":
           description: Internal server error
-      x-visibility: Preview
+      x-visibility: Public
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: create
   /rest/api/v1/agents/{agent_id}:
@@ -2824,7 +2824,7 @@ paths:
         "500":
           description: Internal server error
       deprecated: true
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-deprecated:
         docs: https://developers.glean.com/api/platform-api/agents-overview
         id: e01a59ea-5de0-481f-97b6-d28dd65379e6
@@ -2876,7 +2876,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         "500":
           description: Internal server error
-      x-visibility: Preview
+      x-visibility: Public
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: update
   /rest/api/v1/agents/{agent_id}/schemas:
@@ -2925,7 +2925,7 @@ paths:
         "500":
           description: Internal server error
       deprecated: true
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-deprecated:
         docs: https://developers.glean.com/api/platform-api/agents-overview
         id: 9ca398ba-cf22-4523-9d9c-86e5f82d6ec7
@@ -2982,7 +2982,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
         "500":
           description: Internal server error
-      x-visibility: Preview
+      x-visibility: Public
       x-speakeasy-group: client.agents
       x-speakeasy-name-override: import
   /rest/api/v1/agents/search:
@@ -3026,7 +3026,7 @@ paths:
         "500":
           description: Internal server error
       deprecated: true
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-deprecated:
         docs: https://developers.glean.com/api/platform-api/agents-overview
         id: 3ab6f4c0-0b97-4a0b-b5da-e888e4bb7706
@@ -3100,7 +3100,7 @@ paths:
         "500":
           description: Internal server error
       deprecated: true
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-deprecated:
         docs: https://developers.glean.com/api/platform-api/agents-overview
         id: db3f42a5-8820-451e-b57a-14bf6ca3915c
@@ -3149,7 +3149,7 @@ paths:
         "500":
           description: Internal server error
       deprecated: true
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-deprecated:
         docs: https://developers.glean.com/api/platform-api/agents-overview
         id: 683b90e1-48d3-4d7a-a32d-b48eb194fcf0
@@ -3423,7 +3423,7 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
-      x-visibility: Preview
+      x-visibility: Public
       x-codegen-request-body-name: payload
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.collections
@@ -3497,7 +3497,7 @@ paths:
           description: Forbidden
         "429":
           description: Too Many Requests
-      x-visibility: Preview
+      x-visibility: Public
       x-codegen-request-body-name: payload
       x-speakeasy-name-override: retrievePermissions
       x-speakeasy-group: client.documents
@@ -3569,7 +3569,7 @@ paths:
           description: Not Found
         "429":
           description: Too Many Requests
-      x-visibility: Preview
+      x-visibility: Public
       x-codegen-request-body-name: payload
       x-speakeasy-name-override: retrieveByFacets
       x-speakeasy-group: client.documents
@@ -3641,7 +3641,7 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
-      x-visibility: Preview
+      x-visibility: Public
       x-codegen-request-body-name: payload
       x-speakeasy-name-override: retrieve
       x-speakeasy-group: client.messages
@@ -3867,7 +3867,7 @@ paths:
                 $ref: '#/components/schemas/ErrorInfo'
         "429":
           description: Too Many Requests
-      x-visibility: Preview
+      x-visibility: Public
       x-codegen-request-body-name: payload
       x-speakeasy-group: client.search
       x-speakeasy-name-override: queryAsAdmin
@@ -3983,7 +3983,7 @@ paths:
           description: Document does not exist or user cannot access document
         "429":
           description: Too Many Requests
-      x-visibility: Preview
+      x-visibility: Public
       x-codegen-request-body-name: payload
       x-speakeasy-group: client.search
       x-speakeasy-name-override: recommendations
@@ -4520,7 +4520,7 @@ paths:
           description: Not Found
         "429":
           description: Too Many Requests
-      x-visibility: Preview
+      x-visibility: Public
       x-speakeasy-name-override: list
       x-speakeasy-group: client.tools
   /rest/api/v1/tools/call:
@@ -4553,7 +4553,7 @@ paths:
           description: Not Found
         "429":
           description: Too Many Requests
-      x-visibility: Preview
+      x-visibility: Public
       x-speakeasy-name-override: run
       x-speakeasy-group: client.tools
   /rest/api/v1/actions/actionpack/{actionPackId}/auth:
@@ -4583,7 +4583,7 @@ paths:
           description: Action pack not found
         "429":
           description: Too Many Requests
-      x-visibility: Preview
+      x-visibility: Public
       x-speakeasy-name-override: retrieveActionPackAuthStatus
       x-speakeasy-group: client.tools
     post:
@@ -4624,7 +4624,7 @@ paths:
           description: Action pack not found
         "429":
           description: Too Many Requests
-      x-visibility: Preview
+      x-visibility: Public
       x-speakeasy-name-override: authorizeActionPack
       x-speakeasy-group: client.tools
     parameters:
@@ -4660,7 +4660,7 @@ paths:
           description: Tool server not found
         "429":
           description: Too Many Requests
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-experimental:
         id: 52fde6ec-c18b-4de6-b761-f82008542ae7
         introduced: "2026-07-02"
@@ -4704,7 +4704,7 @@ paths:
           description: Tool server not found
         "429":
           description: Too Many Requests
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-experimental:
         id: 1935476e-ecaf-4c1f-a9fd-1e768cf68f30
         introduced: "2026-07-02"
@@ -4764,7 +4764,7 @@ paths:
           description: Too Many Requests
         "503":
           description: Tool schemas could not be resolved from the server
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-experimental:
         id: 332eb38f-1b5d-4896-88e3-59db5e96e4e1
         introduced: "2026-07-30"
@@ -6590,7 +6590,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      x-visibility: Preview
+      x-visibility: Public
       x-speakeasy-group: client.datasources
       x-speakeasy-name-override: retrieveConfiguration
     patch:
@@ -6638,7 +6638,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      x-visibility: Preview
+      x-visibility: Public
       x-speakeasy-group: client.datasources
       x-speakeasy-name-override: updateConfiguration
   /rest/api/v1/datasource/{datasourceInstanceId}/credentialstatus:
@@ -6680,7 +6680,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      x-visibility: Preview
+      x-visibility: Public
       x-speakeasy-group: client.datasources
       x-speakeasy-name-override: retrieveCredentialStatus
   /rest/api/v1/datasource/{datasourceInstanceId}/credentials:
@@ -6729,7 +6729,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      x-visibility: Preview
+      x-visibility: Public
       x-speakeasy-group: client.datasources
       x-speakeasy-name-override: rotateCredentials
   /rest/api/v1/chat#stream:
@@ -13608,7 +13608,7 @@ components:
         - toolType
         - requestType
         - requestId
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-experimental:
         id: 4e3ee791-45e0-4125-845f-4b7701aa983c
         introduced: "2026-07-02"
@@ -13642,7 +13642,7 @@ components:
               description: Preview information for this tool request.
           required:
             - toolName
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-experimental:
         id: 8544e887-4569-4b14-bde0-d1be9e90dbc3
         introduced: "2026-07-02"
@@ -13654,7 +13654,7 @@ components:
           description: ID of the MCP server (populated when toolType is MCP).
       description: |
         Context for authentication responses, containing identifiers for the entity being authenticated.
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-experimental:
         id: a7c1d3e5-9f42-4b8a-b6e0-2d4f8a1c3e5b
         introduced: "2026-07-09"
@@ -13703,7 +13703,7 @@ components:
 
         For SANDBOX_EGRESS requests:
         - isGranted: whether the sandbox egress call is approved
-      x-visibility: Preview
+      x-visibility: Public
       x-glean-experimental:
         id: 3eae3ee7-2c06-4027-be14-98260a3ce608
         introduced: "2026-07-02"
