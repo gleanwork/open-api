@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 0567955c577b9e280c36bf6b66198b361268a1be
+  x-source-commit-sha: 717c039c2fd74cbe81fc6a9c0b1e690e4e1f55af
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 5d4ca2ef3216bc5fad7c31ab45c6bcc85502dac1
+  x-open-api-commit-sha: 33b9c3f1c98d9d8365a25ef3a884dff3007cd759
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -9729,6 +9729,7 @@ components:
               - CHAT_TO_ARTIFACT
               - SHARE_ARTIFACT
               - CREATE_AGENT
+              - MANAGER_INVITE
           description: Categories of content requested. An allowlist gives flexibility to request content separately or together.
         requestOptions:
           $ref: "#/components/schemas/FeedRequestOptions"
@@ -10205,6 +10206,7 @@ components:
             - CHAT_TO_ARTIFACT
             - SHARE_ARTIFACT
             - CREATE_AGENT
+            - MANAGER_INVITE
           description: Type of the justification.
         justification:
           type: string
@@ -10305,6 +10307,7 @@ components:
             - CHAT_TO_ARTIFACT
             - SHARE_ARTIFACT
             - CREATE_AGENT
+            - MANAGER_INVITE
           description: Category of the result, one of the requested categories in incoming request.
         primaryEntry:
           $ref: "#/components/schemas/FeedEntry"

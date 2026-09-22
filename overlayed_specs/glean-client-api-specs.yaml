@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 0567955c577b9e280c36bf6b66198b361268a1be
+  x-source-commit-sha: 717c039c2fd74cbe81fc6a9c0b1e690e4e1f55af
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 5d4ca2ef3216bc5fad7c31ab45c6bcc85502dac1
+  x-open-api-commit-sha: 33b9c3f1c98d9d8365a25ef3a884dff3007cd759
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -10643,6 +10643,7 @@ components:
               - CHAT_TO_ARTIFACT
               - SHARE_ARTIFACT
               - CREATE_AGENT
+              - MANAGER_INVITE
           description: Categories of content requested. An allowlist gives flexibility to request content separately or together.
         requestOptions:
           $ref: "#/components/schemas/FeedRequestOptions"
@@ -11119,6 +11120,7 @@ components:
             - CHAT_TO_ARTIFACT
             - SHARE_ARTIFACT
             - CREATE_AGENT
+            - MANAGER_INVITE
           description: Type of the justification.
         justification:
           type: string
@@ -11219,6 +11221,7 @@ components:
             - CHAT_TO_ARTIFACT
             - SHARE_ARTIFACT
             - CREATE_AGENT
+            - MANAGER_INVITE
           description: Category of the result, one of the requested categories in incoming request.
         primaryEntry:
           $ref: "#/components/schemas/FeedEntry"
