@@ -1,0 +1,29 @@
+overlay: 1.0.0
+x-speakeasy-jsonpath: rfc9535
+info:
+  title: Public-only operations
+  version: 0.0.1
+  description: >-
+    Keeps only operations marked x-visibility: Public. Apply this overlay last:
+    it relies on x-speakeasy-group values from the indexing overlays and on
+    operations added by the chat endpoint overlay.
+actions:
+  # The Indexing API predates operation-level x-visibility annotations, and its
+  # whole surface is public. Annotate only indexing operations that have no
+  # visibility; an explicit Internal value is left alone and removed below.
+  #
+  # Both guards are load-bearing, and tests/public-visibility-overlay.test.js
+  # pins this behavior:
+  # - @.responses: search() also matches path-level servers and parameters
+  #   arrays, and the update would replace them with an object.
+  # - search() before the negated test: Speakeasy mis-evaluates
+  #   `!@["x-visibility"] && search(...)` and selects non-indexing operations.
+  - target: '$.paths.*[?@.responses && search(@["x-speakeasy-group"], "^indexing[.]") && !@["x-visibility"]]'
+    update:
+      x-visibility: Public
+  # Only operations have responses, so path-level parameters, servers, and
+  # descriptions are not matched.
+  - target: '$.paths.*[?@.responses && @["x-visibility"] != "Public"]'
+    remove: true
+  - target: '$.paths[?length(@) == 0]'
+    remove: true
