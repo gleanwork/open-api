@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: e8f438ce5a6250368b2fae2c7e92ee53c7cffcac
+  x-source-commit-sha: 0ba57662b84880293c9bc215044b38e0e337f1b7
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: d61ec8776f9391cdf71e244b5a418146d1531d79
+  x-open-api-commit-sha: eaa75ebc0ebf2bc499f111c9ba9d46a33ebe25b2
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -3016,6 +3016,7 @@ paths:
           description: Permissions error
         "500":
           description: Internal error
+      x-visibility: Public
       x-speakeasy-group: client.governance.data.policies
       x-speakeasy-name-override: update
   /rest/api/v1/governance/data/policies:
