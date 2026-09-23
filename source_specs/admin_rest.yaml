@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: 45035e591118eb1b1a56f838327c13000df9b223
+  x-source-commit-sha: 0ba57662b84880293c9bc215044b38e0e337f1b7
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
@@ -56,6 +56,7 @@ paths:
       description: Updates an existing policy.
       summary: Updates an existing policy
       operationId: updatepolicy
+      x-visibility: Public
       tags:
         - Governance
       parameters:
