@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: b8e0131a300f13815824ffd83fa9a25a926ceb88
+  x-source-commit-sha: 376c65adbf1365816e55bcdf781d18caba99e578
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -1323,6 +1323,283 @@ paths:
           $ref: '#/components/responses/NotFound'
         '408':
           $ref: '#/components/responses/RequestTimeout'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /admin/usage/limits:
+    get:
+      tags:
+        - Usage
+      summary: List usage limits
+      description: |
+        List configured limits across Glean and external spend clients, plus aggregate agent limits. Organization and user limits identify their spend client; aggregate agent limits omit client_id. Requires admin.usage.limits:read and permission to read workspace billing.
+      operationId: platform-usage-limits-list
+      x-visibility: Public
+      x-glean-experimental:
+        id: ca19b3e8-9a6d-4a31-8f2f-6c7d8e9f0011
+        introduced: '2026-09-16'
+      x-glean-sdk:
+        group: admin.usage
+        method: listLimits
+      parameters:
+        - name: page_size
+          in: query
+          description: Maximum number of limits to return. Defaults to 20; the maximum allowed is 100.
+          example: 20
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: cursor
+          in: query
+          description: Opaque cursor from a previous list response.
+          example: '{cursor}'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of usage limits.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListUsageLimitsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /admin/usage/limits/reset:
+    post:
+      tags:
+        - Usage
+      summary: Reset a usage limit
+      description: |
+        Remove a configured usage limit matching the selector without clearing measured usage. Requires admin.usage.limits:write and permission to edit workspace billing.
+      operationId: platform-usage-limits-reset
+      x-visibility: Public
+      x-glean-experimental:
+        id: ca19b3e8-9a6d-4a31-8f2f-6c7d8e9f0013
+        introduced: '2026-09-16'
+      x-glean-sdk:
+        group: admin.usage
+        method: resetLimit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsageLimitKey'
+            example:
+              target:
+                type: USER
+                user_id: user_123
+              usage_selector:
+                client_id: glean
+                period:
+                  type: RECURRING_CALENDAR_MONTH
+      responses:
+        '200':
+          description: Reset result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetUsageLimitsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /admin/usage/limits/batch:
+    post:
+      tags:
+        - Usage
+      summary: Apply usage limit policies
+      description: |
+        Apply one or more usage limit policy changes atomically. This action sets policy by natural key; it does not create addressable resources or return resource locations. Every change succeeds or none are applied. Requires admin.usage.limits:write and permission to edit workspace billing.
+      operationId: platform-usage-limits-batch
+      x-visibility: Public
+      x-glean-experimental:
+        id: ca19b3e8-9a6d-4a31-8f2f-6c7d8e9f0014
+        introduced: '2026-09-16'
+      x-glean-sdk:
+        group: admin.usage
+        method: applyLimits
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: Usage limit policies to apply atomically.
+              minItems: 1
+              maxItems: 100
+              items:
+                $ref: '#/components/schemas/UsageLimit'
+            example:
+              - target:
+                  type: ORGANIZATION
+                usage_selector:
+                  client_id: glean
+                  period:
+                    type: RECURRING_CALENDAR_MONTH
+                allocation_mode: SHARED_POOL
+                value:
+                  mode: FINITE
+                  amount: '1000.00'
+                  unit: USD
+                  enforcement: HARD
+      responses:
+        '200':
+          description: The applied usage limit policies.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchUsageLimitsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /admin/usage/limits/evaluate:
+    post:
+      tags:
+        - Usage
+      summary: Evaluate administrative usage limit headroom
+      description: |
+        Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires admin.usage:evaluate and permission to read workspace billing, not a global administrator role. An explicit usage_selector.client_id selects the Glean or external spend client; it is never inferred from the caller. Returns all applicable limit values and counters, with effective headroom separated by unit. Agent counters retain aggregate scope. Billing readers receive exact IdP-group source identities. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
+      operationId: platform-admin-usage-limits-evaluate
+      x-visibility: Public
+      x-glean-experimental:
+        id: 70bc17be-ccdb-4e9e-b1e7-1a75256c6ee1
+        introduced: '2026-09-18'
+      x-glean-sdk:
+        group: admin.usage
+        method: evaluateUsage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvaluateUsageLimitRequest'
+            example:
+              target:
+                type: USER
+                user_id: user_123
+              usage_selector:
+                client_id: glean
+                period:
+                  type: RECURRING_CALENDAR_MONTH
+      responses:
+        '200':
+          description: Evaluation result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluateUsageLimitResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /usage/limits/evaluate:
+    post:
+      tags:
+        - Usage
+      summary: Evaluate usage limit headroom
+      description: |
+        Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires usage:evaluate, without workspace billing permission. Omit target to evaluate the authenticated canonical user. An explicit USER must identify that user or a known alias. An explicit AGENT requires current owner/editor or applicable global agent-edit permission; disabled agents remain eligible. Subagents, other users, ORGANIZATION, and default targets are forbidden on this route, even for billing administrators. Missing, inaccessible, and subagent targets return the same 403 insufficient_permissions. An explicit usage_selector.client_id selects the Glean or external spend client; it is never inferred from the caller. Agent evaluation reports aggregate agent usage and the selected client's organization limit, not the caller's personal slice or a complete run preflight. All applicable limit values, used counters, decisions, and headroom are returned; USD and credits have separate effective_limits. IdP-group source identities require billing-read permission. Other callers receive an IDP_GROUP source with is_identity_restricted true and no group_id, without suppressing the policy's value, counter, or decision. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
+      operationId: platform-usage-limits-evaluate
+      x-visibility: Public
+      x-glean-experimental:
+        id: ca19b3e8-9a6d-4a31-8f2f-6c7d8e9f0015
+        introduced: '2026-09-16'
+      x-glean-sdk:
+        group: usage
+        method: evaluateUsage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvaluateCallerUsageLimitRequest'
+            example:
+              usage_selector:
+                client_id: glean
+                period:
+                  type: RECURRING_CALENDAR_MONTH
+      responses:
+        '200':
+          description: Evaluation result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluateUsageLimitResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
         '429':
           $ref: '#/components/responses/TooManyRequests'
         '500':
@@ -3960,6 +4237,654 @@ components:
           type: string
           minLength: 1
           description: Platform-generated request ID for support correlation.
+    UsageTargetType:
+      type: string
+      description: Kind of governed population or inherited policy source.
+      enum:
+        - ORGANIZATION
+        - DEFAULT_USER
+        - DEFAULT_AGENT
+        - USER
+        - AGENT
+        - IDP_GROUP
+        - DEPARTMENT
+      x-enumDescriptions:
+        ORGANIZATION: Shared limit across the organization for the selected spend client.
+        DEFAULT_USER: Default per-user limit for the selected spend client.
+        DEFAULT_AGENT: Default aggregate limit applied to agents without an agent-specific limit.
+        USER: Limit for one canonical user ID and the selected spend client.
+        AGENT: Aggregate limit for one canonical agent ID, independent of spend client.
+        IDP_GROUP: Response-only source of an inherited per-user IdP-group limit.
+        DEPARTMENT: Response-only source of an inherited per-user department limit.
+    UsageTarget:
+      type: object
+      description: |
+        Population governed by a usage limit. A target identifies policy, not access. Administrative operations require their dedicated scope and billing permissions. Non-admin evaluation accepts the authenticated USER or an AGENT the caller currently has permission to edit. Billing permission does not widen this route. Organization and user limits are scoped to a spend client; agent limits remain aggregate. Subagents cannot be configured or evaluated independently because nested spend can be attributed to the top-level agent. Reset can still remove existing subagent rules.
+      additionalProperties: false
+      required:
+        - type
+      properties:
+        type:
+          $ref: '#/components/schemas/UsageTargetType'
+          description: Kind of governed population.
+        user_id:
+          type: string
+          minLength: 1
+          maxLength: 512
+          description: Canonical user ID; required only when type is USER.
+        agent_id:
+          type: string
+          minLength: 1
+          maxLength: 512
+          description: Canonical agent ID; required only when type is AGENT.
+      allOf:
+        - oneOf:
+            - required:
+                - user_id
+              properties:
+                type:
+                  description: Kind of governed population.
+                  enum:
+                    - USER
+              not:
+                required:
+                  - agent_id
+            - required:
+                - agent_id
+              properties:
+                type:
+                  description: Kind of governed population.
+                  enum:
+                    - AGENT
+              not:
+                required:
+                  - user_id
+            - properties:
+                type:
+                  description: Kind of governed population.
+                  enum:
+                    - ORGANIZATION
+                    - DEFAULT_USER
+                    - DEFAULT_AGENT
+              not:
+                anyOf:
+                  - required:
+                      - user_id
+                  - required:
+                      - agent_id
+    PeriodType:
+      type: string
+      description: Kind of period over which usage is counted.
+      enum:
+        - RECURRING_CALENDAR_MONTH
+      x-enumDescriptions:
+        RECURRING_CALENDAR_MONTH: Resets at the start of each calendar month.
+    Period:
+      type: object
+      description: Period over which usage is counted for a limit.
+      additionalProperties: false
+      required:
+        - type
+      properties:
+        type:
+          $ref: '#/components/schemas/PeriodType'
+          description: Kind of usage period.
+    UsageSelector:
+      type: object
+      description: |
+        Usage counted against a configured limit, or the spend context for evaluation. Configured organization and user limits require a client; aggregate agent limits omit it. Omission never selects Glean or acts as a client wildcard.
+      additionalProperties: false
+      required:
+        - period
+      properties:
+        client_id:
+          type: string
+          x-glean-experimental:
+            id: 3a8dfb97-fbe9-4173-ac61-4fd6e6faa847
+            introduced: '2026-09-23'
+          minLength: 1
+          maxLength: 256
+          pattern: ^[^\x00-\x1f\x7f]+$
+          not:
+            enum:
+              - __deleted_clients__
+          description: |
+            Opaque spend-client ID, such as glean or an external gateway spend-client ID. This is not inferred from the authenticating OAuth application and is not automatically prefixed or normalized. Synthetic UI aggregation IDs and control characters are not valid spend-client IDs.
+        period:
+          $ref: '#/components/schemas/Period'
+          description: Reset cadence for counted usage.
+    AllocationMode:
+      type: string
+      description: How a usage limit budget is shared across the target population.
+      enum:
+        - SHARED_POOL
+        - PER_MEMBER
+      x-enumDescriptions:
+        SHARED_POOL: A single shared budget for the target population.
+        PER_MEMBER: A separate budget for each member of the target population.
+    AmountMode:
+      type: string
+      description: Kind of value a usage limit carries.
+      enum:
+        - FINITE
+        - UNLIMITED
+      x-enumDescriptions:
+        FINITE: A finite cap; amount is required.
+        UNLIMITED: No cap.
+    UsageUnit:
+      type: string
+      description: Unit used by a usage limit and its counters.
+      enum:
+        - USD
+        - CREDITS
+      x-enumDescriptions:
+        USD: United States dollars.
+        CREDITS: Glean usage credits.
+    Enforcement:
+      type: string
+      description: Enforcement behavior when a usage limit is reached.
+      enum:
+        - HARD
+        - SOFT
+      x-enumDescriptions:
+        HARD: Configured hard cap; when enforced, requests are blocked at the limit.
+        SOFT: Configured soft cap; when enforced, requests are allowed but flagged at the limit.
+    UsageLimitValue:
+      type: object
+      description: Value and enforcement configuration for a usage limit.
+      additionalProperties: false
+      required:
+        - mode
+      properties:
+        mode:
+          $ref: '#/components/schemas/AmountMode'
+          description: Whether the limit has a finite cap or is unlimited.
+        amount:
+          type: string
+          minLength: 1
+          maxLength: 24
+          pattern: ^(0|[1-9][0-9]*)(\.[0-9]{1,6})?$
+          description: |
+            Plain non-negative decimal amount with at most six fractional digits; required when mode is FINITE and forbidden when mode is UNLIMITED. Limits use single-precision (float32) storage: inputs are rounded to that precision, and responses report the stored value rounded to six fractional digits. For example, 100.10 can be returned as 100.099998. This storage limitation does not reduce the precision of measured usage counters.
+        unit:
+          $ref: '#/components/schemas/UsageUnit'
+          description: |
+            Unit for the selected spend domain; must match its billing denomination. Aggregate agent limits use the workspace plan denomination.
+        enforcement:
+          $ref: '#/components/schemas/Enforcement'
+          description: How the limit is enforced when reached.
+      allOf:
+        - oneOf:
+            - required:
+                - amount
+                - unit
+                - enforcement
+              properties:
+                mode:
+                  description: Whether the limit has a finite cap or is unlimited.
+                  enum:
+                    - FINITE
+            - properties:
+                mode:
+                  description: Whether the limit has a finite cap or is unlimited.
+                  enum:
+                    - UNLIMITED
+              not:
+                anyOf:
+                  - required:
+                      - amount
+                  - required:
+                      - unit
+                  - required:
+                      - enforcement
+    UsageLimit:
+      type: object
+      description: A configured usage limit and its value.
+      additionalProperties: false
+      required:
+        - target
+        - usage_selector
+        - value
+      properties:
+        target:
+          $ref: '#/components/schemas/UsageTarget'
+          description: Population governed by this limit.
+        usage_selector:
+          $ref: '#/components/schemas/UsageSelector'
+          description: Usage counted against this limit.
+        allocation_mode:
+          $ref: '#/components/schemas/AllocationMode'
+          description: |
+            Required for ORGANIZATION, DEFAULT_USER, and DEFAULT_AGENT. Must not be provided for USER or AGENT targets.
+        value:
+          $ref: '#/components/schemas/UsageLimitValue'
+          description: Value, unit, and enforcement mode for the limit.
+      allOf:
+        - oneOf:
+            - required:
+                - allocation_mode
+              properties:
+                target:
+                  description: Population governed by this limit.
+                  properties:
+                    type:
+                      description: Kind of governed population.
+                      enum:
+                        - ORGANIZATION
+                allocation_mode:
+                  description: How this limit budget is allocated.
+                  enum:
+                    - SHARED_POOL
+            - required:
+                - allocation_mode
+              properties:
+                target:
+                  description: Population governed by this limit.
+                  properties:
+                    type:
+                      description: Kind of governed population.
+                      enum:
+                        - DEFAULT_USER
+                        - DEFAULT_AGENT
+                allocation_mode:
+                  description: How this limit budget is allocated.
+                  enum:
+                    - PER_MEMBER
+            - properties:
+                target:
+                  description: Population governed by this limit.
+                  properties:
+                    type:
+                      description: Kind of governed population.
+                      enum:
+                        - USER
+                        - AGENT
+              not:
+                required:
+                  - allocation_mode
+        - oneOf:
+            - properties:
+                target:
+                  description: Population governed by this client-scoped limit.
+                  properties:
+                    type:
+                      description: Kind of client-scoped population.
+                      enum:
+                        - ORGANIZATION
+                        - DEFAULT_USER
+                        - USER
+                usage_selector:
+                  description: Spend client and period for this limit.
+                  required:
+                    - client_id
+            - properties:
+                target:
+                  description: Population governed by this aggregate agent limit.
+                  properties:
+                    type:
+                      description: Kind of aggregate agent population.
+                      enum:
+                        - DEFAULT_AGENT
+                        - AGENT
+                usage_selector:
+                  description: Aggregate period without a client partition.
+                  not:
+                    required:
+                      - client_id
+    ListUsageLimitsResponse:
+      type: object
+      description: Response body for listing configured usage limits.
+      additionalProperties: false
+      required:
+        - results
+        - has_more
+        - request_id
+      properties:
+        results:
+          type: array
+          description: |
+            Bounded page of configured limits. Denomination and legacy-fallback filtering can produce a short or empty page; continue with next_cursor while has_more is true.
+          items:
+            $ref: '#/components/schemas/UsageLimit'
+        has_more:
+          type: boolean
+          description: Whether additional results are available after this page.
+        next_cursor:
+          type:
+            - string
+            - 'null'
+          description: Opaque cursor; null or absent when has_more is false.
+        request_id:
+          type: string
+          description: Request identifier for correlating this response.
+    UsageLimitKey:
+      type: object
+      description: Natural key for one configured usage limit.
+      additionalProperties: false
+      required:
+        - target
+        - usage_selector
+      properties:
+        target:
+          $ref: '#/components/schemas/UsageTarget'
+          description: Population governed by the limit.
+        usage_selector:
+          $ref: '#/components/schemas/UsageSelector'
+          description: Usage counted against the limit.
+      allOf:
+        - oneOf:
+            - properties:
+                target:
+                  description: Population governed by this client-scoped limit.
+                  properties:
+                    type:
+                      description: Kind of client-scoped population.
+                      enum:
+                        - ORGANIZATION
+                        - DEFAULT_USER
+                        - USER
+                usage_selector:
+                  description: Spend client and period for this limit.
+                  required:
+                    - client_id
+            - properties:
+                target:
+                  description: Population governed by this aggregate agent limit.
+                  properties:
+                    type:
+                      description: Kind of aggregate agent population.
+                      enum:
+                        - DEFAULT_AGENT
+                        - AGENT
+                usage_selector:
+                  description: Aggregate period without a client partition.
+                  not:
+                    required:
+                      - client_id
+    ResetUsageLimitsResponse:
+      type: object
+      description: Response body for resetting a usage limit.
+      additionalProperties: false
+      required:
+        - is_configuration_removed
+        - request_id
+      properties:
+        is_configuration_removed:
+          type: boolean
+          description: Whether the matching usage limit configuration was removed.
+        request_id:
+          type: string
+          description: Request identifier for correlating this response.
+    BatchUsageLimitsResponse:
+      type: object
+      additionalProperties: false
+      description: Response body for successfully applied usage limit policies.
+      required:
+        - results
+        - request_id
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsageLimit'
+          description: Applied usage limit policies, in the same order as the request.
+        request_id:
+          type: string
+          description: Request identifier for correlating this response.
+    EvaluateUsageLimitRequest:
+      type: object
+      additionalProperties: false
+      description: |
+        Administrative evaluation request. The target is always explicit; usage_selector and the evaluation response are shared with non-admin evaluation.
+      required:
+        - target
+        - usage_selector
+      properties:
+        target:
+          $ref: '#/components/schemas/UsageTarget'
+          description: Concrete organization, user, or agent to evaluate.
+        usage_selector:
+          $ref: '#/components/schemas/UsageSelector'
+          description: Usage to evaluate for the target.
+      allOf:
+        - properties:
+            usage_selector:
+              description: Explicit spend-client context for evaluation.
+              required:
+                - client_id
+            target:
+              description: Concrete target being evaluated.
+              properties:
+                type:
+                  description: Kind of target being evaluated.
+                  enum:
+                    - ORGANIZATION
+                    - USER
+                    - AGENT
+    UsageLimitDecision:
+      type: string
+      description: Configured-budget status for the target, independent of runtime admission switches.
+      enum:
+        - AVAILABLE
+        - WARNING
+        - BLOCKED
+      x-enumDescriptions:
+        AVAILABLE: Usage is within all applicable configured limits.
+        WARNING: Usage reached or exceeded a configured soft limit.
+        BLOCKED: Usage reached or exceeded a configured hard limit; this is not a runtime admission decision.
+    UsagePolicySourceTarget:
+      type: object
+      description: |
+        Population that supplied an evaluated policy. IdP groups and departments are response-only sources, not limit-management or direct evaluation targets.
+      additionalProperties: false
+      required:
+        - type
+      properties:
+        type:
+          $ref: '#/components/schemas/UsageTargetType'
+          description: Kind of configured policy source.
+        user_id:
+          type: string
+          minLength: 1
+          description: Canonical user ID for a user-specific policy.
+        agent_id:
+          type: string
+          minLength: 1
+          description: Canonical agent ID for an agent-specific policy.
+        group_id:
+          type: string
+          minLength: 1
+          description: Canonical IdP group ID; returned only to billing readers.
+        department_name:
+          type: string
+          minLength: 1
+          description: Department whose per-user policy supplied the limit.
+        is_identity_restricted:
+          type: boolean
+          description: True when an IdP-group source identity is withheld from a non-billing reader.
+      allOf:
+        - oneOf:
+            - properties:
+                type:
+                  description: Organization or inherited default policy.
+                  enum:
+                    - ORGANIZATION
+                    - DEFAULT_USER
+                    - DEFAULT_AGENT
+              not:
+                anyOf:
+                  - required:
+                      - user_id
+                  - required:
+                      - agent_id
+                  - required:
+                      - group_id
+                  - required:
+                      - department_name
+                  - required:
+                      - is_identity_restricted
+            - required:
+                - user_id
+              properties:
+                type:
+                  description: User-specific policy.
+                  enum:
+                    - USER
+              not:
+                anyOf:
+                  - required:
+                      - agent_id
+                  - required:
+                      - group_id
+                  - required:
+                      - department_name
+                  - required:
+                      - is_identity_restricted
+            - required:
+                - agent_id
+              properties:
+                type:
+                  description: Agent-specific policy.
+                  enum:
+                    - AGENT
+              not:
+                anyOf:
+                  - required:
+                      - user_id
+                  - required:
+                      - group_id
+                  - required:
+                      - department_name
+                  - required:
+                      - is_identity_restricted
+            - required:
+                - department_name
+              properties:
+                type:
+                  description: Inherited department policy.
+                  enum:
+                    - DEPARTMENT
+              not:
+                anyOf:
+                  - required:
+                      - user_id
+                  - required:
+                      - agent_id
+                  - required:
+                      - group_id
+                  - required:
+                      - is_identity_restricted
+            - properties:
+                type:
+                  description: Inherited IdP-group policy.
+                  enum:
+                    - IDP_GROUP
+              not:
+                anyOf:
+                  - required:
+                      - user_id
+                  - required:
+                      - agent_id
+                  - required:
+                      - department_name
+              oneOf:
+                - required:
+                    - group_id
+                  properties:
+                    is_identity_restricted:
+                      description: An identified group is not restricted.
+                      const: false
+                - required:
+                    - is_identity_restricted
+                  properties:
+                    is_identity_restricted:
+                      description: An unidentified group has a restricted identity.
+                      const: true
+                  not:
+                    required:
+                      - group_id
+    EvaluatedLimit:
+      type: object
+      additionalProperties: false
+      description: Evaluation details for one independently applicable usage limit.
+      required:
+        - target
+        - usage_selector
+        - value
+        - used
+        - decision
+      properties:
+        target:
+          $ref: '#/components/schemas/UsagePolicySourceTarget'
+          description: |
+            Configured source of this limit. Default and group policies retain their source population; used is the concrete evaluated user's or agent's counter. IdP-group identities require billing-read permission, but all callers receive the complete limit value, counter, decision, and headroom.
+        usage_selector:
+          $ref: '#/components/schemas/UsageSelector'
+          description: |
+            Actual scope of this rule's counter. Client rules identify their client; aggregate agent rules omit client_id even when evaluation selects a client.
+        value:
+          $ref: '#/components/schemas/UsageLimitValue'
+          description: The configured limit value.
+        used:
+          type: string
+          description: Decimal amount of accrued usage for this limit.
+        decision:
+          $ref: '#/components/schemas/UsageLimitDecision'
+          description: Decision for this limit.
+    EvaluateUsageLimitResponse:
+      type: object
+      additionalProperties: false
+      description: Result of evaluating usage limits for a selector.
+      required:
+        - decision
+        - effective_limits
+        - evaluated_limits
+        - evaluated_at
+        - request_id
+      properties:
+        decision:
+          $ref: '#/components/schemas/UsageLimitDecision'
+          description: Overall decision across all evaluated limits.
+        effective_limits:
+          type: array
+          minItems: 1
+          maxItems: 2
+          items:
+            $ref: '#/components/schemas/UsageLimitValue'
+          description: |
+            One finite headroom per applicable unit, ordered USD then CREDITS. Headroom is the tightest remaining amount within that unit; different units are never combined or converted. When no finite limit applies, contains a single UNLIMITED value without amount, unit, or enforcement.
+        evaluated_limits:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvaluatedLimit'
+          description: Per-rule evaluation details.
+        evaluated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp of when usage counters were read.
+        request_id:
+          type: string
+          description: Request identifier for correlating this response.
+    EvaluateCallerUsageLimitRequest:
+      type: object
+      additionalProperties: false
+      description: |
+        Non-admin evaluation request. Only omission of target selects the authenticated canonical user; null, empty, and incomplete targets are invalid. Explicit USER targets accept the caller's canonical ID or known aliases. AGENT targets require current edit permission and evaluate aggregate agent usage, including organization limits. The authenticated identity is never replaced by the selected target.
+      required:
+        - usage_selector
+      properties:
+        target:
+          $ref: '#/components/schemas/UsageTarget'
+          description: Optional self or editable agent target. Omit to evaluate self.
+        usage_selector:
+          $ref: '#/components/schemas/UsageSelector'
+          description: Usage to evaluate for the target; always required.
+      allOf:
+        - properties:
+            usage_selector:
+              description: Explicit spend-client context; never inferred from the caller.
+              required:
+                - client_id
     TriggerStatus:
       type: string
       description: Current trigger lifecycle state.
