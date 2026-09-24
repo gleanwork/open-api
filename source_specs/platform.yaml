@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 4c2220e29bbaf9a96512b9244f3336b40612c59c
+  x-source-commit-sha: 4d7e0743ce2d95ddf9fdfd19e484fe62a7f50f9e
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -484,8 +484,8 @@ paths:
               $ref: '#/components/schemas/SkillCreateRequest'
         x-codegen-request-body-name: request
       responses:
-        '200':
-          description: Successful response.
+        '201':
+          description: Skill created.
           content:
             application/json:
               schema:
@@ -513,7 +513,7 @@ paths:
         - Skills
       summary: List skills
       description: |
-        List skills available to the authenticated user.
+        List every custom skill the authenticated caller can access. Built-in skills are excluded: they have no versions, content download, update, or delete, so their identifiers would fail most skill operations. Chat-authored skills shared with the caller without a listed grant are omitted: they stay retrievable by identifier when it is known, but this list does not discover them.
       operationId: platform-skills-list
       x-visibility: Public
       x-glean-sdk:
@@ -584,7 +584,7 @@ paths:
             schema:
               $ref: '#/components/schemas/SkillImportRequest'
       responses:
-        '200':
+        '201':
           description: Skills imported successfully.
           content:
             application/json:
@@ -667,6 +667,18 @@ paths:
       x-glean-sdk:
         group: skills
         method: previewSource
+        response-media-type: application/json
+        request-body-overrides:
+          stream: false
+        variants:
+          - fragment: stream
+            method: previewSourceStream
+            summary: Preview a GitHub skill source as events
+            description: |
+              Inspect a GitHub URL as server-sent events. HTTP clients request this mode by setting `stream` to true in the JSON body.
+            response-media-type: text/event-stream
+            request-body-overrides:
+              stream: true
       x-glean-experimental:
         id: 1629009b-244a-400a-bf55-c441dfbc586c
         introduced: '2026-07-23'
@@ -686,21 +698,7 @@ paths:
                 $ref: '#/components/schemas/SkillSourcePreviewResponse'
             text/event-stream:
               schema:
-                type: string
-                description: |
-                  Server-sent scan, progress, skill, and result events. A failed stream
-                  emits `data: {"type":"error","code":"service_unavailable","message":"GitHub is temporarily unavailable."}`
-                  followed by `data: [DONE]` instead of a result event.
-                example: |
-                  data: {"type":"scan","total":1,"skill_paths":["https://github.com/acme/skills/tree/main/skills/example"]}
-
-                  data: {"type":"progress","completed":1,"total":1,"current_skill":"skills/example/SKILL.md"}
-
-                  data: {"type":"skill","skill":{"display_name":"Example","description":"Example skill","source_url":"https://github.com/acme/skills/tree/main/skills/example","commit_sha":"abc123","main_content":"---\nname: Example\n---","files":[],"file_tree":["SKILL.md"]}}
-
-                  data: {"type":"result","response":{"skills":[{"display_name":"Example","description":"Example skill","source_url":"https://github.com/acme/skills/tree/main/skills/example","commit_sha":"abc123","main_content":"---\nname: Example\n---","files":[],"file_tree":["SKILL.md"]}],"failures":[],"request_id":"req-123"}}
-
-                  data: [DONE]
+                $ref: '#/components/schemas/SkillSourcePreviewStreamEvent'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -959,8 +957,6 @@ paths:
           $ref: '#/components/responses/RequestTimeout'
         '409':
           $ref: '#/components/responses/Conflict'
-        '413':
-          $ref: '#/components/responses/RequestTooLarge'
         '429':
           $ref: '#/components/responses/TooManyRequests'
         '500':
@@ -999,8 +995,8 @@ paths:
               $ref: '#/components/schemas/SkillVersionCreateRequest'
         x-codegen-request-body-name: request
       responses:
-        '200':
-          description: Successful response.
+        '201':
+          description: Skill version created.
           content:
             application/json:
               schema:
@@ -3106,7 +3102,7 @@ components:
     Skill:
       type: object
       required:
-        - id
+        - skill_id
         - display_name
         - description
         - latest_version
@@ -3117,7 +3113,7 @@ components:
         - created_at
         - updated_at
       properties:
-        id:
+        skill_id:
           type: string
           description: Glean skill ID.
         display_name:
@@ -3151,12 +3147,12 @@ components:
     SkillsListResponse:
       type: object
       required:
-        - skills
+        - results
         - has_more
         - next_cursor
         - request_id
       properties:
-        skills:
+        results:
           type: array
           description: Skills available to the user.
           items:
@@ -3221,7 +3217,8 @@ components:
         skills:
           type: array
           minItems: 1
-          description: Independently persisted skills in request order.
+          description: |
+            Imported skills in request order. The import is atomic: either every source persists or none does.
           items:
             $ref: '#/components/schemas/Skill'
         request_id:
@@ -3413,6 +3410,128 @@ components:
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
+    SkillSourcePreviewStreamScan:
+      type: object
+      additionalProperties: false
+      description: Repository scan started; names every skill path found.
+      required:
+        - type
+        - total
+        - skill_paths
+      properties:
+        type:
+          type: string
+          enum:
+            - SCAN
+          description: Event type, also sent as the SSE `event` name.
+        total:
+          type: integer
+          minimum: 0
+          description: Number of skill paths found in the scan.
+        skill_paths:
+          type: array
+          description: Skill paths found in the scan.
+          items:
+            type: string
+            description: One skill path found in the scan.
+    SkillSourcePreviewStreamProgress:
+      type: object
+      additionalProperties: false
+      description: One skill finished inspecting; names the skill in progress.
+      required:
+        - type
+        - completed
+        - total
+        - current_skill
+      properties:
+        type:
+          type: string
+          enum:
+            - PROGRESS
+          description: Event type, also sent as the SSE `event` name.
+        completed:
+          type: integer
+          minimum: 0
+          description: Number of skills inspected so far.
+        total:
+          type: integer
+          minimum: 0
+          description: Number of skills to inspect.
+        current_skill:
+          type: string
+          description: Path of the skill being inspected.
+    SkillSourcePreviewStreamSkill:
+      type: object
+      additionalProperties: false
+      description: One skill previewed; carries the previewed skill.
+      required:
+        - type
+        - skill
+      properties:
+        type:
+          type: string
+          enum:
+            - SKILL
+          description: Event type, also sent as the SSE `event` name.
+        skill:
+          $ref: '#/components/schemas/SkillSourcePreview'
+          description: The previewed skill.
+    SkillSourcePreviewStreamResult:
+      type: object
+      additionalProperties: false
+      description: Terminal success event carrying the fully assembled preview.
+      required:
+        - type
+        - response
+      properties:
+        type:
+          type: string
+          enum:
+            - RESULT
+          description: Event type, also sent as the SSE `event` name.
+        response:
+          $ref: '#/components/schemas/SkillSourcePreviewResponse'
+          description: The fully assembled preview response.
+    SkillSourcePreviewStreamError:
+      type: object
+      additionalProperties: false
+      description: Terminal failure event carrying the failure as a problem detail.
+      required:
+        - type
+        - error
+      properties:
+        type:
+          type: string
+          enum:
+            - ERROR
+          description: Event type, also sent as the SSE `event` name.
+        error:
+          $ref: '#/components/schemas/ProblemDetail'
+          description: The failure as a problem detail.
+    SkillSourcePreviewStreamEvent:
+      description: |
+        JSON object written to the SSE `data` field of a streaming source preview. This schema is the payload for SDK transform, not the raw HTTP body. Do not run JSON response conformance on stream bodies. Each frame also carries an `event` name matching the payload `type`. The stream ends with the RESULT event on success or the ERROR event on failure. A typical wire frame is:
+        event: SCAN
+        data: {"type":"SCAN","total":1,"skill_paths":["https://github.com/acme/skills/tree/main/skills/example"]}
+      example:
+        type: SCAN
+        total: 1
+        skill_paths:
+          - https://github.com/acme/skills/tree/main/skills/example
+      oneOf:
+        - $ref: '#/components/schemas/SkillSourcePreviewStreamScan'
+        - $ref: '#/components/schemas/SkillSourcePreviewStreamProgress'
+        - $ref: '#/components/schemas/SkillSourcePreviewStreamSkill'
+        - $ref: '#/components/schemas/SkillSourcePreviewStreamResult'
+        - $ref: '#/components/schemas/SkillSourcePreviewStreamError'
+      discriminator:
+        propertyName: type
+        mapping:
+          SCAN: '#/components/schemas/SkillSourcePreviewStreamScan'
+          PROGRESS: '#/components/schemas/SkillSourcePreviewStreamProgress'
+          SKILL: '#/components/schemas/SkillSourcePreviewStreamSkill'
+          RESULT: '#/components/schemas/SkillSourcePreviewStreamResult'
+          ERROR: '#/components/schemas/SkillSourcePreviewStreamError'
     SkillGetResponse:
       type: object
       required:
@@ -3451,26 +3570,18 @@ components:
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
-    SkillSyncResultStatus:
-      type: string
-      enum:
-        - UP_TO_DATE
-      description: Synchronization status after a successful refresh.
     SkillSyncResponse:
       type: object
       required:
-        - sync_status
         - commit_sha
-        - updated
+        - is_updated
         - request_id
       properties:
-        sync_status:
-          $ref: '#/components/schemas/SkillSyncResultStatus'
         commit_sha:
           type: string
           minLength: 1
           description: Git commit SHA now associated with the skill.
-        updated:
+        is_updated:
           type: boolean
           description: Whether this request created a new skill version.
         request_id:
@@ -3514,12 +3625,12 @@ components:
     SkillVersionsListResponse:
       type: object
       required:
-        - versions
+        - results
         - has_more
         - next_cursor
         - request_id
       properties:
-        versions:
+        results:
           type: array
           description: Versions available for the skill.
           items:
