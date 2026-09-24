@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 4d7e0743ce2d95ddf9fdfd19e484fe62a7f50f9e
+  x-source-commit-sha: e1a921981a820c72827a4f2246124c1736f4dd3a
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -467,7 +467,7 @@ paths:
         - Skills
       summary: Create skill
       description: |
-        Create a skill from an uploaded SKILL.md, .zip, or .skill bundle. If the authenticated user already has a skill with the same name, the existing skill is superseded with a new version.
+        Create a skill from an uploaded SKILL.md, .zip, or .skill bundle. If the authenticated user already has a skill with the same name, the existing skill is superseded with a new version, unless it is source-managed: a same-name create over a GitHub-imported skill returns 409, and the caller syncs the existing skill instead. Two concurrent same-name creates can still produce two skills.
       operationId: platform-skills-create
       x-visibility: Public
       x-glean-sdk:
@@ -500,6 +500,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '408':
           $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
         '413':
           $ref: '#/components/responses/RequestTooLarge'
         '429':
@@ -602,6 +604,12 @@ paths:
           $ref: '#/components/responses/Conflict'
         '413':
           $ref: '#/components/responses/RequestTooLarge'
+        '422':
+          description: Returned when GitHub authorization is missing for a source URL. `authentication_suggestions` names the GitHub action pack to authorize; POST its `server_id` to the Client API's `/tool-servers/{serverId}/auth` with `returnUrl` in the request body to obtain an `authorizationUrl` to redirect the end user to, then retry the import once OAuth completes.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedAgentToolsProblem'
         '429':
           $ref: '#/components/responses/TooManyRequests'
         '500':
@@ -709,6 +717,12 @@ paths:
           $ref: '#/components/responses/RequestTimeout'
         '413':
           $ref: '#/components/responses/RequestTooLarge'
+        '422':
+          description: Returned when GitHub authorization is missing for the source URL. `authentication_suggestions` names the GitHub action pack to authorize; POST its `server_id` to the Client API's `/tool-servers/{serverId}/auth` with `returnUrl` in the request body to obtain an `authorizationUrl` to redirect the end user to, then retry the preview once OAuth completes.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedAgentToolsProblem'
         '429':
           $ref: '#/components/responses/TooManyRequests'
         '500':
@@ -957,6 +971,12 @@ paths:
           $ref: '#/components/responses/RequestTimeout'
         '409':
           $ref: '#/components/responses/Conflict'
+        '422':
+          description: Returned when GitHub authorization is missing for the stored source URL. `authentication_suggestions` names the GitHub action pack to authorize; POST its `server_id` to the Client API's `/tool-servers/{serverId}/auth` with `returnUrl` in the request body to obtain an `authorizationUrl` to redirect the end user to, then retry the sync once OAuth completes.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedAgentToolsProblem'
         '429':
           $ref: '#/components/responses/TooManyRequests'
         '500':
@@ -3057,6 +3077,7 @@ components:
       type: string
       enum:
         - CUSTOM
+        - GITHUB
       description: Source category for the skill.
     SkillSyncStatus:
       type: string
@@ -3506,7 +3527,7 @@ components:
             - ERROR
           description: Event type, also sent as the SSE `event` name.
         error:
-          $ref: '#/components/schemas/ProblemDetail'
+          $ref: '#/components/schemas/UnauthorizedAgentToolsProblem'
           description: The failure as a problem detail.
     SkillSourcePreviewStreamEvent:
       description: |
