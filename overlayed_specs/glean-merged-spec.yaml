@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: 4d7e0743ce2d95ddf9fdfd19e484fe62a7f50f9e
-  x-open-api-commit-sha: 33763c7f702f668113e6da4b6e9596ad246cfdc7
+  x-source-commit-sha: e1a921981a820c72827a4f2246124c1736f4dd3a
+  x-open-api-commit-sha: 2c3460ce249ef4dbced077e01080f933126df544
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -488,7 +488,7 @@ paths:
         - Skills
       summary: Create skill
       description: |
-        Create a skill from an uploaded SKILL.md, .zip, or .skill bundle. If the authenticated user already has a skill with the same name, the existing skill is superseded with a new version.
+        Create a skill from an uploaded SKILL.md, .zip, or .skill bundle. If the authenticated user already has a skill with the same name, the existing skill is superseded with a new version, unless it is source-managed: a same-name create over a GitHub-imported skill returns 409, and the caller syncs the existing skill instead. Two concurrent same-name creates can still produce two skills.
       operationId: platform-skills-create
       x-visibility: Public
       x-glean-experimental:
@@ -518,6 +518,8 @@ paths:
           $ref: "#/components/responses/PlatformNotFound"
         "408":
           $ref: "#/components/responses/PlatformRequestTimeout"
+        "409":
+          $ref: "#/components/responses/PlatformConflict"
         "413":
           $ref: "#/components/responses/PlatformRequestTooLarge"
         "429":
@@ -622,6 +624,12 @@ paths:
           $ref: "#/components/responses/PlatformConflict"
         "413":
           $ref: "#/components/responses/PlatformRequestTooLarge"
+        "422":
+          description: Returned when GitHub authorization is missing for a source URL. `authentication_suggestions` names the GitHub action pack to authorize; POST its `server_id` to the Client API's `/tool-servers/{serverId}/auth` with `returnUrl` in the request body to obtain an `authorizationUrl` to redirect the end user to, then retry the import once OAuth completes.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/PlatformUnauthorizedAgentToolsProblem"
         "429":
           $ref: "#/components/responses/PlatformTooManyRequests"
         "500":
@@ -725,6 +733,12 @@ paths:
           $ref: "#/components/responses/PlatformRequestTimeout"
         "413":
           $ref: "#/components/responses/PlatformRequestTooLarge"
+        "422":
+          description: Returned when GitHub authorization is missing for the source URL. `authentication_suggestions` names the GitHub action pack to authorize; POST its `server_id` to the Client API's `/tool-servers/{serverId}/auth` with `returnUrl` in the request body to obtain an `authorizationUrl` to redirect the end user to, then retry the preview once OAuth completes.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/PlatformUnauthorizedAgentToolsProblem"
         "429":
           $ref: "#/components/responses/PlatformTooManyRequests"
         "500":
@@ -978,6 +992,12 @@ paths:
           $ref: "#/components/responses/PlatformRequestTimeout"
         "409":
           $ref: "#/components/responses/PlatformConflict"
+        "422":
+          description: Returned when GitHub authorization is missing for the stored source URL. `authentication_suggestions` names the GitHub action pack to authorize; POST its `server_id` to the Client API's `/tool-servers/{serverId}/auth` with `returnUrl` in the request body to obtain an `authorizationUrl` to redirect the end user to, then retry the sync once OAuth completes.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/PlatformUnauthorizedAgentToolsProblem"
         "429":
           $ref: "#/components/responses/PlatformTooManyRequests"
         "500":
@@ -2009,6 +2029,12 @@ paths:
           $ref: "#/components/responses/PlatformRequestTimeout"
         "413":
           $ref: "#/components/responses/PlatformRequestTooLarge"
+        "422":
+          description: Returned when GitHub authorization is missing for the source URL. `authentication_suggestions` names the GitHub action pack to authorize; POST its `server_id` to the Client API's `/tool-servers/{serverId}/auth` with `returnUrl` in the request body to obtain an `authorizationUrl` to redirect the end user to, then retry the preview once OAuth completes.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/PlatformUnauthorizedAgentToolsProblem"
         "429":
           $ref: "#/components/responses/PlatformTooManyRequests"
         "500":
@@ -8239,6 +8265,7 @@ components:
       type: string
       enum:
         - CUSTOM
+        - GITHUB
       description: Source category for the skill.
     PlatformSkillSyncStatus:
       type: string
@@ -8670,7 +8697,7 @@ components:
             - ERROR
           description: Event type, also sent as the SSE `event` name.
         error:
-          $ref: "#/components/schemas/PlatformProblemDetail"
+          $ref: "#/components/schemas/PlatformUnauthorizedAgentToolsProblem"
           description: The failure as a problem detail.
     PlatformSkillSourcePreviewStreamEvent:
       description: |
