@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: e1a921981a820c72827a4f2246124c1736f4dd3a
+  x-source-commit-sha: 0fef9ef256ed1e463d8534370e0afb074c4f3f8d
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -707,6 +707,7 @@ paths:
             text/event-stream:
               schema:
                 $ref: '#/components/schemas/SkillSourcePreviewStreamEvent'
+                description: Server-sent events when `stream` is true. Most GitHub authorization failures return HTTP 422 before the stream opens. If authorization fails after the stream opens, the terminal ERROR event carries `error.code` `tools_unauthorized` and `authentication_suggestions`.
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -3516,7 +3517,7 @@ components:
     SkillSourcePreviewStreamError:
       type: object
       additionalProperties: false
-      description: Terminal failure event carrying the failure as a problem detail.
+      description: Terminal failure event carrying the failure as a problem detail. Most GitHub authorization failures return HTTP 422 before the stream opens. If authorization fails after the stream opens, `error.code` is `tools_unauthorized` and `authentication_suggestions` is present.
       required:
         - type
         - error
@@ -3527,8 +3528,14 @@ components:
             - ERROR
           description: Event type, also sent as the SSE `event` name.
         error:
-          $ref: '#/components/schemas/UnauthorizedAgentToolsProblem'
+          $ref: '#/components/schemas/ProblemDetail'
           description: The failure as a problem detail.
+        authentication_suggestions:
+          type: array
+          minItems: 1
+          description: Present only when `error.code` is `tools_unauthorized`. Names the GitHub action pack to authorize, with the same retry flow as the 422 response.
+          items:
+            $ref: '#/components/schemas/AuthenticationSuggestion'
     SkillSourcePreviewStreamEvent:
       description: |
         JSON object written to the SSE `data` field of a streaming source preview. This schema is the payload for SDK transform, not the raw HTTP body. Do not run JSON response conformance on stream bodies. Each frame also carries an `event` name matching the payload `type`. The stream ends with the RESULT event on success or the ERROR event on failure. A typical wire frame is:
