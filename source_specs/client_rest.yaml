@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: d8022e19cc59ffc363b24f3cdb55f9aba131f2a8
+  x-source-commit-sha: 800ee8bf96f8258aefa4eeabb60d5bc17f5c443b
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -7646,9 +7646,8 @@ components:
           type: string
           minLength: 1
         page_number:
-          type:
-            - integer
-            - 'null'
+          type: integer
+          nullable: true
     ChatCitationAnnotation:
       type: object
       additionalProperties: false
@@ -7666,19 +7665,16 @@ components:
           items:
             $ref: '#/components/schemas/ChatCitationSource'
         start_index:
-          type:
-            - integer
-            - 'null'
+          type: integer
+          nullable: true
           minimum: 0
         end_index:
-          type:
-            - integer
-            - 'null'
+          type: integer
+          nullable: true
           minimum: 0
         snippets:
-          type:
-            - array
-            - 'null'
+          type: array
+          nullable: true
           items:
             $ref: '#/components/schemas/ChatCitationSnippet'
     Message:
