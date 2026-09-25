@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: e2a32c1a066a434ccee9fcbd0032cb7c2f6fd65e
+  x-source-commit-sha: a683916ab982b6402d937b61c24b374f27561c17
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -527,12 +527,13 @@ paths:
       parameters:
         - in: query
           name: page_size
-          description: Maximum number of skills to return.
+          description: Maximum number of skills to return. Defaults to 20. Maximum is 100.
           required: false
           schema:
             type: integer
             minimum: 1
             maximum: 100
+            default: 20
         - in: query
           name: cursor
           description: Opaque pagination cursor from a previous response.
@@ -736,7 +737,7 @@ paths:
         - Skills
       summary: Update skill
       description: |
-        Update mutable metadata for a skill. V1 supports enabling or disabling a skill without changing its content.
+        Enable or disable the skill for the authenticated caller without changing its content. The owner's update sets the skill's stored status. Any other caller's update applies only to that caller.
       operationId: platform-skills-update
       x-visibility: Public
       x-glean-sdk:
@@ -990,7 +991,7 @@ paths:
         - Skills
       summary: Create skill version
       description: |
-        Create a new immutable version for an existing caller-managed skill from an uploaded SKILL.md, .zip, or .skill bundle.
+        Create a new immutable version for an existing caller-managed skill from an uploaded SKILL.md, .zip, or .skill bundle. A create-version over a GitHub-imported skill returns 409, and the caller syncs the existing skill instead.
       operationId: platform-skills-create-version
       x-visibility: Public
       x-glean-sdk:
@@ -1067,12 +1068,13 @@ paths:
             minLength: 1
         - in: query
           name: page_size
-          description: Maximum number of versions to return.
+          description: Maximum number of versions to return. Defaults to 20. Maximum is 100.
           required: false
           schema:
             type: integer
             minimum: 1
             maximum: 100
+            default: 20
         - in: query
           name: cursor
           description: Opaque pagination cursor from a previous response.
@@ -3350,7 +3352,8 @@ components:
         - DRAFT
         - ENABLED
         - DISABLED
-      description: Current skill status.
+      description: |
+        The caller's effective activation. The owner sees the skill's stored status. Another caller sees their personal setting, or DISABLED when they have none. DRAFT is the stored draft state and is not set by update. Effective activation may also reflect workspace governance policy.
     SkillOrigin:
       type: string
       enum:
@@ -3853,7 +3856,8 @@ components:
       enum:
         - ENABLED
         - DISABLED
-      description: New status for the skill.
+      description: |
+        Activation to apply for the authenticated caller. For the owner, this updates the skill's stored status. For any other caller, it updates only that caller's setting.
     SkillUpdateRequest:
       type: object
       additionalProperties: false
