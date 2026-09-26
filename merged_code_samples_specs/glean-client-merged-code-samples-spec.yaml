@@ -222119,7 +222119,7 @@ paths:
                 api_token=os.getenv("GLEAN_API_TOKEN", ""),
             ) as glean:
 
-                res = glean.client.entities.read_people(obfuscated_ids=[
+                res = glean.client.entities.read_people(fallback_to_authenticated_identity=False, obfuscated_ids=[
                     "abc123",
                     "abc456",
                 ])
