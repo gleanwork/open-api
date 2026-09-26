@@ -1598,7 +1598,7 @@ paths:
                     apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Skills.List(ctx, nil, nil)
+                res, err := s.Skills.List(ctx, apiclientgo.Pointer[int64](20), nil)
                 if err != nil {
                     log.Fatal(err)
                 }
@@ -3067,7 +3067,7 @@ paths:
                     apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
                 )
 
-                res, err := s.Skills.ListVersions(ctx, "{skill_id}", nil, nil)
+                res, err := s.Skills.ListVersions(ctx, "{skill_id}", apiclientgo.Pointer[int64](20), nil)
                 if err != nil {
                     log.Fatal(err)
                 }
