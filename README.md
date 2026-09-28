@@ -53,8 +53,6 @@ These merged specs are used for generating consistent client libraries across mu
 
 This takes the specs from `merged_code_samples_specs` and runs `pnpm transform:merged_code_samples_specs` to correct issues with the generated code samples. This is done in the `.github/workflows/generate-code-samples.yml` GHA workflow.
 
-The Speakeasy code-samples overlays contain no samples for operations marked `deprecated: true`. So that deprecated operations keep their SDK samples until removal, the transform copies their samples from the previous file in `modified_code_samples_specs` when the merged spec has none. Operations that were never given samples before they were deprecated stay without samples.
-
 ## Final Specs
 
 The `final_specs` directory contains the end product of all of the processing being done. These specs are copied into the published GitHub Pages site (in the `docs/specs/final` directory), and then used by [gleanwork/glean-developer-site](https://github.com/gleanwork/glean-developer-site).
