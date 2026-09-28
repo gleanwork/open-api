@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 2aadb90032661a72c43652e4add59f6da253656c
+  x-source-commit-sha: 57a8a54375bd1173871ef046df90921c2ce9fcd9
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -8163,6 +8163,7 @@ components:
             - HOST_APPLICATIONS
             - TOOLS
             - SERVERS
+            - AUTH_METHODS
           description: Type of breakdown to return.
         hostApplications:
           type: array
@@ -8179,6 +8180,11 @@ components:
           items:
             type: string
           description: MCP servers to filter by. Empty array means all servers.
+        authMethods:
+          type: array
+          items:
+            type: string
+          description: Authentication methods to filter by, for example OAUTH_XAA for Cross App Access traffic. Empty array means all authentication methods.
     InsightsRequest:
       properties:
         overviewRequest:
@@ -8693,6 +8699,11 @@ components:
           items:
             type: string
           description: MCP servers used by this user in the specified time period.
+        authMethods:
+          type: array
+          items:
+            type: string
+          description: Authentication methods this user's MCP clients presented in the specified time period, for example OAUTH_XAA for Cross App Access.
     McpHostApplicationBreakdown:
       properties:
         hostApplication:
@@ -8736,6 +8747,22 @@ components:
           items:
             type: string
           description: Host applications using this server in the specified time period.
+    McpAuthMethodBreakdown:
+      properties:
+        authMethod:
+          type: string
+          description: Authentication method the MCP client presented, for example OAUTH_GLEAN, OAUTH_XAA (Cross App Access), or API_TOKEN.
+        totalCalls:
+          type: integer
+          description: Total number of MCP calls for this authentication method in the specified time period.
+        activeUsers:
+          type: integer
+          description: Total number of active users for this authentication method in the specified time period.
+        hostApplications:
+          type: array
+          items:
+            type: string
+          description: Host applications using this authentication method in the specified time period.
     McpBreakdownInsightsResponse:
       properties:
         usersBreakdown:
@@ -8754,6 +8781,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/McpServerBreakdown'
+        authMethodsBreakdown:
+          type: array
+          items:
+            $ref: '#/components/schemas/McpAuthMethodBreakdown'
     InsightsResponse:
       properties:
         gleanAssist:
