@@ -443,4 +443,162 @@ paths:
       expect(java).toContain('Glean.builder()');
     });
   });
+
+  describe('backfillDeprecatedCodeSamples', () => {
+    const previousSpec = yaml.load(`
+openapi: 3.0.0
+paths:
+  /rest/api/v1/agents/{agent_id}:
+    get:
+      deprecated: true
+      x-codeSamples:
+        - lang: python
+          label: Python (API Client)
+          source: glean.client.agents.retrieve(agent_id="<id>")
+    post:
+      x-codeSamples:
+        - lang: python
+          label: Python (API Client)
+          source: glean.client.agents.update(agent_id="<id>")
+  /rest/api/v1/agents/search:
+    post:
+      x-codeSamples:
+        - lang: python
+          label: Python (API Client)
+          source: glean.client.agents.list()
+`);
+
+    function currentSpec() {
+      return yaml.load(`
+openapi: 3.0.0
+paths:
+  /rest/api/v1/agents/{agent_id}:
+    get:
+      deprecated: true
+    post:
+      responses: {}
+  /rest/api/v1/agents/search:
+    post:
+      deprecated: true
+      x-codeSamples:
+        - lang: python
+          label: Python (API Client)
+          source: new sample
+  /rest/api/v1/agents/runs/wait:
+    post:
+      deprecated: true
+`);
+    }
+
+    test('restores samples for deprecated operations without samples', () => {
+      const spec = currentSpec();
+
+      const backfilled = codeSampleTransformer.backfillDeprecatedCodeSamples(
+        spec,
+        previousSpec,
+      );
+
+      expect(backfilled).toEqual(['GET /rest/api/v1/agents/{agent_id}']);
+      expect(
+        spec.paths['/rest/api/v1/agents/{agent_id}'].get['x-codeSamples'],
+      ).toEqual(
+        previousSpec.paths['/rest/api/v1/agents/{agent_id}'].get[
+          'x-codeSamples'
+        ],
+      );
+    });
+
+    test('copies the samples instead of sharing them with the previous spec', () => {
+      const spec = currentSpec();
+
+      codeSampleTransformer.backfillDeprecatedCodeSamples(spec, previousSpec);
+
+      expect(
+        spec.paths['/rest/api/v1/agents/{agent_id}'].get['x-codeSamples'],
+      ).not.toBe(
+        previousSpec.paths['/rest/api/v1/agents/{agent_id}'].get[
+          'x-codeSamples'
+        ],
+      );
+    });
+
+    test('does not change non-deprecated operations', () => {
+      const spec = currentSpec();
+
+      codeSampleTransformer.backfillDeprecatedCodeSamples(spec, previousSpec);
+
+      expect(
+        spec.paths['/rest/api/v1/agents/{agent_id}'].post['x-codeSamples'],
+      ).toBeUndefined();
+    });
+
+    test('keeps samples that the current spec already has', () => {
+      const spec = currentSpec();
+
+      codeSampleTransformer.backfillDeprecatedCodeSamples(spec, previousSpec);
+
+      expect(
+        spec.paths['/rest/api/v1/agents/search'].post['x-codeSamples'][0]
+          .source,
+      ).toBe('new sample');
+    });
+
+    test('skips deprecated operations that have no previous samples', () => {
+      const spec = currentSpec();
+
+      codeSampleTransformer.backfillDeprecatedCodeSamples(spec, previousSpec);
+
+      expect(
+        spec.paths['/rest/api/v1/agents/runs/wait'].post['x-codeSamples'],
+      ).toBeUndefined();
+    });
+
+    test('does nothing when there is no previous spec', () => {
+      const spec = currentSpec();
+
+      expect(
+        codeSampleTransformer.backfillDeprecatedCodeSamples(spec, undefined),
+      ).toEqual([]);
+    });
+
+    test('transform does not apply the other transforms to restored samples again', () => {
+      const previousContent = yaml.dump({
+        openapi: '3.0.0',
+        paths: {
+          '/rest/api/v1/agents/{agent_id}': {
+            get: {
+              deprecated: true,
+              'x-codeSamples': [
+                {
+                  lang: 'python',
+                  label: 'Python (API Client)',
+                  source:
+                    'with Glean(\n    api_token=os.getenv("GLEAN_API_TOKEN", ""),\n    server_url="https://mycompany-be.glean.com",\n) as glean:\n',
+                },
+              ],
+            },
+          },
+        },
+      });
+      const content = yaml.dump({
+        openapi: '3.0.0',
+        paths: {
+          '/rest/api/v1/agents/{agent_id}': { get: { deprecated: true } },
+        },
+      });
+
+      const result = yaml.load(
+        codeSampleTransformer.transform(
+          content,
+          'client_rest.yaml',
+          previousContent,
+        ),
+      );
+      const source =
+        result.paths['/rest/api/v1/agents/{agent_id}'].get['x-codeSamples'][0]
+          .source;
+
+      expect(source.match(/server_url=/g)).toHaveLength(1);
+    });
+  });
 });

@@ -242,17 +242,73 @@ export function addIncludeExperimentalToCodeSamples(spec) {
 }
 
 /**
+ * Restores code samples for deprecated operations from the previous output.
+ *
+ * The Speakeasy code-samples overlays contain no samples for operations marked
+ * `deprecated: true`, so an operation loses its SDK samples as soon as it is
+ * deprecated, even though the SDK methods stay available until removal. This
+ * copies the samples for such operations from the previously generated spec.
+ *
+ * Only deprecated operations with no samples are changed. The previous spec
+ * already contains fully transformed samples, so this must run *after* the
+ * other transforms to prevent the samples from being transformed again.
+ *
+ * @param {Object} spec The OpenAPI specification object to update
+ * @param {Object | undefined} previousSpec The previously generated specification
+ * @returns {string[]} The operations that were backfilled, as `METHOD /path`
+ */
+export function backfillDeprecatedCodeSamples(spec, previousSpec) {
+  const backfilled = [];
+
+  if (!previousSpec?.paths) {
+    return backfilled;
+  }
+
+  for (const [apiPath, pathSpec] of path(spec)) {
+    for (const [method, methodSpec] of Object.entries(pathSpec ?? {})) {
+      if (!methodSpec?.deprecated || methodSpec['x-codeSamples']?.length > 0) {
+        continue;
+      }
+
+      const previousSamples =
+        previousSpec.paths[apiPath]?.[method]?.['x-codeSamples'];
+
+      if (!previousSamples?.length) {
+        continue;
+      }
+
+      methodSpec['x-codeSamples'] = structuredClone(previousSamples);
+      backfilled.push(`${method.toUpperCase()} ${apiPath}`);
+    }
+  }
+
+  return backfilled;
+}
+
+/**
  * Transforms OpenAPI YAML by adjusting server URLs and paths
  * @param {string} content The OpenAPI YAML content
  * @param {string} filename The name of the file being processed
+ * @param {string} [previousContent] The previously generated YAML for this
+ *   spec, used to restore samples for deprecated operations
  * @returns {string} Transformed YAML content
  */
-export function transform(content, _filename) {
+export function transform(content, filename, previousContent) {
   const spec = yaml.load(content);
 
   transformPythonCodeSamplesToPython(spec);
   addServerURLToCodeSamples(spec);
   addIncludeExperimentalToCodeSamples(spec);
+
+  const backfilled = backfillDeprecatedCodeSamples(
+    spec,
+    previousContent ? yaml.load(previousContent) : undefined,
+  );
+  for (const operation of backfilled) {
+    console.log(
+      `Restored code samples for deprecated operation ${operation} in ${filename}`,
+    );
+  }
 
   return yaml.dump(spec, {
     lineWidth: -1, // Preserve line breaks

@@ -111,9 +111,16 @@ export async function transformMergedCodeSamplesSpecs() {
 
       const yamlContent = await readYamlFromFile(sourceFilePath);
 
+      // The previous output keeps the samples of deprecated operations, which
+      // the Speakeasy code-samples overlays do not contain.
+      const previousYamlContent = fs.existsSync(outputFilePath)
+        ? await readYamlFromFile(outputFilePath)
+        : undefined;
+
       const transformedYaml = codeSamplesTransformer.transform(
         yamlContent,
         specFile,
+        previousYamlContent,
       );
 
       fs.writeFileSync(outputFilePath, transformedYaml, 'utf8');
