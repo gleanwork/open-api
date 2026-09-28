@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 1fdf634e9fbf1050874e4d062522509eb273afa3
+  x-source-commit-sha: 0e45c5baedeb4f432c8718ce7c24b8e98e737146
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -473,9 +473,6 @@ paths:
       x-glean-sdk:
         group: skills
         method: create
-      x-glean-experimental:
-        id: 3cd55572-0d5c-4898-9ecf-1b86c520d1c7
-        introduced: '2026-06-24'
       requestBody:
         required: true
         content:
@@ -521,9 +518,6 @@ paths:
       x-glean-sdk:
         group: skills
         method: list
-      x-glean-experimental:
-        id: 3eb65937-03a3-472b-9a00-be713f302b5f
-        introduced: '2026-06-23'
       parameters:
         - in: query
           name: page_size
@@ -576,9 +570,6 @@ paths:
       x-glean-sdk:
         group: skills
         method: import
-      x-glean-experimental:
-        id: 9162d790-e101-437d-a9a0-25e4687d150b
-        introduced: '2026-07-28'
       x-codegen-request-body-name: request
       requestBody:
         required: true
@@ -629,9 +620,6 @@ paths:
       x-glean-sdk:
         group: skills
         method: validate
-      x-glean-experimental:
-        id: 0b086fa6-30f8-4279-8d11-10ab0059c14a
-        introduced: '2026-06-24'
       requestBody:
         required: true
         content:
@@ -688,9 +676,6 @@ paths:
             response-media-type: text/event-stream
             request-body-overrides:
               stream: true
-      x-glean-experimental:
-        id: 1629009b-244a-400a-bf55-c441dfbc586c
-        introduced: '2026-07-23'
       x-codegen-request-body-name: request
       requestBody:
         required: true
@@ -743,9 +728,6 @@ paths:
       x-glean-sdk:
         group: skills
         method: update
-      x-glean-experimental:
-        id: 262e1f6b-6c2d-4d6d-943b-fc251d2fb38b
-        introduced: '2026-07-20'
       parameters:
         - name: skill_id
           in: path
@@ -800,9 +782,6 @@ paths:
       x-glean-sdk:
         group: skills
         method: delete
-      x-glean-experimental:
-        id: c4351fd0-4d28-4ad4-ab93-587ca4778173
-        introduced: '2026-07-31'
       parameters:
         - name: skill_id
           in: path
@@ -842,9 +821,6 @@ paths:
       x-glean-sdk:
         group: skills
         method: retrieve
-      x-glean-experimental:
-        id: 8f8d1c92-a484-4769-9903-200613dc8a72
-        introduced: '2026-06-23'
       parameters:
         - name: skill_id
           in: path
@@ -889,9 +865,6 @@ paths:
       x-glean-sdk:
         group: skills
         method: retrieveContent
-      x-glean-experimental:
-        id: fd6908d8-f230-4cd5-bf45-f71e69266b1d
-        introduced: '2026-06-24'
       parameters:
         - name: skill_id
           in: path
@@ -942,9 +915,6 @@ paths:
       x-glean-sdk:
         group: skills
         method: sync
-      x-glean-experimental:
-        id: 568aa3f8-2af8-449c-9e4f-818ed4b877ef
-        introduced: '2026-08-03'
       parameters:
         - name: skill_id
           in: path
@@ -997,9 +967,6 @@ paths:
       x-glean-sdk:
         group: skills
         method: createVersion
-      x-glean-experimental:
-        id: 0d5e48e2-7a41-4d54-b3aa-5026f0dd65df
-        introduced: '2026-06-24'
       parameters:
         - name: skill_id
           in: path
@@ -1054,9 +1021,6 @@ paths:
       x-glean-sdk:
         group: skills
         method: listVersions
-      x-glean-experimental:
-        id: 9efbb8a3-d546-4304-a653-09bb427e3681
-        introduced: '2026-06-24'
       parameters:
         - name: skill_id
           in: path
@@ -1117,9 +1081,6 @@ paths:
       x-glean-sdk:
         group: skills
         method: retrieveVersion
-      x-glean-experimental:
-        id: d70986b1-ad80-48dd-8e52-f294e7251dda
-        introduced: '2026-06-24'
       parameters:
         - name: skill_id
           in: path
@@ -1172,9 +1133,6 @@ paths:
       x-glean-sdk:
         group: skills
         method: retrieveVersionContent
-      x-glean-experimental:
-        id: 70c85692-7042-403a-a3a5-5b315576432a
-        introduced: '2026-06-24'
       parameters:
         - name: skill_id
           in: path
