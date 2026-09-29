@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: b7d3b21ec8ab82e27035131f989c73298dfc1cc4
+  x-source-commit-sha: 54b8f7ff42ab637e1ccc08f7ef50a45fe7eddbc8
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -1296,7 +1296,7 @@ paths:
       summary: List usage limits
       description: |
         List configured limits across Glean and external spend clients, plus aggregate agent limits. Organization and user limits identify their spend client; aggregate agent limits omit client_id. Requires admin.usage.limits:read and permission to read workspace billing.
-      operationId: platform-usage-limits-list
+      operationId: platform-admin-usage-limits-list
       x-visibility: Public
       x-glean-experimental:
         id: ca19b3e8-9a6d-4a31-8f2f-6c7d8e9f0011
@@ -1350,7 +1350,7 @@ paths:
       summary: Reset a usage limit
       description: |
         Remove a configured usage limit matching the selector without clearing measured usage. Requires admin.usage.limits:write and permission to edit workspace billing.
-      operationId: platform-usage-limits-reset
+      operationId: platform-admin-usage-limits-reset
       x-visibility: Public
       x-glean-experimental:
         id: ca19b3e8-9a6d-4a31-8f2f-6c7d8e9f0013
@@ -1404,7 +1404,7 @@ paths:
       summary: Apply usage limit policies
       description: |
         Apply one or more usage limit policy changes atomically. This action sets policy by natural key; it does not create addressable resources or return resource locations. Every change succeeds or none are applied. Requires admin.usage.limits:write and permission to edit workspace billing.
-      operationId: platform-usage-limits-batch
+      operationId: platform-admin-usage-limits-batch
       x-visibility: Public
       x-glean-experimental:
         id: ca19b3e8-9a6d-4a31-8f2f-6c7d8e9f0014
