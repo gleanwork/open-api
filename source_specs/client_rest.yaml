@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 42ca14d34e9824cb8c6c2bf5c1c2e1e19b063efb
+  x-source-commit-sha: 7760485316cedfa71cfe07b6b40cf0badad7c971
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -9602,6 +9602,7 @@ components:
               - CREATE_AGENT
               - MANAGER_INVITE
               - ONBOARDING_AUTHORIZATION
+              - CHAT_REMINDER
           description: Categories of content requested. An allowlist gives flexibility to request content separately or together.
         requestOptions:
           $ref: '#/components/schemas/FeedRequestOptions'
@@ -9874,6 +9875,17 @@ components:
           items:
             $ref: '#/components/schemas/DigestSection'
           description: Array of digest sections from which the podcast was created.
+    ArtifactType:
+      type: string
+      description: Type of the Artifact
+      x-include-enum-class-prefix: true
+      enum:
+        - PAPER
+        - AGENT
+        - MESSAGE
+        - EMAIL
+        - HTML_CODE
+        - SLIDE
     ChatSuggestion:
       properties:
         query:
@@ -9885,6 +9897,9 @@ components:
         feature:
           type: string
           description: Targeted Glean Chat feature for the suggestion.
+        artifactType:
+          $ref: '#/components/schemas/ArtifactType'
+          description: The single artifact type to review for an unread artifact reminder.
         sourceDocumentIds:
           type: array
           items:
@@ -10073,6 +10088,7 @@ components:
             - CREATE_AGENT
             - MANAGER_INVITE
             - ONBOARDING_AUTHORIZATION
+            - CHAT_REMINDER
           description: Type of the justification.
         justification:
           type: string
@@ -10175,6 +10191,7 @@ components:
             - CREATE_AGENT
             - MANAGER_INVITE
             - ONBOARDING_AUTHORIZATION
+            - CHAT_REMINDER
           description: Category of the result, one of the requested categories in incoming request.
         primaryEntry:
           $ref: '#/components/schemas/FeedEntry'
