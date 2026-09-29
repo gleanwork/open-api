@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 54b8f7ff42ab637e1ccc08f7ef50a45fe7eddbc8
+  x-source-commit-sha: 8866387fc32a0527071a0905446b8d962df527a8
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -20,6 +20,11 @@ paths:
       description: |
         Search agents available to the authenticated user by agent name.
       operationId: platform-agents-search
+      x-glean-scopes:
+        legacy:
+          - AGENTS
+        platform:
+          - agents:read
       x-visibility: Public
       x-glean-sdk:
         group: agents
@@ -64,6 +69,11 @@ paths:
       description: |
         Retrieve details for an agent available to the authenticated user.
       operationId: platform-agents-get
+      x-glean-scopes:
+        legacy:
+          - AGENTS
+        platform:
+          - agents:read
       x-visibility: Public
       x-glean-sdk:
         group: agents
@@ -108,6 +118,11 @@ paths:
       description: |
         Retrieve an agent's input and output JSON schemas.
       operationId: platform-agents-get-schemas
+      x-glean-scopes:
+        legacy:
+          - AGENTS
+        platform:
+          - agents:read
       x-visibility: Public
       x-glean-sdk:
         group: agents
@@ -159,6 +174,11 @@ paths:
       description: |
         Execute an agent run. By default, set `stream` to true to receive server-sent events; otherwise the response contains the final agent messages. Set `execution_mode` to `DURABLE` to persist a new run and return its initial snapshot with HTTP 201 without waiting for execution. Poll the agent-scoped GET run endpoint for progress. Durable execution continues after an HTTP disconnect, but is not automatically resumed after a QE restart or crash. An active turn becomes overdue more than 40 minutes after acceptance (a 30-minute execution timeout plus 10 minutes of grace). The next GET of the run marks the overdue turn FAILED without replay; there is no periodic sweep. Without a GET, the stored run can remain RUNNING. Failure does not prove that external tool work has stopped. Paused runs are not expired; an accepted approval continuation starts a fresh deadline. Each POST creates a new run; retrying a POST can create another execution. Submit pending approval decisions through the run responses endpoint, and cancellation can be requested through the run cancellations endpoint. A run tracks one workflow execution; automatic background-subagent wake turns are separate executions, not continuations tracked by this run ID.
       operationId: platform-agents-create-run
+      x-glean-scopes:
+        legacy:
+          - AGENTS
+        platform:
+          - agents:run
       x-visibility: Public
       x-glean-sdk:
         group: agents
@@ -243,6 +263,11 @@ paths:
       description: |
         Retrieve a persisted workflow execution owned by the authenticated user. The run must belong to the specified agent, and the user must still have access to that agent. Unknown runs, runs owned by another user, and mismatched agent/run identifiers return 404. Requires the agents.run scope. Executions without a persisted workflow record are not available through this endpoint.
       operationId: platform-agents-get-run
+      x-glean-scopes:
+        legacy:
+          - AGENTS
+        platform:
+          - agents:run
       x-visibility: Public
       x-glean-sdk:
         group: agents
@@ -297,6 +322,11 @@ paths:
       description: |
         Request cooperative cancellation of the durable agent run identified by `run_id` in the JSON body. Requires ownership, current agent access, and the agents.run scope. Sending a cancellation signal does not itself change an active run from RUNNING; poll GET run for the final state. Paused runs become CANCELLED without resuming execution. Repeated requests and requests for terminal runs return the current snapshot. Completion may win a race with cancellation. Completed tool side effects cannot be undone, and external work may continue if a tool does not support cancellation. Cancellation targets this run, not separate background-subagent executions. An active run without a cancellation registration returns 409. Cancellation signaling requires Redis. An interrupted active run can instead become FAILED through deadline cleanup; this does not verify that external tool work has stopped.
       operationId: platform-agents-cancel-run
+      x-glean-scopes:
+        legacy:
+          - AGENTS
+        platform:
+          - agents:run
       x-visibility: Public
       x-glean-sdk:
         group: agents
@@ -353,6 +383,11 @@ paths:
       description: |
         Submit decisions for every pending tool approval in the paused run's current batch. The run is identified by `run_id` in the JSON body. Decisions apply only to the stored invocations and arguments; argument edits, authentication responses, and session-wide grants are not supported. The caller must own the run, still have agent access, and have the agents.run scope. Acceptance persists the decisions before resuming the same run and chat session. Identical accepted decisions return the current snapshot without another continuation. Conflicting, stale, incomplete, or non-pending decisions return 409. Cancellation registration failure returns 503 without accepting the decisions; retry the same approval batch. This retry guarantee does not cover an indeterminate database commit outcome. Go workflow approval resumes currently support one tool invocation and one approval response. Unsupported multi-tool or multi-decision Go resumes fail without executing tools. The resumed action must resolve to the tool identified by the stored approval request and paused checkpoint. Missing or inconsistent identity fails without executing tools. Execution continues after HTTP disconnects, but is not automatically resumed after a QE crash. Each accepted continuation starts a fresh 30-minute execution timeout and 40-minute cleanup deadline. Identical retries do not extend that deadline. Waiting for approval does not expire a run. The next GET marks an overdue active turn FAILED without replaying execution.
       operationId: platform-agents-create-run-responses
+      x-glean-scopes:
+        legacy:
+          - AGENTS
+        platform:
+          - agents:run
       x-visibility: Public
       x-glean-sdk:
         group: agents
@@ -408,6 +443,11 @@ paths:
       description: |
         Run an assistant turn. The default response is JSON. HTTP clients request server-sent events by setting `stream` to true in the JSON body. An `Accept: text/event-stream` header does not replace `stream`.
       operationId: platform-chat-create
+      x-glean-scopes:
+        legacy:
+          - CHAT
+        platform:
+          - chat:write
       x-visibility: Public
       x-glean-sdk:
         group: chat
@@ -469,6 +509,11 @@ paths:
       description: |
         Create a skill from an uploaded SKILL.md, .zip, or .skill bundle. If the authenticated user already has a skill with the same name, the existing skill is superseded with a new version, unless it is source-managed: a same-name create over a GitHub-imported skill returns 409, and the caller syncs the existing skill instead. Two concurrent same-name creates can still produce two skills.
       operationId: platform-skills-create
+      x-glean-scopes:
+        legacy:
+          - SKILLS
+        platform:
+          - skills:write
       x-visibility: Public
       x-glean-sdk:
         group: skills
@@ -514,6 +559,11 @@ paths:
       description: |
         List every custom skill the authenticated caller can access. Built-in skills are excluded: they have no versions, content download, update, or delete, so their identifiers would fail most skill operations. Chat-authored skills shared with the caller without a listed grant are omitted: they stay retrievable by identifier when it is known, but this list does not discover them.
       operationId: platform-skills-list
+      x-glean-scopes:
+        legacy:
+          - SKILLS
+        platform:
+          - skills:read
       x-visibility: Public
       x-glean-sdk:
         group: skills
@@ -566,6 +616,11 @@ paths:
       description: |
         Import one or more skills selected from a GitHub source preview. Each source URL is fetched and persisted as an independent skill with source provenance. This operation does not create a durable source resource. The import is atomic: if any source cannot be fetched, validated, or persisted, no skills are created.
       operationId: platform-skills-import
+      x-glean-scopes:
+        legacy:
+          - SKILLS
+        platform:
+          - skills:write
       x-visibility: Public
       x-glean-sdk:
         group: skills
@@ -616,6 +671,11 @@ paths:
       description: |
         Validate a skill bundle without persisting it. Accepts a SKILL.md, .zip, or .skill upload and returns parsed metadata plus the normalized file layout.
       operationId: platform-skills-validate
+      x-glean-scopes:
+        legacy:
+          - SKILLS
+        platform:
+          - skills:write
       x-visibility: Public
       x-glean-sdk:
         group: skills
@@ -660,6 +720,11 @@ paths:
       description: |
         Inspect a GitHub URL without persisting a source or any discovered skills. Set stream to true to receive repository scan progress as server-sent events; otherwise the response contains the completed preview.
       operationId: platform-skills-preview-source
+      x-glean-scopes:
+        legacy:
+          - SKILLS
+        platform:
+          - skills:write
       x-visibility: Public
       x-glean-sdk:
         group: skills
@@ -724,6 +789,11 @@ paths:
       description: |
         Enable or disable the skill for the authenticated caller without changing its content. The owner's update sets the skill's stored status. Any other caller's update applies only to that caller.
       operationId: platform-skills-update
+      x-glean-scopes:
+        legacy:
+          - SKILLS
+        platform:
+          - skills:write
       x-visibility: Public
       x-glean-sdk:
         group: skills
@@ -778,6 +848,11 @@ paths:
       description: |
         Delete a skill the authenticated caller is allowed to manage. This operation permanently removes all versions of the skill.
       operationId: platform-skills-delete
+      x-glean-scopes:
+        legacy:
+          - SKILLS
+        platform:
+          - skills:write
       x-visibility: Public
       x-glean-sdk:
         group: skills
@@ -817,6 +892,11 @@ paths:
       description: |
         Retrieve metadata for a skill available to the authenticated user.
       operationId: platform-skills-get
+      x-glean-scopes:
+        legacy:
+          - SKILLS
+        platform:
+          - skills:read
       x-visibility: Public
       x-glean-sdk:
         group: skills
@@ -861,6 +941,11 @@ paths:
       description: |
         Download the latest installable bundle for a skill available to the authenticated user.
       operationId: platform-skills-get-content
+      x-glean-scopes:
+        legacy:
+          - SKILLS
+        platform:
+          - skills:read
       x-visibility: Public
       x-glean-sdk:
         group: skills
@@ -911,6 +996,11 @@ paths:
       description: |
         Refresh one GitHub-imported skill from its stored source URL. If the skill content has changed, this operation creates a new skill version. If the skill is no longer present upstream, the stored skill is left unchanged and must be deleted explicitly.
       operationId: platform-skills-sync
+      x-glean-scopes:
+        legacy:
+          - SKILLS
+        platform:
+          - skills:write
       x-visibility: Public
       x-glean-sdk:
         group: skills
@@ -963,6 +1053,11 @@ paths:
       description: |
         Create a new immutable version for an existing caller-managed skill from an uploaded SKILL.md, .zip, or .skill bundle. A create-version over a GitHub-imported skill returns 409, and the caller syncs the existing skill instead.
       operationId: platform-skills-create-version
+      x-glean-scopes:
+        legacy:
+          - SKILLS
+        platform:
+          - skills:write
       x-visibility: Public
       x-glean-sdk:
         group: skills
@@ -1017,6 +1112,11 @@ paths:
       description: |
         List versions for a skill available to the authenticated user.
       operationId: platform-skills-list-versions
+      x-glean-scopes:
+        legacy:
+          - SKILLS
+        platform:
+          - skills:read
       x-visibility: Public
       x-glean-sdk:
         group: skills
@@ -1077,6 +1177,11 @@ paths:
       description: |
         Retrieve metadata for a skill version available to the authenticated user.
       operationId: platform-skills-get-version
+      x-glean-scopes:
+        legacy:
+          - SKILLS
+        platform:
+          - skills:read
       x-visibility: Public
       x-glean-sdk:
         group: skills
@@ -1129,6 +1234,11 @@ paths:
       description: |
         Download the installable bundle for a skill version available to the authenticated user.
       operationId: platform-skills-get-version-content
+      x-glean-scopes:
+        legacy:
+          - SKILLS
+        platform:
+          - skills:read
       x-visibility: Public
       x-glean-sdk:
         group: skills
@@ -1188,6 +1298,11 @@ paths:
         Search your organization's connected content and return ranked document results with cursor pagination. Use `GET /api/search/filters` to discover datasource identifiers and common filter fields. Built-in filter names are validated; other field names are accepted as custom filters and behavior depends on your Glean configuration and connected sources.
         Errors: HTTP 422 `unprocessable_query` returns no `results` or `next_cursor`. See `warnings` on the response for non-blocking issues such as partially available results. Not every query issue produces a warning or error.
       operationId: platform-search
+      x-glean-scopes:
+        legacy:
+          - SEARCH
+        platform:
+          - search:query
       x-visibility: Public
       x-glean-sdk:
         group: search
@@ -1235,6 +1350,11 @@ paths:
         List datasources and common built-in filter fields visible to the authenticated user. This is a best-effort catalog, not an exhaustive list of every filter search accepts.
         Without `query`, returns field metadata only and does not run a search. With a nonblank `query`, provide exactly one `datasources` value to request suggested filter values for that query; no documents are returned and this endpoint does not include warning objects. See `FilterFieldInfo.values` for limitations on suggested values. Rate-limited requests return HTTP 429 with `Retry-After`; temporary backend unavailability returns HTTP 503.
       operationId: platform-search-filters
+      x-glean-scopes:
+        legacy:
+          - SEARCH
+        platform:
+          - search:query
       x-visibility: Public
       x-glean-sdk:
         group: search
@@ -1297,6 +1417,11 @@ paths:
       description: |
         List configured limits across Glean and external spend clients, plus aggregate agent limits. Organization and user limits identify their spend client; aggregate agent limits omit client_id. Requires admin.usage.limits:read and permission to read workspace billing.
       operationId: platform-admin-usage-limits-list
+      x-glean-scopes:
+        legacy:
+          - ADMIN_USAGE
+        platform:
+          - admin.usage.limits:read
       x-visibility: Public
       x-glean-experimental:
         id: ca19b3e8-9a6d-4a31-8f2f-6c7d8e9f0011
@@ -1351,6 +1476,11 @@ paths:
       description: |
         Remove a configured usage limit matching the selector without clearing measured usage. Requires admin.usage.limits:write and permission to edit workspace billing.
       operationId: platform-admin-usage-limits-reset
+      x-glean-scopes:
+        legacy:
+          - ADMIN_USAGE
+        platform:
+          - admin.usage.limits:write
       x-visibility: Public
       x-glean-experimental:
         id: ca19b3e8-9a6d-4a31-8f2f-6c7d8e9f0013
@@ -1405,6 +1535,11 @@ paths:
       description: |
         Apply one or more usage limit policy changes atomically. This action sets policy by natural key; it does not create addressable resources or return resource locations. Every change succeeds or none are applied. Requires admin.usage.limits:write and permission to edit workspace billing.
       operationId: platform-admin-usage-limits-batch
+      x-glean-scopes:
+        legacy:
+          - ADMIN_USAGE
+        platform:
+          - admin.usage.limits:write
       x-visibility: Public
       x-glean-experimental:
         id: ca19b3e8-9a6d-4a31-8f2f-6c7d8e9f0014
@@ -1469,6 +1604,11 @@ paths:
       description: |
         Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires admin.usage:evaluate and permission to read workspace billing, not a global administrator role. An explicit usage_selector.client_id selects the Glean or external spend client; it is never inferred from the caller. Returns all applicable limit values and counters, with effective headroom separated by unit. Agent counters retain aggregate scope. Billing readers receive exact IdP-group source identities. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
       operationId: platform-admin-usage-limits-evaluate
+      x-glean-scopes:
+        legacy:
+          - ADMIN_USAGE
+        platform:
+          - admin.usage:evaluate
       x-visibility: Public
       x-glean-experimental:
         id: 70bc17be-ccdb-4e9e-b1e7-1a75256c6ee1
@@ -1523,6 +1663,11 @@ paths:
       description: |
         Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires usage:evaluate, without workspace billing permission. Omit target to evaluate the authenticated canonical user. An explicit USER must identify that user or a known alias. An explicit AGENT requires current owner/editor or applicable global agent-edit permission; disabled agents remain eligible. Subagents, other users, ORGANIZATION, and default targets are forbidden on this route, even for billing administrators. Missing, inaccessible, and subagent targets return the same 403 insufficient_permissions. An explicit usage_selector.client_id selects the Glean or external spend client; it is never inferred from the caller. Agent evaluation reports aggregate agent usage and the selected client's organization limit, not the caller's personal slice or a complete run preflight. All applicable limit values, used counters, decisions, and headroom are returned; USD and credits have separate effective_limits. IdP-group source identities require billing-read permission. Other callers receive an IDP_GROUP source with is_identity_restricted true and no group_id, without suppressing the policy's value, counter, or decision. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
       operationId: platform-usage-limits-evaluate
+      x-glean-scopes:
+        legacy:
+          - USAGE
+        platform:
+          - usage:evaluate
       x-visibility: Public
       x-glean-experimental:
         id: ca19b3e8-9a6d-4a31-8f2f-6c7d8e9f0015
@@ -1574,6 +1719,11 @@ paths:
       description: |
         Create a trigger from a preset and return it with its signing secret.
       operationId: platform-triggers-create
+      x-glean-scopes:
+        legacy:
+          - TRIGGERS
+        platform:
+          - triggers:write
       x-visibility: Public
       x-glean-sdk:
         group: triggers
@@ -1657,6 +1807,11 @@ paths:
       description: |
         List triggers owned by the authenticated caller.
       operationId: platform-triggers-list
+      x-glean-scopes:
+        legacy:
+          - TRIGGERS
+        platform:
+          - triggers:read
       x-visibility: Public
       x-glean-sdk:
         group: triggers
@@ -1710,6 +1865,11 @@ paths:
       description: |
         Retrieve a trigger owned by the authenticated caller.
       operationId: platform-triggers-get
+      x-glean-scopes:
+        legacy:
+          - TRIGGERS
+        platform:
+          - triggers:read
       x-visibility: Public
       x-glean-sdk:
         group: triggers
@@ -1756,6 +1916,11 @@ paths:
       description: |
         Update a trigger.
       operationId: platform-triggers-update
+      x-glean-scopes:
+        legacy:
+          - TRIGGERS
+        platform:
+          - triggers:write
       x-visibility: Public
       x-glean-sdk:
         group: triggers
@@ -1811,6 +1976,11 @@ paths:
       description: |
         Delete a trigger.
       operationId: platform-triggers-delete
+      x-glean-scopes:
+        legacy:
+          - TRIGGERS
+        platform:
+          - triggers:write
       x-visibility: Public
       x-glean-sdk:
         group: triggers
@@ -1854,6 +2024,11 @@ paths:
       description: |
         Search recent content events an existing trigger matches. Read-only — no webhook delivery is made. Covers the last seven days.
       operationId: platform-triggers-events-search
+      x-glean-scopes:
+        legacy:
+          - TRIGGERS
+        platform:
+          - triggers:read
       x-visibility: Public
       x-glean-sdk:
         group: triggers
@@ -1909,6 +2084,11 @@ paths:
       description: |
         List the trigger presets available to the caller. A preset is a curated content-trigger template (e.g. a new Jira ticket) which is passed when creating a trigger.
       operationId: platform-trigger-presets-list
+      x-glean-scopes:
+        legacy:
+          - TRIGGERS
+        platform:
+          - triggers:read
       x-visibility: Public
       x-glean-sdk:
         group: triggers
@@ -1969,6 +2149,11 @@ paths:
       description: |
         Retrieve a single trigger preset by id.
       operationId: platform-trigger-presets-get
+      x-glean-scopes:
+        legacy:
+          - TRIGGERS
+        platform:
+          - triggers:read
       x-visibility: Public
       x-glean-sdk:
         group: triggers
@@ -2016,6 +2201,11 @@ paths:
       description: |
         Return up to 300 selectable values for a single picklist input on a preset. Results are intended for typeahead selection and are not cursor-paginated. When `is_truncated` is true, refine `query` to narrow the result set.
       operationId: platform-trigger-presets-input-values-list
+      x-glean-scopes:
+        legacy:
+          - TRIGGERS
+        platform:
+          - triggers:read
       x-visibility: Public
       x-glean-sdk:
         group: triggers
@@ -2078,6 +2268,11 @@ paths:
       description: |
         Search recent content events an unsaved trigger built from this preset would match, to preview it before creating the trigger. Read-only — no trigger is created and no webhook delivery is made. Covers the last seven days.
       operationId: platform-trigger-presets-events-search
+      x-glean-scopes:
+        legacy:
+          - TRIGGERS
+        platform:
+          - triggers:read
       x-visibility: Public
       x-glean-sdk:
         group: triggers
