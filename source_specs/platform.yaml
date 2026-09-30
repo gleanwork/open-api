@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: c4421e50fc5b8cc24378bf83e841650891c43da2
+  x-source-commit-sha: 57c15ef5ef1f9dbd49e6dc12d5a8a6eb63ee924c
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -1415,7 +1415,7 @@ paths:
         - Usage
       summary: List usage limits
       description: |
-        List configured limits across Glean and external spend clients, plus aggregate agent limits. Organization and user limits identify their spend client; aggregate agent limits omit client_id. Requires admin.usage.limits:read and permission to read workspace billing.
+        List configured limits across Glean and external spend clients, plus aggregate agent limits. Organization and user limits identify their spend client; aggregate agent limits omit client_id. USER targets return the canonical user_id and, when available, the user's directory email. Requires admin.usage.limits:read and permission to read workspace billing.
       operationId: platform-admin-usage-limits-list
       x-glean-scopes:
         legacy:
@@ -1474,7 +1474,7 @@ paths:
         - Usage
       summary: Reset a usage limit
       description: |
-        Remove a configured usage limit matching the selector without clearing measured usage. Requires admin.usage.limits:write and permission to edit workspace billing.
+        Remove a configured usage limit matching the selector without clearing measured usage. A USER target may be identified by user_id or email, including a user no longer in the directory. Requires admin.usage.limits:write and permission to edit workspace billing.
       operationId: platform-admin-usage-limits-reset
       x-glean-scopes:
         legacy:
@@ -1497,7 +1497,7 @@ paths:
             example:
               target:
                 type: USER
-                user_id: user_123
+                email: user@example.com
               usage_selector:
                 client_id: glean
                 period:
@@ -1533,7 +1533,7 @@ paths:
         - Usage
       summary: Apply usage limit policies
       description: |
-        Apply one or more usage limit policy changes atomically. This action sets policy by natural key; it does not create addressable resources or return resource locations. Every change succeeds or none are applied. Requires admin.usage.limits:write and permission to edit workspace billing.
+        Apply one or more usage limit policy changes atomically. This action sets policy by natural key; it does not create addressable resources or return resource locations. Every change succeeds or none are applied. USER targets may be identified by user_id or email; each resolves to the canonical user_id before duplicate natural keys are checked. Requires admin.usage.limits:write and permission to edit workspace billing.
       operationId: platform-admin-usage-limits-batch
       x-glean-scopes:
         legacy:
@@ -1571,6 +1571,18 @@ paths:
                   amount: '1000.00'
                   unit: USD
                   enforcement: HARD
+              - target:
+                  type: USER
+                  email: user@example.com
+                usage_selector:
+                  client_id: glean
+                  period:
+                    type: RECURRING_CALENDAR_MONTH
+                value:
+                  mode: FINITE
+                  amount: '50.00'
+                  unit: USD
+                  enforcement: HARD
       responses:
         '200':
           description: The applied usage limit policies.
@@ -1602,7 +1614,7 @@ paths:
         - Usage
       summary: Evaluate administrative usage limit headroom
       description: |
-        Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires admin.usage:evaluate and permission to read workspace billing, not a global administrator role. An explicit usage_selector.client_id selects the Glean or external spend client; it is never inferred from the caller. Returns all applicable limit values and counters, with effective headroom separated by unit. Agent counters retain aggregate scope. Billing readers receive exact IdP-group source identities. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
+        Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires admin.usage:evaluate and permission to read workspace billing, not a global administrator role. An explicit usage_selector.client_id selects the Glean or external spend client; it is never inferred from the caller. Returns all applicable limit values and counters, with effective headroom separated by unit. Agent counters retain aggregate scope. Billing readers receive exact IdP-group source identities. A USER target may be identified by user_id or email. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
       operationId: platform-admin-usage-limits-evaluate
       x-glean-scopes:
         legacy:
@@ -1625,7 +1637,7 @@ paths:
             example:
               target:
                 type: USER
-                user_id: user_123
+                email: user@example.com
               usage_selector:
                 client_id: glean
                 period:
@@ -1661,7 +1673,7 @@ paths:
         - Usage
       summary: Evaluate usage limit headroom
       description: |
-        Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires usage:evaluate, without workspace billing permission. Omit target to evaluate the authenticated canonical user. An explicit USER must identify that user or a known alias. An explicit AGENT requires current owner/editor or applicable global agent-edit permission; disabled agents remain eligible. Subagents, other users, ORGANIZATION, and default targets are forbidden on this route, even for billing administrators. Missing, inaccessible, and subagent targets return the same 403 insufficient_permissions. An explicit usage_selector.client_id selects the Glean or external spend client; it is never inferred from the caller. Agent evaluation reports aggregate agent usage and the selected client's organization limit, not the caller's personal slice or a complete run preflight. All applicable limit values, used counters, decisions, and headroom are returned; USD and credits have separate effective_limits. IdP-group source identities require billing-read permission. Other callers receive an IDP_GROUP source with is_identity_restricted true and no group_id, without suppressing the policy's value, counter, or decision. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
+        Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires usage:evaluate, without workspace billing permission. Omit target to evaluate the authenticated canonical user. An explicit USER must identify that user by canonical ID, known alias ID, email, or known alias email; every supplied field must identify the caller. An explicit AGENT requires current owner/editor or applicable global agent-edit permission; disabled agents remain eligible. Subagents, other users, ORGANIZATION, and default targets are forbidden on this route, even for billing administrators. Missing, inaccessible, and subagent targets return the same 403 insufficient_permissions. An explicit usage_selector.client_id selects the Glean or external spend client; it is never inferred from the caller. Agent evaluation reports aggregate agent usage and the selected client's organization limit, not the caller's personal slice or a complete run preflight. All applicable limit values, used counters, decisions, and headroom are returned; USD and credits have separate effective_limits. IdP-group source identities require billing-read permission. Other callers receive an IDP_GROUP source with is_identity_restricted true and no group_id, without suppressing the policy's value, counter, or decision. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
       operationId: platform-usage-limits-evaluate
       x-glean-scopes:
         legacy:
@@ -4409,14 +4421,14 @@ components:
         ORGANIZATION: Shared limit across the organization for the selected spend client.
         DEFAULT_USER: Default per-user limit for the selected spend client.
         DEFAULT_AGENT: Default aggregate limit applied to agents without an agent-specific limit.
-        USER: Limit for one canonical user ID and the selected spend client.
+        USER: Limit for one user, identified by canonical user ID or email, and the selected spend client.
         AGENT: Aggregate limit for one canonical agent ID, independent of spend client.
         IDP_GROUP: Response-only source of an inherited per-user IdP-group limit.
         DEPARTMENT: Response-only source of an inherited per-user department limit.
     UsageTarget:
       type: object
       description: |
-        Population governed by a usage limit. A target identifies policy, not access. Administrative operations require their dedicated scope and billing permissions. Non-admin evaluation accepts the authenticated USER or an AGENT the caller currently has permission to edit. Billing permission does not widen this route. Organization and user limits are scoped to a spend client; agent limits remain aggregate. Subagents cannot be configured or evaluated independently because nested spend can be attributed to the top-level agent. Reset can still remove existing subagent rules.
+        Population governed by a usage limit. A target identifies policy, not access. Administrative operations require their dedicated scope and billing permissions. Non-admin evaluation accepts the authenticated USER or an AGENT the caller currently has permission to edit. Billing permission does not widen this route. Organization and user limits are scoped to a spend client; agent limits remain aggregate. Subagents cannot be configured or evaluated independently because nested spend can be attributed to the top-level agent. Reset can still remove existing subagent rules. A USER target is identified by user_id, email, or both; email is resolved to the canonical user_id, which responses always return.
       additionalProperties: false
       required:
         - type
@@ -4428,7 +4440,18 @@ components:
           type: string
           minLength: 1
           maxLength: 512
-          description: Canonical user ID; required only when type is USER.
+          description: |
+            Canonical user ID; valid only when type is USER. A USER target requires user_id, email, or both.
+        email:
+          type: string
+          minLength: 3
+          maxLength: 320
+          pattern: ^[^\s@\x00-\x1f\x7f]+@[^\s@\x00-\x1f\x7f]+$
+          x-glean-experimental:
+            id: 1e7ce9ed-56af-44b2-81c1-f39e656919ea
+            introduced: '2026-09-29'
+          description: |
+            Email address of the user, including a known alias email; valid only when type is USER. Matching is case-insensitive and resolves to the canonical user_id. When user_id is also supplied, both must identify the same user. Email is never part of the stored limit key. Responses include the user's directory email when one is available.
         agent_id:
           type: string
           minLength: 1
@@ -4436,8 +4459,11 @@ components:
           description: Canonical agent ID; required only when type is AGENT.
       allOf:
         - oneOf:
-            - required:
-                - user_id
+            - anyOf:
+                - required:
+                    - user_id
+                - required:
+                    - email
               properties:
                 type:
                   description: Kind of governed population.
@@ -4454,8 +4480,11 @@ components:
                   enum:
                     - AGENT
               not:
-                required:
-                  - user_id
+                anyOf:
+                  - required:
+                      - user_id
+                  - required:
+                      - email
             - properties:
                 type:
                   description: Kind of governed population.
@@ -4467,6 +4496,8 @@ components:
                 anyOf:
                   - required:
                       - user_id
+                  - required:
+                      - email
                   - required:
                       - agent_id
     PeriodType:
@@ -4844,6 +4875,14 @@ components:
           type: string
           minLength: 1
           description: Canonical user ID for a user-specific policy.
+        email:
+          type: string
+          minLength: 1
+          x-glean-experimental:
+            id: 618d5192-fb51-451f-ba79-51304a408b55
+            introduced: '2026-09-29'
+          description: |
+            Directory email of the user for a user-specific policy; omitted when the directory has no email for the user.
         agent_id:
           type: string
           minLength: 1
@@ -4872,6 +4911,8 @@ components:
                 anyOf:
                   - required:
                       - user_id
+                  - required:
+                      - email
                   - required:
                       - agent_id
                   - required:
@@ -4909,6 +4950,8 @@ components:
                   - required:
                       - user_id
                   - required:
+                      - email
+                  - required:
                       - group_id
                   - required:
                       - department_name
@@ -4926,6 +4969,8 @@ components:
                   - required:
                       - user_id
                   - required:
+                      - email
+                  - required:
                       - agent_id
                   - required:
                       - group_id
@@ -4940,6 +4985,8 @@ components:
                 anyOf:
                   - required:
                       - user_id
+                  - required:
+                      - email
                   - required:
                       - agent_id
                   - required:
@@ -5026,7 +5073,7 @@ components:
       type: object
       additionalProperties: false
       description: |
-        Non-admin evaluation request. Only omission of target selects the authenticated canonical user; null, empty, and incomplete targets are invalid. Explicit USER targets accept the caller's canonical ID or known aliases. AGENT targets require current edit permission and evaluate aggregate agent usage, including organization limits. The authenticated identity is never replaced by the selected target.
+        Non-admin evaluation request. Only omission of target selects the authenticated canonical user; null, empty, and incomplete targets are invalid. Explicit USER targets accept the caller's canonical ID, known alias IDs, email, or known alias emails; every supplied field must identify the caller. AGENT targets require current edit permission and evaluate aggregate agent usage, including organization limits. The authenticated identity is never replaced by the selected target.
       required:
         - usage_selector
       properties:
