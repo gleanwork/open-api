@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: dd1b1ab58efcec681cb1c2ce3235997c388dfebe
+  x-source-commit-sha: 36339ab1c035fa3dff4d7cc94521a86c6636a568
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -1409,6 +1409,105 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
+  /admin/usage/settings:
+    get:
+      tags:
+        - Usage
+      summary: Get usage settings
+      description: |
+        Retrieve workspace-wide usage settings. Requires admin.usage.settings:read and permission to read workspace billing; a global administrator role is not required.
+      operationId: platform-admin-usage-settings-get
+      x-visibility: Public
+      x-glean-scopes:
+        legacy:
+          - ADMIN_USAGE
+        platform:
+          - admin.usage.settings:read
+      x-glean-experimental:
+        id: 8f4c2d6e-3b7a-4e1f-9c8d-5a2b6e4f7c9a
+        introduced: '2026-09-14'
+      x-glean-sdk:
+        group: admin.usage
+        method: getSettings
+      responses:
+        '200':
+          description: Usage settings.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageSettingsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    patch:
+      tags:
+        - Usage
+      summary: Update usage settings
+      description: |
+        Partially update workspace-wide usage settings. Requires admin.usage.settings:write and permission to edit workspace billing; a global administrator role is not required.
+      operationId: platform-admin-usage-settings-update
+      x-visibility: Public
+      x-glean-scopes:
+        legacy:
+          - ADMIN_USAGE
+        platform:
+          - admin.usage.settings:write
+      x-glean-experimental:
+        id: 443aeb3c-fdee-4da8-a756-37fa13922830
+        introduced: '2026-09-14'
+      x-glean-sdk:
+        group: admin.usage
+        method: updateSettings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsageSettingsUpdateRequest'
+            example:
+              multiple_membership_resolution:
+                per_member:
+                  idp_groups: HIGHEST
+              limit_increase_requests:
+                business_justification: REQUIRED
+      responses:
+        '200':
+          description: Updated usage settings.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageSettingsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
   /admin/usage/limits:
     get:
       tags:
@@ -1417,12 +1516,12 @@ paths:
       description: |
         List configured limits across Glean and external spend clients, plus aggregate agent limits. Organization and user limits identify their spend client; aggregate agent limits omit client_id. USER targets return the canonical user_id and, when available, the user's directory email. Requires admin.usage.limits:read and permission to read workspace billing.
       operationId: platform-admin-usage-limits-list
+      x-visibility: Public
       x-glean-scopes:
         legacy:
           - ADMIN_USAGE
         platform:
           - admin.usage.limits:read
-      x-visibility: Public
       x-glean-experimental:
         id: ca19b3e8-9a6d-4a31-8f2f-6c7d8e9f0011
         introduced: '2026-09-16'
@@ -1468,6 +1567,66 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
+    post:
+      tags:
+        - Usage
+      summary: Upsert a usage limit
+      description: |
+        Create or replace a single usage limit by its natural key. Always returns 200 with the normalized limit. A USER target may be identified by user_id or email; an unknown user returns 404. Requires admin.usage.limits:write and permission to edit workspace billing. Personal usage grants do not allow limit changes.
+      operationId: platform-admin-usage-limits-upsert
+      x-visibility: Public
+      x-glean-scopes:
+        legacy:
+          - ADMIN_USAGE
+        platform:
+          - admin.usage.limits:write
+      x-glean-sdk:
+        group: admin.usage
+        method: upsertLimit
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsageLimit'
+            example:
+              target:
+                type: ORGANIZATION
+              usage_selector:
+                client_id: glean
+                period:
+                  type: RECURRING_CALENDAR_MONTH
+              allocation_mode: SHARED_POOL
+              value:
+                mode: FINITE
+                amount: '1000.00'
+                unit: USD
+                enforcement: HARD
+      responses:
+        '200':
+          description: The upserted usage limit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpsertUsageLimitResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
   /admin/usage/limits/reset:
     post:
       tags:
@@ -1476,12 +1635,12 @@ paths:
       description: |
         Remove a configured usage limit matching the selector without clearing measured usage. A USER target may be identified by user_id or email, including a user no longer in the directory. Requires admin.usage.limits:write and permission to edit workspace billing.
       operationId: platform-admin-usage-limits-reset
+      x-visibility: Public
       x-glean-scopes:
         legacy:
           - ADMIN_USAGE
         platform:
           - admin.usage.limits:write
-      x-visibility: Public
       x-glean-experimental:
         id: ca19b3e8-9a6d-4a31-8f2f-6c7d8e9f0013
         introduced: '2026-09-16'
@@ -1535,12 +1694,12 @@ paths:
       description: |
         Apply one or more usage limit policy changes atomically. This action sets policy by natural key; it does not create addressable resources or return resource locations. Every change succeeds or none are applied. USER targets may be identified by user_id or email; each resolves to the canonical user_id before duplicate natural keys are checked. Requires admin.usage.limits:write and permission to edit workspace billing.
       operationId: platform-admin-usage-limits-batch
+      x-visibility: Public
       x-glean-scopes:
         legacy:
           - ADMIN_USAGE
         platform:
           - admin.usage.limits:write
-      x-visibility: Public
       x-glean-experimental:
         id: ca19b3e8-9a6d-4a31-8f2f-6c7d8e9f0014
         introduced: '2026-09-16'
@@ -1616,12 +1775,12 @@ paths:
       description: |
         Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires admin.usage:evaluate and permission to read workspace billing, not a global administrator role. An explicit usage_selector.client_id selects the Glean or external spend client; it is never inferred from the caller. Returns all applicable limit values and counters, with effective headroom separated by unit. Agent counters retain aggregate scope. Billing readers receive exact IdP-group source identities. A USER target may be identified by user_id or email. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
       operationId: platform-admin-usage-limits-evaluate
+      x-visibility: Public
       x-glean-scopes:
         legacy:
           - ADMIN_USAGE
         platform:
           - admin.usage:evaluate
-      x-visibility: Public
       x-glean-experimental:
         id: 70bc17be-ccdb-4e9e-b1e7-1a75256c6ee1
         introduced: '2026-09-18'
@@ -1675,12 +1834,12 @@ paths:
       description: |
         Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires usage:evaluate, without workspace billing permission. Omit target to evaluate the authenticated canonical user. An explicit USER must identify that user by canonical ID, known alias ID, email, or known alias email; every supplied field must identify the caller. An explicit AGENT requires current owner/editor or applicable global agent-edit permission; disabled agents remain eligible. Subagents, other users, ORGANIZATION, and default targets are forbidden on this route, even for billing administrators. Missing, inaccessible, and subagent targets return the same 403 insufficient_permissions. An explicit usage_selector.client_id selects the Glean or external spend client; it is never inferred from the caller. Agent evaluation reports aggregate agent usage and the selected client's organization limit, not the caller's personal slice or a complete run preflight. All applicable limit values, used counters, decisions, and headroom are returned; USD and credits have separate effective_limits. IdP-group source identities require billing-read permission. Other callers receive an IDP_GROUP source with is_identity_restricted true and no group_id, without suppressing the policy's value, counter, or decision. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
       operationId: platform-usage-limits-evaluate
+      x-visibility: Public
       x-glean-scopes:
         legacy:
           - USAGE
         platform:
           - usage:evaluate
-      x-visibility: Public
       x-glean-experimental:
         id: ca19b3e8-9a6d-4a31-8f2f-6c7d8e9f0015
         introduced: '2026-09-16'
@@ -1723,6 +1882,415 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
+  /usage/limit-increase-requests:
+    post:
+      tags:
+        - Usage
+      summary: Submit a personal limit-increase request
+      operationId: platform-usage-requests-create
+      x-glean-scopes:
+        legacy:
+          - USAGE_LIMIT_INCREASE_REQUESTS
+        platform:
+          - usage.limit_increase_requests:write
+      x-visibility: Public
+      x-glean-sdk:
+        group: usage
+        method: createLimitIncreaseRequest
+      x-glean-experimental:
+        id: d9f125f8-85f3-4221-8627-0b39f6d5b4ab
+        introduced: '2026-09-25'
+      description: |
+        Requires usage.limit_increase_requests:write. The target is the authenticated canonical user, and requester identity comes from authentication. The caller supplies the client and optional business justification. The server assigns the request identifier and current UTC month. Billing grants do not widen this route. This internal scaffold returns 503 without creating a request.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalRequestCreate'
+              description: Personal request for the authenticated user and specified client.
+            example:
+              client_id: glean
+      responses:
+        '201':
+          $ref: '#/components/responses/RequestResource'
+          description: The created personal request.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+          description: Invalid input, with field-level validation details when available.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+          description: Authentication is missing or invalid.
+        '403':
+          $ref: '#/components/responses/Forbidden'
+          description: The caller lacks the required scope or current resource permission.
+        '404':
+          $ref: '#/components/responses/NotFound'
+          description: The authorized request was not found.
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+          description: The operation timed out.
+        '409':
+          $ref: '#/components/responses/Conflict'
+          description: The request conflicts with the current stored request state.
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+          description: The request exceeds the supported body size.
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+          description: The caller exceeded the request rate limit.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          description: An unexpected internal error prevented completion.
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+          description: Request handling is unavailable; the internal scaffold fails closed.
+    get:
+      tags:
+        - Usage
+      summary: List personal limit-increase requests
+      operationId: platform-usage-requests-list
+      x-glean-scopes:
+        legacy:
+          - USAGE_LIMIT_INCREASE_REQUESTS
+        platform:
+          - usage.limit_increase_requests:read
+      x-visibility: Public
+      x-glean-sdk:
+        group: usage
+        method: listLimitIncreaseRequests
+      x-glean-experimental:
+        id: d92d077c-81c0-4d91-868d-021eed013d8d
+        introduced: '2026-09-25'
+      description: |
+        Requires usage.limit_increase_requests:read. The collection is limited to the authenticated canonical user's requests, including resolved requests. Cursors bind the filters and current authorization context; a billing grant cannot widen results. This internal scaffold returns 503 without reading requests.
+      parameters:
+        - $ref: '#/components/parameters/PageSize'
+          description: Maximum page size; defaults to 20 and cannot exceed 100.
+        - $ref: '#/components/parameters/Cursor'
+          description: Opaque continuation bound to filters and current authorization.
+        - $ref: '#/components/parameters/Filters'
+          description: Optional structured filters on request status.
+      responses:
+        '200':
+          description: A bounded page of authorized requests.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestListResponse'
+                description: Authorized request page and continuation state.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+          description: Invalid input, with field-level validation details when available.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+          description: Authentication is missing or invalid.
+        '403':
+          $ref: '#/components/responses/Forbidden'
+          description: The caller lacks the required scope or current resource permission.
+        '404':
+          $ref: '#/components/responses/NotFound'
+          description: The authorized request was not found.
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+          description: The operation timed out.
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+          description: The caller exceeded the request rate limit.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          description: An unexpected internal error prevented completion.
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+          description: Request handling is unavailable; the internal scaffold fails closed.
+  /usage/limit-increase-requests/{request_id}:
+    parameters:
+      - $ref: '#/components/parameters/RequestId'
+        description: Opaque personal request identifier; not an authorization grant.
+    get:
+      tags:
+        - Usage
+      summary: Get a personal limit-increase request
+      operationId: platform-usage-requests-get
+      x-glean-scopes:
+        legacy:
+          - USAGE_LIMIT_INCREASE_REQUESTS
+        platform:
+          - usage.limit_increase_requests:read
+      x-visibility: Public
+      x-glean-sdk:
+        group: usage
+        method: getLimitIncreaseRequest
+      x-glean-experimental:
+        id: 29a2f132-a0c2-429f-95e7-7995de058cd3
+        introduced: '2026-09-25'
+      description: |
+        Requires usage.limit_increase_requests:read and the current user's request. Authorization precedes resource disclosure. This internal scaffold returns 503 without reading the request.
+      responses:
+        '200':
+          $ref: '#/components/responses/RequestResource'
+          description: The authorized request in its current stored state.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+          description: Invalid input, with field-level validation details when available.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+          description: Authentication is missing or invalid.
+        '403':
+          $ref: '#/components/responses/Forbidden'
+          description: The caller lacks the required scope or current resource permission.
+        '404':
+          $ref: '#/components/responses/NotFound'
+          description: The authorized request was not found.
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+          description: The operation timed out.
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+          description: The caller exceeded the request rate limit.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          description: An unexpected internal error prevented completion.
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+          description: Request handling is unavailable; the internal scaffold fails closed.
+  /admin/usage/limit-increase-requests:
+    post:
+      tags:
+        - Usage
+      summary: Submit an editable-agent limit-increase request
+      operationId: platform-admin-usage-requests-create
+      x-glean-scopes:
+        legacy:
+          - USAGE_LIMIT_INCREASE_REQUESTS
+        platform:
+          - usage.limit_increase_requests:write
+      x-visibility: Public
+      x-glean-sdk:
+        group: admin.usage
+        method: createLimitIncreaseRequest
+      x-glean-experimental:
+        id: e28f40de-1f6c-4dc6-ab12-4054b89628c1
+        introduced: '2026-09-25'
+      description: |
+        Requires usage.limit_increase_requests:write, the same scope as personal creation, and current edit permission on the agent, not billing permissions. The caller supplies the agent, client, and optional business justification. Requester identity comes from authentication; the server assigns the request identifier and current UTC month. This internal scaffold returns 503 without creating a request.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentRequestCreate'
+              description: Client-scoped request for an agent the caller can edit.
+            example:
+              agent_id: '{agent_id}'
+              client_id: glean
+      responses:
+        '201':
+          $ref: '#/components/responses/RequestResource'
+          description: The created editable-agent request.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+          description: Invalid input, with field-level validation details when available.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+          description: Authentication is missing or invalid.
+        '403':
+          $ref: '#/components/responses/Forbidden'
+          description: The caller lacks the required scope or current resource permission.
+        '404':
+          $ref: '#/components/responses/NotFound'
+          description: The authorized request was not found.
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+          description: The operation timed out.
+        '409':
+          $ref: '#/components/responses/Conflict'
+          description: The request conflicts with the current stored request state.
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+          description: The request exceeds the supported body size.
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+          description: The caller exceeded the request rate limit.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          description: An unexpected internal error prevented completion.
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+          description: Request handling is unavailable; the internal scaffold fails closed.
+    get:
+      tags:
+        - Usage
+      summary: List the billing limit-increase request queue
+      operationId: platform-admin-usage-requests-list
+      x-glean-scopes:
+        legacy:
+          - ADMIN_USAGE_LIMIT_INCREASE_REQUESTS
+        platform:
+          - admin.usage.limit_increase_requests:read
+      x-visibility: Public
+      x-glean-sdk:
+        group: admin.usage
+        method: listLimitIncreaseRequests
+      x-glean-experimental:
+        id: b02bb653-00f9-4739-b387-90f68c7385ee
+        introduced: '2026-09-25'
+      description: |
+        Requires admin.usage.limit_increase_requests:read and current workspace billing read permission. Agent ownership is not queue access. Cursors bind filters and current authorization context. This internal scaffold returns 503, not a successful empty page.
+      parameters:
+        - $ref: '#/components/parameters/PageSize'
+          description: Maximum page size; defaults to 20 and cannot exceed 100.
+        - $ref: '#/components/parameters/Cursor'
+          description: Opaque continuation bound to filters and current authorization.
+        - $ref: '#/components/parameters/Filters'
+          description: Optional structured filters on request status.
+      responses:
+        '200':
+          description: A bounded page of authorized requests.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestListResponse'
+                description: Authorized request page and continuation state.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+          description: Invalid input, with field-level validation details when available.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+          description: Authentication is missing or invalid.
+        '403':
+          $ref: '#/components/responses/Forbidden'
+          description: The caller lacks the required scope or current resource permission.
+        '404':
+          $ref: '#/components/responses/NotFound'
+          description: The authorized request was not found.
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+          description: The operation timed out.
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+          description: The caller exceeded the request rate limit.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          description: An unexpected internal error prevented completion.
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+          description: Request handling is unavailable; the internal scaffold fails closed.
+  /admin/usage/limit-increase-requests/{request_id}:
+    parameters:
+      - $ref: '#/components/parameters/RequestId'
+        description: Opaque request identifier; not an authorization grant.
+    get:
+      tags:
+        - Usage
+      summary: Get a billing limit-increase request
+      operationId: platform-admin-usage-requests-get
+      x-glean-scopes:
+        legacy:
+          - ADMIN_USAGE_LIMIT_INCREASE_REQUESTS
+        platform:
+          - admin.usage.limit_increase_requests:read
+      x-visibility: Public
+      x-glean-sdk:
+        group: admin.usage
+        method: getLimitIncreaseRequest
+      x-glean-experimental:
+        id: 88f1a13a-3e09-4c78-a2dc-87cc223dc003
+        introduced: '2026-09-25'
+      description: |
+        Requires admin.usage.limit_increase_requests:read. Authorization precedes resource disclosure. This internal scaffold returns 503 without reading the request.
+      responses:
+        '200':
+          $ref: '#/components/responses/RequestResource'
+          description: The authorized request in its current stored state.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+          description: Invalid input, with field-level validation details when available.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+          description: Authentication is missing or invalid.
+        '403':
+          $ref: '#/components/responses/Forbidden'
+          description: The caller lacks the required scope or current resource permission.
+        '404':
+          $ref: '#/components/responses/NotFound'
+          description: The authorized request was not found.
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+          description: The operation timed out.
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+          description: The caller exceeded the request rate limit.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          description: An unexpected internal error prevented completion.
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+          description: Request handling is unavailable; the internal scaffold fails closed.
+    patch:
+      tags:
+        - Usage
+      summary: Resolve a billing limit-increase request
+      operationId: platform-admin-usage-requests-update
+      x-glean-scopes:
+        legacy:
+          - ADMIN_USAGE_LIMIT_INCREASE_REQUESTS
+        platform:
+          - admin.usage.limit_increase_requests:write
+      x-visibility: Public
+      x-glean-sdk:
+        group: admin.usage
+        method: updateLimitIncreaseRequest
+      x-glean-experimental:
+        id: 08d999ca-f438-4fed-81ce-350c7e65c2cc
+        introduced: '2026-09-25'
+      description: |
+        Update a pending request with an approval decision or denial. Requires admin.usage.limit_increase_requests:write and current billing edit permission. A pending request can be approved with a positive additive increase or denied with an optional resolution note. PERIOD applies to the request's stored month; ONGOING increases the applicable standing rule at the selected resolution target. Ongoing approval is supported only for user requests, not agent requests. This internal scaffold returns 503 without resolving requests or changing policy.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdministrativeRequestUpdate'
+              description: Additive approval or denial of a pending request.
+            example:
+              status: APPROVED
+              approved_increase_amount: '100.00'
+              scope: PERIOD
+      responses:
+        '200':
+          $ref: '#/components/responses/RequestResource'
+          description: The resolved request in its current stored state.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+          description: Invalid input, with field-level validation details when available.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+          description: Authentication is missing or invalid.
+        '403':
+          $ref: '#/components/responses/Forbidden'
+          description: The caller lacks the required scope or current resource permission.
+        '404':
+          $ref: '#/components/responses/NotFound'
+          description: The authorized request was not found.
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+          description: The operation timed out.
+        '409':
+          $ref: '#/components/responses/Conflict'
+          description: The request conflicts with the current stored request state.
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+          description: The request exceeds the supported body size.
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+          description: The caller exceeded the request rate limit.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+          description: An unexpected internal error prevented completion.
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+          description: Request handling is unavailable; the internal scaffold fails closed.
   /triggers:
     post:
       tags:
@@ -4406,6 +4974,96 @@ components:
           type: string
           minLength: 1
           description: Platform-generated request ID for support correlation.
+    PerMemberSettings:
+      type: object
+      additionalProperties: false
+      description: Resolution settings for the per-member limit family.
+      required:
+        - idp_groups
+      properties:
+        idp_groups:
+          type: string
+          enum:
+            - HIGHEST
+            - LOWEST
+          description: |
+            How to resolve effective usage limits when a user belongs to multiple IdP groups.
+    MultipleMembershipResolutionSettings:
+      type: object
+      additionalProperties: false
+      description: Settings for resolving limits across multiple memberships.
+      required:
+        - per_member
+      properties:
+        per_member:
+          $ref: '#/components/schemas/PerMemberSettings'
+          description: Resolution settings for the per-member limit family.
+    LimitIncreaseRequestSettings:
+      type: object
+      additionalProperties: false
+      description: |
+        Settings that govern usage limit increase requests.
+      required:
+        - business_justification
+      properties:
+        business_justification:
+          type: string
+          enum:
+            - OPTIONAL
+            - REQUIRED
+          description: |
+            Whether a business justification is required when requesting a usage limit increase.
+    UsageSettingsResource:
+      type: object
+      additionalProperties: false
+      description: |
+        Workspace-wide usage settings.
+      properties:
+        multiple_membership_resolution:
+          $ref: '#/components/schemas/MultipleMembershipResolutionSettings'
+          description: Settings for resolving limits across multiple memberships.
+        limit_increase_requests:
+          $ref: '#/components/schemas/LimitIncreaseRequestSettings'
+          description: Settings that govern usage limit increase requests.
+        updated_at:
+          type: string
+          format: date-time
+          description: |
+            ISO 8601 timestamp of the last settings update.
+    UsageSettingsResponse:
+      type: object
+      additionalProperties: false
+      description: |
+        Response envelope for usage settings operations.
+      required:
+        - usage_settings
+        - request_id
+      properties:
+        usage_settings:
+          $ref: '#/components/schemas/UsageSettingsResource'
+          description: Current workspace-wide usage settings.
+        request_id:
+          type: string
+          description: |
+            Opaque request identifier.
+    UsageSettingsUpdateRequest:
+      type: object
+      additionalProperties: false
+      description: |
+        Request body for updating workspace-wide usage settings.
+      required: []
+      anyOf:
+        - required:
+            - multiple_membership_resolution
+        - required:
+            - limit_increase_requests
+      properties:
+        multiple_membership_resolution:
+          $ref: '#/components/schemas/MultipleMembershipResolutionSettings'
+          description: Settings for resolving limits across multiple memberships.
+        limit_increase_requests:
+          $ref: '#/components/schemas/LimitIncreaseRequestSettings'
+          description: Settings that govern usage limit increase requests.
     UsageTargetType:
       type: string
       description: Kind of governed population or inherited policy source.
@@ -4742,6 +5400,20 @@ components:
             - string
             - 'null'
           description: Opaque cursor; null or absent when has_more is false.
+        request_id:
+          type: string
+          description: Request identifier for correlating this response.
+    UpsertUsageLimitResponse:
+      type: object
+      description: Response envelope for an upserted usage limit.
+      additionalProperties: false
+      required:
+        - usage_limit
+        - request_id
+      properties:
+        usage_limit:
+          $ref: '#/components/schemas/UsageLimit'
+          description: The normalized usage limit.
         request_id:
           type: string
           description: Request identifier for correlating this response.
@@ -5089,6 +5761,333 @@ components:
               description: Explicit spend-client context; never inferred from the caller.
               required:
                 - client_id
+    RequestStatus:
+      type: string
+      enum:
+        - PENDING
+        - APPROVED
+        - DENIED
+      description: Stored request state.
+    RequestFilter:
+      type: object
+      additionalProperties: false
+      required:
+        - field
+        - values
+      description: A status filter using the backend's status-IN matching.
+      properties:
+        field:
+          type: string
+          pattern: ^status$
+          description: Allowed field is status, spelled exactly in lowercase.
+        values:
+          type: array
+          minItems: 1
+          description: Status values to match with OR.
+          items:
+            $ref: '#/components/schemas/RequestStatus'
+            description: One supported request status.
+        operator:
+          allOf:
+            - $ref: '#/components/schemas/FilterOperator'
+              description: Canonical Platform filter operator.
+          enum:
+            - EQUALS
+          default: EQUALS
+          description: Only EQUALS is supported; defaults to EQUALS when omitted.
+    RequestPeriod:
+      type: string
+      pattern: ^[0-9]{4}-(0[1-9]|1[0-2])$
+      description: UTC calendar month in YYYY-MM format, assigned by the server at creation.
+    ApprovedIncreaseAmount:
+      type: string
+      pattern: ^([1-9][0-9]*(\.[0-9]+)?|0\.[0-9]*[1-9][0-9]*)$
+      description: |
+        Positive additive increase in the applicable rule's denomination, encoded as a plain decimal string. The backend stores float32 values, not arbitrary-precision decimals.
+    RequestScope:
+      type: string
+      enum:
+        - PERIOD
+        - ONGOING
+      description: Increase for the stored request month or an ongoing standing-rule increase.
+    RequestResolutionTarget:
+      type: string
+      enum:
+        - USER
+        - ALL
+        - DEPARTMENT
+        - GROUP
+      description: Breadth of the approved increase; GROUP identifies an IdP group.
+    LimitIncreaseRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - request_id
+        - entity_type
+        - entity_id
+        - client_id
+        - requester_user_id
+        - period
+        - status
+        - created_at
+      description: Stored user or agent request, with optional resolution fields when available.
+      properties:
+        request_id:
+          type: string
+          description: Server-assigned resource identifier, distinct from the response's trace request_id.
+        entity_type:
+          type: string
+          enum:
+            - USER
+            - AGENT
+          description: Whether the request concerns a user or an agent.
+        entity_id:
+          type: string
+          description: Canonical user ID or agent ID whose limit the request concerns.
+        client_id:
+          type: string
+          description: Spend client for this user or agent request.
+        requester_user_id:
+          type: string
+          description: Authenticated user who created the request.
+        business_justification:
+          type: string
+          description: Stored explanation of why the increase is needed, when supplied.
+        period:
+          $ref: '#/components/schemas/RequestPeriod'
+          description: Stored request month; resolution does not change this month.
+        status:
+          $ref: '#/components/schemas/RequestStatus'
+          description: Current stored request state.
+        resolved_by_user_id:
+          type: string
+          description: User who resolved the request, when available.
+        approved_increase_amount:
+          $ref: '#/components/schemas/ApprovedIncreaseAmount'
+          description: Stored additive approval amount, when available.
+        scope:
+          $ref: '#/components/schemas/RequestScope'
+          description: Approval scope derived from the stored ongoing flag, when available.
+        resolution_target:
+          $ref: '#/components/schemas/RequestResolutionTarget'
+          description: Stored approval breadth, when available.
+        resolution_target_id:
+          type: string
+          description: Stored department or canonical IdP group ID, when available.
+        resolution_note:
+          type: string
+          description: Stored denial note, when supplied.
+        created_at:
+          type: string
+          format: date-time
+          description: Request creation time.
+        updated_at:
+          type: string
+          format: date-time
+          description: Last stored update time; this is the resolution time for resolved requests.
+    RequestListResponse:
+      type: object
+      additionalProperties: false
+      description: Bounded page of authorized requests with opaque continuation state.
+      required:
+        - results
+        - has_more
+        - request_id
+      properties:
+        results:
+          type: array
+          description: Requests visible to the caller under the current filters and authorization.
+          items:
+            $ref: '#/components/schemas/LimitIncreaseRequest'
+            description: One authorized request in the page.
+        has_more:
+          type: boolean
+          description: Whether a further page is available through next_cursor.
+        next_cursor:
+          type:
+            - string
+            - 'null'
+          description: Opaque nonempty continuation when has_more is true; null or omitted otherwise.
+        request_id:
+          type: string
+          description: Trace identifier for this list response, not a request resource ID.
+      allOf:
+        - description: Continuation availability must agree with the cursor.
+          oneOf:
+            - description: A further page requires a usable continuation cursor.
+              required:
+                - next_cursor
+              properties:
+                has_more:
+                  type: boolean
+                  description: Further-page discriminator.
+                  enum:
+                    - true
+                next_cursor:
+                  type: string
+                  description: Opaque nonempty cursor for the next authorized page.
+                  minLength: 1
+            - description: The last page has no continuation cursor.
+              properties:
+                has_more:
+                  type: boolean
+                  description: Last-page discriminator.
+                  enum:
+                    - false
+                next_cursor:
+                  type: 'null'
+                  description: If present on the last page, the cursor must be null.
+    PersonalRequestCreate:
+      type: object
+      additionalProperties: false
+      required:
+        - client_id
+      description: New request for the authenticated canonical user in the server's current UTC month.
+      properties:
+        client_id:
+          type: string
+          minLength: 1
+          description: Explicit spend client whose limit the request concerns.
+        business_justification:
+          type: string
+          description: Optional explanation of why the increase is needed.
+    RequestResponse:
+      type: object
+      additionalProperties: false
+      description: Single authorized request with the enclosing response's trace identifier.
+      required:
+        - request
+        - request_id
+      properties:
+        request:
+          $ref: '#/components/schemas/LimitIncreaseRequest'
+          description: Authorized request at its current stored state.
+        request_id:
+          type: string
+          description: Trace identifier, distinct from the resource ID.
+    AgentRequestCreate:
+      type: object
+      additionalProperties: false
+      required:
+        - agent_id
+        - client_id
+      description: New client-scoped request for an editable agent in the server's current UTC month.
+      properties:
+        agent_id:
+          type: string
+          minLength: 1
+          maxLength: 256
+          description: Identifier of the agent whose limit the request concerns.
+        client_id:
+          type: string
+          minLength: 1
+          description: Explicit spend client whose limit the request concerns.
+        business_justification:
+          type: string
+          description: Optional explanation of why the increase is needed.
+    AdministrativeRequestUpdate:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+      description: |
+        Resolve a pending request. Approval adds to the applicable limit; it does not replace the limit with an absolute value. Request identity and period cannot change.
+      properties:
+        status:
+          type: string
+          enum:
+            - APPROVED
+            - DENIED
+          description: Requested terminal state.
+        approved_increase_amount:
+          $ref: '#/components/schemas/ApprovedIncreaseAmount'
+          description: Positive additive increase, required only for approval.
+        scope:
+          $ref: '#/components/schemas/RequestScope'
+          default: PERIOD
+          description: Approval scope; omission selects PERIOD. ONGOING is unsupported for agents.
+        resolution_target:
+          $ref: '#/components/schemas/RequestResolutionTarget'
+          description: Approval breadth; required for an ONGOING approval.
+        resolution_target_id:
+          type: string
+          description: |
+            Optional resolution target identifier. An ONGOING GROUP approval needs the canonical IdP group ID. A supplied department must match the subject's department.
+        resolution_note:
+          type: string
+          description: Optional note recorded when denying the request.
+      allOf:
+        - description: Approval carries an increase; denial can carry a note.
+          oneOf:
+            - description: Approve with a positive additive increase.
+              required:
+                - approved_increase_amount
+              properties:
+                status:
+                  description: Approval discriminator.
+                  enum:
+                    - APPROVED
+              not:
+                description: Approval does not record a resolution note.
+                required:
+                  - resolution_note
+              oneOf:
+                - description: A period approval does not change the standing rule.
+                  properties:
+                    scope:
+                      description: Period approval, also selected when scope is omitted.
+                      enum:
+                        - PERIOD
+                - description: An ongoing user approval selects a standing-rule target.
+                  required:
+                    - scope
+                    - resolution_target
+                  properties:
+                    scope:
+                      description: Ongoing approval discriminator.
+                      enum:
+                        - ONGOING
+                  oneOf:
+                    - description: A user, organization, or department target needs no group identifier.
+                      properties:
+                        resolution_target:
+                          description: Non-group standing-rule target.
+                          enum:
+                            - USER
+                            - ALL
+                            - DEPARTMENT
+                    - description: A group target requires its canonical IdP group identifier.
+                      required:
+                        - resolution_target_id
+                      properties:
+                        resolution_target:
+                          description: Group standing-rule target.
+                          enum:
+                            - GROUP
+                        resolution_target_id:
+                          description: Nonempty canonical IdP group identifier.
+                          minLength: 1
+            - description: Deny without approval fields.
+              properties:
+                status:
+                  description: Denial discriminator.
+                  enum:
+                    - DENIED
+              not:
+                description: Approval fields are not denial inputs.
+                anyOf:
+                  - required:
+                      - approved_increase_amount
+                    description: Detect an approval amount.
+                  - required:
+                      - scope
+                    description: Detect an approval scope.
+                  - required:
+                      - resolution_target
+                    description: Detect an approval target.
+                  - required:
+                      - resolution_target_id
+                    description: Detect an approval target identifier.
     TriggerStatus:
       type: string
       description: Current trigger lifecycle state.
@@ -5736,7 +6735,55 @@ components:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/ProblemDetail'
+    RequestResource:
+      description: The authorized request in its current stored state.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestResponse'
+            description: Current authorized request with a response trace identifier.
   parameters:
+    PageSize:
+      name: page_size
+      in: query
+      description: Maximum page size; defaults to 20 and cannot exceed 100. A page may contain fewer results.
+      schema:
+        type: integer
+        description: Requested upper bound on results in a page.
+        minimum: 1
+        maximum: 100
+        default: 20
+    Cursor:
+      name: cursor
+      in: query
+      description: Opaque cursor bound to filter fields, values, operators, and current authorization context.
+      schema:
+        type: string
+        description: Opaque continuation returned by a previous list response.
+    Filters:
+      name: filters
+      in: query
+      description: |
+        JSON-encoded filters. Only the field status and operator EQUALS are supported. Multiple values OR within a filter. Multiple filters AND together. Cursors bind all filter fields, values, and operators.
+      content:
+        application/json:
+          schema:
+            type: array
+            minItems: 1
+            description: Structured status filters, combined with AND.
+            items:
+              $ref: '#/components/schemas/RequestFilter'
+              description: One status filter criterion.
+    RequestId:
+      name: request_id
+      in: path
+      required: true
+      description: Opaque request identifier; never an authorization grant.
+      example: '{request_id}'
+      schema:
+        type: string
+        description: Nonempty identifier of the stored request resource.
+        minLength: 1
     TriggerWebhookId:
       name: webhook-id
       in: header
