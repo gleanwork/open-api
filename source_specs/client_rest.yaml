@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 1f1e3583b15d9b1e125f6eae9922db4c174f893c
+  x-source-commit-sha: f6415212c9aad9eea7d6f45bc10fa3298ccde68d
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -9410,6 +9410,15 @@ components:
               - AUTOCOMPLETE_FUZZY_MATCH
               - AUTOCOMPLETE_ZERO_QUERY
               - NEW_TAB_PAGE
+    UgcAction:
+      description: An action to perform on user-generated content. This may be accompanied by `text` on the ChatMessageFragment, which acts as the display name content of the pill.
+      oneOf:
+        - type: object
+          required:
+            - create
+          properties:
+            create:
+              $ref: '#/components/schemas/UgcType'
     AutocompleteResult:
       required:
         - result
@@ -9452,6 +9461,8 @@ components:
           type: string
         structuredResult:
           $ref: '#/components/schemas/StructuredResult'
+        ugcAction:
+          $ref: '#/components/schemas/UgcAction'
         trackingToken:
           type: string
           description: A token to be passed in /feedback events associated with this autocomplete result.
