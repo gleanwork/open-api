@@ -531,6 +531,125 @@ describe('OpenAPI YAML Transformer', () => {
     );
   });
 
+  test('omits unshipped Platform Usage APIs and keeps Skills GA', () => {
+    const sourceText = readFixture('platform.yaml');
+    const source = yaml.load(sourceText);
+    const transformed = yaml.load(transform(sourceText, 'platform.yaml'));
+    const httpMethods = [
+      'delete',
+      'get',
+      'head',
+      'options',
+      'patch',
+      'post',
+      'put',
+      'trace',
+    ];
+
+    const sourceUsage = [];
+    const sourceSkills = [];
+    for (const [path, pathItem] of Object.entries(source.paths ?? {})) {
+      for (const method of httpMethods) {
+        const operation = pathItem?.[method];
+        if (!operation) continue;
+        const group = operation['x-glean-sdk']?.group;
+        if (group === 'usage' || group === 'admin.usage') {
+          sourceUsage.push(`${method.toUpperCase()} ${path}`);
+        }
+        if (group === 'skills') sourceSkills.push(operation);
+      }
+    }
+
+    expect(sourceUsage.length).toBeGreaterThan(0);
+    expect(sourceSkills.length).toBeGreaterThan(0);
+    expect(
+      sourceSkills.every(
+        (operation) => operation['x-glean-experimental'] === undefined,
+      ),
+    ).toBe(true);
+
+    const leaked = [];
+    const skills = [];
+    for (const [path, pathItem] of Object.entries(transformed.paths ?? {})) {
+      if (
+        path === '/api/usage' ||
+        path.startsWith('/api/usage/') ||
+        path === '/api/admin/usage' ||
+        path.startsWith('/api/admin/usage/')
+      ) {
+        leaked.push(path);
+      }
+      for (const method of httpMethods) {
+        const operation = pathItem?.[method];
+        if (!operation) continue;
+        const group = operation['x-speakeasy-group'];
+        if (group === 'usage' || group === 'admin.usage') {
+          leaked.push(`${method.toUpperCase()} ${path} -> ${group}`);
+        }
+        if (group === 'skills') skills.push(operation);
+      }
+    }
+
+    expect(leaked).toEqual([]);
+    expect(skills.length).toBeGreaterThanOrEqual(sourceSkills.length);
+    expect(
+      skills.every(
+        (operation) => operation['x-glean-experimental'] === undefined,
+      ),
+    ).toBe(true);
+    expect(transformed.paths['/api/skills']?.post['x-speakeasy-group']).toBe(
+      'skills',
+    );
+    expect(transformed.components.schemas).not.toHaveProperty(
+      'PlatformUsageSettingsResponse',
+    );
+    expect(transformed.components.schemas).toHaveProperty(
+      'PlatformSkillCreateRequest',
+    );
+    expect(transformed.components.parameters).not.toHaveProperty('RequestId');
+    expect(transformed.components.parameters).not.toHaveProperty('PageSize');
+    expect(transformed.components.parameters).toHaveProperty(
+      'TriggerWebhookId',
+    );
+    expect(transformed.components.responses).toHaveProperty(
+      'PlatformBadRequest',
+    );
+
+    const dangling = [];
+    const visit = (value) => {
+      if (!value || typeof value !== 'object') return;
+      if (Array.isArray(value)) {
+        for (const item of value) visit(item);
+        return;
+      }
+      const mapping = value.discriminator?.mapping;
+      if (mapping && typeof mapping === 'object' && !Array.isArray(mapping)) {
+        for (const target of Object.values(mapping)) {
+          if (typeof target !== 'string') continue;
+          const name = target.startsWith('#/components/schemas/')
+            ? target.slice('#/components/schemas/'.length)
+            : target.startsWith('#/')
+              ? null
+              : target;
+          if (name && !transformed.components?.schemas?.[name]) {
+            dangling.push(target);
+          }
+        }
+      }
+      for (const [key, child] of Object.entries(value)) {
+        if (key === '$ref' && typeof child === 'string') {
+          if (!child.startsWith('#/components/')) continue;
+          const [kind, name] = child.slice('#/components/'.length).split('/');
+          if (!transformed.components?.[kind]?.[name]) dangling.push(child);
+          continue;
+        }
+        visit(child);
+      }
+    };
+    visit(transformed);
+    expect(dangling).toEqual([]);
+  });
+
   test('transformPlatformSpec keeps discriminator mapping targets resolvable', () => {
     const spec = yaml.load(readFixture('platform.yaml'));
     // Exercise the schema-name form in addition to the URI form used by source.

@@ -186,6 +186,26 @@ const httpMethods = new Set([
 ]);
 
 const platformSdkGroupPattern = /^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)*$/;
+// Source marks these Public, and x-glean-experimental only badges an endpoint
+// on the docs site (Skills shipped that way). These groups are not shipped:
+// omit them from the generated spec that feeds SDK bundles and final_specs.
+// Shipping one means removing it here and allowlisting its top-level namespace
+// in tests/post_transform_smoke.test.js.
+const unshippedPlatformSdkGroups = new Set(['admin.usage', 'usage']);
+const prunableComponentKinds = [
+  'schemas',
+  'responses',
+  'parameters',
+  'requestBodies',
+];
+const traversableComponentKinds = new Set([
+  ...prunableComponentKinds,
+  'headers',
+  'examples',
+  'links',
+  'callbacks',
+  'pathItems',
+]);
 const platformSdkMethodPattern = /^[a-z][A-Za-z0-9]*$/;
 const platformSdkFragmentPattern = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 const platformSdkVariantKeys = new Set([
@@ -700,6 +720,152 @@ function setPlatformSdkName(operation, group, method) {
   delete operation['x-glean-sdk'];
 }
 
+function decodeJsonPointerToken(token) {
+  return token.replace(/~1/g, '/').replace(/~0/g, '~');
+}
+
+function componentRef(ref) {
+  if (typeof ref !== 'string' || !ref.startsWith('#/components/')) return null;
+
+  const [kind, encodedName] = ref.slice('#/components/'.length).split('/');
+  if (!kind || !encodedName || !traversableComponentKinds.has(kind))
+    return null;
+
+  return `#/components/${kind}/${decodeJsonPointerToken(encodedName)}`;
+}
+
+function addComponentRef(ref, refs) {
+  const normalized = componentRef(ref);
+  if (normalized) refs.add(normalized);
+}
+
+function collectComponentRefs(value, refs) {
+  if (!value || typeof value !== 'object') return;
+
+  if (Array.isArray(value)) {
+    for (const item of value) collectComponentRefs(item, refs);
+    return;
+  }
+
+  const mapping = value.discriminator?.mapping;
+  if (mapping && typeof mapping === 'object' && !Array.isArray(mapping)) {
+    for (const target of Object.values(mapping)) {
+      if (typeof target !== 'string' || target.length === 0) continue;
+      addComponentRef(
+        target.startsWith('#/') ? target : `#/components/schemas/${target}`,
+        refs,
+      );
+    }
+  }
+
+  for (const [key, child] of Object.entries(value)) {
+    if (key === '$ref' && typeof child === 'string') {
+      addComponentRef(child, refs);
+      continue;
+    }
+    collectComponentRefs(child, refs);
+  }
+}
+
+function componentAt(spec, ref) {
+  const normalized = componentRef(ref);
+  if (!normalized) return undefined;
+
+  const match = normalized.match(/^#\/components\/([^/]+)\/(.*)$/);
+  if (!match) return undefined;
+
+  return spec.components?.[match[1]]?.[match[2]];
+}
+
+function expandComponentRefs(spec, seed) {
+  const seen = new Set();
+  const queue = [...seed];
+
+  while (queue.length > 0) {
+    const ref = queue.pop();
+    if (seen.has(ref)) continue;
+    seen.add(ref);
+
+    const nested = new Set();
+    collectComponentRefs(componentAt(spec, ref), nested);
+    for (const nestedRef of nested) {
+      if (!seen.has(nestedRef)) queue.push(nestedRef);
+    }
+  }
+
+  return seen;
+}
+
+function reachableComponentRefs(spec) {
+  const components = { ...(spec.components ?? {}) };
+  for (const kind of prunableComponentKinds) {
+    delete components[kind];
+  }
+
+  const seed = new Set();
+  collectComponentRefs({ ...spec, components }, seed);
+  return expandComponentRefs(spec, seed);
+}
+
+function omitUnshippedPlatformOperations(spec) {
+  if (!spec.paths) return;
+
+  const removedRefs = new Set();
+  const removals = [];
+
+  for (const [path, pathItem] of Object.entries(spec.paths)) {
+    if (!pathItem || typeof pathItem !== 'object') continue;
+
+    const removedMethods = [];
+    for (const method of httpMethods) {
+      const operation = pathItem[method];
+      if (!operation || typeof operation !== 'object') continue;
+      if (!unshippedPlatformSdkGroups.has(operation['x-speakeasy-group'])) {
+        continue;
+      }
+      removedMethods.push(method);
+    }
+    if (removedMethods.length === 0) continue;
+
+    const keepsOperation = [...httpMethods].some(
+      (method) => pathItem[method] && !removedMethods.includes(method),
+    );
+    // A path that loses every operation also loses its parameters. Collect
+    // refs before mutating; the path item is the object we then edit.
+    if (keepsOperation) {
+      for (const method of removedMethods) {
+        collectComponentRefs(pathItem[method], removedRefs);
+      }
+    } else {
+      collectComponentRefs(pathItem, removedRefs);
+    }
+    removals.push({ path, pathItem, removedMethods, keepsOperation });
+  }
+
+  const usedByRemoved = expandComponentRefs(spec, removedRefs);
+
+  for (const { path, pathItem, removedMethods, keepsOperation } of removals) {
+    for (const method of removedMethods) delete pathItem[method];
+    if (!keepsOperation) delete spec.paths[path];
+  }
+
+  // Drop models and parameters that only the omitted operations referenced,
+  // so the published spec does not keep the unshipped Usage contract.
+  // Components that were already unreferenced stay put.
+  const stillReachable = reachableComponentRefs(spec);
+  for (const kind of prunableComponentKinds) {
+    const components = spec.components?.[kind];
+    if (!components) continue;
+
+    for (const name of Object.keys(components)) {
+      const ref = `#/components/${kind}/${name}`;
+      if (usedByRemoved.has(ref) && !stillReachable.has(ref)) {
+        delete components[name];
+      }
+    }
+  }
+}
+
 function clonePathItemMetadata(pathItem) {
   return Object.fromEntries(
     Object.entries(pathItem)
@@ -949,6 +1115,8 @@ function transformPlatformOperations(spec) {
       };
     }
   }
+
+  omitUnshippedPlatformOperations(spec);
 }
 
 export function transformPlatformSpec(spec) {
