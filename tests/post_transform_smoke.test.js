@@ -237,12 +237,16 @@ describe('Post-transformation smoke tests', () => {
     // without a group silently falls back to its `tags` and leaks a method to
     // the SDK top level. The top level is reserved for the Platform API, so
     // client/indexing operations must be nested under `client.*` / `indexing.*`.
+    // Platform groups come from source x-glean-sdk.group. `admin` is the
+    // top-level segment of `admin.usage`.
     const platformSegments = new Set([
+      'admin',
       'agents',
       'chat',
       'search',
       'skills',
       'triggers',
+      'usage',
     ]);
     const allowedTopLevelSegments = new Set([
       'client',
