@@ -19,13 +19,16 @@ This repository manages several types of OpenAPI specifications in different dir
 
 The `overlays` directory contains OpenAPI Specification overlay files used to modify the base specs:
 
-| File                                   | Description                                                                                                                              |
-| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `info-name-overlay.yaml`               | Modifies the API title and adds Speakeasy naming metadata to improve SDK generation.                                                     |
-| `strip-headers-overlay.yaml`           | Removes specific authentication headers from the API specification that shouldn't be exposed in the generated SDKs.                      |
-| `speakeasy-modifications-overlay.yaml` | Contains extensive Speakeasy-specific modifications to improve SDK generation, including method name overrides and grouping information. |
+| File                                   | Description                                                                                                                                              |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `info-name-overlay.yaml`               | Modifies the API title and adds Speakeasy naming metadata to improve SDK generation.                                                                     |
+| `strip-headers-overlay.yaml`           | Removes specific authentication headers from the API specification that shouldn't be exposed in the generated SDKs.                                      |
+| `speakeasy-modifications-overlay.yaml` | Contains extensive Speakeasy-specific modifications to improve SDK generation, including method name overrides and grouping information.                 |
+| `public-visibility-overlay.yaml`       | Keeps only operations marked `x-visibility: Public`, and marks the legacy, unannotated Indexing API operations Public. Applied last in each spec source. |
 
 These overlay files use the OpenAPI Specification Overlay format (RFC9535) to apply targeted modifications to the base specs without changing the original files. Speakeasy uses these overlays during the SDK generation process.
+
+An operation missing `x-visibility` upstream is removed from every SDK by `public-visibility-overlay.yaml`. The post-transform smoke tests fail when that happens, so annotate the operation in the source spec as `Public` or `Internal` rather than letting it disappear.
 
 ## Merged Code Samples Specs
 
