@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: f71fef861daa97c9e77d1a8b930e3d90967f9b43
+  x-source-commit-sha: ef5102ae601e2985f86d5cea0abd49ce3ac92d71
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 89a260be441ff8c5058034ce94bab4d8d83c933c
+  x-open-api-commit-sha: 904ae914fed55c9bf0afececd89c742455f12add
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -9742,6 +9742,7 @@ components:
               - ZERO_STATE_CHAT_TOOL_SUGGESTION
               - ZERO_STATE_WORKFLOW_CREATED_BY_ME
               - ZERO_STATE_WORKFLOW_FAVORITES
+              - ZERO_STATE_GLEAN_AGENT_COWORKERS
               - ZERO_STATE_WORKFLOW_POPULAR
               - ZERO_STATE_WORKFLOW_RECENT
               - ZERO_STATE_WORKFLOW_SUGGESTION
@@ -10338,6 +10339,7 @@ components:
             - ZERO_STATE_CHAT_TOOL_SUGGESTION
             - ZERO_STATE_WORKFLOW_CREATED_BY_ME
             - ZERO_STATE_WORKFLOW_FAVORITES
+            - ZERO_STATE_GLEAN_AGENT_COWORKERS
             - ZERO_STATE_WORKFLOW_POPULAR
             - ZERO_STATE_WORKFLOW_RECENT
             - ZERO_STATE_WORKFLOW_SUGGESTION
