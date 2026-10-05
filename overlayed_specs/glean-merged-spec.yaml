@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: beed58d4df1a2fdf3f13a0c721f9478e75ccde7c
-  x-open-api-commit-sha: 4fb4b1c1b26732bca168a8e8338a19d217b2901c
+  x-source-commit-sha: f71fef861daa97c9e77d1a8b930e3d90967f9b43
+  x-open-api-commit-sha: 89a260be441ff8c5058034ce94bab4d8d83c933c
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -12805,6 +12805,10 @@ components:
           type: string
           format: url
           description: Link to profile.
+        iconUrl:
+          type: string
+          format: url
+          description: URL of the icon to display for this social network, when available.
       required:
         - name
         - profileUrl
