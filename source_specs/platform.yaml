@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 050d12698f21b287240604824ce880d643552dbd
+  x-source-commit-sha: 0e61e79da36c342426eb5c06d5ce66e7845d146d
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -1901,7 +1901,7 @@ paths:
         id: d9f125f8-85f3-4221-8627-0b39f6d5b4ab
         introduced: '2026-09-25'
       description: |
-        Requires usage.limit_increase_requests:write. The target is the authenticated canonical user, and requester identity comes from authentication. The caller supplies the client and optional business justification. The server assigns the request identifier and current UTC month. Billing grants do not widen this route. This internal scaffold returns 503 without creating a request.
+        Requires usage.limit_increase_requests:write. The target is the authenticated canonical user, and requester identity comes from authentication. The caller supplies the client and optional business justification. The server assigns the request identifier and current UTC month. Billing grants do not widen this route. Requires shared Platform authentication with the required scope, experimental opt-in, and the existing request-more enablement flag. Missing opt-in or a disabled flag returns 404.
       requestBody:
         required: true
         content:
@@ -1926,7 +1926,8 @@ paths:
           description: The caller lacks the required scope or current resource permission.
         '404':
           $ref: '#/components/responses/NotFound'
-          description: The authorized request was not found.
+          description: |
+            Experimental opt-in is missing, the enablement flag is disabled, or the request is missing or inaccessible.
         '408':
           $ref: '#/components/responses/RequestTimeout'
           description: The operation timed out.
@@ -1944,7 +1945,7 @@ paths:
           description: An unexpected internal error prevented completion.
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
-          description: Request handling is unavailable; the internal scaffold fails closed.
+          description: The operation is unsupported or temporarily unavailable; ONGOING approval is unsupported.
     get:
       tags:
         - Usage
@@ -1963,7 +1964,7 @@ paths:
         id: d92d077c-81c0-4d91-868d-021eed013d8d
         introduced: '2026-09-25'
       description: |
-        Requires usage.limit_increase_requests:read. The collection is limited to the authenticated canonical user's requests, including resolved requests. Cursors bind the filters and current authorization context; a billing grant cannot widen results. This internal scaffold returns 503 without reading requests.
+        Requires usage.limit_increase_requests:read. The collection is limited to the authenticated canonical user's requests, including resolved requests. Cursors bind the filters and current authorization context; a billing grant cannot widen results. Supported token issuance, experimental opt-in, and request-more enablement are required. Missing opt-in or a disabled flag returns 404.
       parameters:
         - $ref: '#/components/parameters/PageSize'
           description: Maximum page size; defaults to 20 and cannot exceed 100.
@@ -1990,7 +1991,8 @@ paths:
           description: The caller lacks the required scope or current resource permission.
         '404':
           $ref: '#/components/responses/NotFound'
-          description: The authorized request was not found.
+          description: |
+            Experimental opt-in is missing, the enablement flag is disabled, or the request is missing or inaccessible.
         '408':
           $ref: '#/components/responses/RequestTimeout'
           description: The operation timed out.
@@ -2002,7 +2004,7 @@ paths:
           description: An unexpected internal error prevented completion.
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
-          description: Request handling is unavailable; the internal scaffold fails closed.
+          description: The operation is unsupported or temporarily unavailable; ONGOING approval is unsupported.
   /usage/limit-increase-requests/{request_id}:
     parameters:
       - $ref: '#/components/parameters/RequestId'
@@ -2025,7 +2027,7 @@ paths:
         id: 29a2f132-a0c2-429f-95e7-7995de058cd3
         introduced: '2026-09-25'
       description: |
-        Requires usage.limit_increase_requests:read and the current user's request. Authorization precedes resource disclosure. This internal scaffold returns 503 without reading the request.
+        Requires usage.limit_increase_requests:read and the current user's request. Authorization precedes resource disclosure. Missing and inaccessible records return the same 404. Supported token issuance, experimental opt-in, and request-more enablement are required. Missing opt-in or a disabled flag also returns 404.
       responses:
         '200':
           $ref: '#/components/responses/RequestResource'
@@ -2041,7 +2043,8 @@ paths:
           description: The caller lacks the required scope or current resource permission.
         '404':
           $ref: '#/components/responses/NotFound'
-          description: The authorized request was not found.
+          description: |
+            Experimental opt-in is missing, the enablement flag is disabled, or the request is missing or inaccessible.
         '408':
           $ref: '#/components/responses/RequestTimeout'
           description: The operation timed out.
@@ -2053,7 +2056,7 @@ paths:
           description: An unexpected internal error prevented completion.
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
-          description: Request handling is unavailable; the internal scaffold fails closed.
+          description: The operation is unsupported or temporarily unavailable; ONGOING approval is unsupported.
   /admin/usage/limit-increase-requests:
     post:
       tags:
@@ -2073,7 +2076,7 @@ paths:
         id: e28f40de-1f6c-4dc6-ab12-4054b89628c1
         introduced: '2026-09-25'
       description: |
-        Requires usage.limit_increase_requests:write, the same scope as personal creation, and current edit permission on the agent, not billing permissions. The caller supplies the agent, client, and optional business justification. Requester identity comes from authentication; the server assigns the request identifier and current UTC month. This internal scaffold returns 503 without creating a request.
+        Requires usage.limit_increase_requests:write, the same scope as personal creation, and current edit permission on the agent, not billing permissions. The caller supplies the agent, client, and optional business justification. Requester identity comes from authentication; the server assigns the request identifier and current UTC month. Requires shared Platform authentication with the required scope, experimental opt-in, and the existing request-more enablement flag. Missing opt-in or a disabled flag returns 404.
       requestBody:
         required: true
         content:
@@ -2099,7 +2102,8 @@ paths:
           description: The caller lacks the required scope or current resource permission.
         '404':
           $ref: '#/components/responses/NotFound'
-          description: The authorized request was not found.
+          description: |
+            Experimental opt-in is missing, the enablement flag is disabled, or the request is missing or inaccessible.
         '408':
           $ref: '#/components/responses/RequestTimeout'
           description: The operation timed out.
@@ -2117,7 +2121,7 @@ paths:
           description: An unexpected internal error prevented completion.
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
-          description: Request handling is unavailable; the internal scaffold fails closed.
+          description: The operation is unsupported or temporarily unavailable; ONGOING approval is unsupported.
     get:
       tags:
         - Usage
@@ -2136,7 +2140,7 @@ paths:
         id: b02bb653-00f9-4739-b387-90f68c7385ee
         introduced: '2026-09-25'
       description: |
-        Requires admin.usage.limit_increase_requests:read and current workspace billing read permission. Agent ownership is not queue access. Cursors bind filters and current authorization context. This internal scaffold returns 503, not a successful empty page.
+        Requires admin.usage.limit_increase_requests:read and current workspace billing read permission. Agent ownership is not queue access. Cursors bind filters and current authorization context. Supported token issuance, experimental opt-in, and request-more enablement are required. Missing opt-in or a disabled flag returns 404, not a successful empty page.
       parameters:
         - $ref: '#/components/parameters/PageSize'
           description: Maximum page size; defaults to 20 and cannot exceed 100.
@@ -2163,7 +2167,8 @@ paths:
           description: The caller lacks the required scope or current resource permission.
         '404':
           $ref: '#/components/responses/NotFound'
-          description: The authorized request was not found.
+          description: |
+            Experimental opt-in is missing, the enablement flag is disabled, or the request is missing or inaccessible.
         '408':
           $ref: '#/components/responses/RequestTimeout'
           description: The operation timed out.
@@ -2175,7 +2180,7 @@ paths:
           description: An unexpected internal error prevented completion.
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
-          description: Request handling is unavailable; the internal scaffold fails closed.
+          description: The operation is unsupported or temporarily unavailable; ONGOING approval is unsupported.
   /admin/usage/limit-increase-requests/{request_id}:
     parameters:
       - $ref: '#/components/parameters/RequestId'
@@ -2198,7 +2203,7 @@ paths:
         id: 88f1a13a-3e09-4c78-a2dc-87cc223dc003
         introduced: '2026-09-25'
       description: |
-        Requires admin.usage.limit_increase_requests:read. Authorization precedes resource disclosure. This internal scaffold returns 503 without reading the request.
+        Requires admin.usage.limit_increase_requests:read and current workspace billing read permission. Authorization precedes resource disclosure. Owner-only agent reads are not supported. Supported token issuance, experimental opt-in, and request-more enablement are required. Missing opt-in or a disabled flag returns 404.
       responses:
         '200':
           $ref: '#/components/responses/RequestResource'
@@ -2214,7 +2219,8 @@ paths:
           description: The caller lacks the required scope or current resource permission.
         '404':
           $ref: '#/components/responses/NotFound'
-          description: The authorized request was not found.
+          description: |
+            Experimental opt-in is missing, the enablement flag is disabled, or the request is missing or inaccessible.
         '408':
           $ref: '#/components/responses/RequestTimeout'
           description: The operation timed out.
@@ -2226,7 +2232,7 @@ paths:
           description: An unexpected internal error prevented completion.
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
-          description: Request handling is unavailable; the internal scaffold fails closed.
+          description: The operation is unsupported or temporarily unavailable; ONGOING approval is unsupported.
     patch:
       tags:
         - Usage
@@ -2245,14 +2251,14 @@ paths:
         id: 08d999ca-f438-4fed-81ce-350c7e65c2cc
         introduced: '2026-09-25'
       description: |
-        Update a pending request with an approval decision or denial. Requires admin.usage.limit_increase_requests:write and current billing edit permission. A pending request can be approved with a positive additive increase or denied with an optional resolution note. PERIOD applies to the request's stored month; ONGOING increases the applicable standing rule at the selected resolution target. Ongoing approval is supported only for user requests, not agent requests. This internal scaffold returns 503 without resolving requests or changing policy.
+        Update a pending request with an approval decision or denial. Requires admin.usage.limit_increase_requests:write and current billing edit permission. A pending request can record an approved positive increase amount or be denied with an optional resolution note. PERIOD approval is a decision record for the request's stored month only. It does not change spend limits, evaluation, or enforcement headroom. This does not promise new delivery or atomicity guarantees. Supported token issuance, experimental opt-in, and request-more enablement are required. Missing opt-in or a disabled flag returns 404. Once enabled and opted in, ONGOING returns typed 503 without reading or modifying the request; its private policy preparation is not shared with this adapter. Use the existing app operation for ongoing user approvals.
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/AdministrativeRequestUpdate'
-              description: Additive approval or denial of a pending request.
+              description: Record a PERIOD approval decision or denial of a pending request.
             example:
               status: APPROVED
               approved_increase_amount: '100.00'
@@ -2272,7 +2278,8 @@ paths:
           description: The caller lacks the required scope or current resource permission.
         '404':
           $ref: '#/components/responses/NotFound'
-          description: The authorized request was not found.
+          description: |
+            Experimental opt-in is missing, the enablement flag is disabled, or the request is missing or inaccessible.
         '408':
           $ref: '#/components/responses/RequestTimeout'
           description: The operation timed out.
@@ -2290,7 +2297,7 @@ paths:
           description: An unexpected internal error prevented completion.
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
-          description: Request handling is unavailable; the internal scaffold fails closed.
+          description: The operation is unsupported or temporarily unavailable; ONGOING approval is unsupported.
   /triggers:
     post:
       tags:
@@ -5795,6 +5802,51 @@ components:
             - EQUALS
           default: EQUALS
           description: Only EQUALS is supported; defaults to EQUALS when omitted.
+    RequestResolutionFields:
+      type: object
+      description: |
+        Valid input and response combinations: PERIOD may omit both fields; USER and ALL forbid an identifier; GROUP requires a nonempty canonical IdP group ID; DEPARTMENT requires a nonempty explicit department name. ONGOING requires a resolution target.
+      allOf:
+        - oneOf:
+            - description: Omitted resolution fields for an unresolved request or PERIOD approval.
+              properties:
+                scope:
+                  description: Only PERIOD can omit the resolution target when scope is present.
+                  enum:
+                    - PERIOD
+              not:
+                anyOf:
+                  - required:
+                      - resolution_target
+                    description: Detect a resolution target.
+                  - required:
+                      - resolution_target_id
+                    description: Detect a resolution target identifier.
+            - description: USER and ALL do not have a separate resolution target identifier.
+              required:
+                - resolution_target
+              properties:
+                resolution_target:
+                  description: User or organization approval breadth.
+                  enum:
+                    - USER
+                    - ALL
+              not:
+                required:
+                  - resolution_target_id
+            - description: GROUP and DEPARTMENT require their corresponding identifier.
+              required:
+                - resolution_target
+                - resolution_target_id
+              properties:
+                resolution_target:
+                  description: Group or department approval breadth.
+                  enum:
+                    - GROUP
+                    - DEPARTMENT
+                resolution_target_id:
+                  description: Canonical IdP group ID or explicit department name.
+                  minLength: 1
     RequestPeriod:
       type: string
       pattern: ^[0-9]{4}-(0[1-9]|1[0-2])$
@@ -5803,13 +5855,14 @@ components:
       type: string
       pattern: ^([1-9][0-9]*(\.[0-9]+)?|0\.[0-9]*[1-9][0-9]*)$
       description: |
-        Positive additive increase in the applicable rule's denomination, encoded as a plain decimal string. The backend stores float32 values, not arbitrary-precision decimals.
+        Recorded positive increase amount in the applicable rule's denomination, encoded as a plain decimal string. PERIOD approval does not apply this amount to spend limits or headroom. The backend stores float32 values, not arbitrary-precision decimals.
     RequestScope:
       type: string
       enum:
         - PERIOD
         - ONGOING
-      description: Increase for the stored request month or an ongoing standing-rule increase.
+      description: |
+        PERIOD records a decision for the stored request month without changing limits or headroom. ONGOING identifies a standing-rule approval in existing app records; this API does not support creating ONGOING approvals.
     RequestResolutionTarget:
       type: string
       enum:
@@ -5885,6 +5938,9 @@ components:
           type: string
           format: date-time
           description: Last stored update time; this is the resolution time for resolved requests.
+      allOf:
+        - $ref: '#/components/schemas/RequestResolutionFields'
+          description: Shared resolution target and identifier pairings.
     RequestListResponse:
       type: object
       additionalProperties: false
@@ -5947,9 +6003,16 @@ components:
         client_id:
           type: string
           minLength: 1
-          description: Explicit spend client whose limit the request concerns.
+          maxLength: 256
+          pattern: ^[^\x00-\x1f\x7f]+$
+          not:
+            enum:
+              - __deleted_clients__
+          description: |
+            Explicit opaque spend-client ID, retained without normalization and not inferred from the authenticating OAuth application. Control characters and the synthetic __deleted_clients__ aggregation ID are not valid spend-client IDs.
         business_justification:
           type: string
+          maxLength: 4096
           description: Optional explanation of why the increase is needed.
     RequestResponse:
       type: object
@@ -5981,9 +6044,16 @@ components:
         client_id:
           type: string
           minLength: 1
-          description: Explicit spend client whose limit the request concerns.
+          maxLength: 256
+          pattern: ^[^\x00-\x1f\x7f]+$
+          not:
+            enum:
+              - __deleted_clients__
+          description: |
+            Explicit opaque spend-client ID, retained without normalization and not inferred from the authenticating OAuth application. Control characters and the synthetic __deleted_clients__ aggregation ID are not valid spend-client IDs.
         business_justification:
           type: string
+          maxLength: 4096
           description: Optional explanation of why the increase is needed.
     AdministrativeRequestUpdate:
       type: object
@@ -5991,7 +6061,7 @@ components:
       required:
         - status
       description: |
-        Resolve a pending request. Approval adds to the applicable limit; it does not replace the limit with an absolute value. Request identity and period cannot change.
+        Resolve a pending request. PERIOD approval records the decision and positive increase amount only; it does not change spend limits or effective headroom. ONGOING approval is unavailable on this API and returns 503. Request identity and period cannot change.
       properties:
         status:
           type: string
@@ -6001,25 +6071,29 @@ components:
           description: Requested terminal state.
         approved_increase_amount:
           $ref: '#/components/schemas/ApprovedIncreaseAmount'
-          description: Positive additive increase, required only for approval.
+          description: Positive increase amount to record, required only for approval.
         scope:
           $ref: '#/components/schemas/RequestScope'
           default: PERIOD
-          description: Approval scope; omission selects PERIOD. ONGOING is unsupported for agents.
+          description: Approval scope; omission selects PERIOD. ONGOING returns 503 on this API.
         resolution_target:
           $ref: '#/components/schemas/RequestResolutionTarget'
           description: Approval breadth; required for an ONGOING approval.
         resolution_target_id:
           type: string
+          maxLength: 256
           description: |
-            Optional resolution target identifier. An ONGOING GROUP approval needs the canonical IdP group ID. A supplied department must match the subject's department.
+            Required canonical IdP group ID for GROUP or explicit department name for DEPARTMENT. Forbidden for USER, ALL, or an omitted resolution target.
         resolution_note:
           type: string
+          maxLength: 4096
           description: Optional note recorded when denying the request.
       allOf:
-        - description: Approval carries an increase; denial can carry a note.
+        - $ref: '#/components/schemas/RequestResolutionFields'
+          description: Shared resolution target and identifier pairings.
+        - description: Approval records an increase amount; denial can record a note.
           oneOf:
-            - description: Approve with a positive additive increase.
+            - description: Record approval with a positive increase amount.
               required:
                 - approved_increase_amount
               properties:
@@ -6032,13 +6106,13 @@ components:
                 required:
                   - resolution_note
               oneOf:
-                - description: A period approval does not change the standing rule.
+                - description: A PERIOD approval records a decision without changing limits or headroom.
                   properties:
                     scope:
                       description: Period approval, also selected when scope is omitted.
                       enum:
                         - PERIOD
-                - description: An ongoing user approval selects a standing-rule target.
+                - description: ONGOING input is recognized but returns 503 without changing the request.
                   required:
                     - scope
                     - resolution_target
@@ -6047,26 +6121,6 @@ components:
                       description: Ongoing approval discriminator.
                       enum:
                         - ONGOING
-                  oneOf:
-                    - description: A user, organization, or department target needs no group identifier.
-                      properties:
-                        resolution_target:
-                          description: Non-group standing-rule target.
-                          enum:
-                            - USER
-                            - ALL
-                            - DEPARTMENT
-                    - description: A group target requires its canonical IdP group identifier.
-                      required:
-                        - resolution_target_id
-                      properties:
-                        resolution_target:
-                          description: Group standing-rule target.
-                          enum:
-                            - GROUP
-                        resolution_target_id:
-                          description: Nonempty canonical IdP group identifier.
-                          minLength: 1
             - description: Deny without approval fields.
               properties:
                 status:
@@ -6762,6 +6816,7 @@ components:
       schema:
         type: string
         description: Opaque continuation returned by a previous list response.
+        maxLength: 8192
     Filters:
       name: filters
       in: query
@@ -6772,6 +6827,7 @@ components:
           schema:
             type: array
             minItems: 1
+            maxItems: 100
             description: Structured status filters, combined with AND.
             items:
               $ref: '#/components/schemas/RequestFilter'
@@ -6786,6 +6842,7 @@ components:
         type: string
         description: Nonempty identifier of the stored request resource.
         minLength: 1
+        maxLength: 256
     TriggerWebhookId:
       name: webhook-id
       in: header
