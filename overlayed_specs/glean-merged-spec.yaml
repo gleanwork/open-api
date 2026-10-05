@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: ef5102ae601e2985f86d5cea0abd49ce3ac92d71
-  x-open-api-commit-sha: 904ae914fed55c9bf0afececd89c742455f12add
+  x-source-commit-sha: 91d02d6bfa1f67049f81c6764f689069f28dd5cb
+  x-open-api-commit-sha: 90457a778e1b00d51856e6e3583855268a66b2c3
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -9614,6 +9614,7 @@ components:
         - READY_FOR_REVIEW
         - CONVERTED_TO_DRAFT
         - WEBHOOK_UPDATED
+        - WEBHOOK_CREATED
       x-enumDescriptions:
         CREATED: The document was created.
         UPDATED: The document was updated.
@@ -9628,6 +9629,7 @@ components:
         READY_FOR_REVIEW: A draft was marked ready for review.
         CONVERTED_TO_DRAFT: The item was converted back to a draft.
         WEBHOOK_UPDATED: The source system sent a webhook update.
+        WEBHOOK_CREATED: The source system sent a webhook creation event.
       x-speakeasy-enum-descriptions:
         CREATED: The document was created.
         UPDATED: The document was updated.
@@ -9642,6 +9644,7 @@ components:
         READY_FOR_REVIEW: A draft was marked ready for review.
         CONVERTED_TO_DRAFT: The item was converted back to a draft.
         WEBHOOK_UPDATED: The source system sent a webhook update.
+        WEBHOOK_CREATED: The source system sent a webhook creation event.
     PlatformTriggerEvent:
       type: object
       required:
