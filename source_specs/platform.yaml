@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 0e61e79da36c342426eb5c06d5ce66e7845d146d
+  x-source-commit-sha: 5f0eab186149017bb44aaa91d047cad5840c2f93
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -2251,7 +2251,7 @@ paths:
         id: 08d999ca-f438-4fed-81ce-350c7e65c2cc
         introduced: '2026-09-25'
       description: |
-        Update a pending request with an approval decision or denial. Requires admin.usage.limit_increase_requests:write and current billing edit permission. A pending request can record an approved positive increase amount or be denied with an optional resolution note. PERIOD approval is a decision record for the request's stored month only. It does not change spend limits, evaluation, or enforcement headroom. This does not promise new delivery or atomicity guarantees. Supported token issuance, experimental opt-in, and request-more enablement are required. Missing opt-in or a disabled flag returns 404. Once enabled and opted in, ONGOING returns typed 503 without reading or modifying the request; its private policy preparation is not shared with this adapter. Use the existing app operation for ongoing user approvals.
+        Update a pending request with an approval decision or denial. Requires admin.usage.limit_increase_requests:write and current billing edit permission. A pending request can record an approved positive increase amount or be denied with an optional resolution note. PERIOD approval retains the request's stored month and requires the current UTC month; expired approvals return 409 before mutation or approval writes. A successful approval write triggers spend-limit cache refresh before reload; refresh failure logs a warning without failing the decision. The existing backend consumes eligible USER current-period grants to raise enforcement headroom without changing standing rules. This does not add capacity for agents or other unsupported targets, integrate usage settings, or promise new delivery or atomicity guarantees. Supported token issuance, experimental opt-in, and request-more enablement are required. Missing opt-in or a disabled flag returns 404. Once enabled and opted in, ONGOING returns typed 503 without reading or modifying the request; its private policy preparation is not shared with this adapter. Use the existing app operation for ongoing user approvals.
       requestBody:
         required: true
         content:
@@ -5855,14 +5855,14 @@ components:
       type: string
       pattern: ^([1-9][0-9]*(\.[0-9]+)?|0\.[0-9]*[1-9][0-9]*)$
       description: |
-        Recorded positive increase amount in the applicable rule's denomination, encoded as a plain decimal string. PERIOD approval does not apply this amount to spend limits or headroom. The backend stores float32 values, not arbitrary-precision decimals.
+        Recorded positive additive increase in the applicable rule's denomination, encoded as a plain decimal string. Existing enforcement consumes eligible USER current-period grants without changing standing rules. This does not add capacity for agents or other unsupported targets. The backend stores float32 values, not arbitrary-precision decimals.
     RequestScope:
       type: string
       enum:
         - PERIOD
         - ONGOING
       description: |
-        PERIOD records a decision for the stored request month without changing limits or headroom. ONGOING identifies a standing-rule approval in existing app records; this API does not support creating ONGOING approvals.
+        PERIOD records a decision for the stored request month; approval requires the current UTC month. Existing enforcement consumes eligible USER current-period grants without changing standing rules; no agent or other unsupported target capacity is added. ONGOING identifies a standing-rule approval in existing app records; this API does not support creating ONGOING approvals.
     RequestResolutionTarget:
       type: string
       enum:
@@ -6061,7 +6061,7 @@ components:
       required:
         - status
       description: |
-        Resolve a pending request. PERIOD approval records the decision and positive increase amount only; it does not change spend limits or effective headroom. ONGOING approval is unavailable on this API and returns 503. Request identity and period cannot change.
+        Resolve a pending request. PERIOD approval records a positive additive amount for the stored current UTC month; expired approvals return 409. The existing backend consumes eligible USER current-period grants without changing standing rules; no agent or other unsupported target capacity is added. ONGOING approval is unavailable on this API and returns 503. Request identity and period cannot change.
       properties:
         status:
           type: string
@@ -6106,7 +6106,7 @@ components:
                 required:
                   - resolution_note
               oneOf:
-                - description: A PERIOD approval records a decision without changing limits or headroom.
+                - description: A PERIOD approval records a current-month grant; existing enforcement consumes eligible USER grants.
                   properties:
                     scope:
                       description: Period approval, also selected when scope is omitted.
