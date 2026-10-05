@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 4b199fd04d49e624f6d8ad288c8758f99c4d1f6d
+  x-source-commit-sha: f71fef861daa97c9e77d1a8b930e3d90967f9b43
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -5475,6 +5475,10 @@ components:
           type: string
           format: url
           description: Link to profile.
+        iconUrl:
+          type: string
+          format: url
+          description: URL of the icon to display for this social network, when available.
     PersonDistance:
       required:
         - name
