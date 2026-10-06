@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: ec49b677028bb7596d0489105764a3e2552a0196
+  x-source-commit-sha: 728ea95527ea6f9e63d561d593054dee48ac98b3
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -6061,7 +6061,7 @@ components:
       required:
         - status
       description: |
-        Resolve a pending request. PERIOD approval records a positive additive amount for the stored current UTC month; expired approvals return 409. The existing backend consumes eligible USER current-period grants without changing standing rules; no agent or other unsupported target capacity is added. ONGOING approval is unavailable on this API and returns 503. Request identity and period cannot change.
+        Resolve a pending request. PERIOD approval records a positive additive amount for the stored current UTC month; expired approvals return 409. The existing backend consumes eligible USER current-period grants without changing standing rules; no agent or other unsupported target capacity is added. ONGOING approval is unavailable on this API and returns 503. GROUP and DEPARTMENT resolution targets are not accepted for new approvals. Request identity and period cannot change.
       properties:
         status:
           type: string
@@ -6077,13 +6077,21 @@ components:
           default: PERIOD
           description: Approval scope; omission selects PERIOD. ONGOING returns 503 on this API.
         resolution_target:
-          $ref: '#/components/schemas/RequestResolutionTarget'
-          description: Approval breadth; required for an ONGOING approval.
+          description: Approval breadth; USER or ALL only. Required for an ONGOING approval.
+          x-go-type: RequestResolutionTarget
+          allOf:
+            - $ref: '#/components/schemas/RequestResolutionTarget'
+              description: Shared stored resolution target vocabulary.
+            - type: string
+              enum:
+                - USER
+                - ALL
+              description: Targets accepted for new approvals.
         resolution_target_id:
           type: string
           maxLength: 256
           description: |
-            Required canonical IdP group ID for GROUP or explicit department name for DEPARTMENT. Forbidden for USER, ALL, or an omitted resolution target.
+            Not accepted for new approvals. Stored GROUP and DEPARTMENT records retain their identifiers in request responses.
         resolution_note:
           type: string
           maxLength: 4096
