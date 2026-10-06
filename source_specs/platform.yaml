@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 32e7f7abdf8b7eb974b7f6b8f9ef97281d970156
+  x-source-commit-sha: a3668b83f15a85fc4e26eb8df603a17de9c535ac
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -1415,7 +1415,7 @@ paths:
         - Usage
       summary: Get usage settings
       description: |
-        Retrieve workspace-wide usage settings. Requires admin.usage.settings:read and permission to read workspace billing; a global administrator role is not required.
+        Retrieve workspace-wide policy from the same configuration used by Billing. Group resolution uses the configured policy and its backend defaults; business justification is currently optional. No per-user settings are read, and updated_at is omitted because no policy-update timestamp is available. Requires admin.usage.settings:read and permission to read workspace billing; a global administrator role is not required.
       operationId: platform-admin-usage-settings-get
       x-visibility: Public
       x-glean-scopes:
@@ -1457,7 +1457,7 @@ paths:
         - Usage
       summary: Update usage settings
       description: |
-        Partially update workspace-wide usage settings. Requires admin.usage.settings:write and permission to edit workspace billing; a global administrator role is not required.
+        Assign workspace-wide usage policy. Assignment is currently unavailable until a writer to authoritative Billing configuration is integrated. The backend config platform.usageSettingsWritesEnabled is disabled by default; enabling it alone does not implement assignment, and an authorized request still returns 503 without changing configuration or persisting a second copy of policy. Requires admin.usage.settings:write and permission to edit workspace billing; a global administrator role is not required.
       operationId: platform-admin-usage-settings-update
       x-visibility: Public
       x-glean-scopes:
