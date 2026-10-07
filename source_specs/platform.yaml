@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 785b44a0e269ca50f9e769c91b07e4895664e608
+  x-source-commit-sha: 970d7ade10e5ebffb4fa48787225d672adf56d99
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -1514,7 +1514,7 @@ paths:
         - Usage
       summary: List usage limits
       description: |
-        List configured limits across Glean and external spend clients, plus aggregate agent limits. Organization and user limits identify their spend client; aggregate agent limits omit client_id. USER targets return the canonical user_id and, when available, the user's directory email. Requires admin.usage.limits:read and permission to read workspace billing.
+        List configured limits across Glean and external spend clients, plus aggregate agent limits. Organization and user limits identify their spend client; aggregate agent limits omit client_id. USER targets return the canonical user_id and, when available, the user's directory email. Requires admin.usage.limits:read and permission to read workspace billing. Optional filters match configured limits. Pages contain up to page_size matching results; the service continues scanning until the page is full or the collection is exhausted. Continue with next_cursor while has_more is true, keeping the same filters on every continuation request. The undeclared client_id and target_type query parameters are rejected; use the canonical filters parameter instead.
       operationId: platform-admin-usage-limits-list
       x-visibility: Public
       x-glean-scopes:
@@ -1540,10 +1540,50 @@ paths:
             default: 20
         - name: cursor
           in: query
-          description: Opaque cursor from a previous list response.
+          description: Opaque cursor from a previous list response; resend the same filters when continuing.
           example: '{cursor}'
           schema:
             type: string
+        - name: filters
+          in: query
+          description: |
+            JSON-encoded array of filters. Supported fields are client_id and target_type; only EQUALS is supported and is the default operator. Values within a filter are OR'd; filters are AND'd, including repeated fields. Client IDs are opaque, case-sensitive strings, matched exactly without trimming; whitespace-only values are invalid. Client filters include organization, default-user, and user policies, but exclude aggregate agent policies without a client_id. target_type values are ORGANIZATION, DEFAULT_USER, USER, DEFAULT_AGENT, and AGENT. URL-encode the JSON array as one filters query value.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: false
+                  description: One equality filter on configured usage limits.
+                  required:
+                    - field
+                    - values
+                  properties:
+                    field:
+                      type: string
+                      description: Field to match; client_id or target_type.
+                    values:
+                      type: array
+                      minItems: 1
+                      description: Nonblank values to match exactly; any value may match.
+                      items:
+                        type: string
+                        minLength: 1
+                    operator:
+                      allOf:
+                        - $ref: '#/components/schemas/FilterOperator'
+                      default: EQUALS
+                      description: Comparison operator; only EQUALS is supported.
+              example:
+                - field: client_id
+                  values:
+                    - glean
+                - field: target_type
+                  values:
+                    - ORGANIZATION
+                    - USER
+                  operator: EQUALS
       responses:
         '200':
           description: List of usage limits.
@@ -5398,12 +5438,12 @@ components:
         results:
           type: array
           description: |
-            Bounded page of configured limits. Denomination and legacy-fallback filtering can produce a short or empty page; continue with next_cursor while has_more is true.
+            Up to page_size matching configured limits. The service scans past omitted rules to fill the page unless the collection is exhausted. Continue with next_cursor and the same filters while has_more is true.
           items:
             $ref: '#/components/schemas/UsageLimit'
         has_more:
           type: boolean
-          description: Whether additional results are available after this page.
+          description: Whether more rules remain to scan; later pages may contain no matching results.
         next_cursor:
           type:
             - string
