@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: e7f26d061831c9f68c5408a6060d8dbed48e6b19
+  x-source-commit-sha: 4e6b6d04b3ab21e50232fedf01023a412d67d8d6
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -4840,7 +4840,7 @@ components:
         title:
           type: string
           minLength: 1
-          description: Result title.
+          description: Display title. For a conversation, this is a title built from the participants, such as "Alice and Bob", including when the indexed title is the message body. When the result has no title, the server returns Untitled.
           example: Q2 2026 Platform Roadmap
         snippets:
           type: array
