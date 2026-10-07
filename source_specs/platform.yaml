@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: b03bdd22f1005afa00aa0cd78ffe2be7c8ce47b2
+  x-source-commit-sha: e7f26d061831c9f68c5408a6060d8dbed48e6b19
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -5199,10 +5199,12 @@ components:
           maxLength: 256
           pattern: ^[^\x00-\x1f\x7f]+$
           not:
-            enum:
-              - __deleted_clients__
+            anyOf:
+              - enum:
+                  - __deleted_clients__
+              - pattern: "^[ \\t-\\r\N\_  - \L\P  　]*$"
           description: |
-            Opaque spend-client ID, such as glean or an external gateway spend-client ID. This is not inferred from the authenticating OAuth application and is not automatically prefixed or normalized. Synthetic UI aggregation IDs and control characters are not valid spend-client IDs.
+            Opaque, case-sensitive spend-client ID, such as glean or an external gateway spend-client ID. Case and leading or trailing padding are preserved exactly; this is not inferred from the authenticating OAuth application, prefixed, or normalized. Empty and whitespace-only IDs (including Unicode whitespace), synthetic UI aggregation IDs, and control characters are invalid. Unknown IDs are valid and can have no applicable configured policies.
         period:
           $ref: '#/components/schemas/Period'
           description: Reset cadence for counted usage.
@@ -5217,13 +5219,13 @@ components:
         PER_MEMBER: A separate budget for each member of the target population.
     AmountMode:
       type: string
-      description: Kind of value a usage limit carries.
+      description: Kind of configured cap or remaining headroom.
       enum:
         - FINITE
         - UNLIMITED
       x-enumDescriptions:
-        FINITE: A finite cap; amount is required.
-        UNLIMITED: No cap.
+        FINITE: A finite value; amount is required for a configured cap and remaining for headroom.
+        UNLIMITED: No cap or finite headroom.
     UsageUnit:
       type: string
       description: Unit used by a usage limit and its counters.
@@ -5539,6 +5541,65 @@ components:
         AVAILABLE: Usage is within all applicable configured limits.
         WARNING: Usage reached or exceeded a configured soft limit.
         BLOCKED: Usage reached or exceeded a configured hard limit; this is not a runtime admission decision.
+    UsageHeadroomValue:
+      type: object
+      description: Remaining configured budget in one unit, not a configured cap or runtime admission result.
+      additionalProperties: false
+      required:
+        - mode
+      properties:
+        mode:
+          $ref: '#/components/schemas/AmountMode'
+          description: Whether remaining headroom is finite or unlimited.
+        remaining:
+          type: string
+          minLength: 1
+          maxLength: 24
+          pattern: ^(0|[1-9][0-9]*)(\.[0-9]{1,6})?$
+          description: |
+            Non-negative decimal headroom after accrued usage and approved one-period grants, clamped to zero when the configured limit is reached or exceeded. Required for FINITE; forbidden for UNLIMITED.
+        unit:
+          $ref: '#/components/schemas/UsageUnit'
+          description: Unit of finite headroom; omitted for unlimited headroom.
+        enforcement:
+          $ref: '#/components/schemas/Enforcement'
+          description: Enforcement configuration of the tightest finite policy; omitted for unlimited headroom.
+      allOf:
+        - oneOf:
+            - required:
+                - remaining
+                - unit
+                - enforcement
+              properties:
+                mode:
+                  description: Finite remaining headroom.
+                  enum:
+                    - FINITE
+                remaining:
+                  type: string
+                  description: Remaining configured budget in decimal units.
+            - properties:
+                mode:
+                  description: Unlimited remaining headroom.
+                  enum:
+                    - UNLIMITED
+              not:
+                anyOf:
+                  - required:
+                      - remaining
+                    properties:
+                      remaining:
+                        description: Forbidden for unlimited headroom.
+                  - required:
+                      - unit
+                    properties:
+                      unit:
+                        description: Forbidden for unlimited headroom.
+                  - required:
+                      - enforcement
+                    properties:
+                      enforcement:
+                        description: Forbidden for unlimited headroom.
     UsagePolicySourceTarget:
       type: object
       description: |
@@ -5707,7 +5768,7 @@ components:
             Actual scope of this rule's counter. Client rules identify their client; aggregate agent rules omit client_id even when evaluation selects a client.
         value:
           $ref: '#/components/schemas/UsageLimitValue'
-          description: The configured limit value.
+          description: Configured cap before approved one-period grants; value.amount is not remaining headroom.
         used:
           type: string
           description: Decimal amount of accrued usage for this limit.
@@ -5717,25 +5778,72 @@ components:
     EvaluateUsageLimitResponse:
       type: object
       additionalProperties: false
-      description: Result of evaluating usage limits for a selector.
+      description: |
+        Configured-budget evaluation for a concrete target and selector, not runtime admission, model eligibility, or agent-run preflight. AVAILABLE can mean that no configured policy applies; inspect applicable_policy_count and the exact selector echo. Configured caps are evaluated_limits[].value.amount, accrued usage is evaluated_limits[].used, and remaining budget is effective_limits[].remaining. Approved one-period grants raise headroom without changing the configured cap. Units are never combined or converted.
+      example:
+        target:
+          type: USER
+          user_id: user-123
+        usage_selector:
+          client_id: glean
+          period:
+            type: RECURRING_CALENDAR_MONTH
+        applicable_policy_count: 1
+        decision: AVAILABLE
+        effective_limits:
+          - mode: FINITE
+            remaining: '60'
+            unit: USD
+            enforcement: HARD
+        evaluated_limits:
+          - target:
+              type: DEFAULT_USER
+            usage_selector:
+              client_id: glean
+              period:
+                type: RECURRING_CALENDAR_MONTH
+            value:
+              mode: FINITE
+              amount: '80'
+              unit: USD
+              enforcement: HARD
+            used: '20'
+            decision: AVAILABLE
+        evaluated_at: '2026-10-06T18:48:16Z'
+        request_id: example-request
       required:
+        - target
+        - usage_selector
+        - applicable_policy_count
         - decision
         - effective_limits
         - evaluated_limits
         - evaluated_at
         - request_id
       properties:
+        target:
+          $ref: '#/components/schemas/UsageTarget'
+          description: |
+            Normalized concrete ORGANIZATION, USER, or AGENT evaluated. USER targets contain the canonical user_id, not the supplied alias ID or email. Included even when no configured policies apply.
+        usage_selector:
+          $ref: '#/components/schemas/UsageSelector'
+          description: Exact evaluated selector, including case and padding of client_id; never normalized.
+        applicable_policy_count:
+          type: integer
+          minimum: 0
+          description: |
+            Number of applicable configured policies, including UNLIMITED policies. Zero explicitly means no configured policy matched, not an unlimited configured rule. Included even when zero.
         decision:
           $ref: '#/components/schemas/UsageLimitDecision'
-          description: Overall decision across all evaluated limits.
+          description: Overall configured-budget status across all evaluated limits, not runtime admission.
         effective_limits:
           type: array
           minItems: 1
           maxItems: 2
           items:
-            $ref: '#/components/schemas/UsageLimitValue'
+            $ref: '#/components/schemas/UsageHeadroomValue'
           description: |
-            One finite headroom per applicable unit, ordered USD then CREDITS. Headroom is the tightest remaining amount within that unit; different units are never combined or converted. When no finite limit applies, contains a single UNLIMITED value without amount, unit, or enforcement.
+            Tightest remaining budget per finite unit, ordered USD then CREDITS. remaining is headroom after accrued usage and approved one-period grants, not a configured cap. Units are never combined or converted. When no finite policy applies, contains a single UNLIMITED entry without remaining, unit, or enforcement, including when applicable_policy_count is zero. This configured-budget result is not a runtime admission guarantee.
         evaluated_limits:
           type: array
           items:
