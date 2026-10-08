@@ -1,5 +1,7 @@
+min_version = "2026.10.4"
+
 [tools]
 "aqua:speakeasy-api/speakeasy" = "latest"
 node = "20"
 pnpm = "10"
-"ubi:pb33f/openapi-changes" = "latest"
+"github:pb33f/openapi-changes" = "latest"
