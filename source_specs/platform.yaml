@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: a8cd3ffa4d150e8657a369cc0ef5c147adbea32e
+  x-source-commit-sha: 5a0a035dcde4d9de3230632edc7076ee2a027d78
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -2338,6 +2338,82 @@ paths:
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
           description: The operation is unsupported or temporarily unavailable; ONGOING approval is unsupported.
+  /departments:
+    get:
+      tags:
+        - Departments
+      summary: List departments
+      description: |
+        List the departments in the Glean directory, ordered by display_name and then by department_id. A department is active when at least one active user belongs to it. A department is inactive when only inactive users, such as former employees, belong to it, or when only a usage limit names it. Inactive departments are left out unless an is_active filter includes the value "false". Department names are exact, so names that differ only by case are different departments.
+      operationId: platform-departments-list
+      x-glean-scopes:
+        legacy:
+          - PEOPLE
+        platform:
+          - departments:read
+      x-visibility: Public
+      x-glean-experimental:
+        id: 2bc9ce31-8e51-4874-996c-96ad2e10fbd7
+        introduced: '2026-10-08'
+      x-glean-sdk:
+        group: departments
+        method: list
+      parameters:
+        - in: query
+          name: page_size
+          description: Maximum number of departments to return. Defaults to 50. Maximum is 100.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - in: query
+          name: cursor
+          description: |
+            Opaque pagination cursor from a previous response. Send the same filters that the previous request used.
+          required: false
+          schema:
+            type: string
+            minLength: 1
+        - in: query
+          name: filters
+          description: |
+            JSON-encoded filters that choose which departments are returned. The only supported field is is_active, with the values "true" and "false" and the operator EQUALS. Multiple values OR within a filter. Multiple filters AND together. Without an is_active filter, only active departments are returned. To return active and inactive departments, send [{"field":"is_active","values":["true","false"]}].
+          required: false
+          content:
+            application/json:
+              schema:
+                type: array
+                minItems: 1
+                maxItems: 10
+                description: Filters on department fields, combined with AND.
+                items:
+                  $ref: '#/components/schemas/DepartmentFilter'
+                  description: One filter on a department field.
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListDepartmentsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
   /users:
     get:
       tags:
@@ -6385,6 +6461,86 @@ components:
                   - required:
                       - resolution_target_id
                     description: Detect an approval target identifier.
+    DepartmentFilter:
+      type: object
+      additionalProperties: false
+      required:
+        - field
+        - values
+      description: A filter on one department field.
+      properties:
+        field:
+          type: string
+          pattern: ^is_active$
+          description: The department field to filter on. The only supported field is is_active.
+        values:
+          type: array
+          minItems: 1
+          description: The values to match. A department matches when any value matches.
+          items:
+            type: string
+            pattern: ^(true|false)$
+            description: '"true" matches active departments. "false" matches inactive departments.'
+        operator:
+          allOf:
+            - $ref: '#/components/schemas/FilterOperator'
+              description: Canonical Platform filter operator.
+          enum:
+            - EQUALS
+          default: EQUALS
+          description: The only supported operator is EQUALS. Defaults to EQUALS.
+    DepartmentReference:
+      type: object
+      description: A reference to a department in the Glean directory.
+      required:
+        - department_id
+        - display_name
+      properties:
+        department_id:
+          type: string
+          description: |
+            Opaque department ID. The users and departments APIs return the same ID for the same department. A renamed department gets a new ID.
+        display_name:
+          type: string
+          description: Department name, exactly as the directory stores it.
+    Department:
+      description: A department in the Glean directory.
+      allOf:
+        - $ref: '#/components/schemas/DepartmentReference'
+        - type: object
+          required:
+            - is_active
+          properties:
+            is_active:
+              type: boolean
+              description: |
+                Whether at least one active user belongs to the department. A department that belongs only to inactive users, or that only a usage limit names, is inactive.
+    ListDepartmentsResponse:
+      type: object
+      description: One page of departments.
+      additionalProperties: false
+      required:
+        - results
+        - has_more
+        - request_id
+      properties:
+        results:
+          type: array
+          description: |
+            The departments on this page, ordered by display_name and then by department_id.
+          items:
+            $ref: '#/components/schemas/Department'
+        has_more:
+          type: boolean
+          description: Whether more departments are available after this page.
+        next_cursor:
+          type:
+            - string
+            - 'null'
+          description: Opaque cursor for the next page; null or absent when has_more is false.
+        request_id:
+          type: string
+          description: Request identifier for correlating this response.
     UserFilter:
       type: object
       additionalProperties: false
@@ -6428,20 +6584,6 @@ components:
         - CONTRACTOR
         - NON_EMPLOYEE
         - FORMER_EMPLOYEE
-    UserDepartment:
-      type: object
-      description: The department that a user belongs to.
-      additionalProperties: false
-      required:
-        - department_id
-        - display_name
-      properties:
-        department_id:
-          type: string
-          description: Opaque department ID. A renamed department gets a new ID.
-        display_name:
-          type: string
-          description: Department name.
     UserManager:
       type: object
       description: The user that another user reports to.
@@ -6515,7 +6657,7 @@ components:
           type: string
           description: Job title.
         department:
-          $ref: '#/components/schemas/UserDepartment'
+          $ref: '#/components/schemas/DepartmentReference'
           description: The user's department. Absent when the user has no department.
         manager:
           $ref: '#/components/schemas/UserManager'
@@ -7314,4 +7456,5 @@ x-tagGroups:
       - Usage
   - name: Identity
     tags:
+      - Departments
       - Users
