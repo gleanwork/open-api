@@ -242,9 +242,11 @@ describe('Post-transformation smoke tests', () => {
     const platformSegments = new Set([
       'agents',
       'chat',
+      'departments',
       'search',
       'skills',
       'triggers',
+      'users',
     ]);
     const allowedTopLevelSegments = new Set([
       'client',
