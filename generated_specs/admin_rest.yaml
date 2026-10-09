@@ -2,14 +2,14 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: 4e6b6d04b3ab21e50232fedf01023a412d67d8d6
+  x-source-commit-sha: 0030cd3890f5686650b1bef804058701fd928265
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
     operations. These offer limited exposure to the admin APIs through rest endpoints.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: df53fa3c6a84be99b91198bbec3c82926e7ee107
+  x-open-api-commit-sha: 74b5435322d32486d87d152c40a08395cfbf7152
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -1232,14 +1232,15 @@ components:
           description: The name of the file to export the findings to
         exportType:
           type: string
-          description: The type of export to perform
+          description: The type of export to perform. FINDINGS, DOCUMENTS and ISSUES produce JSONL; FINDINGS_CSV produces one CSV row per finding.
           enum:
             - FINDINGS
             - DOCUMENTS
             - ISSUES
+            - FINDINGS_CSV
         filter:
           $ref: "#/components/schemas/DlpFindingFilter"
-          description: The filters used to export the findings. Set for FINDINGS and DOCUMENTS exports.
+          description: The filters used to export the findings. Set for FINDINGS, FINDINGS_CSV and DOCUMENTS exports.
         issueFilter:
           $ref: "#/components/schemas/DlpIssueFilter"
           description: The filters used for ISSUES exports.
@@ -1264,11 +1265,12 @@ components:
       properties:
         exportType:
           type: string
-          description: The type of export to perform
+          description: The type of export to perform. FINDINGS, DOCUMENTS and ISSUES produce JSONL; FINDINGS_CSV produces one CSV row per finding.
           enum:
             - FINDINGS
             - DOCUMENTS
             - ISSUES
+            - FINDINGS_CSV
         filter:
           $ref: "#/components/schemas/DlpFindingFilter"
         issueFilter:

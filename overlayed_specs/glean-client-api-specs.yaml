@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 4e6b6d04b3ab21e50232fedf01023a412d67d8d6
+  x-source-commit-sha: 0030cd3890f5686650b1bef804058701fd928265
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: df53fa3c6a84be99b91198bbec3c82926e7ee107
+  x-open-api-commit-sha: 74b5435322d32486d87d152c40a08395cfbf7152
   x-speakeasy-name: 'Glean API'
 servers:
   - url: https://{instance}-be.glean.com
@@ -12732,10 +12732,11 @@ components:
             - FINDINGS
             - DOCUMENTS
             - ISSUES
-          description: The type of export to perform
+            - FINDINGS_CSV
+          description: The type of export to perform. FINDINGS, DOCUMENTS and ISSUES produce JSONL; FINDINGS_CSV produces one CSV row per finding.
         filter:
           $ref: '#/components/schemas/DlpFindingFilter'
-          description: The filters used to export the findings. Set for FINDINGS and DOCUMENTS exports.
+          description: The filters used to export the findings. Set for FINDINGS, FINDINGS_CSV and DOCUMENTS exports.
         issueFilter:
           $ref: '#/components/schemas/DlpIssueFilter'
           description: The filters used for ISSUES exports.
@@ -12764,7 +12765,8 @@ components:
             - FINDINGS
             - DOCUMENTS
             - ISSUES
-          description: The type of export to perform
+            - FINDINGS_CSV
+          description: The type of export to perform. FINDINGS, DOCUMENTS and ISSUES produce JSONL; FINDINGS_CSV produces one CSV row per finding.
         filter:
           $ref: '#/components/schemas/DlpFindingFilter'
         issueFilter:
