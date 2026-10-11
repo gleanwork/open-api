@@ -10,6 +10,32 @@ const SPEC_PATH = path.join(
 );
 
 const loadSpec = () => yaml.load(fs.readFileSync(SPEC_PATH, 'utf8'));
+
+const HTTP_METHODS = new Set([
+  'get',
+  'put',
+  'post',
+  'delete',
+  'options',
+  'head',
+  'patch',
+  'trace',
+]);
+
+// Operations an overlay removes on purpose, keyed as `METHOD path`.
+const INTENTIONALLY_REMOVED_OPERATIONS = new Set([
+  'POST /api/index/v1/indexemployeelist', // indexing-modifications-overlay.yaml
+]);
+
+const operationsOf = (document) =>
+  Object.entries(document.paths ?? {}).flatMap(([pathName, pathItem]) =>
+    Object.entries(pathItem ?? {})
+      .filter(([method]) => HTTP_METHODS.has(method))
+      .map(([method, operation]) => ({
+        key: `${method.toUpperCase()} ${pathName}`,
+        operation,
+      })),
+  );
 const hasMergedPlatformSpec = (spec) => Boolean(spec.paths?.['/api/search']);
 
 describe('Post-transformation smoke tests', () => {
@@ -222,6 +248,38 @@ describe('Post-transformation smoke tests', () => {
     expect(operation?.responses?.['200']?.content).toHaveProperty(
       'text/event-stream',
     );
+  });
+
+  test('no generated operation is silently dropped from the merged spec', () => {
+    // public-visibility-overlay.yaml removes operations that are not
+    // x-visibility: Public. An operation that is merely unannotated upstream
+    // would otherwise disappear from every SDK without an explicit decision.
+    const mergedKeys = new Set(operationsOf(spec).map(({ key }) => key));
+    const dropped = fs
+      .readdirSync(path.join(process.cwd(), 'generated_specs'))
+      .filter((file) => file.endsWith('.yaml'))
+      .flatMap((file) =>
+        operationsOf(
+          yaml.load(
+            fs.readFileSync(
+              path.join(process.cwd(), 'generated_specs', file),
+              'utf8',
+            ),
+          ),
+        ).map((entry) => ({ ...entry, file })),
+      )
+      .filter(
+        ({ key, operation }) =>
+          operation['x-visibility'] !== 'Internal' &&
+          !INTENTIONALLY_REMOVED_OPERATIONS.has(key) &&
+          !mergedKeys.has(key),
+      )
+      .map(({ file, key }) => `${file}: ${key}`);
+
+    expect(
+      dropped,
+      `operations dropped from the SDK spec; annotate them upstream with x-visibility: Public or Internal:\n${dropped.join('\n')}`,
+    ).toEqual([]);
   });
 
   test('Platform private runtime gates do not reach merged spec', () => {
