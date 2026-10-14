@@ -2,14 +2,14 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Rest Admin API
-  x-source-commit-sha: 86ac685e81566c1e6291496f3ff99e8f43643159
+  x-source-commit-sha: 44938c9f8ad09ef67195e5b3f8cc02d3853f963f
   description: |
     # Introduction
     These are all the APIs exposed to the users through an auth token to utilize certain admin
     operations. These offer limited exposure to the admin APIs through rest endpoints.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 8713015c980e1a60ebab9f31082a9131769b12af
+  x-open-api-commit-sha: 82709d1abb853e221b3f69cf8513790e043e5335
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -573,8 +573,8 @@ components:
               introduced: "2026-02-05"
               kind: property
               message: Field is deprecated
-              removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
+              removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Field is deprecated"
         infoType:
           description: Text representation of an info-type to scan for.
           type: string
@@ -605,8 +605,8 @@ components:
             id: e022aaa5-56e6-4b57-bca3-b11943da76a0
             introduced: "2026-02-05"
             message: Field is deprecated
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Field is deprecated"
         datasourcesType:
           type: string
           description: The types of datasource for which to run the report/policy.
@@ -623,8 +623,8 @@ components:
             id: 97e35970-e0ed-4248-be13-2af8c22e7894
             introduced: "2026-02-05"
             message: Use datasourceInstances instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use datasourceInstances instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use datasourceInstances instead"
         datasourceInstances:
           type: array
           description: List of datasource instances to consider for report/policy.
@@ -656,8 +656,8 @@ components:
             id: e9260be6-209b-4ce2-a4b3-f7f22879dd86
             introduced: "2026-02-05"
             message: Field is deprecated
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Field is deprecated"
         threshold:
           description: The minimum number of users the document is shared with.
           type: integer
@@ -671,8 +671,8 @@ components:
             id: 30646ced-e0db-43ef-8412-64a67c5d0f53
             introduced: "2026-02-05"
             message: Field is deprecated
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Field is deprecated"
         anyoneInternalEnabled:
           description: Only users within the organization can access the document.
           type: boolean
@@ -693,7 +693,7 @@ components:
         id: 7c9e4a1d-3f8b-4e2c-9a5d-6b0f1c8e2d4a
         introduced: "2026-02-05"
         message: Use broadSharingOptions instead
-        removal: "2026-10-15"
+        removal: "2027-01-15"
       allOf:
         - description: DEPRECATED - use `broadSharingOptions` instead.
         - $ref: "#/components/schemas/SharingOptions"
@@ -701,7 +701,7 @@ components:
           properties:
             domainAccessEnabled:
               type: boolean
-      x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use broadSharingOptions instead"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use broadSharingOptions instead"
     HotwordProximity:
       properties:
         windowBefore:
@@ -774,8 +774,8 @@ components:
             id: 3497cb1c-f7aa-42d8-81b8-309c3adeed84
             introduced: "2026-02-05"
             message: Use customSensitiveExpressions instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use customSensitiveExpressions instead"
         sensitiveTerms:
           deprecated: true
           description: DEPRECATED - use 'customSensitiveExpressions' instead.
@@ -786,8 +786,8 @@ components:
             id: b0713b37-472e-4c29-80ba-6f5d6f2b449c
             introduced: "2026-02-05"
             message: Use customSensitiveExpressions instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use customSensitiveExpressions instead"
         sensitiveRegexes:
           deprecated: true
           description: DEPRECATED - use 'customSensitiveExpressions' instead.
@@ -798,8 +798,8 @@ components:
             id: a26e1920-36b6-4c0f-981f-57b09a9ebce3
             introduced: "2026-02-05"
             message: Use customSensitiveExpressions instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use customSensitiveExpressions instead"
         customSensitiveExpressions:
           description: list of custom sensitive expressions to consider as sensitive content
           type: array
@@ -857,8 +857,8 @@ components:
             id: 60d6d182-e9d0-448d-af75-137f68bbdcbf
             introduced: "2026-02-05"
             message: Use sensitiveContentOptions instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use sensitiveContentOptions instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use sensitiveContentOptions instead"
         inputOptions:
           description: Options for documents to include or exclude in a report
           $ref: "#/components/schemas/InputOptions"
@@ -870,8 +870,8 @@ components:
             id: 6484ec17-a133-4176-b2ce-28e25b0e9065
             introduced: "2026-02-05"
             message: Use broadSharingOptions instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use broadSharingOptions instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use broadSharingOptions instead"
         broadSharingOptions:
           description: Options for defining documents to scan for sensitive content.
           $ref: "#/components/schemas/SharingOptions"

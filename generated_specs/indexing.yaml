@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Indexing API
-  x-source-commit-sha: 86ac685e81566c1e6291496f3ff99e8f43643159
+  x-source-commit-sha: 44938c9f8ad09ef67195e5b3f8cc02d3853f963f
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -12,7 +12,7 @@ info:
     with a 6-month sunset period for anything that requires developers to adopt the new versions.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 8713015c980e1a60ebab9f31082a9131769b12af
+  x-open-api-commit-sha: 82709d1abb853e221b3f69cf8513790e043e5335
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -607,8 +607,8 @@ paths:
         id: 7eec0433-78fd-49f9-a34f-cca83640ec24
         introduced: "2026-02-03"
         message: Endpoint is deprecated
-        removal: "2026-10-15"
-      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2026-10-15: Endpoint is deprecated"
+        removal: "2027-01-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2027-01-15: Endpoint is deprecated"
   /api/index/v1/getdocumentcount:
     post:
       deprecated: true
@@ -643,8 +643,8 @@ paths:
         id: c164089c-9412-4724-acf6-caf3b0d2a527
         introduced: "2026-02-03"
         message: Endpoint is deprecated
-        removal: "2026-10-15"
-      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2026-10-15: Endpoint is deprecated"
+        removal: "2027-01-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2027-01-15: Endpoint is deprecated"
   /api/index/v1/getusercount:
     post:
       deprecated: true
@@ -679,8 +679,8 @@ paths:
         id: 4f5df873-385e-4539-8183-cb764b0f06b9
         introduced: "2026-02-03"
         message: Endpoint is deprecated
-        removal: "2026-10-15"
-      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2026-10-15: Endpoint is deprecated"
+        removal: "2027-01-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2027-01-15: Endpoint is deprecated"
   /api/index/v1/betausers:
     post:
       summary: Beta users
@@ -2163,8 +2163,8 @@ components:
             id: a7f6fbaa-0eaf-4c0c-a4f5-ab90347f73fd
             introduced: "2026-02-05"
             message: Field is deprecated
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Field is deprecated"
         structuredLocation:
           description: Detailed location with information about country, state, city etc.
           $ref: "#/components/schemas/StructuredLocation"

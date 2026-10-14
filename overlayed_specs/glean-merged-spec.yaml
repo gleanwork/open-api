@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: 86ac685e81566c1e6291496f3ff99e8f43643159
-  x-open-api-commit-sha: 8713015c980e1a60ebab9f31082a9131769b12af
+  x-source-commit-sha: 44938c9f8ad09ef67195e5b3f8cc02d3853f963f
+  x-open-api-commit-sha: 82709d1abb853e221b3f69cf8513790e043e5335
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -3793,8 +3793,8 @@ paths:
         id: 4c0923bd-64c7-45b9-99a5-b36f2705e618
         introduced: "2026-01-21"
         message: Answer boards have been removed and this endpoint no longer serves a purpose
-        removal: "2026-10-15"
-      x-speakeasy-deprecation-message: "Deprecated on 2026-01-21, removal scheduled for 2026-10-15: Answer boards have been removed and this endpoint no longer serves a purpose"
+        removal: "2027-01-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-01-21, removal scheduled for 2027-01-15: Answer boards have been removed and this endpoint no longer serves a purpose"
       x-speakeasy-name-override: list
       x-speakeasy-group: client.answers
   /rest/api/v1/checkdatasourceauth:
@@ -7023,8 +7023,8 @@ paths:
         id: 7eec0433-78fd-49f9-a34f-cca83640ec24
         introduced: "2026-02-03"
         message: Endpoint is deprecated
-        removal: "2026-10-15"
-      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2026-10-15: Endpoint is deprecated"
+        removal: "2027-01-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2027-01-15: Endpoint is deprecated"
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: status
   /api/index/v1/getdocumentcount:
@@ -7063,8 +7063,8 @@ paths:
         id: c164089c-9412-4724-acf6-caf3b0d2a527
         introduced: "2026-02-03"
         message: Endpoint is deprecated
-        removal: "2026-10-15"
-      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2026-10-15: Endpoint is deprecated"
+        removal: "2027-01-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2027-01-15: Endpoint is deprecated"
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: count
   /api/index/v1/getusercount:
@@ -7103,8 +7103,8 @@ paths:
         id: 4f5df873-385e-4539-8183-cb764b0f06b9
         introduced: "2026-02-03"
         message: Endpoint is deprecated
-        removal: "2026-10-15"
-      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2026-10-15: Endpoint is deprecated"
+        removal: "2027-01-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2027-01-15: Endpoint is deprecated"
       x-speakeasy-name-override: count
       x-speakeasy-group: indexing.people
   /api/index/v1/betausers:
@@ -13670,8 +13670,8 @@ components:
             id: 75a48c79-b36a-4171-a0a0-4af7189da66e
             introduced: "2026-02-05"
             message: Use relationType instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use relationType instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use relationType instead"
     FacetFilter:
       properties:
         fieldName:
@@ -14480,8 +14480,8 @@ components:
             id: 3729bc64-8859-4159-b93c-ce2d5f0e7304
             introduced: "2026-02-05"
             message: Answer Boards no longer supported
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Answer Boards no longer supported"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Answer Boards no longer supported"
         audienceFilters:
           type: array
           items:
@@ -15466,8 +15466,8 @@ components:
             id: 68de0429-b0cc-4b40-8061-f848788079a2
             introduced: "2026-02-05"
             message: Field is deprecated
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Field is deprecated"
         results:
           type: array
           items:
@@ -15533,9 +15533,9 @@ components:
             id: e55ddf30-7c47-43a5-b775-d78f8b29411a
             introduced: "2026-02-05"
             message: Use 'text' field instead
-            removal: "2026-10-15"
+            removal: "2027-01-15"
           x-includeEmpty: true
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use 'text' field instead"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use 'text' field instead"
       example:
         snippet: snippet
         mimeType: mimeType
@@ -15846,8 +15846,8 @@ components:
             id: 1d3cd23f-9085-4378-b466-9bdc2e344a71
             introduced: "2026-02-05"
             message: Use ChannelInviteInfo instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use ChannelInviteInfo instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use ChannelInviteInfo instead"
         inviteTime:
           type: string
           format: date-time
@@ -15857,8 +15857,8 @@ components:
             id: 2dc3f572-cded-483d-af07-fc9fc7fd0ae4
             introduced: "2026-02-05"
             message: Use ChannelInviteInfo instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use ChannelInviteInfo instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use ChannelInviteInfo instead"
         reminderTime:
           type: string
           format: date-time
@@ -15868,8 +15868,8 @@ components:
             id: d02d58cf-eb90-45d0-ab90-f7a9d707ae3c
             introduced: "2026-02-05"
             message: Use ChannelInviteInfo instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use ChannelInviteInfo instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use ChannelInviteInfo instead"
       description: Information regarding the invite status of a person.
     ReadPermission:
       properties:
@@ -16231,8 +16231,8 @@ components:
             id: cd754845-6eec-480f-b395-c93478aff563
             introduced: "2026-02-05"
             message: Use reacts instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use reacts instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use reacts instead"
         reacts:
           type: array
           items:
@@ -16259,8 +16259,8 @@ components:
               introduced: "2026-02-05"
               kind: property
               message: Use permissions instead
-              removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use permissions instead"
+              removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use permissions instead"
         lastViewedTime:
           type: string
           format: date-time
@@ -17320,8 +17320,8 @@ components:
             id: 6446f85e-c90e-4c00-9717-796f9db3dc61
             introduced: "2026-02-06"
             message: Use inline citations via ChatMessageFragment.citation and ChatMessageCitation.referenceRanges instead. This field is still populated for backward compatibility.
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-06, removal scheduled for 2026-10-15: Use inline citations via ChatMessageFragment.citation and ChatMessageCitation.referenceRanges instead. This field is still populated for backward compatibility."
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-06, removal scheduled for 2027-01-15: Use inline citations via ChatMessageFragment.citation and ChatMessageCitation.referenceRanges instead. This field is still populated for backward compatibility."
         uploadedFileIds:
           type: array
           items:
@@ -19175,8 +19175,8 @@ components:
             id: 15850758-4d95-4d98-8d57-39c50663a796
             introduced: "2026-02-05"
             message: Field is deprecated
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Field is deprecated"
         overviewResponse:
           $ref: '#/components/schemas/InsightsOverviewResponse'
         assistantResponse:
@@ -22224,8 +22224,8 @@ components:
             id: a7f6fbaa-0eaf-4c0c-a4f5-ab90347f73fd
             introduced: "2026-02-05"
             message: Field is deprecated
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Field is deprecated"
         structuredLocation:
           $ref: '#/components/schemas/StructuredLocation'
           description: Detailed location with information about country, state, city etc.
@@ -23144,8 +23144,8 @@ components:
               introduced: "2026-02-05"
               kind: property
               message: Field is deprecated
-              removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
+              removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Field is deprecated"
         infoType:
           type: string
           description: Text representation of an info-type to scan for.
@@ -23175,8 +23175,8 @@ components:
             id: e022aaa5-56e6-4b57-bca3-b11943da76a0
             introduced: "2026-02-05"
             message: Field is deprecated
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Field is deprecated"
         datasourcesType:
           type: string
           enum:
@@ -23193,8 +23193,8 @@ components:
             id: 97e35970-e0ed-4248-be13-2af8c22e7894
             introduced: "2026-02-05"
             message: Use datasourceInstances instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use datasourceInstances instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use datasourceInstances instead"
         datasourceInstances:
           type: array
           items:
@@ -23226,8 +23226,8 @@ components:
             id: e9260be6-209b-4ce2-a4b3-f7f22879dd86
             introduced: "2026-02-05"
             message: Field is deprecated
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Field is deprecated"
         threshold:
           type: integer
           description: The minimum number of users the document is shared with.
@@ -23241,8 +23241,8 @@ components:
             id: 30646ced-e0db-43ef-8412-64a67c5d0f53
             introduced: "2026-02-05"
             message: Field is deprecated
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Field is deprecated"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Field is deprecated"
         anyoneInternalEnabled:
           type: boolean
           description: Only users within the organization can access the document.
@@ -23271,8 +23271,8 @@ components:
         id: 7c9e4a1d-3f8b-4e2c-9a5d-6b0f1c8e2d4a
         introduced: "2026-02-05"
         message: Use broadSharingOptions instead
-        removal: "2026-10-15"
-      x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use broadSharingOptions instead"
+        removal: "2027-01-15"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use broadSharingOptions instead"
     HotwordProximity:
       properties:
         windowBefore:
@@ -23344,8 +23344,8 @@ components:
             id: 3497cb1c-f7aa-42d8-81b8-309c3adeed84
             introduced: "2026-02-05"
             message: Use customSensitiveExpressions instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use customSensitiveExpressions instead"
         sensitiveTerms:
           type: array
           items:
@@ -23356,8 +23356,8 @@ components:
             id: b0713b37-472e-4c29-80ba-6f5d6f2b449c
             introduced: "2026-02-05"
             message: Use customSensitiveExpressions instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use customSensitiveExpressions instead"
         sensitiveRegexes:
           type: array
           items:
@@ -23368,8 +23368,8 @@ components:
             id: a26e1920-36b6-4c0f-981f-57b09a9ebce3
             introduced: "2026-02-05"
             message: Use customSensitiveExpressions instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use customSensitiveExpressions instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use customSensitiveExpressions instead"
         customSensitiveExpressions:
           type: array
           items:
@@ -23427,8 +23427,8 @@ components:
             id: 60d6d182-e9d0-448d-af75-137f68bbdcbf
             introduced: "2026-02-05"
             message: Use sensitiveContentOptions instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use sensitiveContentOptions instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use sensitiveContentOptions instead"
         inputOptions:
           $ref: '#/components/schemas/InputOptions'
           description: Options for documents to include or exclude in a report
@@ -23440,8 +23440,8 @@ components:
             id: 6484ec17-a133-4176-b2ce-28e25b0e9065
             introduced: "2026-02-05"
             message: Use broadSharingOptions instead
-            removal: "2026-10-15"
-          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2026-10-15: Use broadSharingOptions instead"
+            removal: "2027-01-15"
+          x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Use broadSharingOptions instead"
         broadSharingOptions:
           $ref: '#/components/schemas/SharingOptions'
           description: Options for defining documents to scan for sensitive content.
