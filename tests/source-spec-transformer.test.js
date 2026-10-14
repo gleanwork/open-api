@@ -531,7 +531,7 @@ describe('OpenAPI YAML Transformer', () => {
     );
   });
 
-  test('omits unshipped Platform Usage and Admin APIs and keeps Skills GA', () => {
+  test('omits unshipped Platform Usage APIs and keeps Skills GA and other Admin APIs', () => {
     const sourceText = readFixture('platform.yaml');
     const source = yaml.load(sourceText);
     const transformed = yaml.load(transform(sourceText, 'platform.yaml'));
@@ -546,25 +546,25 @@ describe('OpenAPI YAML Transformer', () => {
       'trace',
     ];
 
-    const unshippedNamespaces = new Set(['admin', 'usage']);
-    const isUnshipped = (group) =>
-      typeof group === 'string' && unshippedNamespaces.has(group.split('.')[0]);
-
     const sourceUsage = [];
     const sourceSkills = [];
+    const sourceShippedAdmin = [];
     for (const [path, pathItem] of Object.entries(source.paths ?? {})) {
       for (const method of httpMethods) {
         const operation = pathItem?.[method];
         if (!operation) continue;
         const group = operation['x-glean-sdk']?.group;
-        if (isUnshipped(group)) {
+        if (group === 'usage' || group === 'admin.usage') {
           sourceUsage.push(`${method.toUpperCase()} ${path}`);
+        } else if (group?.startsWith('admin.')) {
+          sourceShippedAdmin.push(`${method.toUpperCase()} /api${path}`);
         }
         if (group === 'skills') sourceSkills.push(operation);
       }
     }
 
     expect(sourceUsage.length).toBeGreaterThan(0);
+    expect(sourceShippedAdmin.length).toBeGreaterThan(0);
     expect(sourceSkills.length).toBeGreaterThan(0);
     expect(
       sourceSkills.every(
@@ -574,12 +574,13 @@ describe('OpenAPI YAML Transformer', () => {
 
     const leaked = [];
     const skills = [];
+    const shippedAdmin = [];
     for (const [path, pathItem] of Object.entries(transformed.paths ?? {})) {
       if (
         path === '/api/usage' ||
         path.startsWith('/api/usage/') ||
-        path === '/api/admin' ||
-        path.startsWith('/api/admin/')
+        path === '/api/admin/usage' ||
+        path.startsWith('/api/admin/usage/')
       ) {
         leaked.push(path);
       }
@@ -587,14 +588,17 @@ describe('OpenAPI YAML Transformer', () => {
         const operation = pathItem?.[method];
         if (!operation) continue;
         const group = operation['x-speakeasy-group'];
-        if (isUnshipped(group)) {
+        if (group === 'usage' || group === 'admin.usage') {
           leaked.push(`${method.toUpperCase()} ${path} -> ${group}`);
+        } else if (group?.startsWith('admin.')) {
+          shippedAdmin.push(`${method.toUpperCase()} ${path}`);
         }
         if (group === 'skills') skills.push(operation);
       }
     }
 
     expect(leaked).toEqual([]);
+    expect(shippedAdmin).toEqual(expect.arrayContaining(sourceShippedAdmin));
     expect(skills.length).toBeGreaterThanOrEqual(sourceSkills.length);
     expect(
       skills.every(
@@ -606,12 +610,6 @@ describe('OpenAPI YAML Transformer', () => {
     );
     expect(transformed.components.schemas).not.toHaveProperty(
       'PlatformUsageSettingsResponse',
-    );
-    expect(transformed.components.schemas).not.toHaveProperty(
-      'ListAdminAgentsResponse',
-    );
-    expect(transformed.components.schemas).not.toHaveProperty(
-      'AdminAgentFilter',
     );
     expect(transformed.components.schemas).toHaveProperty(
       'PlatformSkillCreateRequest',

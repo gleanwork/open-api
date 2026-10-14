@@ -187,17 +187,11 @@ const httpMethods = new Set([
 
 const platformSdkGroupPattern = /^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)*$/;
 // Source marks these Public, and x-glean-experimental only badges an endpoint
-// on the docs site (Skills shipped that way). These top-level SDK namespaces
-// are not shipped: omit every group under them (for example `admin.usage` and
-// `admin.agents`) from the generated spec that feeds SDK bundles and
-// final_specs. Shipping one means removing it here and allowlisting it in
-// tests/post_transform_smoke.test.js.
-const unshippedPlatformSdkNamespaces = new Set(['admin', 'usage']);
-
-function isUnshippedPlatformSdkGroup(group) {
-  if (typeof group !== 'string') return false;
-  return unshippedPlatformSdkNamespaces.has(group.split('.')[0]);
-}
+// on the docs site (Skills shipped that way). These groups are not shipped:
+// omit them from the generated spec that feeds SDK bundles and final_specs.
+// Other `admin.*` groups ship. Shipping `usage` means removing it here and
+// allowlisting its top-level namespace in tests/post_transform_smoke.test.js.
+const unshippedPlatformSdkGroups = new Set(['admin.usage', 'usage']);
 const prunableComponentKinds = [
   'schemas',
   'responses',
@@ -826,7 +820,7 @@ function omitUnshippedPlatformOperations(spec) {
     for (const method of httpMethods) {
       const operation = pathItem[method];
       if (!operation || typeof operation !== 'object') continue;
-      if (!isUnshippedPlatformSdkGroup(operation['x-speakeasy-group'])) {
+      if (!unshippedPlatformSdkGroups.has(operation['x-speakeasy-group'])) {
         continue;
       }
       removedMethods.push(method);
