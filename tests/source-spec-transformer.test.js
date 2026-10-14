@@ -531,7 +531,7 @@ describe('OpenAPI YAML Transformer', () => {
     );
   });
 
-  test('omits unshipped Platform Usage APIs and keeps Skills GA and other Admin APIs', () => {
+  test('keeps Platform Usage, Admin, and Skills APIs', () => {
     const sourceText = readFixture('platform.yaml');
     const source = yaml.load(sourceText);
     const transformed = yaml.load(transform(sourceText, 'platform.yaml'));
@@ -546,9 +546,14 @@ describe('OpenAPI YAML Transformer', () => {
       'trace',
     ];
 
+    const isUsageOrAdmin = (group) =>
+      group === 'usage' ||
+      group?.startsWith('usage.') ||
+      group?.startsWith('admin.');
+
     const sourceUsage = [];
+    const sourceUsageAndAdmin = [];
     const sourceSkills = [];
-    const sourceShippedAdmin = [];
     for (const [path, pathItem] of Object.entries(source.paths ?? {})) {
       for (const method of httpMethods) {
         const operation = pathItem?.[method];
@@ -556,15 +561,18 @@ describe('OpenAPI YAML Transformer', () => {
         const group = operation['x-glean-sdk']?.group;
         if (group === 'usage' || group === 'admin.usage') {
           sourceUsage.push(`${method.toUpperCase()} ${path}`);
-        } else if (group?.startsWith('admin.')) {
-          sourceShippedAdmin.push(`${method.toUpperCase()} /api${path}`);
+        }
+        if (isUsageOrAdmin(group)) {
+          sourceUsageAndAdmin.push(
+            `${method.toUpperCase()} /api${path} -> ${group}`,
+          );
         }
         if (group === 'skills') sourceSkills.push(operation);
       }
     }
 
     expect(sourceUsage.length).toBeGreaterThan(0);
-    expect(sourceShippedAdmin.length).toBeGreaterThan(0);
+    expect(sourceUsageAndAdmin.length).toBeGreaterThan(sourceUsage.length);
     expect(sourceSkills.length).toBeGreaterThan(0);
     expect(
       sourceSkills.every(
@@ -572,33 +580,21 @@ describe('OpenAPI YAML Transformer', () => {
       ),
     ).toBe(true);
 
-    const leaked = [];
+    const usageAndAdmin = [];
     const skills = [];
-    const shippedAdmin = [];
     for (const [path, pathItem] of Object.entries(transformed.paths ?? {})) {
-      if (
-        path === '/api/usage' ||
-        path.startsWith('/api/usage/') ||
-        path === '/api/admin/usage' ||
-        path.startsWith('/api/admin/usage/')
-      ) {
-        leaked.push(path);
-      }
       for (const method of httpMethods) {
         const operation = pathItem?.[method];
         if (!operation) continue;
         const group = operation['x-speakeasy-group'];
-        if (group === 'usage' || group === 'admin.usage') {
-          leaked.push(`${method.toUpperCase()} ${path} -> ${group}`);
-        } else if (group?.startsWith('admin.')) {
-          shippedAdmin.push(`${method.toUpperCase()} ${path}`);
+        if (isUsageOrAdmin(group)) {
+          usageAndAdmin.push(`${method.toUpperCase()} ${path} -> ${group}`);
         }
         if (group === 'skills') skills.push(operation);
       }
     }
 
-    expect(leaked).toEqual([]);
-    expect(shippedAdmin).toEqual(expect.arrayContaining(sourceShippedAdmin));
+    expect(usageAndAdmin).toEqual(expect.arrayContaining(sourceUsageAndAdmin));
     expect(skills.length).toBeGreaterThanOrEqual(sourceSkills.length);
     expect(
       skills.every(
@@ -608,14 +604,15 @@ describe('OpenAPI YAML Transformer', () => {
     expect(transformed.paths['/api/skills']?.post['x-speakeasy-group']).toBe(
       'skills',
     );
-    expect(transformed.components.schemas).not.toHaveProperty(
+    expect(transformed.components.schemas).toHaveProperty(
       'PlatformUsageSettingsResponse',
+    );
+    expect(transformed.components.schemas).toHaveProperty(
+      'PlatformListAdminAgentsResponse',
     );
     expect(transformed.components.schemas).toHaveProperty(
       'PlatformSkillCreateRequest',
     );
-    expect(transformed.components.parameters).not.toHaveProperty('RequestId');
-    expect(transformed.components.parameters).not.toHaveProperty('PageSize');
     expect(transformed.components.parameters).toHaveProperty(
       'TriggerWebhookId',
     );

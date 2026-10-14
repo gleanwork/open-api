@@ -237,10 +237,8 @@ describe('Post-transformation smoke tests', () => {
     // without a group silently falls back to its `tags` and leaks a method to
     // the SDK top level. The top level is reserved for the Platform API, so
     // client/indexing operations must be nested under `client.*` / `indexing.*`.
-    // `admin` is allowed so that any `admin.*` Platform endpoint can ship.
-    // Platform Usage (`usage` and `admin.usage`) is not shipped:
-    // source-spec-transformer omits it, and the test below fails if it leaks.
-    // Do not allowlist `usage`.
+    // `admin` is allowed so that any `admin.*` Platform endpoint (including
+    // Admin Usage) can ship.
     const platformSegments = new Set([
       'admin',
       'agents',
@@ -249,6 +247,7 @@ describe('Post-transformation smoke tests', () => {
       'search',
       'skills',
       'triggers',
+      'usage',
       'users',
     ]);
     const allowedTopLevelSegments = new Set([
@@ -287,37 +286,6 @@ describe('Post-transformation smoke tests', () => {
     expect(
       badTopLevel,
       `operations with an unexpected top-level SDK namespace:\n${badTopLevel.join('\n')}`,
-    ).toEqual([]);
-  });
-
-  test('unshipped Platform Usage APIs are absent from the merged spec', () => {
-    // The `admin` namespace is allowlisted, so this check (not the namespace
-    // allowlist) keeps `admin.usage` and `usage` out of the SDK spec and, from
-    // there, final_specs and the developer site. They stay out until the
-    // product ships them.
-    const leaked = [];
-
-    for (const [path, pathItem] of Object.entries(spec.paths ?? {})) {
-      if (
-        path === '/api/usage' ||
-        path.startsWith('/api/usage/') ||
-        path === '/api/admin/usage' ||
-        path.startsWith('/api/admin/usage/')
-      ) {
-        leaked.push(path);
-      }
-
-      for (const method of ['get', 'post', 'put', 'delete', 'patch']) {
-        const group = pathItem?.[method]?.['x-speakeasy-group'];
-        if (group === 'usage' || group === 'admin.usage') {
-          leaked.push(`${method.toUpperCase()} ${path} -> ${group}`);
-        }
-      }
-    }
-
-    expect(
-      leaked,
-      `unshipped Platform Usage operations leaked into the merged spec:\n${leaked.join('\n')}`,
     ).toEqual([]);
   });
 });
