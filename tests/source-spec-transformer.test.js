@@ -531,7 +531,7 @@ describe('OpenAPI YAML Transformer', () => {
     );
   });
 
-  test('omits unshipped Platform Usage APIs and keeps Skills GA', () => {
+  test('omits unshipped Platform Usage and Admin APIs and keeps Skills GA', () => {
     const sourceText = readFixture('platform.yaml');
     const source = yaml.load(sourceText);
     const transformed = yaml.load(transform(sourceText, 'platform.yaml'));
@@ -546,6 +546,10 @@ describe('OpenAPI YAML Transformer', () => {
       'trace',
     ];
 
+    const unshippedNamespaces = new Set(['admin', 'usage']);
+    const isUnshipped = (group) =>
+      typeof group === 'string' && unshippedNamespaces.has(group.split('.')[0]);
+
     const sourceUsage = [];
     const sourceSkills = [];
     for (const [path, pathItem] of Object.entries(source.paths ?? {})) {
@@ -553,7 +557,7 @@ describe('OpenAPI YAML Transformer', () => {
         const operation = pathItem?.[method];
         if (!operation) continue;
         const group = operation['x-glean-sdk']?.group;
-        if (group === 'usage' || group === 'admin.usage') {
+        if (isUnshipped(group)) {
           sourceUsage.push(`${method.toUpperCase()} ${path}`);
         }
         if (group === 'skills') sourceSkills.push(operation);
@@ -574,8 +578,8 @@ describe('OpenAPI YAML Transformer', () => {
       if (
         path === '/api/usage' ||
         path.startsWith('/api/usage/') ||
-        path === '/api/admin/usage' ||
-        path.startsWith('/api/admin/usage/')
+        path === '/api/admin' ||
+        path.startsWith('/api/admin/')
       ) {
         leaked.push(path);
       }
@@ -583,7 +587,7 @@ describe('OpenAPI YAML Transformer', () => {
         const operation = pathItem?.[method];
         if (!operation) continue;
         const group = operation['x-speakeasy-group'];
-        if (group === 'usage' || group === 'admin.usage') {
+        if (isUnshipped(group)) {
           leaked.push(`${method.toUpperCase()} ${path} -> ${group}`);
         }
         if (group === 'skills') skills.push(operation);
@@ -602,6 +606,12 @@ describe('OpenAPI YAML Transformer', () => {
     );
     expect(transformed.components.schemas).not.toHaveProperty(
       'PlatformUsageSettingsResponse',
+    );
+    expect(transformed.components.schemas).not.toHaveProperty(
+      'ListAdminAgentsResponse',
+    );
+    expect(transformed.components.schemas).not.toHaveProperty(
+      'AdminAgentFilter',
     );
     expect(transformed.components.schemas).toHaveProperty(
       'PlatformSkillCreateRequest',
