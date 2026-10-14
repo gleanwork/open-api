@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 1b58aa2b8fed98e7a55e7eb7ab0e5e1e5d220a4c
+  x-source-commit-sha: 44938c9f8ad09ef67195e5b3f8cc02d3853f963f
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -367,7 +367,7 @@ paths:
         id: 4c0923bd-64c7-45b9-99a5-b36f2705e618
         introduced: '2026-01-21'
         message: Answer boards have been removed and this endpoint no longer serves a purpose
-        removal: '2026-10-15'
+        removal: '2027-01-15'
   /checkdatasourceauth:
     post:
       tags:
@@ -3389,7 +3389,7 @@ components:
             id: 75a48c79-b36a-4171-a0a0-4af7189da66e
             introduced: '2026-02-05'
             message: Use relationType instead
-            removal: '2026-10-15'
+            removal: '2027-01-15'
     FacetFilter:
       properties:
         fieldName:
@@ -4188,7 +4188,7 @@ components:
             id: 3729bc64-8859-4159-b93c-ce2d5f0e7304
             introduced: '2026-02-05'
             message: Answer Boards no longer supported
-            removal: '2026-10-15'
+            removal: '2027-01-15'
         audienceFilters:
           type: array
           description: Filters which restrict who should see the answer. Values are taken from the corresponding filters in people search.
@@ -5169,7 +5169,7 @@ components:
             id: 68de0429-b0cc-4b40-8061-f848788079a2
             introduced: '2026-02-05'
             message: Field is deprecated
-            removal: '2026-10-15'
+            removal: '2027-01-15'
         results:
           type: array
           items:
@@ -5235,7 +5235,7 @@ components:
             id: e55ddf30-7c47-43a5-b775-d78f8b29411a
             introduced: '2026-02-05'
             message: Use 'text' field instead
-            removal: '2026-10-15'
+            removal: '2027-01-15'
           x-includeEmpty: true
       example:
         snippet: snippet
@@ -5540,7 +5540,7 @@ components:
             id: 1d3cd23f-9085-4378-b466-9bdc2e344a71
             introduced: '2026-02-05'
             message: Use ChannelInviteInfo instead
-            removal: '2026-10-15'
+            removal: '2027-01-15'
         inviteTime:
           deprecated: true
           type: string
@@ -5550,7 +5550,7 @@ components:
             id: 2dc3f572-cded-483d-af07-fc9fc7fd0ae4
             introduced: '2026-02-05'
             message: Use ChannelInviteInfo instead
-            removal: '2026-10-15'
+            removal: '2027-01-15'
         reminderTime:
           deprecated: true
           type: string
@@ -5560,7 +5560,7 @@ components:
             id: d02d58cf-eb90-45d0-ab90-f7a9d707ae3c
             introduced: '2026-02-05'
             message: Use ChannelInviteInfo instead
-            removal: '2026-10-15'
+            removal: '2027-01-15'
     ReadPermission:
       description: Describes the read permission level that a user has for a specific feature
       properties:
@@ -5909,7 +5909,7 @@ components:
             id: cd754845-6eec-480f-b395-c93478aff563
             introduced: '2026-02-05'
             message: Use reacts instead
-            removal: '2026-10-15'
+            removal: '2027-01-15'
         reacts:
           type: array
           items:
@@ -5936,7 +5936,7 @@ components:
               introduced: '2026-02-05'
               kind: property
               message: Use permissions instead
-              removal: '2026-10-15'
+              removal: '2027-01-15'
         lastViewedTime:
           type: string
           format: date-time
@@ -6970,7 +6970,7 @@ components:
             id: 6446f85e-c90e-4c00-9717-796f9db3dc61
             introduced: '2026-02-06'
             message: Use inline citations via ChatMessageFragment.citation and ChatMessageCitation.referenceRanges instead. This field is still populated for backward compatibility.
-            removal: '2026-10-15'
+            removal: '2027-01-15'
         uploadedFileIds:
           type: array
           items:
@@ -8799,7 +8799,7 @@ components:
             id: 15850758-4d95-4d98-8d57-39c50663a796
             introduced: '2026-02-05'
             message: Field is deprecated
-            removal: '2026-10-15'
+            removal: '2027-01-15'
         overviewResponse:
           $ref: '#/components/schemas/InsightsOverviewResponse'
         assistantResponse:
