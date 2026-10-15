@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: cc0b2cfac35a68f8559646a36dce378612dc5c9d
+  x-source-commit-sha: c76098612981125aa29220fab1eb25189ebd133b
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -2605,6 +2605,60 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListIdpGroupsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /admin/idp-groups/{idp_group_id}:
+    get:
+      tags:
+        - IdP Groups
+      summary: Get an IdP group
+      description: |
+        Get one identity provider (IdP) group by its idp_group_id. Inactive IdP groups are returned, so a caller can still show a group after it was removed from the identity provider. An IdP group is active when Glean loaded it from the directory. An IdP group is inactive when only a usage limit names it, for example after the group was removed from the identity provider. An idp_group_id that is not valid, or that names no group that the list returns, returns 404 resource_not_found. The caller must be able to read the workspace configuration or the workspace billing.
+      operationId: platform-admin-idp-groups-get
+      x-glean-scopes:
+        legacy:
+          - ADMIN
+          - ADMIN_USAGE
+        platform:
+          - admin.idp_groups:read
+      x-visibility: Public
+      x-glean-experimental:
+        id: a725ef7b-baf5-48a4-b19f-d460398e30bb
+        introduced: '2026-10-15'
+      x-glean-sdk:
+        group: admin.idpgroups
+        method: get
+      parameters:
+        - in: path
+          name: idp_group_id
+          description: |
+            The idp_group_id from a list IdP groups response. IDs are opaque. Do not parse or build them. The group_id in usage limit responses is not an idp_group_id and returns 404.
+          required: true
+          example: '{idp_group_id}'
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetIdpGroupResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -7321,6 +7375,20 @@ components:
             - string
             - 'null'
           description: Opaque cursor for the next page; null or absent when has_more is false.
+        request_id:
+          type: string
+          description: Request identifier for correlating this response.
+    GetIdpGroupResponse:
+      type: object
+      description: One IdP group.
+      additionalProperties: false
+      required:
+        - idp_group
+        - request_id
+      properties:
+        idp_group:
+          $ref: '#/components/schemas/IdpGroup'
+          description: The IdP group identified by the requested idp_group_id.
         request_id:
           type: string
           description: Request identifier for correlating this response.
