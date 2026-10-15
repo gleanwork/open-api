@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: ae7fc925fb838cd22e338fdab0c2e6b04d77f954
+  x-source-commit-sha: e02dd71616b4881c94b1ca6f98b56cf4caf38853
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -6316,11 +6316,11 @@ components:
       type: string
       pattern: ^[0-9]{4}-(0[1-9]|1[0-2])$
       description: UTC calendar month in YYYY-MM format, assigned by the server at creation.
-    ApprovedIncreaseAmount:
+    RecordedApprovedAmount:
       type: string
-      pattern: ^([1-9][0-9]*(\.[0-9]+)?|0\.[0-9]*[1-9][0-9]*)$
+      pattern: ^-?([1-9][0-9]*(\.[0-9]+)?|0\.[0-9]*[1-9][0-9]*)$
       description: |
-        Recorded positive additive increase in the applicable rule's denomination, encoded as a plain decimal string. Existing enforcement consumes eligible USER current-period grants without changing standing rules. This does not add capacity for agents or other unsupported targets. The backend stores float32 values, not arbitrary-precision decimals.
+        Recorded additive amount in the applicable rule's denomination, encoded as a plain decimal string. Positive for approved increases; negative for an administrator's PERIOD decrease of the current period's approved increases. The backend stores float32 values, not arbitrary-precision decimals.
     RequestScope:
       type: string
       enum:
@@ -6381,7 +6381,7 @@ components:
           type: string
           description: User who resolved the request, when available.
         approved_increase_amount:
-          $ref: '#/components/schemas/ApprovedIncreaseAmount'
+          $ref: '#/components/schemas/RecordedApprovedAmount'
           description: Stored additive approval amount, when available.
         scope:
           $ref: '#/components/schemas/RequestScope'
@@ -6520,6 +6520,11 @@ components:
           type: string
           maxLength: 4096
           description: Optional explanation of why the increase is needed.
+    ApprovedIncreaseAmount:
+      type: string
+      pattern: ^([1-9][0-9]*(\.[0-9]+)?|0\.[0-9]*[1-9][0-9]*)$
+      description: |
+        Recorded positive additive increase in the applicable rule's denomination, encoded as a plain decimal string. Existing enforcement consumes eligible USER current-period grants without changing standing rules. This does not add capacity for agents or other unsupported targets. The backend stores float32 values, not arbitrary-precision decimals.
     AdministrativeRequestUpdate:
       type: object
       additionalProperties: false
