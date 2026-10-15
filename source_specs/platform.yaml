@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: f82755bcd8caa024e6e4bc6c0b8dc864a0717f99
+  x-source-commit-sha: ac5a4e8064c93c48bb9d291f5c80d44e5531ef21
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -2795,6 +2795,166 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
+  /documents:
+    get:
+      tags:
+        - Documents
+      summary: Get document by URL
+      description: |
+        Retrieve one permission-visible indexed document by URL. The url is the lookup key that Platform search returns. Many URLs can resolve to one document. The response is a single document, not a list. The returned url is the permalink and may differ from the submitted URL. Gmail and Outlook search results and chat citations carry caller-specific IDs that get document by ID cannot resolve, so retrieve them by URL here. A Gmail or Outlook URL that Platform search returned can still return 404, as it can with legacy getdocuments. Retrieving search results is best-effort parity with legacy getdocuments. Federated results and go-link shortcut documents are not retrievable in this release.
+      operationId: platform-documents-get-by-url
+      x-glean-scopes:
+        legacy:
+          - DOCUMENTS
+        platform:
+          - documents:read
+      x-visibility: Public
+      x-glean-sdk:
+        group: documents
+        method: getByUrl
+      parameters:
+        - in: query
+          name: url
+          description: URL of the document to retrieve.
+          required: true
+          example: '{url}'
+          schema:
+            type: string
+            minLength: 1
+            format: uri
+        - $ref: '#/components/parameters/Include'
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      x-glean-experimental:
+        id: 418eeb85-8a15-4fcb-95e2-eea016eb365d
+        introduced: '2026-09-10'
+  /documents/{document_id}:
+    get:
+      tags:
+        - Documents
+      summary: Get document by ID
+      description: |
+        Retrieve one permission-visible indexed document by its Glean store ID. Gmail and Outlook search results and chat citations can carry caller-specific IDs that this operation cannot resolve. Try get document by URL for those documents. URL lookup does not resolve every Gmail or Outlook result.
+      operationId: platform-documents-get
+      x-glean-scopes:
+        legacy:
+          - DOCUMENTS
+        platform:
+          - documents:read
+      x-visibility: Public
+      x-glean-sdk:
+        group: documents
+        method: getById
+      parameters:
+        - in: path
+          name: document_id
+          description: |
+            Indexed Glean store ID. For a Gmail or Outlook citation with a caller-specific ID, try get document by URL instead.
+          required: true
+          example: '{document_id}'
+          schema:
+            type: string
+            minLength: 1
+        - $ref: '#/components/parameters/Include'
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      x-glean-experimental:
+        id: ee55a9f0-39b5-46fc-9863-d4bace465a8b
+        introduced: '2026-09-10'
+  /documents/batch:
+    post:
+      tags:
+        - Documents
+      summary: Batch get documents
+      description: |
+        Retrieve up to 100 permission-visible indexed documents by URL or document_id. Found items are in results. Complete misses are warnings correlated by index. Incomplete store work fails the whole request. Retrieving search results is best-effort parity with legacy getdocuments. Gmail and Outlook caller-specific citation IDs are not accepted as document_id selectors. Use URL selectors for them. A Gmail or Outlook URL can still return a resource_not_found warning. Federated results and go-link shortcut documents are not retrievable in this release.
+      operationId: platform-documents-batch
+      x-glean-scopes:
+        legacy:
+          - DOCUMENTS
+        platform:
+          - documents:read
+      x-visibility: Public
+      x-glean-sdk:
+        group: documents
+        method: batch
+      x-codegen-request-body-name: payload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DocumentsBatchRequest'
+      responses:
+        '200':
+          description: Successful batch retrieval.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentsBatchResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+      x-glean-experimental:
+        id: fb55e732-e3ce-41fa-ba3d-7e5e5f708e43
+        introduced: '2026-09-10'
   /triggers:
     post:
       tags:
@@ -7340,6 +7500,218 @@ components:
         request_id:
           type: string
           description: Request identifier for correlating this response.
+    DocumentInclude:
+      type: string
+      description: Optional document projection.
+      enum:
+        - CONTENT
+      x-enumDescriptions:
+        CONTENT: Add content, the document's extracted text.
+    DocumentContent:
+      type: object
+      additionalProperties: false
+      required:
+        - full_text_list
+      properties:
+        full_text_list:
+          type: array
+          description: |
+            Extracted plain-text segments. Empty when Glean has no extracted text for the document after a complete content read.
+          items:
+            type: string
+    Document:
+      type: object
+      additionalProperties: false
+      required:
+        - document_id
+        - url
+        - title
+        - datasource
+        - document_type
+        - updated_at
+        - created_at
+      properties:
+        document_id:
+          type: string
+          minLength: 1
+          description: Indexed Glean store ID. Get document by ID accepts it.
+        url:
+          type: string
+          format: uri
+          minLength: 1
+          description: |
+            Permalink of the document. Pass it to get document by URL to retrieve the document again. May differ from a submitted lookup URL.
+        title:
+          type: string
+          minLength: 1
+          description: Document title. The server returns the placeholder title, Untitled, when the source item has no title.
+        datasource:
+          type: string
+          minLength: 1
+          description: Origin datasource.
+        document_type:
+          type:
+            - string
+            - 'null'
+          minLength: 1
+          x-omitempty: false
+          description: Datasource-specific document type.
+        mime_type:
+          type: string
+          minLength: 1
+          description: Source MIME type. Omitted when absent.
+        creator:
+          $ref: '#/components/schemas/PersonReference'
+        owner:
+          $ref: '#/components/schemas/PersonReference'
+        updated_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+          x-omitempty: false
+          description: When the document was last modified.
+        created_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+          x-omitempty: false
+          description: When the document was created.
+        content:
+          $ref: '#/components/schemas/DocumentContent'
+          description: |
+            Extracted text. Present on every found document when include contains CONTENT; omitted otherwise. A failure to retrieve requested content fails the request rather than returning a document without it.
+    DocumentGetResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - document
+        - request_id
+      properties:
+        document:
+          $ref: '#/components/schemas/Document'
+        request_id:
+          type: string
+          minLength: 1
+          description: Platform-generated request ID for support correlation.
+    DocumentsBatchSpecById:
+      type: object
+      additionalProperties: false
+      required:
+        - document_id
+      properties:
+        document_id:
+          type: string
+          minLength: 1
+          description: |
+            Indexed Glean store ID. For Gmail or Outlook caller-specific citation IDs, try a URL selector instead.
+    DocumentsBatchSpecByUrl:
+      type: object
+      additionalProperties: false
+      required:
+        - url
+      properties:
+        url:
+          type: string
+          description: |
+            Document URL to resolve. An empty or malformed URL is not a schema 400. The batch response reports it as a warning after a complete read.
+    DocumentsBatchRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - document_specs
+      example:
+        document_specs:
+          - document_id: '{document_id}'
+          - url: https://company.atlassian.net/wiki/spaces/ENG/pages/12345
+      properties:
+        document_specs:
+          type: array
+          minItems: 1
+          maxItems: 100
+          description: Selectors to retrieve. Each item is exactly one of document_id or url.
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/DocumentsBatchSpecById'
+              - $ref: '#/components/schemas/DocumentsBatchSpecByUrl'
+        include:
+          type: array
+          description: |
+            Optional field groups applied to every document in results. CONTENT adds content to every found document. Each value only adds fields; it does not change which documents are returned.
+          items:
+            $ref: '#/components/schemas/DocumentInclude'
+    DocumentsBatchResult:
+      type: object
+      additionalProperties: false
+      required:
+        - index
+        - document
+      properties:
+        index:
+          type: integer
+          minimum: 0
+          description: Zero-based index into document_specs.
+        document:
+          $ref: '#/components/schemas/Document'
+    DocumentsBatchWarningContext:
+      type: object
+      additionalProperties: false
+      required:
+        - index
+      properties:
+        index:
+          type: integer
+          minimum: 0
+          description: Zero-based index into document_specs.
+        document_id:
+          type: string
+          minLength: 1
+          description: Submitted document_id when the spec was an ID.
+        url:
+          type: string
+          description: |
+            Submitted URL when the spec was a URL. Empty when the caller sent an empty url.
+    DocumentsBatchWarning:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - message
+        - context
+      properties:
+        code:
+          type: string
+          minLength: 1
+          description: Warning code such as resource_not_found or invalid_parameter.
+        message:
+          type: string
+          minLength: 1
+          description: Human-readable warning.
+        context:
+          $ref: '#/components/schemas/DocumentsBatchWarningContext'
+    DocumentsBatchResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - results
+        - warnings
+        - request_id
+      properties:
+        results:
+          type: array
+          description: Found documents, correlated by index into document_specs.
+          items:
+            $ref: '#/components/schemas/DocumentsBatchResult'
+        warnings:
+          type: array
+          description: Complete per-item failures. Empty when every spec was found.
+          items:
+            $ref: '#/components/schemas/DocumentsBatchWarning'
+        request_id:
+          type: string
+          minLength: 1
+          description: Platform-generated request ID for support correlation.
     TriggerStatus:
       type: string
       description: Current trigger lifecycle state.
@@ -8041,6 +8413,18 @@ components:
         description: Nonempty identifier of the stored request resource.
         minLength: 1
         maxLength: 256
+    Include:
+      in: query
+      name: include
+      description: |
+        Optional field groups to add to each found document. Each value only adds fields; it does not change which documents are returned.
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/DocumentInclude'
     TriggerWebhookId:
       name: webhook-id
       in: header
