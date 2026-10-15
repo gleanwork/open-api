@@ -531,6 +531,325 @@ describe('OpenAPI YAML Transformer', () => {
     );
   });
 
+  test('omits public Documents operations until the backend release is EXTERNAL', () => {
+    const documentsOperation = (operationId, method, extras) => ({
+      tags: ['Documents'],
+      operationId,
+      'x-visibility': 'Public',
+      'x-glean-experimental': { introduced: '2026-09-10' },
+      'x-glean-sdk': { group: 'documents', method },
+      ...extras,
+    });
+
+    const source = {
+      openapi: '3.0.0',
+      info: { title: 'Glean Platform API', version: '2026-04-01' },
+      servers: [{ url: 'https://{domain}-be.glean.com/api' }],
+      components: {
+        securitySchemes: {
+          ApiToken: { type: 'http', scheme: 'bearer' },
+        },
+        parameters: {
+          AgentId: { name: 'agent_id', in: 'path', schema: { type: 'string' } },
+          DocumentId: {
+            name: 'document_id',
+            in: 'path',
+            schema: { type: 'string' },
+          },
+          Include: {
+            name: 'include',
+            in: 'query',
+            schema: { $ref: '#/components/schemas/DocumentInclude' },
+          },
+        },
+        requestBodies: {
+          DocumentsBatch: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/DocumentsBatchRequest' },
+              },
+            },
+          },
+        },
+        responses: {
+          BadRequest: {
+            description: 'bad request',
+            content: {
+              'application/problem+json': {
+                schema: { $ref: '#/components/schemas/ProblemDetail' },
+              },
+            },
+          },
+          DocumentProblem: {
+            description: 'documents only',
+            content: {
+              'application/problem+json': {
+                schema: { $ref: '#/components/schemas/DocumentWarning' },
+              },
+            },
+          },
+        },
+        schemas: {
+          ProblemDetail: { type: 'object' },
+          PersonReference: { type: 'object' },
+          Agent: {
+            type: 'object',
+            properties: {
+              owner: { $ref: '#/components/schemas/PersonReference' },
+            },
+          },
+          // Already unreferenced. The hold must not sweep it up.
+          UnusedNote: { type: 'object' },
+          DocumentInclude: { type: 'string', enum: ['CONTENT'] },
+          DocumentContent: { type: 'object' },
+          Document: {
+            type: 'object',
+            properties: {
+              content: { $ref: '#/components/schemas/DocumentContent' },
+              creator: { $ref: '#/components/schemas/PersonReference' },
+            },
+          },
+          DocumentGetResponse: {
+            type: 'object',
+            properties: {
+              document: { $ref: '#/components/schemas/Document' },
+            },
+          },
+          DocumentsBatchRequest: {
+            type: 'object',
+            properties: {
+              document_specs: {
+                type: 'array',
+                items: {
+                  oneOf: [
+                    { $ref: '#/components/schemas/DocumentsBatchSpecById' },
+                    { $ref: '#/components/schemas/DocumentsBatchSpecByUrl' },
+                  ],
+                },
+              },
+              include: {
+                type: 'array',
+                items: { $ref: '#/components/schemas/DocumentInclude' },
+              },
+            },
+          },
+          DocumentsBatchSpecById: { type: 'object' },
+          DocumentsBatchSpecByUrl: { type: 'object' },
+          DocumentsBatchResponse: {
+            type: 'object',
+            properties: {
+              results: {
+                type: 'array',
+                items: { $ref: '#/components/schemas/DocumentsBatchResult' },
+              },
+            },
+          },
+          DocumentsBatchResult: {
+            type: 'object',
+            properties: {
+              document: { $ref: '#/components/schemas/Document' },
+            },
+          },
+          DocumentWarning: {
+            type: 'object',
+            discriminator: {
+              propertyName: 'code',
+              mapping: { missing: 'DocumentMissingWarning' },
+            },
+          },
+          DocumentMissingWarning: { type: 'object' },
+        },
+      },
+      security: [{ ApiToken: [] }],
+      paths: {
+        '/agents/{agent_id}': {
+          parameters: [{ $ref: '#/components/parameters/AgentId' }],
+          get: {
+            operationId: 'platform-agents-get',
+            'x-visibility': 'Public',
+            'x-glean-sdk': { group: 'agents', method: 'get' },
+            responses: {
+              200: {
+                description: 'ok',
+                content: {
+                  'application/json': {
+                    schema: { $ref: '#/components/schemas/Agent' },
+                  },
+                },
+              },
+              400: { $ref: '#/components/responses/BadRequest' },
+            },
+          },
+        },
+        '/documents': {
+          get: documentsOperation('platform-documents-get-by-url', 'getByUrl', {
+            parameters: [{ $ref: '#/components/parameters/Include' }],
+            responses: {
+              200: {
+                description: 'ok',
+                content: {
+                  'application/json': {
+                    schema: {
+                      $ref: '#/components/schemas/DocumentGetResponse',
+                    },
+                  },
+                },
+              },
+              400: { $ref: '#/components/responses/BadRequest' },
+            },
+          }),
+        },
+        '/documents/{document_id}': {
+          parameters: [{ $ref: '#/components/parameters/DocumentId' }],
+          get: documentsOperation('platform-documents-get', 'getById', {
+            parameters: [{ $ref: '#/components/parameters/Include' }],
+            responses: {
+              200: {
+                description: 'ok',
+                content: {
+                  'application/json': {
+                    schema: {
+                      $ref: '#/components/schemas/DocumentGetResponse',
+                    },
+                  },
+                },
+              },
+              400: { $ref: '#/components/responses/BadRequest' },
+            },
+          }),
+        },
+        '/documents/batch': {
+          post: documentsOperation('platform-documents-batch', 'batch', {
+            requestBody: {
+              $ref: '#/components/requestBodies/DocumentsBatch',
+            },
+            responses: {
+              200: {
+                description: 'ok',
+                content: {
+                  'application/json': {
+                    schema: {
+                      $ref: '#/components/schemas/DocumentsBatchResponse',
+                    },
+                  },
+                },
+              },
+              400: { $ref: '#/components/responses/DocumentProblem' },
+            },
+          }),
+        },
+      },
+    };
+
+    for (const operation of [
+      source.paths['/documents'].get,
+      source.paths['/documents/{document_id}'].get,
+      source.paths['/documents/batch'].post,
+    ]) {
+      expect(operation['x-visibility']).toBe('Public');
+      expect(operation['x-glean-experimental']).toBeDefined();
+      expect(operation['x-glean-sdk'].group).toBe('documents');
+    }
+
+    const transformed = yaml.load(
+      transform(yaml.dump(source), 'platform.yaml'),
+    );
+
+    expect(transformed.paths).toHaveProperty('/api/agents/{agent_id}');
+    expect(transformed.paths['/api/agents/{agent_id}'].get).toMatchObject({
+      'x-speakeasy-group': 'agents',
+      'x-speakeasy-name-override': 'get',
+    });
+    expect(transformed.paths).not.toHaveProperty('/api/documents');
+    expect(transformed.paths).not.toHaveProperty(
+      '/api/documents/{document_id}',
+    );
+    expect(transformed.paths).not.toHaveProperty('/api/documents/batch');
+
+    const leakedGroups = [];
+    for (const pathItem of Object.values(transformed.paths)) {
+      for (const method of ['get', 'post', 'put', 'delete', 'patch']) {
+        const group = pathItem?.[method]?.['x-speakeasy-group'];
+        if (group === 'documents' || group?.startsWith('documents.')) {
+          leakedGroups.push(group);
+        }
+      }
+    }
+    expect(leakedGroups).toEqual([]);
+
+    expect(Object.keys(transformed.components.schemas).sort()).toEqual([
+      'PlatformAgent',
+      'PlatformPersonReference',
+      'PlatformProblemDetail',
+      'PlatformUnusedNote',
+    ]);
+    expect(transformed.components.responses).toHaveProperty(
+      'PlatformBadRequest',
+    );
+    expect(transformed.components.responses).not.toHaveProperty(
+      'PlatformDocumentProblem',
+    );
+    expect(Object.keys(transformed.components.parameters).sort()).toEqual([
+      'AgentId',
+    ]);
+    expect(transformed.components.requestBodies).not.toHaveProperty(
+      'DocumentsBatch',
+    );
+    expect(
+      transformed.components.schemas.PlatformAgent.properties.owner.$ref,
+    ).toBe('#/components/schemas/PlatformPersonReference');
+
+    const dangling = [];
+    const visit = (value) => {
+      if (!value || typeof value !== 'object') return;
+      if (Array.isArray(value)) {
+        for (const item of value) visit(item);
+        return;
+      }
+      const mapping = value.discriminator?.mapping;
+      if (mapping && typeof mapping === 'object' && !Array.isArray(mapping)) {
+        for (const target of Object.values(mapping)) {
+          if (typeof target !== 'string') continue;
+          const name = target.startsWith('#/components/schemas/')
+            ? target.slice('#/components/schemas/'.length)
+            : target.startsWith('#/')
+              ? null
+              : target;
+          if (name && !transformed.components?.schemas?.[name]) {
+            dangling.push(target);
+          }
+        }
+      }
+      for (const [key, child] of Object.entries(value)) {
+        if (key === '$ref' && typeof child === 'string') {
+          if (!child.startsWith('#/components/')) continue;
+          const [kind, name] = child.slice('#/components/'.length).split('/');
+          if (!transformed.components?.[kind]?.[name]) dangling.push(child);
+          continue;
+        }
+        visit(child);
+      }
+    };
+    visit(transformed);
+    expect(dangling).toEqual([]);
+
+    // Transform of the checked-in platform spec must succeed. Usage and Admin
+    // Usage stay published. Documents paths stay absent from the output.
+    const published = yaml.load(
+      transform(readFixture('platform.yaml'), 'platform.yaml'),
+    );
+    expect(
+      published.paths['/api/admin/usage/settings'].get['x-speakeasy-group'],
+    ).toBe('admin.usage');
+    expect(
+      published.paths['/api/usage/limits/evaluate'].post['x-speakeasy-group'],
+    ).toBe('usage');
+    expect(published.paths['/api/documents']).toBeUndefined();
+    expect(published.paths['/api/documents/{document_id}']).toBeUndefined();
+    expect(published.paths['/api/documents/batch']).toBeUndefined();
+  });
+
   test('transformPlatformSpec keeps discriminator mapping targets resolvable', () => {
     const spec = yaml.load(readFixture('platform.yaml'));
     // Exercise the schema-name form in addition to the URI form used by source.
