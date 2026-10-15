@@ -2,6 +2,7 @@ import { beforeEach, describe, test, expect } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import yaml from 'js-yaml';
+import { transform } from '../src/source-spec-transformer.js';
 
 const SPEC_PATH = path.join(
   process.cwd(),
@@ -244,6 +245,7 @@ describe('Post-transformation smoke tests', () => {
       'agents',
       'chat',
       'departments',
+      'documents',
       'search',
       'skills',
       'triggers',
@@ -287,5 +289,104 @@ describe('Post-transformation smoke tests', () => {
       badTopLevel,
       `operations with an unexpected top-level SDK namespace:\n${badTopLevel.join('\n')}`,
     ).toEqual([]);
+  });
+
+  test('Transform keeps experimental Documents operations in the documents group', () => {
+    // Operation ids, SDK methods, and experimental ids match
+    // askscio/scio#301972 openapi/public/platform/documents.yaml.
+    const source = {
+      openapi: '3.1.0',
+      servers: [{ url: 'https://{domain}-be.glean.com/api' }],
+      paths: {
+        '/documents': {
+          get: {
+            operationId: 'platform-documents-get-by-url',
+            'x-visibility': 'Public',
+            'x-glean-sdk': { group: 'documents', method: 'getByUrl' },
+            'x-glean-experimental': {
+              id: '418eeb85-8a15-4fcb-95e2-eea016eb365d',
+              introduced: '2026-09-10',
+            },
+            responses: { 200: { description: 'Successful response.' } },
+          },
+        },
+        '/documents/{document_id}': {
+          get: {
+            operationId: 'platform-documents-get',
+            'x-visibility': 'Public',
+            'x-glean-sdk': { group: 'documents', method: 'getById' },
+            'x-glean-experimental': {
+              id: 'ee55a9f0-39b5-46fc-9863-d4bace465a8b',
+              introduced: '2026-09-10',
+            },
+            responses: { 200: { description: 'Successful response.' } },
+          },
+        },
+        '/documents/batch': {
+          post: {
+            operationId: 'platform-documents-batch',
+            'x-visibility': 'Public',
+            'x-glean-sdk': { group: 'documents', method: 'batch' },
+            'x-glean-experimental': {
+              id: 'fb55e732-e3ce-41fa-ba3d-7e5e5f708e43',
+              introduced: '2026-09-10',
+            },
+            responses: { 200: { description: 'Successful batch retrieval.' } },
+          },
+        },
+      },
+    };
+
+    const transformed = yaml.load(
+      transform(yaml.dump(source), 'platform.yaml'),
+    );
+
+    const documentsOps = [
+      {
+        path: '/api/documents',
+        method: 'get',
+        operationId: 'platform-documents-get-by-url',
+        nameOverride: 'getByUrl',
+        experimentalId: '418eeb85-8a15-4fcb-95e2-eea016eb365d',
+      },
+      {
+        path: '/api/documents/{document_id}',
+        method: 'get',
+        operationId: 'platform-documents-get',
+        nameOverride: 'getById',
+        experimentalId: 'ee55a9f0-39b5-46fc-9863-d4bace465a8b',
+      },
+      {
+        path: '/api/documents/batch',
+        method: 'post',
+        operationId: 'platform-documents-batch',
+        nameOverride: 'batch',
+        experimentalId: 'fb55e732-e3ce-41fa-ba3d-7e5e5f708e43',
+      },
+    ];
+
+    expect(Object.keys(transformed.paths).sort()).toEqual(
+      documentsOps.map(({ path }) => path).sort(),
+    );
+
+    for (const {
+      path,
+      method,
+      operationId,
+      nameOverride,
+      experimentalId,
+    } of documentsOps) {
+      const operation = transformed.paths[path][method];
+
+      expect(operation, `${method.toUpperCase()} ${path}`).toBeDefined();
+      expect(operation.operationId).toBe(operationId);
+      expect(operation['x-visibility']).toBe('Public');
+      expect(operation['x-speakeasy-group']).toBe('documents');
+      expect(operation['x-speakeasy-name-override']).toBe(nameOverride);
+      expect(operation['x-glean-experimental']).toEqual({
+        id: experimentalId,
+        introduced: '2026-09-10',
+      });
+    }
   });
 });
