@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: e02dd71616b4881c94b1ca6f98b56cf4caf38853
-  x-open-api-commit-sha: 3c58b14b8f91875334c63e8f5ef61a5d2c787f80
+  x-source-commit-sha: 564a081fbf328cb3d28389aedb282957e8ad024e
+  x-open-api-commit-sha: b6e6add1c3464d7e49231576986d440310e39131
 servers:
   - url: https://{instance}-be.glean.com
     variables:

@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: e02dd71616b4881c94b1ca6f98b56cf4caf38853
+  x-source-commit-sha: 564a081fbf328cb3d28389aedb282957e8ad024e
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 3c58b14b8f91875334c63e8f5ef61a5d2c787f80
+  x-open-api-commit-sha: b6e6add1c3464d7e49231576986d440310e39131
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -8117,6 +8117,9 @@ components:
           x-speakeasy-deprecation-message: "Deprecated on 2026-05-07, removal scheduled for 2027-01-15: Use `collection.trackingToken` instead."
     ListCollectionsRequest:
       properties:
+        query:
+          type: string
+          description: Case-insensitive substring search on collection names. Leading and trailing whitespace is ignored. An empty query does not filter collections.
         includeAudience:
           type: boolean
           description: Whether to include the audience filters with the listed Collections.
