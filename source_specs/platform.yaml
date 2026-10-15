@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 8ce5eea9f02cdc94840b8ce9899a8835f909625a
+  x-source-commit-sha: f82755bcd8caa024e6e4bc6c0b8dc864a0717f99
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -2639,6 +2639,69 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListUsersResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /users/{user_id}:
+    get:
+      tags:
+        - Users
+      summary: Get user
+      description: |
+        Get one user in the Glean directory by user_id. The user can be any person that the list returns, including an inactive user such as a former employee, which is returned with is_active set to false. A user_id that is not in the directory returns 404 resource_not_found. This includes a deleted user and a person that the People directory does not show. An alias ID of a merged person returns the person's canonical user_id.
+      operationId: platform-users-get
+      x-glean-scopes:
+        legacy:
+          - PEOPLE
+        platform:
+          - users:read
+      x-visibility: Public
+      x-glean-experimental:
+        id: b5ed1294-d3cb-47dd-8dc0-0272549f00f9
+        introduced: '2026-10-15'
+      x-glean-sdk:
+        group: users
+        method: get
+      parameters:
+        - in: path
+          name: user_id
+          description: Canonical Glean user ID, as the list returns it.
+          required: true
+          example: '{user_id}'
+          schema:
+            type: string
+            minLength: 1
+        - in: query
+          name: include
+          description: |
+            Optional fields to add to the user. Each value only adds fields.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/UserInclude'
+      responses:
+        '200':
+          description: Successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -7188,6 +7251,20 @@ components:
             - string
             - 'null'
           description: Opaque cursor for the next page; null or absent when has_more is false.
+        request_id:
+          type: string
+          description: Request identifier for correlating this response.
+    GetUserResponse:
+      type: object
+      description: One user.
+      additionalProperties: false
+      required:
+        - user
+        - request_id
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+          description: The requested user.
         request_id:
           type: string
           description: Request identifier for correlating this response.
