@@ -1,4 +1,5 @@
 import yaml from 'js-yaml';
+import { PLATFORM_TAG_GROUPS_KEY } from './source-spec-transformer.js';
 
 /**
  * Generator that yields language and code sample pairs from pathSpec
@@ -242,14 +243,50 @@ export function addIncludeExperimentalToCodeSamples(spec) {
 }
 
 /**
+ * Restores the Platform x-tagGroups that source-spec-transformer moved aside
+ * so they would not replace the Client API groups in the merged SDK spec.
+ * Tags with no published operation (for example, families that are not public
+ * yet) and groups left empty are dropped.
+ * @param {Object} spec The Platform OpenAPI spec object
+ * @returns {Object} The spec, with x-tagGroups restored when present
+ */
+export function restorePlatformTagGroups(spec) {
+  const tagGroups = spec[PLATFORM_TAG_GROUPS_KEY];
+  delete spec[PLATFORM_TAG_GROUPS_KEY];
+  if (!Array.isArray(tagGroups)) {
+    return spec;
+  }
+
+  const usedTags = new Set();
+  for (const pathItem of Object.values(spec.paths ?? {})) {
+    for (const operation of Object.values(pathItem ?? {})) {
+      for (const tag of operation?.tags ?? []) {
+        usedTags.add(tag);
+      }
+    }
+  }
+  spec['x-tagGroups'] = tagGroups
+    .map((group) => ({
+      ...group,
+      tags: (group.tags ?? []).filter((tag) => usedTags.has(tag)),
+    }))
+    .filter((group) => group.tags.length > 0);
+
+  return spec;
+}
+
+/**
  * Transforms OpenAPI YAML by adjusting server URLs and paths
  * @param {string} content The OpenAPI YAML content
  * @param {string} filename The name of the file being processed
  * @returns {string} Transformed YAML content
  */
-export function transform(content, _filename) {
+export function transform(content, filename) {
   const spec = yaml.load(content);
 
+  if (filename?.includes('platform')) {
+    restorePlatformTagGroups(spec);
+  }
   transformPythonCodeSamplesToPython(spec);
   addServerURLToCodeSamples(spec);
   addIncludeExperimentalToCodeSamples(spec);

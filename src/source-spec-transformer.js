@@ -237,7 +237,16 @@ function rewriteRefs(obj, refMap) {
   });
 }
 
+// Speakeasy merges generated_specs/platform.yaml into the SDK spec, where the
+// Client API x-tagGroups must win. Carry the Platform groups under a private key
+// instead; code-sample-transformer restores them as x-tagGroups in the
+// Platform-only spec (final_specs/platform.yaml) that the developer site renders.
+export const PLATFORM_TAG_GROUPS_KEY = 'x-glean-platform-tag-groups';
+
 function transformPlatformTagGroups(spec) {
+  if (spec['x-tagGroups']) {
+    spec[PLATFORM_TAG_GROUPS_KEY] = spec['x-tagGroups'];
+  }
   delete spec['x-tagGroups'];
 }
 
