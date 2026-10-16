@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: 207e2a1af998af23874d8caae72c272d010010c7
+  x-source-commit-sha: fb2440ca2fc45c9b9c68e478605b9293d0c189f2
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 5b11c20978c0d07351a0c9ed7e782adec618d48a
+  x-open-api-commit-sha: d4676aecad717d81a69720a0f882ea6c4832d13f
   x-speakeasy-name: Glean API
 servers:
   - url: https://{instance}-be.glean.com
@@ -168594,6 +168594,7 @@ components:
               - MANAGER_INVITE
               - ONBOARDING_AUTHORIZATION
               - CHAT_REMINDER
+              - DISCOVER
           description: Categories of content requested. An allowlist gives flexibility to request content separately or together.
         requestOptions:
           $ref: "#/components/schemas/FeedRequestOptions"
@@ -169087,6 +169088,7 @@ components:
             - MANAGER_INVITE
             - ONBOARDING_AUTHORIZATION
             - CHAT_REMINDER
+            - DISCOVER
           description: Type of the justification.
         justification:
           type: string
@@ -169191,6 +169193,7 @@ components:
             - MANAGER_INVITE
             - ONBOARDING_AUTHORIZATION
             - CHAT_REMINDER
+            - DISCOVER
           description: Category of the result, one of the requested categories in incoming request.
         primaryEntry:
           $ref: "#/components/schemas/FeedEntry"
