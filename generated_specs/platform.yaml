@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: 50a32e9819f22a951ce957e296a88e2b07d14a66
-  x-open-api-commit-sha: 8b4f259a7dc1822e44152885ac5b15d0b286ceb7
+  x-source-commit-sha: fb2440ca2fc45c9b9c68e478605b9293d0c189f2
+  x-open-api-commit-sha: d4676aecad717d81a69720a0f882ea6c4832d13f
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -8889,3 +8889,30 @@ components:
         type: string
         pattern: ^v1,[A-Za-z0-9+/=]+$
       example: v1,xxx
+x-glean-platform-tag-groups:
+  - name: Agents & AI
+    tags:
+      - Agents
+      - Chat
+      - CORL
+      - Skills
+  - name: Search & Data
+    tags:
+      - Search
+      - Documents
+  - name: Automation
+    tags:
+      - Triggers
+  - name: People
+    tags:
+      - Departments
+      - Users
+  - name: Account
+    tags:
+      - Usage
+  - name: Administration
+    tags:
+      - Admin Agents
+      - IdP Groups
+      - OAuth clients
+      - Admin Usage

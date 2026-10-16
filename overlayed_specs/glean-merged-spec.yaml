@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: 50a32e9819f22a951ce957e296a88e2b07d14a66
-  x-open-api-commit-sha: 8b4f259a7dc1822e44152885ac5b15d0b286ceb7
+  x-source-commit-sha: fb2440ca2fc45c9b9c68e478605b9293d0c189f2
+  x-open-api-commit-sha: d4676aecad717d81a69720a0f882ea6c4832d13f
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -20862,6 +20862,7 @@ components:
               - MANAGER_INVITE
               - ONBOARDING_AUTHORIZATION
               - CHAT_REMINDER
+              - DISCOVER
           description: Categories of content requested. An allowlist gives flexibility to request content separately or together.
         requestOptions:
           $ref: '#/components/schemas/FeedRequestOptions'
@@ -21355,6 +21356,7 @@ components:
             - MANAGER_INVITE
             - ONBOARDING_AUTHORIZATION
             - CHAT_REMINDER
+            - DISCOVER
           description: Type of the justification.
         justification:
           type: string
@@ -21458,6 +21460,7 @@ components:
             - MANAGER_INVITE
             - ONBOARDING_AUTHORIZATION
             - CHAT_REMINDER
+            - DISCOVER
           description: Category of the result, one of the requested categories in incoming request.
         primaryEntry:
           $ref: '#/components/schemas/FeedEntry'
@@ -25113,6 +25116,33 @@ components:
       schema:
         type: string
         example: o365sharepoint_abc123
+x-glean-platform-tag-groups:
+  - name: Agents & AI
+    tags:
+      - Agents
+      - Chat
+      - CORL
+      - Skills
+  - name: Search & Data
+    tags:
+      - Search
+      - Documents
+  - name: Automation
+    tags:
+      - Triggers
+  - name: People
+    tags:
+      - Departments
+      - Users
+  - name: Account
+    tags:
+      - Usage
+  - name: Administration
+    tags:
+      - Admin Agents
+      - IdP Groups
+      - OAuth clients
+      - Admin Usage
 tags:
   - name: Datasources
     description: Manage datasources.
