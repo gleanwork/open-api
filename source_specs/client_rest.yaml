@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 50a32e9819f22a951ce957e296a88e2b07d14a66
+  x-source-commit-sha: fb2440ca2fc45c9b9c68e478605b9293d0c189f2
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -9623,6 +9623,7 @@ components:
               - MANAGER_INVITE
               - ONBOARDING_AUTHORIZATION
               - CHAT_REMINDER
+              - DISCOVER
           description: Categories of content requested. An allowlist gives flexibility to request content separately or together.
         requestOptions:
           $ref: '#/components/schemas/FeedRequestOptions'
@@ -10109,6 +10110,7 @@ components:
             - MANAGER_INVITE
             - ONBOARDING_AUTHORIZATION
             - CHAT_REMINDER
+            - DISCOVER
           description: Type of the justification.
         justification:
           type: string
@@ -10213,6 +10215,7 @@ components:
             - MANAGER_INVITE
             - ONBOARDING_AUTHORIZATION
             - CHAT_REMINDER
+            - DISCOVER
           description: Category of the result, one of the requested categories in incoming request.
         primaryEntry:
           $ref: '#/components/schemas/FeedEntry'
