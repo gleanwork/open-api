@@ -443,4 +443,46 @@ paths:
       expect(java).toContain('Glean.builder()');
     });
   });
+
+  describe('Platform tag groups', () => {
+    const specWithPrivateTagGroups = yaml.dump({
+      openapi: '3.1.0',
+      info: { title: 'Glean Platform API', version: '2026-04-01' },
+      paths: {
+        '/api/search': { post: { tags: ['Search'] } },
+        '/api/admin/usage/limits': { get: { tags: ['Admin Usage'] } },
+      },
+      'x-glean-platform-tag-groups': [
+        { name: 'Search & Data', tags: ['Search', 'Documents'] },
+        { name: 'Administration', tags: ['Admin Usage'] },
+        { name: 'Unpublished', tags: ['CORL'] },
+      ],
+    });
+
+    test('restores x-tagGroups in the Platform spec, without unpublished tags', () => {
+      const spec = yaml.load(
+        codeSampleTransformer.transform(
+          specWithPrivateTagGroups,
+          'glean-platform-merged-code-samples-spec.yaml',
+        ),
+      );
+
+      expect(spec['x-tagGroups']).toEqual([
+        { name: 'Search & Data', tags: ['Search'] },
+        { name: 'Administration', tags: ['Admin Usage'] },
+      ]);
+      expect(spec).not.toHaveProperty('x-glean-platform-tag-groups');
+    });
+
+    test('leaves specs other than Platform unchanged', () => {
+      const spec = yaml.load(
+        codeSampleTransformer.transform(
+          specWithPrivateTagGroups,
+          'glean-client-merged-code-samples-spec.yaml',
+        ),
+      );
+
+      expect(spec).not.toHaveProperty('x-tagGroups');
+    });
+  });
 });

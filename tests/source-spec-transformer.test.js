@@ -427,6 +427,9 @@ describe('OpenAPI YAML Transformer', () => {
     expect(transformedSpec.paths).toHaveProperty('/api/tools/call');
     expect(transformedSpec.paths).toHaveProperty('/api/agents/{agent_id}/runs');
     expect(transformedSpec['x-tagGroups']).toBeUndefined();
+    expect(transformedSpec['x-glean-platform-tag-groups']).toEqual([
+      { name: 'Platform', tags: ['Search'] },
+    ]);
 
     expect(Object.keys(transformedSpec.components.schemas).sort()).toEqual([
       'PlatformDocumentSpec',
