@@ -148,6 +148,8 @@ The transformation script processes OpenAPI YAML specification files by:
 
 This script performs the following transformations:
 
+- **Unreleased operations**: Removes the operations that `config/unreleased-operations.yaml` lists, so the SDKs and developers.glean.com leave them out. The list is keyed by source spec file name. Each entry names an `operationId` and gives a reason. Tags, tag groups and components that only those operations used are removed too. The transform fails when a listed operation is not in its spec, so a renamed operation is not published by accident. Remove an entry when the operation is released in every deployment.
+
 - **Path normalization**: Moves server URL subpaths to individual API paths
   - **Before**: `servers.url = "https://{domain}-be.glean.com/rest/api/v1"`, `path = "/activity"`
   - **After**: `servers.url = "https://{domain}-be.glean.com/"`, `path = "/rest/api/v1/activity"`

@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import yaml from 'js-yaml';
 
 /**
@@ -200,6 +201,186 @@ const schemaRefPrefix = '#/components/schemas/';
 const eventStreamMediaType = 'text/event-stream';
 const sdkOnlyOperationPrefix =
   'SDK-only logical operation. HTTP clients must call the base path; the URL fragment is not sent.';
+
+const unreleasedOperationsUrl = new URL(
+  '../config/unreleased-operations.yaml',
+  import.meta.url,
+);
+const componentRefPrefix = '#/components/';
+
+/**
+ * Reads the operations that each source spec publishes before release.
+ *
+ * @param {string | URL} file The YAML list, keyed by source spec file name
+ * @returns {Record<string, string[]>} The operationIds to strip, by file name
+ */
+export function loadUnreleasedOperations(file = unreleasedOperationsUrl) {
+  const config = yaml.load(fs.readFileSync(file, 'utf8')) ?? {};
+  if (typeof config !== 'object' || Array.isArray(config)) {
+    throw new Error(`${file} must map source spec file names to lists`);
+  }
+
+  return Object.fromEntries(
+    Object.entries(config).map(([filename, entries]) => {
+      if (!Array.isArray(entries)) {
+        throw new Error(`${file}: ${filename} must be a list`);
+      }
+      const operationIds = entries.map((entry, index) => {
+        if (typeof entry?.operationId !== 'string' || !entry.operationId) {
+          throw new Error(
+            `${file}: ${filename}[${index}] needs an operationId`,
+          );
+        }
+        if (typeof entry.reason !== 'string' || !entry.reason) {
+          throw new Error(`${file}: ${filename}[${index}] needs a reason`);
+        }
+        return entry.operationId;
+      });
+      return [filename, operationIds];
+    }),
+  );
+}
+
+function decodePointerSegment(segment) {
+  return segment.replace(/~1/g, '/').replace(/~0/g, '~');
+}
+
+function componentKey(ref) {
+  // A deep ref such as #/components/schemas/X/properties/y still uses X.
+  const [section, name] = ref.slice(componentRefPrefix.length).split('/');
+  if (!section || !name) return undefined;
+  return `${section}/${decodePointerSegment(name)}`;
+}
+
+function collectComponentRefs(node, refs, seen = new WeakSet()) {
+  if (!node || typeof node !== 'object' || seen.has(node)) return;
+  seen.add(node);
+
+  for (const [key, value] of Object.entries(node)) {
+    if (key === '$ref' && typeof value === 'string') {
+      if (value.startsWith(componentRefPrefix)) refs.push(componentKey(value));
+    } else if (key === 'discriminator' && value?.mapping) {
+      // Mapping targets are refs or bare schema names.
+      for (const target of Object.values(value.mapping)) {
+        if (typeof target !== 'string') continue;
+        refs.push(
+          target.startsWith(componentRefPrefix)
+            ? componentKey(target)
+            : `schemas/${target}`,
+        );
+      }
+    } else {
+      collectComponentRefs(value, refs, seen);
+    }
+  }
+}
+
+/**
+ * Finds every component that the spec outside `components` reaches, directly
+ * or through other components. Security schemes are referenced by name, not
+ * by $ref, so callers must not prune them.
+ */
+function reachableComponents(spec) {
+  const pending = [];
+  for (const [key, value] of Object.entries(spec)) {
+    if (key !== 'components') collectComponentRefs(value, pending);
+  }
+
+  const reached = new Set();
+  while (pending.length > 0) {
+    const key = pending.pop();
+    if (!key || reached.has(key)) continue;
+    reached.add(key);
+    const [section, name] = [
+      key.slice(0, key.indexOf('/')),
+      key.slice(key.indexOf('/') + 1),
+    ];
+    collectComponentRefs(spec.components?.[section]?.[name], pending);
+  }
+  return reached;
+}
+
+function operationTags(spec) {
+  const tags = new Set();
+  for (const pathItem of Object.values(spec.paths ?? {})) {
+    for (const [method, operation] of Object.entries(pathItem ?? {})) {
+      if (!httpMethods.has(method)) continue;
+      for (const tag of operation?.tags ?? []) tags.add(tag);
+    }
+  }
+  return tags;
+}
+
+/**
+ * Removes operations that are not released yet, so neither the SDKs nor the
+ * developer site publish them. Also removes path items, tags, tag groups and
+ * components that only the removed operations used. Components that nothing
+ * reached before the removal are left alone.
+ *
+ * @param {Object} spec The OpenAPI spec object, changed in place
+ * @param {string[]} operationIds The operations to remove
+ * @param {string} filename The source spec file name, for error messages
+ * @returns {Object} The same spec
+ */
+export function stripUnreleasedOperations(spec, operationIds, filename) {
+  if (!operationIds || operationIds.length === 0) return spec;
+
+  const unreleased = new Set(operationIds);
+  const removedTags = new Set();
+  const found = new Set();
+  const reachedBefore = reachableComponents(spec);
+
+  for (const [pathKey, pathItem] of Object.entries(spec.paths ?? {})) {
+    let removed = false;
+    for (const [method, operation] of Object.entries(pathItem ?? {})) {
+      if (!httpMethods.has(method) || !unreleased.has(operation?.operationId)) {
+        continue;
+      }
+      found.add(operation.operationId);
+      for (const tag of operation.tags ?? []) removedTags.add(tag);
+      delete pathItem[method];
+      removed = true;
+    }
+    if (removed && !Object.keys(pathItem).some((key) => httpMethods.has(key))) {
+      delete spec.paths[pathKey];
+    }
+  }
+
+  const missing = operationIds.filter((id) => !found.has(id));
+  if (missing.length > 0) {
+    throw new Error(
+      `config/unreleased-operations.yaml lists operations that ${filename} does not have: ${missing.join(', ')}. ` +
+        'Update the list so a renamed operation is not published by accident.',
+    );
+  }
+
+  const usedTags = operationTags(spec);
+  const orphanedTags = new Set(
+    [...removedTags].filter((tag) => !usedTags.has(tag)),
+  );
+  if (Array.isArray(spec.tags)) {
+    spec.tags = spec.tags.filter((tag) => !orphanedTags.has(tag?.name));
+  }
+  if (Array.isArray(spec['x-tagGroups'])) {
+    spec['x-tagGroups'] = spec['x-tagGroups']
+      .map((group) => ({
+        ...group,
+        tags: (group.tags ?? []).filter((tag) => !orphanedTags.has(tag)),
+      }))
+      .filter((group) => group.tags.length > 0);
+  }
+
+  const reachedAfter = reachableComponents(spec);
+  for (const key of reachedBefore) {
+    if (reachedAfter.has(key)) continue;
+    const slash = key.indexOf('/');
+    const section = key.slice(0, slash);
+    if (section === 'securitySchemes') continue;
+    delete spec.components?.[section]?.[key.slice(slash + 1)];
+  }
+
+  return spec;
+}
 
 function rewriteDiscriminatorMapping(obj, refMap) {
   const mapping = obj.discriminator?.mapping;
@@ -1443,7 +1624,20 @@ export function injectOpenApiCommitSha(spec, commitSha) {
  * @param {string} [commitSha] Optional commit SHA from the open-api repository
  * @returns {string} Transformed YAML content
  */
-export function transform(content, filename, commitSha) {
+/**
+ * @param {string} content The source spec YAML
+ * @param {string} filename The source spec file name
+ * @param {string} [commitSha] The open-api commit to record in the spec
+ * @param {string[]} [unreleasedOperations] operationIds to strip; the pipeline
+ *   passes the list from config/unreleased-operations.yaml
+ * @returns {string} The transformed spec YAML
+ */
+export function transform(
+  content,
+  filename,
+  commitSha,
+  unreleasedOperations = [],
+) {
   const spec = yaml.load(content);
 
   if (!spec.servers || spec.servers.length === 0) {
@@ -1464,6 +1658,10 @@ export function transform(content, filename, commitSha) {
     console.warn('No base path found in server URL');
     return content;
   }
+
+  // Strip unreleased operations first, so no later pass derives SDK variants,
+  // samples or names from them.
+  stripUnreleasedOperations(spec, unreleasedOperations, filename);
 
   for (const server of spec.servers) {
     if (server.url) {

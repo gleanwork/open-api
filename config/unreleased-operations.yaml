@@ -1,0 +1,19 @@
+# Operations that a source spec publishes before they are released.
+#
+# The transform removes each listed operation from its source spec, so it is
+# left out of the generated SDKs and the developer site. It also removes tags,
+# tag groups and components that only the removed operations used.
+#
+# Keys are source spec file names. Each entry names one operationId. The
+# transform fails when a listed operationId is not in its spec, so a renamed
+# operation cannot be published by accident.
+#
+# Remove an entry when the operation is released in every deployment.
+
+platform.yaml:
+  - operationId: platform-documents-get-by-url
+    reason: Documents API is not released in any deployment yet.
+  - operationId: platform-documents-get
+    reason: Documents API is not released in any deployment yet.
+  - operationId: platform-documents-batch
+    reason: Documents API is not released in any deployment yet.

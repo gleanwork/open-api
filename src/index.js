@@ -31,6 +31,24 @@ function getYamlFiles(directory) {
   }
 }
 
+/**
+ * Transforms one source spec and strips the operations that
+ * config/unreleased-operations.yaml lists for it.
+ */
+export function transformSourceSpec(
+  yamlContent,
+  specFile,
+  commitSha,
+  unreleasedOperations = sourceSpecTransformer.loadUnreleasedOperations(),
+) {
+  return sourceSpecTransformer.transform(
+    yamlContent,
+    specFile,
+    commitSha,
+    unreleasedOperations[specFile],
+  );
+}
+
 export async function transformSourceSpecs() {
   const sourceDir = 'source_specs';
   const outputDir = 'generated_specs';
@@ -44,6 +62,9 @@ export async function transformSourceSpecs() {
     }
 
     await ensureDirectoryExists(outputDir);
+
+    const unreleasedOperations =
+      sourceSpecTransformer.loadUnreleasedOperations();
 
     // Get the commit SHA from environment variable (set by GitHub Actions)
     const commitSha = process.env.GITHUB_SHA || process.env.OPEN_API_COMMIT_SHA;
@@ -64,10 +85,11 @@ export async function transformSourceSpecs() {
 
       const yamlContent = await readYamlFromFile(sourceFilePath);
 
-      const transformedYaml = sourceSpecTransformer.transform(
+      const transformedYaml = transformSourceSpec(
         yamlContent,
         specFile,
         commitSha,
+        unreleasedOperations,
       );
 
       fs.writeFileSync(outputFilePath, transformedYaml, 'utf8');
