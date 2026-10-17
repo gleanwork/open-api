@@ -292,8 +292,8 @@ describe('Post-transformation smoke tests', () => {
   });
 
   test('Transform keeps experimental Documents operations in the documents group', () => {
-    // Operation ids, SDK methods, and experimental ids match
-    // askscio/scio#301972 openapi/public/platform/documents.yaml.
+    // Operation ids, SDK methods, and experimental ids match the Documents
+    // operations in source_specs/platform.yaml.
     const source = {
       openapi: '3.1.0',
       servers: [{ url: 'https://{domain}-be.glean.com/api' }],

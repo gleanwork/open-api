@@ -443,7 +443,7 @@ function transformPlatformSchemas(spec) {
   // Platform is merged into the existing public SDK spec, so common names like
   // SearchRequest, Result, or Person would otherwise collide with legacy REST
   // schemas. Prefixing every Platform schema keeps the merged model surface
-  // deterministic without requiring each scio schema to know about SDK peers.
+  // deterministic without requiring each source schema to know about SDK peers.
   const schemas = spec.components.schemas;
   const refMap = {};
 
@@ -509,7 +509,7 @@ function transformPlatformResponses(spec) {
 }
 
 function transformPlatformApiTokenSecurity(spec) {
-  // scio's Platform source spec uses ApiToken, while the merged SDK spec already
+  // The Platform source spec uses ApiToken, while the merged SDK spec already
   // standardizes auth under APIToken. Normalize before merge so Speakeasy sees
   // one auth scheme instead of generating a second Platform-specific credential.
   const securitySchemes = spec.components?.securitySchemes;
