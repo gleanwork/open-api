@@ -1617,14 +1617,14 @@ export function injectOpenApiCommitSha(spec, commitSha) {
   return spec;
 }
 
+const yamlDumpOptions = {
+  lineWidth: -1, // Preserve line breaks
+  noRefs: true, // Don't use anchors and aliases
+  quotingType: '"', // Use double quotes for strings
+};
+
 /**
  * Transforms OpenAPI YAML by adjusting server URLs and paths
- * @param {string} content The OpenAPI YAML content
- * @param {string} filename The name of the file being processed
- * @param {string} [commitSha] Optional commit SHA from the open-api repository
- * @returns {string} Transformed YAML content
- */
-/**
  * @param {string} content The source spec YAML
  * @param {string} filename The source spec file name
  * @param {string} [commitSha] The open-api commit to record in the spec
@@ -1640,28 +1640,31 @@ export function transform(
 ) {
   const spec = yaml.load(content);
 
+  // Strip unreleased operations first, so no later pass derives SDK variants,
+  // samples or names from them, and so the early returns below cannot
+  // publish them.
+  stripUnreleasedOperations(spec, unreleasedOperations, filename);
+  const untransformed = () =>
+    unreleasedOperations?.length ? yaml.dump(spec, yamlDumpOptions) : content;
+
   if (!spec.servers || spec.servers.length === 0) {
     console.warn('No servers found in the OpenAPI spec');
-    return content;
+    return untransformed();
   }
 
   const firstServer = spec.servers[0];
 
   if (!firstServer.url) {
     console.warn('Server URL is missing');
-    return content;
+    return untransformed();
   }
 
   const basePath = extractBasePath(firstServer.url);
 
   if (!basePath) {
     console.warn('No base path found in server URL');
-    return content;
+    return untransformed();
   }
-
-  // Strip unreleased operations first, so no later pass derives SDK variants,
-  // samples or names from them.
-  stripUnreleasedOperations(spec, unreleasedOperations, filename);
 
   for (const server of spec.servers) {
     if (server.url) {
@@ -1740,9 +1743,5 @@ export function transform(
     injectOpenApiCommitSha(spec, commitSha);
   }
 
-  return yaml.dump(spec, {
-    lineWidth: -1, // Preserve line breaks
-    noRefs: true, // Don't use anchors and aliases
-    quotingType: '"', // Use double quotes for strings
-  });
+  return yaml.dump(spec, yamlDumpOptions);
 }

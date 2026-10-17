@@ -49,55 +49,70 @@ export function transformSourceSpec(
   );
 }
 
+/**
+ * Transforms every source spec into the output directory. Throws when
+ * config/unreleased-operations.yaml names a source spec that does not exist,
+ * so a typo or a renamed file cannot publish the operations it lists.
+ */
+export async function writeGeneratedSpecs({
+  sourceDir = 'source_specs',
+  outputDir = 'generated_specs',
+  // Set by GitHub Actions
+  commitSha = process.env.GITHUB_SHA || process.env.OPEN_API_COMMIT_SHA,
+  unreleasedOperations = sourceSpecTransformer.loadUnreleasedOperations(),
+} = {}) {
+  const specFiles = getYamlFiles(sourceDir);
+
+  if (specFiles.length === 0) {
+    console.log(`No YAML files found in ${sourceDir}`);
+    return;
+  }
+
+  const unknownFiles = Object.keys(unreleasedOperations).filter(
+    (file) => !specFiles.includes(file),
+  );
+  if (unknownFiles.length > 0) {
+    throw new Error(
+      `config/unreleased-operations.yaml names source specs that ${sourceDir} does not have: ${unknownFiles.join(', ')}`,
+    );
+  }
+
+  await ensureDirectoryExists(outputDir);
+
+  if (commitSha) {
+    console.log(`Injecting open-api commit SHA: ${commitSha}`);
+  } else {
+    console.log(
+      'No commit SHA provided (GITHUB_SHA or OPEN_API_COMMIT_SHA environment variable not set)',
+    );
+  }
+
+  for (const specFile of specFiles) {
+    const sourceFilePath = path.join(sourceDir, specFile);
+    const outputFilePath = path.join(outputDir, specFile);
+
+    console.log(`Processing ${sourceFilePath}`);
+
+    const yamlContent = await readYamlFromFile(sourceFilePath);
+
+    const transformedYaml = transformSourceSpec(
+      yamlContent,
+      specFile,
+      commitSha,
+      unreleasedOperations,
+    );
+
+    fs.writeFileSync(outputFilePath, transformedYaml, 'utf8');
+
+    console.log(`Saved transformed YAML to ${outputFilePath}`);
+  }
+
+  console.log('OpenAPI specs transformation completed');
+}
+
 export async function transformSourceSpecs() {
-  const sourceDir = 'source_specs';
-  const outputDir = 'generated_specs';
-
   try {
-    const specFiles = getYamlFiles(sourceDir);
-
-    if (specFiles.length === 0) {
-      console.log(`No YAML files found in ${sourceDir}`);
-      return;
-    }
-
-    await ensureDirectoryExists(outputDir);
-
-    const unreleasedOperations =
-      sourceSpecTransformer.loadUnreleasedOperations();
-
-    // Get the commit SHA from environment variable (set by GitHub Actions)
-    const commitSha = process.env.GITHUB_SHA || process.env.OPEN_API_COMMIT_SHA;
-
-    if (commitSha) {
-      console.log(`Injecting open-api commit SHA: ${commitSha}`);
-    } else {
-      console.log(
-        'No commit SHA provided (GITHUB_SHA or OPEN_API_COMMIT_SHA environment variable not set)',
-      );
-    }
-
-    for (const specFile of specFiles) {
-      const sourceFilePath = path.join(sourceDir, specFile);
-      const outputFilePath = path.join(outputDir, specFile);
-
-      console.log(`Processing ${sourceFilePath}`);
-
-      const yamlContent = await readYamlFromFile(sourceFilePath);
-
-      const transformedYaml = transformSourceSpec(
-        yamlContent,
-        specFile,
-        commitSha,
-        unreleasedOperations,
-      );
-
-      fs.writeFileSync(outputFilePath, transformedYaml, 'utf8');
-
-      console.log(`Saved transformed YAML to ${outputFilePath}`);
-    }
-
-    console.log('OpenAPI specs transformation completed');
+    await writeGeneratedSpecs();
   } catch (error) {
     console.error(`Transformation failed: ${error.message}`);
     process.exit(1);

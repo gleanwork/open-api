@@ -7,8 +7,15 @@ import {
   loadUnreleasedOperations,
   stripUnreleasedOperations,
   PLATFORM_TAG_GROUPS_KEY,
+  transform,
 } from '../src/source-spec-transformer.js';
-import { transformSourceSpec } from '../src/index.js';
+import { transformSourceSpec, writeGeneratedSpecs } from '../src/index.js';
+
+function operationIdsOf(spec) {
+  return Object.values(spec.paths ?? {}).flatMap((pathItem) =>
+    Object.values(pathItem).map((operation) => operation?.operationId),
+  );
+}
 
 function specWithDocuments() {
   return {
@@ -179,6 +186,84 @@ describe('stripUnreleasedOperations', () => {
     stripUnreleasedOperations(spec, undefined, 'platform.yaml');
 
     expect(spec).toEqual(specWithDocuments());
+  });
+});
+
+describe('transform', () => {
+  const unreleased = ['platform-documents-get-by-url'];
+
+  test.each([
+    ['has no servers', []],
+    ['has a server with no URL', [{ description: 'No URL' }]],
+    ['has a server URL with no base path', [{ url: 'https://example.com' }]],
+  ])('strips unreleased operations when the spec %s', (_name, servers) => {
+    const spec = { ...specWithDocuments(), servers };
+
+    const output = yaml.load(
+      transform(yaml.dump(spec), 'platform.yaml', undefined, unreleased),
+    );
+
+    expect(operationIdsOf(output)).not.toContain(
+      'platform-documents-get-by-url',
+    );
+    expect(operationIdsOf(output)).toContain('platform-search');
+  });
+
+  test('fails on a missing operation even when the spec has no base path', () => {
+    const spec = {
+      ...specWithDocuments(),
+      servers: [{ url: 'https://example.com' }],
+    };
+
+    expect(() =>
+      transform(yaml.dump(spec), 'platform.yaml', undefined, [
+        'platform-documents-renamed',
+      ]),
+    ).toThrow(/does not have: platform-documents-renamed/);
+  });
+});
+
+describe('writeGeneratedSpecs', () => {
+  function tempDirs() {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'generated-specs-'));
+    const sourceDir = path.join(root, 'source_specs');
+    fs.mkdirSync(sourceDir);
+    fs.copyFileSync(
+      path.join(process.cwd(), 'source_specs', 'platform.yaml'),
+      path.join(sourceDir, 'platform.yaml'),
+    );
+    return { sourceDir, outputDir: path.join(root, 'generated_specs') };
+  }
+
+  test('writes the Platform spec without the committed unreleased operations', async () => {
+    const dirs = tempDirs();
+
+    await writeGeneratedSpecs(dirs);
+
+    const output = yaml.load(
+      fs.readFileSync(path.join(dirs.outputDir, 'platform.yaml'), 'utf8'),
+    );
+    const unreleased = loadUnreleasedOperations()['platform.yaml'];
+    expect(unreleased.length).toBeGreaterThan(0);
+    expect(
+      operationIdsOf(output).filter((id) =>
+        unreleased.some((op) => id === op || id?.startsWith(`${op}-`)),
+      ),
+    ).toEqual([]);
+  });
+
+  test('fails when the list names a source spec that does not exist', async () => {
+    const dirs = tempDirs();
+
+    await expect(
+      writeGeneratedSpecs({
+        ...dirs,
+        unreleasedOperations: {
+          'platfrom.yaml': ['platform-documents-get'],
+        },
+      }),
+    ).rejects.toThrow(/does not have: platfrom\.yaml/);
+    expect(fs.existsSync(dirs.outputDir)).toBe(false);
   });
 });
 

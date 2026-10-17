@@ -5,8 +5,8 @@
 # tag groups and components that only the removed operations used.
 #
 # Keys are source spec file names. Each entry names one operationId. The
-# transform fails when a listed operationId is not in its spec, so a renamed
-# operation cannot be published by accident.
+# transform fails when a listed file or operationId is not in source_specs/,
+# so a typo or a rename cannot publish an operation by accident.
 #
 # Remove an entry when the operation is released in every deployment.
 
