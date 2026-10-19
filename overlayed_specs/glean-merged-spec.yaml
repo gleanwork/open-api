@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: 12a81f74c465037bbcb4c9993147c2a57ded58b3
-  x-open-api-commit-sha: 72e883ed782932006a500ba56ab9ec5bd7692fa3
+  x-source-commit-sha: b2b474588d155b5fb1c2dd1d95f32163995be11a
+  x-open-api-commit-sha: 382c05c39fc4e36e4e2917cdd920c5999a8ca582
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -1912,7 +1912,7 @@ paths:
         - Usage
       summary: Evaluate usage limit headroom
       description: |
-        Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires usage:evaluate, without workspace billing permission. Omit target to evaluate the authenticated canonical user. An explicit USER must identify that user by canonical ID, known alias ID, email, or known alias email; every supplied field must identify the caller. An explicit AGENT requires current owner/editor or applicable global agent-edit permission; disabled agents remain eligible. Subagents, other users, ORGANIZATION, and default targets are forbidden on this route, even for billing administrators. Missing, inaccessible, and subagent targets return the same 403 insufficient_permissions. An explicit usage_selector.client_id selects the Glean or external spend client; it is never inferred from the caller. Agent evaluation reports aggregate agent usage and the selected client's organization limit, not the caller's personal slice or a complete run preflight. All applicable limit values, used counters, decisions, and headroom are returned; USD and credits have separate effective_limits. IdP-group source identities require billing-read permission. Other callers receive an IDP_GROUP source with is_identity_restricted true and no group_id, without suppressing the policy's value, counter, or decision. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
+        Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires usage:evaluate, without workspace billing permission. Omit target to evaluate the authenticated canonical user. An explicit USER must identify that user by canonical ID, known alias ID, email, or known alias email; every supplied field must identify the caller. An explicit AGENT requires current owner/editor or applicable global agent-edit permission; disabled agents remain eligible. Subagents, other users, ORGANIZATION, and default targets are forbidden on this route, even for billing administrators. Missing, inaccessible, and subagent targets return the same 403 insufficient_permissions. An explicit usage_selector.client_id selects the Glean or external spend client; it is never inferred from the caller. Agent evaluation reports aggregate agent usage, not the caller's personal slice or a complete run preflight. Returns only the target's own policies, such as user, default, department, IdP-group, and agent limits, with their values, used counters, decisions, and headroom; USD and credits have separate effective_limits. Shared budgets, such as the selected client's organization limit, are never itemized and never contribute values, counters, warnings, or headroom; a reached shared hard limit still makes decision BLOCKED. The response is the same for every caller, including billing administrators. IDP_GROUP sources always have is_identity_restricted true and no group_id. Use the administrative route for shared-budget details. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
       operationId: platform-usage-limits-evaluate
       x-visibility: Public
       x-glean-scopes:
@@ -11510,14 +11510,14 @@ components:
         group_id:
           type: string
           minLength: 1
-          description: Canonical IdP group ID; returned only to billing readers.
+          description: Canonical IdP group ID; returned only by administrative evaluation.
         department_name:
           type: string
           minLength: 1
           description: Department whose per-user policy supplied the limit.
         is_identity_restricted:
           type: boolean
-          description: True when an IdP-group source identity is withheld from a non-billing reader.
+          description: True when non-admin evaluation withholds an IdP-group source identity.
       allOf:
         - oneOf:
             - properties:
@@ -11641,7 +11641,7 @@ components:
         target:
           $ref: "#/components/schemas/PlatformUsagePolicySourceTarget"
           description: |
-            Configured source of this limit. Default and group policies retain their source population; used is the concrete evaluated user's or agent's counter. IdP-group identities require billing-read permission, but all callers receive the complete limit value, counter, decision, and headroom.
+            Configured source of this limit. Default and group policies retain their source population; used is the concrete evaluated user's or agent's counter. Non-admin evaluation withholds IdP-group identities but returns the limit value, counter, and decision of every policy it lists.
         usage_selector:
           $ref: "#/components/schemas/PlatformUsageSelector"
           description: |
@@ -11659,7 +11659,7 @@ components:
       type: object
       additionalProperties: false
       description: |
-        Configured-budget evaluation for a concrete target and selector, not runtime admission, model eligibility, or agent-run preflight. AVAILABLE can mean that no configured policy applies; inspect applicable_policy_count and the exact selector echo. Configured caps are evaluated_limits[].value.amount, accrued usage is evaluated_limits[].used, and remaining budget is effective_limits[].remaining. Approved one-period grants raise headroom without changing the configured cap. Units are never combined or converted.
+        Configured-budget evaluation for a concrete target and selector, not runtime admission, model eligibility, or agent-run preflight. AVAILABLE can mean that no configured policy applies; inspect applicable_policy_count and the exact selector echo. Configured caps are evaluated_limits[].value.amount, accrued usage is evaluated_limits[].used, and remaining budget is effective_limits[].remaining. Approved one-period grants raise headroom without changing the configured cap. Units are never combined or converted. Non-admin evaluation omits shared budgets from applicable_policy_count, evaluated_limits, and effective_limits; decision can be BLOCKED by a shared budget even when the target's own limits show remaining headroom.
       example:
         target:
           type: USER
@@ -11712,10 +11712,11 @@ components:
           type: integer
           minimum: 0
           description: |
-            Number of applicable configured policies, including UNLIMITED policies. Zero explicitly means no configured policy matched, not an unlimited configured rule. Included even when zero.
+            Number of applicable configured policies returned in evaluated_limits, including UNLIMITED policies. Zero explicitly means no returned policy matched, not an unlimited configured rule. Non-admin evaluation excludes shared budgets. Included even when zero.
         decision:
           $ref: "#/components/schemas/PlatformUsageLimitDecision"
-          description: Overall configured-budget status across all evaluated limits, not runtime admission.
+          description: |
+            Overall configured-budget status across all applicable limits, not runtime admission. On non-admin evaluation this includes shared budgets that are not returned: BLOCKED with remaining effective_limits headroom means a shared budget is exhausted. Shared soft limits never cause WARNING there.
         effective_limits:
           type: array
           minItems: 1
@@ -11723,12 +11724,12 @@ components:
           items:
             $ref: "#/components/schemas/PlatformUsageHeadroomValue"
           description: |
-            Tightest remaining budget per finite unit, ordered USD then CREDITS. remaining is headroom after accrued usage and approved one-period grants, not a configured cap. Units are never combined or converted. When no finite policy applies, contains a single UNLIMITED entry without remaining, unit, or enforcement, including when applicable_policy_count is zero. This configured-budget result is not a runtime admission guarantee.
+            Tightest remaining budget per finite unit, ordered USD then CREDITS. remaining is headroom after accrued usage and approved one-period grants, not a configured cap. Units are never combined or converted. When no finite policy applies, contains a single UNLIMITED entry without remaining, unit, or enforcement, including when applicable_policy_count is zero. Covers only returned evaluated_limits, so non-admin headroom excludes shared budgets. This configured-budget result is not a runtime admission guarantee.
         evaluated_limits:
           type: array
           items:
             $ref: "#/components/schemas/PlatformEvaluatedLimit"
-          description: Per-rule evaluation details.
+          description: Per-rule evaluation details; non-admin evaluation omits shared budgets.
         evaluated_at:
           type: string
           format: date-time
@@ -11740,7 +11741,7 @@ components:
       type: object
       additionalProperties: false
       description: |
-        Non-admin evaluation request. Only omission of target selects the authenticated canonical user; null, empty, and incomplete targets are invalid. Explicit USER targets accept the caller's canonical ID, known alias IDs, email, or known alias emails; every supplied field must identify the caller. AGENT targets require current edit permission and evaluate aggregate agent usage, including organization limits. The authenticated identity is never replaced by the selected target.
+        Non-admin evaluation request. Only omission of target selects the authenticated canonical user; null, empty, and incomplete targets are invalid. Explicit USER targets accept the caller's canonical ID, known alias IDs, email, or known alias emails; every supplied field must identify the caller. AGENT targets require current edit permission and evaluate aggregate agent usage. Shared budgets affect only the overall decision. The authenticated identity is never replaced by the selected target.
       required:
         - usage_selector
       properties:
