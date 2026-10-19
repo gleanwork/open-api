@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: 'npm'
     directory: /
     schedule:
-      interval: daily
+      interval: weekly
     # see https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/optimizing-pr-creation-version-updates#setting-up-a-cooldown-period-for-dependency-updates
     cooldown:
       default-days: 5
