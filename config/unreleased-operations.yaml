@@ -17,3 +17,13 @@ platform.yaml:
     reason: Documents API is not released in any deployment yet.
   - operationId: platform-documents-batch
     reason: Documents API is not released in any deployment yet.
+  - operationId: platform-admin-oauth-clients-list
+    reason: Not in a release build yet.
+  - operationId: platform-admin-oauth-clients-get
+    reason: Not in a release build yet.
+  - operationId: platform-departments-get
+    reason: Not in a release build yet.
+  - operationId: platform-admin-idp-groups-get
+    reason: Not in a release build yet.
+  - operationId: platform-users-get
+    reason: Not in a release build yet.
