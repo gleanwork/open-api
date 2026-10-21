@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: de396309f4609ac48534a17b2b93eac86cc20bc7
+  x-source-commit-sha: 007d6405df65def64cff892e0c808ce2108de4b3
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -1816,7 +1816,7 @@ paths:
         - Admin Usage
       summary: Evaluate administrative usage limit headroom
       description: |
-        Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires admin.usage:evaluate and permission to read workspace billing, not a global administrator role. An explicit usage_selector.client_id selects the Glean or external spend client; it is never inferred from the caller. Returns all applicable limit values and counters, with effective headroom separated by unit. Agent counters retain aggregate scope. Billing readers receive exact IdP-group source identities. A USER target may be identified by user_id or email. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
+        Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires admin.usage:evaluate and permission to read workspace billing, not a global administrator role. An explicit usage_selector.client_id selects the Glean or external spend client; it is never inferred from the caller. Returns all applicable limit values and counters, with effective headroom separated by unit. Agent counters retain aggregate scope. Billing readers receive exact IdP-group source identities as idp_group_id values. A USER target may be identified by user_id or email. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
       operationId: platform-admin-usage-limits-evaluate
       x-visibility: Public
       x-glean-scopes:
@@ -1875,7 +1875,7 @@ paths:
         - Usage
       summary: Evaluate usage limit headroom
       description: |
-        Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires usage:evaluate, without workspace billing permission. Omit target to evaluate the authenticated canonical user. An explicit USER must identify that user by canonical ID, known alias ID, email, or known alias email; every supplied field must identify the caller. An explicit AGENT requires current owner/editor or applicable global agent-edit permission; disabled agents remain eligible. Subagents, other users, ORGANIZATION, and default targets are forbidden on this route, even for billing administrators. Missing, inaccessible, and subagent targets return the same 403 insufficient_permissions. An explicit usage_selector.client_id selects the Glean or external spend client; it is never inferred from the caller. Agent evaluation reports aggregate agent usage, not the caller's personal slice or a complete run preflight. Returns only the target's own policies, such as user, default, department, IdP-group, and agent limits, with their values, used counters, decisions, and headroom; USD and credits have separate effective_limits. Shared budgets, such as the selected client's organization limit, are never itemized and never contribute values, counters, warnings, or headroom; a reached shared hard limit still makes decision BLOCKED and adds a decision_causes entry with budget_scope SHARED and its source_type. The response is the same for every caller, including billing administrators. IDP_GROUP sources always have is_identity_restricted true and no group_id. Use the administrative route for shared-budget details. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
+        Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires usage:evaluate, without workspace billing permission. Omit target to evaluate the authenticated canonical user. An explicit USER must identify that user by canonical ID, known alias ID, email, or known alias email; every supplied field must identify the caller. An explicit AGENT requires current owner/editor or applicable global agent-edit permission; disabled agents remain eligible. Subagents, other users, ORGANIZATION, and default targets are forbidden on this route, even for billing administrators. Missing, inaccessible, and subagent targets return the same 403 insufficient_permissions. An explicit usage_selector.client_id selects the Glean or external spend client; it is never inferred from the caller. Agent evaluation reports aggregate agent usage, not the caller's personal slice or a complete run preflight. Returns only the target's own policies, such as user, default, department, IdP-group, and agent limits, with their values, used counters, decisions, and headroom; USD and credits have separate effective_limits. Shared budgets, such as the selected client's organization limit, are never itemized and never contribute values, counters, warnings, or headroom; a reached shared hard limit still makes decision BLOCKED and adds a decision_causes entry with budget_scope SHARED and its source_type. The response is the same for every caller, including billing administrators. IDP_GROUP sources always have is_identity_restricted true and no idp_group_id. Use the administrative route for shared-budget details. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
       operationId: platform-usage-limits-evaluate
       x-visibility: Public
       x-glean-scopes:
@@ -2584,7 +2584,7 @@ paths:
         - IdP Groups
       summary: List IdP groups
       description: |
-        List the identity provider (IdP) groups that Glean loads from the directory, ordered by display_name and then by idp_group_id. Use idp_group_id to name a group in other Platform APIs. Usage limits apply only to IdP groups from the datasource instance that the usage settings select, so use the provider_instance filter to list only those groups. Internal O365 ownership groups and SharePoint groups are left out. The caller must be able to read the workspace configuration or the workspace billing.
+        List the identity provider (IdP) groups that Glean loads from the directory, ordered by display_name and then by idp_group_id. Use idp_group_id to name a group in other Platform APIs, such as the usage limit evaluation and limit increase request APIs. Usage limits apply only to IdP groups from the datasource instance in usage_settings.user_grouping.idp_group_provider_instance of the get usage settings response, and this API always lists that instance's groups. To list only those groups, pass that value in a provider_instance filter of the filters parameter, for example `filters=[{"field":"provider_instance","operator":"EQUALS","values":["okta"]}]`, URL-encoded as `filters=%5B%7B%22field%22%3A%22provider_instance%22%2C%22operator%22%3A%22EQUALS%22%2C%22values%22%3A%5B%22okta%22%5D%7D%5D`. Internal O365 ownership groups and SharePoint groups are left out. The caller must be able to read the workspace configuration or the workspace billing.
       operationId: platform-admin-idp-groups-list
       x-glean-scopes:
         legacy:
@@ -2680,7 +2680,7 @@ paths:
         - in: path
           name: idp_group_id
           description: |
-            The idp_group_id from a list IdP groups response. IDs are opaque. Do not parse or build them. The group_id in usage limit responses is not an idp_group_id and returns 404.
+            The idp_group_id from a list IdP groups response or a usage API response. IDs are opaque. Do not parse or build them.
           required: true
           example: '{idp_group_id}'
           schema:
@@ -5843,6 +5843,49 @@ components:
             - REQUIRED
           description: |
             Whether a business justification is required when requesting a usage limit increase.
+    UserGroupingSettings:
+      type: object
+      additionalProperties: false
+      description: |
+        How per-user limits group users: by department or by identity provider (IdP) group.
+      required:
+        - mode
+      properties:
+        mode:
+          type: string
+          enum:
+            - DEPARTMENT
+            - IDP_GROUP
+          x-enum-varnames:
+            - UserGroupingModeDEPARTMENT
+            - UserGroupingModeIDPGROUP
+          x-enumDescriptions:
+            DEPARTMENT: Per-user limits group users by department.
+            IDP_GROUP: Per-user limits group users by IdP group.
+          description: The population that per-user group limits apply to.
+        idp_group_provider_instance:
+          type: string
+          minLength: 1
+          description: |
+            The datasource instance whose IdP groups usage limits apply to. Present only when mode is IDP_GROUP. To list only the groups that usage limits can name, pass it to the list IdP groups API as `filters=[{"field":"provider_instance","operator":"EQUALS","values":["<value>"]}]`, URL-encoded. The value matches provider_instance without regard to case.
+      oneOf:
+        - description: Department grouping has no IdP group provider instance.
+          properties:
+            mode:
+              description: Department grouping.
+              enum:
+                - DEPARTMENT
+          not:
+            required:
+              - idp_group_provider_instance
+        - description: IdP group grouping names its provider instance.
+          required:
+            - idp_group_provider_instance
+          properties:
+            mode:
+              description: IdP group grouping.
+              enum:
+                - IDP_GROUP
     UsageSettingsResource:
       type: object
       additionalProperties: false
@@ -5855,6 +5898,13 @@ components:
         limit_increase_requests:
           $ref: '#/components/schemas/LimitIncreaseRequestSettings'
           description: Settings that govern usage limit increase requests.
+        user_grouping:
+          $ref: '#/components/schemas/UserGroupingSettings'
+          x-glean-experimental:
+            id: 3fd7f7b6-e16a-4341-9ec4-40d7b8c717c0
+            introduced: '2026-10-21'
+          description: |
+            How per-user limits group users. Read-only; usage settings updates do not change it.
         updated_at:
           type: string
           format: date-time
@@ -6452,6 +6502,11 @@ components:
                     properties:
                       enforcement:
                         description: Forbidden for unlimited headroom.
+    IdpGroupId:
+      type: string
+      minLength: 1
+      description: |
+        Opaque IdP group ID. The same group always gets the same ID. Callers must not parse or build it.
     UsagePolicySourceTarget:
       type: object
       description: |
@@ -6479,10 +6534,10 @@ components:
           type: string
           minLength: 1
           description: Canonical agent ID for an agent-specific policy.
-        group_id:
-          type: string
-          minLength: 1
-          description: Canonical IdP group ID; returned only by administrative evaluation.
+        idp_group_id:
+          $ref: '#/components/schemas/IdpGroupId'
+          description: |
+            The idp_group_id of the IdP group, the same ID that the IdP groups API returns. Returned only by administrative evaluation.
         department_name:
           type: string
           minLength: 1
@@ -6508,7 +6563,7 @@ components:
                   - required:
                       - agent_id
                   - required:
-                      - group_id
+                      - idp_group_id
                   - required:
                       - department_name
                   - required:
@@ -6525,7 +6580,7 @@ components:
                   - required:
                       - agent_id
                   - required:
-                      - group_id
+                      - idp_group_id
                   - required:
                       - department_name
                   - required:
@@ -6544,7 +6599,7 @@ components:
                   - required:
                       - email
                   - required:
-                      - group_id
+                      - idp_group_id
                   - required:
                       - department_name
                   - required:
@@ -6565,7 +6620,7 @@ components:
                   - required:
                       - agent_id
                   - required:
-                      - group_id
+                      - idp_group_id
                   - required:
                       - is_identity_restricted
             - properties:
@@ -6585,7 +6640,7 @@ components:
                       - department_name
               oneOf:
                 - required:
-                    - group_id
+                    - idp_group_id
                   properties:
                     is_identity_restricted:
                       description: An identified group is not restricted.
@@ -6598,7 +6653,7 @@ components:
                       const: true
                   not:
                     required:
-                      - group_id
+                      - idp_group_id
     EvaluatedLimit:
       type: object
       additionalProperties: false
@@ -6777,7 +6832,7 @@ components:
     RequestResolutionFields:
       type: object
       description: |
-        Valid input and response combinations: PERIOD may omit both fields; USER and ALL forbid an identifier; GROUP requires a nonempty canonical IdP group ID; DEPARTMENT requires a nonempty explicit department name. ONGOING requires a resolution target.
+        Valid input and response combinations: PERIOD may omit both fields; USER and ALL forbid an identifier; GROUP requires the idp_group_id that the IdP groups API returns; DEPARTMENT requires a nonempty explicit department name. ONGOING requires a resolution target.
       allOf:
         - oneOf:
             - description: Omitted resolution fields for an unresolved request or PERIOD approval.
@@ -6817,7 +6872,7 @@ components:
                     - GROUP
                     - DEPARTMENT
                 resolution_target_id:
-                  description: Canonical IdP group ID or explicit department name.
+                  description: The idp_group_id of an IdP group, or an explicit department name.
                   minLength: 1
     RequestPeriod:
       type: string
@@ -6898,7 +6953,8 @@ components:
           description: Stored approval breadth, when available.
         resolution_target_id:
           type: string
-          description: Stored department or canonical IdP group ID, when available.
+          description: |
+            Stored department name, or the idp_group_id of the IdP group, when available. The idp_group_id is the same ID that the IdP groups API returns.
         resolution_note:
           type: string
           description: Stored denial note, when supplied.
@@ -7400,7 +7456,7 @@ components:
         - display_name
       properties:
         idp_group_id:
-          type: string
+          $ref: '#/components/schemas/IdpGroupId'
           description: |
             Opaque IdP group ID. The same group always gets the same ID. Callers must not parse or build it.
         display_name:
