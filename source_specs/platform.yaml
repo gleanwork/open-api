@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: f890392b6bad7a3f2eafaed4518759aed0504eb5
+  x-source-commit-sha: be3be25d333320224bae4b980b7bd33693cd5795
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -2584,7 +2584,7 @@ paths:
         - IdP Groups
       summary: List IdP groups
       description: |
-        List the identity provider (IdP) groups that Glean loads from the directory, ordered by display_name and then by idp_group_id. Use idp_group_id to name a group in other Platform APIs. An IdP group is active when Glean loaded it from the directory. An IdP group is inactive when only a usage limit names it, for example after the group was removed from the identity provider. Inactive IdP groups are left out unless an is_active filter includes the value "false". Usage limits apply only to IdP groups from the datasource instance that the usage settings select, so use the provider_instance filter to list only those groups. Internal O365 ownership groups and SharePoint groups are left out. The caller must be able to read the workspace configuration or the workspace billing.
+        List the identity provider (IdP) groups that Glean loads from the directory, ordered by display_name and then by idp_group_id. Use idp_group_id to name a group in other Platform APIs. Usage limits apply only to IdP groups from the datasource instance that the usage settings select, so use the provider_instance filter to list only those groups. Internal O365 ownership groups and SharePoint groups are left out. The caller must be able to read the workspace configuration or the workspace billing.
       operationId: platform-admin-idp-groups-list
       x-glean-scopes:
         legacy:
@@ -2620,7 +2620,7 @@ paths:
         - in: query
           name: filters
           description: |
-            JSON-encoded filters that choose which IdP groups are returned. The supported fields are is_active, with the values "true" and "false", and provider_instance, with datasource instance names such as "okta". provider_instance values match without case. The only supported operator is EQUALS. Multiple values OR within a filter. Multiple filters AND together. Without an is_active filter, only active IdP groups are returned. To return active and inactive IdP groups, send [{"field":"is_active","values":["true","false"]}].
+            JSON-encoded filters that choose which IdP groups are returned. The only supported field is provider_instance, with datasource instance names such as "okta". provider_instance values match without case. The only supported operator is EQUALS. Multiple values OR within a filter. Multiple filters AND together.
           required: false
           content:
             application/json:
@@ -2661,7 +2661,7 @@ paths:
         - IdP Groups
       summary: Get an IdP group
       description: |
-        Get one identity provider (IdP) group by its idp_group_id. Inactive IdP groups are returned, so a caller can still show a group after it was removed from the identity provider. An IdP group is active when Glean loaded it from the directory. An IdP group is inactive when only a usage limit names it, for example after the group was removed from the identity provider. An idp_group_id that is not valid, or that names no group that the list returns, returns 404 resource_not_found. The caller must be able to read the workspace configuration or the workspace billing.
+        Get one identity provider (IdP) group by its idp_group_id. An idp_group_id that is not valid, or that names no group that the list returns, returns 404 resource_not_found. A group that was removed from the identity provider returns 404 after Glean reloads the directory. The caller must be able to read the workspace configuration or the workspace billing.
       operationId: platform-admin-idp-groups-get
       x-glean-scopes:
         legacy:
@@ -7373,9 +7373,9 @@ components:
       properties:
         field:
           type: string
-          pattern: ^(is_active|provider_instance)$
+          pattern: ^provider_instance$
           description: |
-            The IdP group field to filter on. The supported fields are is_active and provider_instance.
+            The IdP group field to filter on. The only supported field is provider_instance.
         values:
           type: array
           minItems: 1
@@ -7383,8 +7383,7 @@ components:
           items:
             type: string
             minLength: 1
-            description: |
-              For is_active, "true" matches active IdP groups and "false" matches inactive IdP groups. For provider_instance, a datasource instance name.
+            description: A datasource instance name for provider_instance.
         operator:
           allOf:
             - $ref: '#/components/schemas/FilterOperator'
@@ -7416,7 +7415,6 @@ components:
           required:
             - provider
             - provider_instance
-            - is_active
           properties:
             provider:
               type: string
@@ -7426,10 +7424,6 @@ components:
               type: string
               description: |
                 The datasource instance that the group comes from, for example "okta". A provider can have more than one instance.
-            is_active:
-              type: boolean
-              description: |
-                Whether Glean loaded the group from the directory. A group that only a usage limit names is inactive.
     ListIdpGroupsResponse:
       type: object
       description: One page of IdP groups.
