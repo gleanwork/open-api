@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: e4f74136e1348cd04ba721e770e0ffc169cc5e07
+  x-source-commit-sha: e1de05b23f527312bcb60f86e713f8767d47fe84
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -8354,10 +8354,17 @@ components:
               pattern: ^DOCUMENT_CHANGE$
             content:
               type: string
-              description: Email body content when the event is for an email document.
+              description: Email body content when the event is for an email document, or the message text when the event is for a Slack message.
             content_truncated:
               type: boolean
               description: Present and true when source content exceeded the delivery size limit.
+            facets:
+              type: object
+              description: Facets of a Slack message as the event saw them, keyed as trigger filters key them, for example `from`, `mentions` and `channel`. Person facets carry the person's name. Each key lists up to 50 distinct values. Omitted for other documents and when the event has no facets.
+              additionalProperties:
+                type: array
+                items:
+                  type: string
       example:
         version: '1'
         trigger_id: trigger_test_123
