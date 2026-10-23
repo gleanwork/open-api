@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 22a6e78093c1d101aa500caa5e3f4734bd97a7d6
+  x-source-commit-sha: b58e923e51398de71eb76f635d87c9ded58f39f9
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 833505fb6282a31852a2a6c64c46b99a24a92175
+  x-open-api-commit-sha: 3c96200bc3d9da66d7ee0eeb3edc8198070fc550
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -7861,6 +7861,10 @@ components:
               - text
               - type
             title: MessageTextBlock
+        messageTrackingToken:
+          type: string
+          readOnly: true
+          description: "An opaque token that represents this particular agent message. Populated only on `GLEAN_AI` messages in responses. To record feedback, pass the token of the message being rated (typically the final `GLEAN_AI` message of the run) as the single entry in `trackingTokens` to `/feedback`, with `category: CHAT`."
     AgentRunCreate:
       description: "Payload for creating a run. **Important**: If the agent uses an input form trigger, the `input` field is required and must include all fields defined in the form schema. Even fields marked as optional in the UI must be included in the request—use an empty string (`\"\"`) for optional fields without values. Omitting required form fields will result in a 500 error."
       type: object
