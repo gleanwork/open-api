@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: e1de05b23f527312bcb60f86e713f8767d47fe84
-  x-open-api-commit-sha: 882a6e20a78d2c3efa4f982879a94793051f4e50
+  x-source-commit-sha: 1c79778bf4ab991c876c2449867b43f557fe5b03
+  x-open-api-commit-sha: 7a193f12c88ab0a04a490d4c693d35ab4a390c95
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -2607,7 +2607,7 @@ paths:
         - IdP Groups
       summary: List IdP groups
       description: |
-        List the identity provider (IdP) groups that Glean loads from the directory, ordered by display_name and then by idp_group_id. Use idp_group_id to name a group in other Platform APIs, such as the usage limit evaluation and limit increase request APIs. Usage limits apply only to IdP groups from the datasource instance in usage_settings.user_grouping.idp_group_provider_instance of the get usage settings response, and this API always lists that instance's groups. To list only those groups, pass that value in a provider_instance filter of the filters parameter, for example `filters=[{"field":"provider_instance","operator":"EQUALS","values":["okta"]}]`, URL-encoded as `filters=%5B%7B%22field%22%3A%22provider_instance%22%2C%22operator%22%3A%22EQUALS%22%2C%22values%22%3A%5B%22okta%22%5D%7D%5D`. Internal O365 ownership groups and SharePoint groups are left out. The caller must be able to read the workspace configuration or the workspace billing.
+        List the identity provider (IdP) groups that Glean loads from the directory, ordered by display_name and then by idp_group_id. Use idp_group_id to name a group in other Platform APIs, such as the usage limit evaluation and limit increase request APIs. Usage limits apply only to IdP groups from the datasource instance in usage_settings.user_grouping.idp_group_provider_instance of the get usage settings response, and this API always lists that instance's groups. To list only those groups, pass that value in a provider_instance filter of the filters parameter, for example `filters=[{"field":"provider_instance","operator":"EQUALS","values":["okta"]}]`, URL-encoded as `filters=%5B%7B%22field%22%3A%22provider_instance%22%2C%22operator%22%3A%22EQUALS%22%2C%22values%22%3A%5B%22okta%22%5D%7D%5D`. Send a provider filter to list only one provider's groups, and a name filter to list only the groups whose display_name contains a value. Internal O365 ownership groups and SharePoint groups are left out. The caller must be able to read the workspace configuration or the workspace billing.
       operationId: platform-admin-idp-groups-list
       x-glean-scopes:
         legacy:
@@ -2640,7 +2640,7 @@ paths:
         - in: query
           name: filters
           description: |
-            JSON-encoded filters that choose which IdP groups are returned. The only supported field is provider_instance, with datasource instance names such as "okta". provider_instance values match without case. The only supported operator is EQUALS. Multiple values OR within a filter. Multiple filters AND together.
+            JSON-encoded filters that choose which IdP groups are returned. The supported fields are provider_instance, provider, and name. The only supported operator is EQUALS. Multiple values OR within a filter. Multiple filters AND together. The name field may appear in only one filter. A value that matches no IdP group returns no IdP groups rather than an error.
           required: false
           content:
             application/json:
@@ -2652,6 +2652,16 @@ paths:
                 items:
                   $ref: "#/components/schemas/PlatformIdpGroupFilter"
                   description: One filter on an IdP group field.
+              examples:
+                provider_and_name:
+                  summary: Okta groups whose display name contains "engineering"
+                  value:
+                    - field: provider
+                      values:
+                        - okta
+                    - field: name
+                      values:
+                        - engineering
       responses:
         "200":
           description: Successful response.
@@ -7521,17 +7531,26 @@ components:
       properties:
         field:
           type: string
-          pattern: ^provider_instance$
+          pattern: ^(provider_instance|provider|name)$
           description: |
-            The IdP group field to filter on. The only supported field is provider_instance.
+            The IdP group field to filter on.
+            - provider_instance: matches groups from the datasource instance, such as
+              "okta", ignoring case.
+
+            - provider: matches groups from the identity provider, such as "okta", ignoring
+              case.
+
+            - name: matches groups whose display_name contains the value, ignoring case and
+              surrounding whitespace. Each value is at most 256 characters.
         values:
           type: array
           minItems: 1
+          maxItems: 100
           description: The values to match. An IdP group matches when any value matches.
           items:
             type: string
             minLength: 1
-            description: A datasource instance name for provider_instance.
+            description: A value to match. Empty values, and blank name values, are rejected.
         operator:
           allOf:
             - $ref: "#/components/schemas/PlatformFilterOperator"
