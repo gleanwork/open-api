@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: b58e923e51398de71eb76f635d87c9ded58f39f9
-  x-open-api-commit-sha: 3c96200bc3d9da66d7ee0eeb3edc8198070fc550
+  x-source-commit-sha: e1de05b23f527312bcb60f86e713f8767d47fe84
+  x-open-api-commit-sha: 882a6e20a78d2c3efa4f982879a94793051f4e50
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -13235,10 +13235,17 @@ components:
               pattern: ^DOCUMENT_CHANGE$
             content:
               type: string
-              description: Email body content when the event is for an email document.
+              description: Email body content when the event is for an email document, or the message text when the event is for a Slack message.
             content_truncated:
               type: boolean
               description: Present and true when source content exceeded the delivery size limit.
+            facets:
+              type: object
+              description: Facets of a Slack message as the event saw them, keyed as trigger filters key them, for example `from`, `mentions` and `channel`. Person facets carry the person's name. Each key lists up to 50 distinct values. Omitted for other documents and when the event has no facets.
+              additionalProperties:
+                type: array
+                items:
+                  type: string
       example:
         version: "1"
         trigger_id: trigger_test_123
