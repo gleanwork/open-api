@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: 1c79778bf4ab991c876c2449867b43f557fe5b03
-  x-open-api-commit-sha: 7a193f12c88ab0a04a490d4c693d35ab4a390c95
+  x-source-commit-sha: 3c13ca1e1e3484d0703faeaca0ff42905c92b224
+  x-open-api-commit-sha: edeedc4bfbf4a7e1db56bac40330f330510ba78a
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -20798,6 +20798,7 @@ components:
               - PROJECT_FOCUS_BLOCK
               - PROJECT_NEXT_STEP
               - DEMO_CARD
+              - PERSONAL_AGENT_NUX
               - RESOLVE_MEETING_CONFLICT
               - FINDING_MEETING_ROOM
               - OOO_PLANNER
@@ -21292,6 +21293,7 @@ components:
             - PROJECT_FOCUS_BLOCK
             - PROJECT_NEXT_STEP
             - DEMO_CARD
+            - PERSONAL_AGENT_NUX
             - RESOLVE_MEETING_CONFLICT
             - FINDING_MEETING_ROOM
             - OOO_PLANNER
@@ -21396,6 +21398,7 @@ components:
             - PROJECT_FOCUS_BLOCK
             - PROJECT_NEXT_STEP
             - DEMO_CARD
+            - PERSONAL_AGENT_NUX
             - RESOLVE_MEETING_CONFLICT
             - FINDING_MEETING_ROOM
             - OOO_PLANNER
