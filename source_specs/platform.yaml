@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 5973a4510e4dd544be26b56e3b2f01a6e754afdf
+  x-source-commit-sha: a73424bcb9550c6502d107bf44f81ca315ee6d21
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -2403,7 +2403,7 @@ paths:
         - OAuth clients
       summary: List OAuth clients
       description: |
-        List the static OAuth clients that admins created for this workspace, ordered by display_name and then by client_id. Dynamically registered clients and Glean's own clients, such as Glean Desktop, are not listed. A client is active when it is enabled. Inactive clients are left out unless an is_active filter includes the value "false". An is_ai_gateway_enabled filter returns only the clients that can call the Glean LLM Gateway, or only the clients that cannot. To set a usage limit for a client, send its ai_gateway.usage_client_id, not its client_id, to the usage APIs. The caller needs admin read or billing read permission.
+        List the static OAuth clients that admins created for this workspace, ordered by display_name and then by client_id. Dynamically registered clients and Glean's own clients, such as Glean Desktop, are not listed. Disabled clients are left out unless an is_enabled filter includes the value "false". Use filters to find clients by name, client_id, usage_client_id, LLM Gateway access, or supported app. To set a usage limit for a client, send its ai_gateway.usage_client_id, not its client_id, to the usage APIs. The caller needs admin read or billing read permission.
       operationId: platform-admin-oauth-clients-list
       x-glean-scopes:
         legacy:
@@ -2439,7 +2439,7 @@ paths:
         - in: query
           name: filters
           description: |
-            JSON-encoded filters that choose which clients are returned. The supported fields are is_active and is_ai_gateway_enabled. Both take the values "true" and "false". The only supported operator is EQUALS. Multiple values OR within a filter. Multiple filters AND together. Without an is_active filter, only active clients are returned. To return active and inactive clients, send [{"field":"is_active","values":["true","false"]}]. An is_ai_gateway_enabled filter with the value "true" returns only the clients that have ai_gateway. The value "false" returns only the clients that do not. Without an is_ai_gateway_enabled filter, clients are returned whether or not they have ai_gateway.
+            JSON-encoded filters that choose which clients are returned. The supported fields are is_enabled, name, client_id, usage_client_id, has_ai_gateway, and supported_app, with the operator EQUALS. Multiple values OR within a filter. Multiple filters AND together. Each field can appear in only one filter. Without an is_enabled filter, only enabled clients are returned. To return enabled and disabled clients, send [{"field":"is_enabled","values":["true","false"]}]. To find the Claude Code clients, send [{"field":"supported_app","values":["CLAUDE_CODE"]}].
           required: false
           content:
             application/json:
@@ -2480,7 +2480,7 @@ paths:
         - OAuth clients
       summary: Get an OAuth client
       description: |
-        Get one static OAuth client that an admin created for this workspace. A client that an admin disabled is returned with is_active false. A deleted client, a dynamically registered client, one of Glean's own clients, such as Glean Desktop, and an unknown client_id all return 404. The path takes the OAuth client_id, not ai_gateway.usage_client_id. The caller needs admin read or billing read permission.
+        Get one static OAuth client that an admin created for this workspace. A client that an admin disabled is returned with is_enabled false. A deleted client, a dynamically registered client, one of Glean's own clients, such as Glean Desktop, and an unknown client_id all return 404. The path takes the OAuth client_id, not ai_gateway.usage_client_id. The caller needs admin read or billing read permission.
       operationId: platform-admin-oauth-clients-get
       x-glean-scopes:
         legacy:
@@ -7326,18 +7326,33 @@ components:
       properties:
         field:
           type: string
-          pattern: ^(is_active|is_ai_gateway_enabled)$
+          pattern: ^(is_enabled|name|client_id|usage_client_id|has_ai_gateway|supported_app)$
           description: |
-            The client field to filter on. The supported fields are is_active and is_ai_gateway_enabled. is_ai_gateway_enabled is true for a client that has ai_gateway, which means that it can call the Glean LLM Gateway.
+            The client field to filter on.
+            - is_enabled: "true" matches enabled clients, and "false" matches disabled
+              clients.
+
+            - name: matches clients whose display_name contains the value, ignoring
+              case and surrounding whitespace. Each value is at most 256 characters.
+
+            - client_id: matches the client with this OAuth client_id.
+            - usage_client_id: matches the client with this ai_gateway.usage_client_id.
+            - has_ai_gateway: "true" matches clients that can call the Glean LLM
+              Gateway, which are the clients with ai_gateway. "false" matches the
+              other clients.
+
+            - supported_app: matches clients whose ai_gateway.supported_apps contains
+              the value, such as CLAUDE_CODE. The values are the OAuthClientSupportedApp
+              values.
         values:
           type: array
           minItems: 1
+          maxItems: 100
           description: The values to match. A client matches when any value matches.
           items:
             type: string
-            pattern: ^(true|false)$
-            description: |
-              For is_active, "true" matches active clients and "false" matches inactive clients. For is_ai_gateway_enabled, "true" matches clients that have ai_gateway and "false" matches clients that do not.
+            minLength: 1
+            description: A value to match. Blank values are rejected.
         operator:
           allOf:
             - $ref: '#/components/schemas/FilterOperator'
@@ -7394,17 +7409,34 @@ components:
         NO_AUTHENTICATION: The client does not authenticate. Public clients use this method.
         PRIVATE_KEY_JWT: The client signs a JWT with its private key.
         TLS_CLIENT_AUTH: The client authenticates with a mutual TLS certificate.
+    OAuthClientSupportedApp:
+      type: string
+      description: An app that an LLM Gateway client is set up for.
+      enum:
+        - CLAUDE_CODE
+        - CODEX
+      x-enumDescriptions:
+        CLAUDE_CODE: Claude Code.
+        CODEX: OpenAI Codex.
     OAuthClientAiGateway:
       type: object
       description: LLM Gateway details of an OAuth client.
       additionalProperties: false
       required:
         - usage_client_id
+        - supported_apps
       properties:
         usage_client_id:
           type: string
           description: |
             The spend-client ID that usage records and usage limits use for this client. Send it as the client_id of a usage limit. It is an opaque, case-sensitive string; do not build it from client_id.
+        supported_apps:
+          type: array
+          description: |
+            The apps that the client is set up for, in alphabetical order. Empty when no app is recorded for the client.
+          items:
+            $ref: '#/components/schemas/OAuthClientSupportedApp'
+            description: An app that the client is set up for.
     OAuthClient:
       type: object
       description: An OAuth client that an admin created for the workspace.
@@ -7415,7 +7447,7 @@ components:
         - registration_type
         - grant_types
         - redirect_uris
-        - is_active
+        - is_enabled
       properties:
         client_id:
           type: string
@@ -7446,10 +7478,10 @@ components:
           items:
             type: string
             description: A redirect URI.
-        is_active:
+        is_enabled:
           type: boolean
           description: |
-            Whether the client is active. A client that an admin disabled is inactive and cannot authenticate.
+            Whether the client is enabled. A client that an admin disabled cannot authenticate.
         created_at:
           type: string
           format: date-time
