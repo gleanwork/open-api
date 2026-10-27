@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 8b62acc867609d749a6e1d32b92093de3cb97fd1
+  x-source-commit-sha: 5973a4510e4dd544be26b56e3b2f01a6e754afdf
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -2979,7 +2979,7 @@ paths:
         - Admin Agents
       summary: List all agents
       description: |
-        List every agent in the workspace, ordered by display_name and then by agent_id. Unlike agent search, the list does not depend on who an agent is shared with, so it includes private and disabled agents. Deleted agents are inactive and are left out unless an is_active filter includes the value "false". Use the agent_id of an active agent with other Platform APIs, for example as a usage limit target. A deleted agent is not a valid usage limit target. The caller must be able to read all agents, administer agents, or read workspace billing.
+        List every agent in the workspace, ordered by name and then by agent_id. Each agent has the same shape that Get agent returns. Unlike agent search, the list does not depend on who an agent is shared with, so it includes private and disabled agents. Deleted agents are left out. Use the agent_id with other Platform APIs, for example as a usage limit target. The caller must be able to read all agents, administer agents, or read workspace billing.
       operationId: platform-admin-agents-list
       x-glean-scopes:
         legacy:
@@ -3015,7 +3015,7 @@ paths:
         - in: query
           name: filters
           description: |
-            JSON-encoded filters that choose which agents are returned. The only supported field is is_active, with the values "true" and "false" and the operator EQUALS. Multiple values OR within a filter. Multiple filters AND together. Without an is_active filter, only active agents are returned. To return active and deleted agents, send [{"field":"is_active","values":["true","false"]}].
+            JSON-encoded filters that choose which agents are returned. The supported fields are name and description, with the operator EQUALS. Multiple values OR within a filter. Multiple filters AND together, and each field can appear in only one filter. For example, to return agents whose name contains "HR", send [{"field":"name","values":["HR"]}].
           required: false
           content:
             application/json:
@@ -7882,16 +7882,18 @@ components:
       properties:
         field:
           type: string
-          pattern: ^is_active$
-          description: The agent field to filter on. The only supported field is is_active.
+          pattern: ^(name|description)$
+          description: |
+            The agent field to filter on. name matches agents whose name contains the value. description matches agents whose description contains the value. Matching ignores case and surrounding whitespace. Each value is at most 256 characters.
         values:
           type: array
           minItems: 1
+          maxItems: 100
           description: The values to match. An agent matches when any value matches.
           items:
             type: string
-            pattern: ^(true|false)$
-            description: '"true" matches active agents. "false" matches deleted agents.'
+            minLength: 1
+            description: A value to match. Blank values are rejected.
         operator:
           allOf:
             - $ref: '#/components/schemas/FilterOperator'
@@ -7900,25 +7902,6 @@ components:
             - EQUALS
           default: EQUALS
           description: The only supported operator is EQUALS. Defaults to EQUALS.
-    AdminAgent:
-      type: object
-      description: An agent in the workspace.
-      additionalProperties: false
-      required:
-        - agent_id
-        - display_name
-        - is_active
-      properties:
-        agent_id:
-          type: string
-          description: |
-            Opaque agent ID. Other Platform APIs, such as usage limits, accept and return this ID.
-        display_name:
-          type: string
-          description: The name that Glean shows for the agent.
-        is_active:
-          type: boolean
-          description: Whether the agent is active. A deleted agent is inactive.
     ListAdminAgentsResponse:
       type: object
       description: One page of agents.
@@ -7930,9 +7913,9 @@ components:
       properties:
         results:
           type: array
-          description: The agents on this page, ordered by display_name and then by agent_id.
+          description: The agents on this page, ordered by name and then by agent_id.
           items:
-            $ref: '#/components/schemas/AdminAgent'
+            $ref: '#/components/schemas/Agent'
         has_more:
           type: boolean
           description: Whether more agents are available after this page.
