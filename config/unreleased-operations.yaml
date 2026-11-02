@@ -9,11 +9,3 @@
 # so a typo or a rename cannot publish an operation by accident.
 #
 # Remove an entry when the operation is released in every deployment.
-
-platform.yaml:
-  - operationId: platform-documents-get-by-url
-    reason: Documents API is not released in any deployment yet.
-  - operationId: platform-documents-get
-    reason: Documents API is not released in any deployment yet.
-  - operationId: platform-documents-batch
-    reason: Documents API is not released in any deployment yet.
