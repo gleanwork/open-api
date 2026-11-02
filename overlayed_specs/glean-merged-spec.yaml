@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: 714c07da3523b7bf2a5276954cbc0aa5dd6cc51f
-  x-open-api-commit-sha: aa7bb68ac7a217ed4f45e07467c4ddc2bdd87b32
+  x-source-commit-sha: ae4970ccfd7da60a147b28ce11eba8966131ed14
+  x-open-api-commit-sha: ffb4e7a9055b60e2d3421bf2ba8f8d2d50a40b37
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -1766,7 +1766,7 @@ paths:
         - Admin Usage
       summary: Reset a usage limit
       description: |
-        Remove a configured usage limit matching the selector without clearing measured usage. A USER target may be identified by user_id or email, including a user no longer in the directory. Requires admin.usage.limits:write and permission to edit workspace billing.
+        Remove a configured usage limit matching (target, period) without clearing measured usage. A USER target may be identified by user_id or email, including a user no longer in the directory. Requires admin.usage.limits:write and permission to edit workspace billing.
       operationId: platform-admin-usage-limits-reset
       x-visibility: Public
       x-glean-scopes:
@@ -1905,7 +1905,7 @@ paths:
         - Admin Usage
       summary: Evaluate administrative usage limit headroom
       description: |
-        Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires admin.usage:evaluate and permission to read workspace billing, not a global administrator role. An explicit target.client_id selects the Glean or external spend client; it is never inferred from the caller. Returns all applicable limit values and counters, with effective headroom separated by unit. Agent counters retain aggregate scope. Billing readers receive exact IdP-group source identities as idp_group_id values. A USER target may be identified by user_id or email. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
+        Evaluate the effective usage limits for a target and period and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires admin.usage:evaluate and permission to read workspace billing, not a global administrator role. An explicit target.client_id selects the Glean or external spend client; it is never inferred from the caller. Returns all applicable limit values and counters, with effective headroom separated by unit. Agent counters retain aggregate scope. Billing readers receive exact IdP-group source identities as idp_group_id values. A USER target may be identified by user_id or email. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
       operationId: platform-admin-usage-limits-evaluate
       x-visibility: Public
       x-glean-scopes:
@@ -1964,7 +1964,7 @@ paths:
         - Usage
       summary: Evaluate usage limit headroom
       description: |
-        Evaluate the effective usage limits for a selector and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires usage:evaluate, without workspace billing permission. Omit target identity to evaluate the caller, while supplying target.client_id. An explicit USER identifies the caller by canonical ID, known alias ID, email, or known alias email; every supplied field must identify the caller. An explicit AGENT requires current owner/editor or applicable global agent-edit permission; disabled agents remain eligible. Subagents, other users, ORGANIZATION, and default targets are forbidden on this route, even for billing administrators. Missing, inaccessible, and subagent targets return the same 403 insufficient_permissions. An explicit target.client_id selects the Glean or external spend client; it is never inferred from the caller. Agent evaluation reports aggregate agent usage, not the caller's personal slice or a complete run preflight. Returns only the target's own policies, such as user, default, department, IdP-group, and agent limits, with their values, used counters, decisions, and headroom; USD and credits have separate effective_limits. Shared budgets, such as the selected client's organization limit, are never itemized and never contribute values, counters, warnings, or headroom; a reached shared hard limit still makes decision BLOCKED and adds a decision_causes entry with budget_scope SHARED and its source_type. The response is the same for every caller, including billing administrators. IDP_GROUP sources always have is_identity_restricted true and no idp_group_id. Use the administrative route for shared-budget details. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
+        Evaluate the effective usage limits for a target and period and return the current decision (AVAILABLE, WARNING, or BLOCKED) based on accrued usage. Requires usage:evaluate, without workspace billing permission. Omit target identity to evaluate the caller, while supplying target.client_id. An explicit USER identifies the caller by canonical ID, known alias ID, email, or known alias email; every supplied field must identify the caller. An explicit AGENT requires current owner/editor or applicable global agent-edit permission; disabled agents remain eligible. Subagents, other users, ORGANIZATION, and default targets are forbidden on this route, even for billing administrators. Missing, inaccessible, and subagent targets return the same 403 insufficient_permissions. An explicit target.client_id selects the Glean or external spend client; it is never inferred from the caller. Agent evaluation reports aggregate agent usage, not the caller's personal slice or a complete run preflight. Returns only the target's own policies, such as user, default, department, IdP-group, and agent limits, with their values, used counters, decisions, and headroom; USD and credits have separate effective_limits. Shared budgets, such as the selected client's organization limit, are never itemized and never contribute values, counters, warnings, or headroom; a reached shared hard limit still makes decision BLOCKED and adds a decision_causes entry with budget_scope SHARED and its source_type. The response is the same for every caller, including billing administrators. IDP_GROUP sources always have is_identity_restricted true and no idp_group_id. Use the administrative route for shared-budget details. Evaluation reports configured-budget status even when runtime enforcement switches are off; it does not perform request admission, model eligibility, or agent-run preflight checks.
       operationId: platform-usage-limits-evaluate
       x-visibility: Public
       x-glean-scopes:
@@ -1983,7 +1983,6 @@ paths:
               $ref: "#/components/schemas/PlatformEvaluateCallerUsageLimitRequest"
             example:
               target:
-                type: USER
                 client_id: glean
               period:
                 type: RECURRING_CALENDAR_MONTH
@@ -11161,6 +11160,9 @@ components:
           description: Kind of governed population.
         client_id:
           type: string
+          x-glean-experimental:
+            id: 3a8dfb97-fbe9-4173-ac61-4fd6e6faa847
+            introduced: "2026-09-23"
           minLength: 1
           maxLength: 256
           pattern: ^[^\x00-\x1f\x7f]+$
@@ -11170,7 +11172,7 @@ components:
                   - __deleted_clients__
               - pattern: "^[ \\t-\\r\N   - \L\P  　]*$"
           description: |
-            Opaque, case-sensitive spend-client ID. Required for organization and user policies; forbidden on configured aggregate agent policies. Evaluation always requires a client, including for agents. Case and padding are preserved. The reserved * client is valid only for the DEFAULT_USER actions policy; omission never selects Glean or acts as a wildcard.
+            Opaque, case-sensitive spend-client ID, such as glean or an external gateway spend-client ID. Case and leading or trailing padding are preserved exactly; this is not inferred from the authenticating OAuth application, prefixed, or normalized. Empty and whitespace-only IDs (including Unicode whitespace), synthetic UI aggregation IDs, and control characters are invalid. Unknown IDs are valid and can have no applicable configured policies. Required for ORGANIZATION, DEFAULT_USER, and USER configurations; forbidden for configured aggregate DEFAULT_AGENT and AGENT policies. Evaluation always requires a concrete client, including for agents. The reserved * client is valid only for the Phase 1 DEFAULT_USER actions-only premium policy, not a cross-client budget or evaluation client. Omission never selects Glean or acts as a wildcard.
         user_id:
           type: string
           minLength: 1
@@ -11416,6 +11418,9 @@ components:
           description: Population and spend client governed by this limit.
         period:
           $ref: "#/components/schemas/PlatformPeriod"
+          x-glean-experimental:
+            id: 3e43afc4-7169-43ee-92e5-7aa34004d126
+            introduced: "2026-10-30"
           description: Reset cadence for counted usage.
         allocation_mode:
           $ref: "#/components/schemas/PlatformAllocationMode"
@@ -11647,6 +11652,9 @@ components:
           description: Population and spend client governed by the limit.
         period:
           $ref: "#/components/schemas/PlatformPeriod"
+          x-glean-experimental:
+            id: 3c2cc466-dd60-442f-ba72-e0cd5e8a650b
+            introduced: "2026-10-30"
           description: Reset cadence for counted usage.
       allOf:
         - oneOf:
@@ -11718,6 +11726,9 @@ components:
           description: Concrete organization, user, or agent and spend client to evaluate.
         period:
           $ref: "#/components/schemas/PlatformPeriod"
+          x-glean-experimental:
+            id: 3d965112-7c52-4e2e-85cb-48273a3795fe
+            introduced: "2026-10-30"
           description: Evaluation period.
       allOf:
         - properties:
@@ -11756,9 +11767,13 @@ components:
           description: Kind of configured policy source.
         client_id:
           type: string
+          x-glean-experimental:
+            id: a6a3f695-ed21-4184-9cef-3dd805d87a2b
+            introduced: "2026-10-30"
           minLength: 1
           maxLength: 256
-          description: Spend client of this policy; omitted for aggregate agent policies. * identifies the premium policy.
+          description: |
+            Opaque spend-client ID of this policy, preserving case and padding; omitted for aggregate agent policies. * identifies only the Phase 1 DEFAULT_USER actions-only premium policy, not a cross-client budget.
         user_id:
           type: string
           minLength: 1
@@ -12061,6 +12076,9 @@ components:
             Configured source of this limit. Default and group policies retain their source population; used is the concrete evaluated user's or agent's counter. Non-admin evaluation withholds IdP-group identities but returns the limit value, counter, and decision of every policy it lists.
         period:
           $ref: "#/components/schemas/PlatformPeriod"
+          x-glean-experimental:
+            id: 6fce16b8-3dea-48e5-9148-943efb62bb52
+            introduced: "2026-10-30"
           description: Counter period; target.client_id identifies client scope and is omitted for aggregate agent rules.
         active_actions:
           type: array
@@ -12083,7 +12101,7 @@ components:
       type: object
       additionalProperties: false
       description: |
-        Configured-budget evaluation for a concrete target and selector, not runtime admission, model eligibility, or agent-run preflight. AVAILABLE can mean that no configured policy applies; inspect applicable_policy_count and the exact selector echo. Configured caps are evaluated_limits[].value.amount, accrued usage is evaluated_limits[].used, and remaining budget is effective_limits[].remaining. Approved one-period grants raise headroom without changing the configured cap. Units are never combined or converted. Non-admin evaluation omits shared budgets from applicable_policy_count, evaluated_limits, and effective_limits; decision can be BLOCKED by a shared budget even when the target's own limits show remaining headroom. decision_causes explains every non-AVAILABLE decision, including one caused by a budget that is not listed.
+        Configured-budget evaluation for a concrete target and period, not runtime admission, model eligibility, or agent-run preflight. AVAILABLE can mean that no configured policy applies; inspect applicable_policy_count and the normalized target and exact period echo. Configured caps are evaluated_limits[].value.amount, accrued usage is evaluated_limits[].used, and remaining budget is effective_limits[].remaining. Approved one-period grants raise headroom without changing the configured cap. Units are never combined or converted. Non-admin evaluation omits shared budgets from applicable_policy_count, evaluated_limits, and effective_limits; decision can be BLOCKED by a shared budget even when the target's own limits show remaining headroom. decision_causes explains every non-AVAILABLE decision, including one caused by a budget that is not listed.
       example:
         target:
           type: USER
@@ -12157,6 +12175,9 @@ components:
             Normalized concrete ORGANIZATION, USER, or AGENT evaluated. USER targets contain the canonical user_id, not the supplied alias ID or email. Included even when no configured policies apply.
         period:
           $ref: "#/components/schemas/PlatformPeriod"
+          x-glean-experimental:
+            id: 6a059c59-3fbc-498d-8a44-f05465f9e8ad
+            introduced: "2026-10-30"
           description: Exact evaluated period; target.client_id preserves case and padding.
         restrictions:
           type: array
@@ -12200,6 +12221,9 @@ components:
           description: Request identifier for correlating this response.
     Platformclient_id:
       type: string
+      x-glean-experimental:
+        id: 3a8dfb97-fbe9-4173-ac61-4fd6e6faa847
+        introduced: "2026-09-23"
       minLength: 1
       maxLength: 256
       pattern: ^[^\x00-\x1f\x7f]+$
@@ -12209,7 +12233,7 @@ components:
               - __deleted_clients__
           - pattern: "^[ \\t-\\r\N   - \L\P  　]*$"
       description: |
-        Opaque, case-sensitive spend-client ID. Required for organization and user policies; forbidden on configured aggregate agent policies. Evaluation always requires a client, including for agents. Case and padding are preserved. The reserved * client is valid only for the DEFAULT_USER actions policy; omission never selects Glean or acts as a wildcard.
+        Opaque, case-sensitive spend-client ID, such as glean or an external gateway spend-client ID. Case and leading or trailing padding are preserved exactly; this is not inferred from the authenticating OAuth application, prefixed, or normalized. Empty and whitespace-only IDs (including Unicode whitespace), synthetic UI aggregation IDs, and control characters are invalid. Unknown IDs are valid and can have no applicable configured policies. Required for ORGANIZATION, DEFAULT_USER, and USER configurations; forbidden for configured aggregate DEFAULT_AGENT and AGENT policies. Evaluation always requires a concrete client, including for agents. The reserved * client is valid only for the Phase 1 DEFAULT_USER actions-only premium policy, not a cross-client budget or evaluation client. Omission never selects Glean or acts as a wildcard.
     Platformuser_id:
       type: string
       minLength: 1
@@ -12253,12 +12277,18 @@ components:
               description: USER (the default) or an editable AGENT.
             client_id:
               $ref: "#/components/schemas/Platformclient_id"
+              x-glean-experimental:
+                id: 6df95a62-42d4-4589-ac86-2304b4dfab72
+                introduced: "2026-10-30"
               description: Explicit spend client, including for aggregate agent evaluation.
             user_id:
               $ref: "#/components/schemas/Platformuser_id"
               description: Optional caller user ID.
             email:
               $ref: "#/components/schemas/Platformemail"
+              x-glean-experimental:
+                id: d9e2ce7e-0f85-4bdd-a600-629f9b25c912
+                introduced: "2026-09-29"
               description: Optional caller email.
             agent_id:
               $ref: "#/components/schemas/Platformagent_id"
@@ -12288,6 +12318,9 @@ components:
                       - email
         period:
           $ref: "#/components/schemas/PlatformPeriod"
+          x-glean-experimental:
+            id: bf96af1d-4d8d-440e-8437-6be4a8d4bc79
+            introduced: "2026-10-30"
           description: Evaluation period.
       allOf:
         - required:
