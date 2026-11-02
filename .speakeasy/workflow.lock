@@ -1,9 +1,9 @@
-speakeasyVersion: 1.804.0
+speakeasyVersion: 1.805.0
 sources:
     glean-api-specs:
         sourceNamespace: glean-api-specs
-        sourceRevisionDigest: sha256:9abac864e3f116910b23ddfbac8e5d38bf18b9e3f0c93efcbe89f52bacfc5723
-        sourceBlobDigest: sha256:d5ec709ab00bf00faef9cfae6d596c1f11c4cd8e745e9bf403d6b83fa6ab7d9c
+        sourceRevisionDigest: sha256:a76a2dc244f9a8dff8c320fc69a1d5b8ef00eddbbdfe8595757d8485651f67dc
+        sourceBlobDigest: sha256:4fc04654818ce3e6808442807da9103b37ff81727d2a9f4617e440a6c43f84e9
         tags:
             - latest
             - main
