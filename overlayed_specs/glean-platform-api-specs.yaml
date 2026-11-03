@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: 0c1444389e71f041ebd69479a44a3947efda1b3d
-  x-open-api-commit-sha: 0d1bc80109b2f72dc7d40dca28ce466a799534e0
+  x-source-commit-sha: 8061b1c85c709e971f2dbf8d3e803dcc6e62bd24
+  x-open-api-commit-sha: c2594e3336d1019b6ab0d0171e673b8210f08e17
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -9204,6 +9204,7 @@ x-glean-platform-tag-groups:
       - Agents
       - Chat
       - CORL
+      - Models
       - Skills
   - name: Search & Data
     tags:
