@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: c98e86e94420a549b5a8b935964258ef40c87264
-  x-open-api-commit-sha: f5948c97746a965dfbf486cb4c872d4cf90b676f
+  x-source-commit-sha: 5dfe65295d792f0f4dea15331f9b53d1e188ecde
+  x-open-api-commit-sha: ef1c2903fef224e15a257c590edca1c075b440a4
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -5505,6 +5505,9 @@ components:
           description: Whether this is the latest version of the skill.
         created_by:
           $ref: "#/components/schemas/PlatformPersonReference"
+        updated_by:
+          $ref: "#/components/schemas/PlatformPersonReference"
+          description: Person who last saved this version.
         created_at:
           type: string
           format: date-time
