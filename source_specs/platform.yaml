@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 584555707793ab73da7bc04bb667baf5aae29ad3
+  x-source-commit-sha: c98e86e94420a549b5a8b935964258ef40c87264
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -4617,12 +4617,6 @@ components:
         content:
           type: string
           minLength: 1
-    ModelId:
-      type: string
-      description: |
-        Opaque model identifier: the internal model enum name (for example `GPT5_6_LUNA`). Case-sensitive; never parse it.
-      pattern: ^[A-Z0-9_]+$
-      example: GPT5_6_LUNA
     ChatTextFormat:
       type: object
       additionalProperties: false
@@ -4715,14 +4709,6 @@ components:
           minLength: 1
           description: |
             Continue an existing stored conversation. Incompatible with message-array `input` and with `store: false`.
-        model:
-          description: |
-            Model for this turn, matched exactly to an id from GET /api/models. When GET /api/models reports `endpoints.chat` for the model, `POST /api/chat` does not reject this value at `/model`, except across a deployment change. Other request checks still apply. The model is requested, not guaranteed: deployment configuration can still run the turn on a different model.
-          x-glean-experimental:
-            id: d39377b1-a9dc-4a94-a569-f141c885d767
-            introduced: '2026-10-07'
-          allOf:
-            - $ref: '#/components/schemas/ModelId'
         text:
           type: object
           additionalProperties: false
