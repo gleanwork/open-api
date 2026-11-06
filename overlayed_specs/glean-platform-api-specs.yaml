@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: ad552833ab4d500a85540173b2212087cebdb221
-  x-open-api-commit-sha: e28202e2da62008a73a681b2ca60c73b61a7673c
+  x-source-commit-sha: e0ef8edbbbcbfd9ae7092a496f2f9e1bbea1dc3c
+  x-open-api-commit-sha: 8a99bf5c835a76eeb85821172337d104201fe857
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -6801,11 +6801,11 @@ components:
         - TARGET
         - SHARED
       x-enumDescriptions:
-        TARGET: The evaluated user's or agent's own allowance, including allowances inherited from default, department, or IdP-group per-member policies. It is listed in evaluated_limits and reflected in effective_limits.
-        SHARED: A budget pooled with other users or agents, such as the organization budget. Non-admin evaluation never lists it in evaluated_limits or effective_limits, so BLOCKED means usage is unavailable regardless of the target's remaining headroom.
+        TARGET: "The evaluated target's own budget: the organization budget for an ORGANIZATION target, or a user's or agent's own allowance, including allowances inherited from default, department, or IdP-group per-member policies. It is listed in evaluated_limits and reflected in effective_limits."
+        SHARED: A budget pooled with other users or agents, such as the organization budget when evaluating a user or agent. Non-admin evaluation never lists it in evaluated_limits or effective_limits, so BLOCKED means usage is unavailable regardless of the target's remaining headroom.
       x-speakeasy-enum-descriptions:
-        TARGET: The evaluated user's or agent's own allowance, including allowances inherited from default, department, or IdP-group per-member policies. It is listed in evaluated_limits and reflected in effective_limits.
-        SHARED: A budget pooled with other users or agents, such as the organization budget. Non-admin evaluation never lists it in evaluated_limits or effective_limits, so BLOCKED means usage is unavailable regardless of the target's remaining headroom.
+        TARGET: "The evaluated target's own budget: the organization budget for an ORGANIZATION target, or a user's or agent's own allowance, including allowances inherited from default, department, or IdP-group per-member policies. It is listed in evaluated_limits and reflected in effective_limits."
+        SHARED: A budget pooled with other users or agents, such as the organization budget when evaluating a user or agent. Non-admin evaluation never lists it in evaluated_limits or effective_limits, so BLOCKED means usage is unavailable regardless of the target's remaining headroom.
     PlatformUsageDecisionCause:
       type: object
       additionalProperties: false
