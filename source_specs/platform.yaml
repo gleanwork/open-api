@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 5f7d37f0cf9ac511f609d29967e55b5c9c2ebd2f
+  x-source-commit-sha: 97fbe10915397b754d4188eca1d52eac13041ca7
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -2007,7 +2007,7 @@ paths:
               client_id: glean
       responses:
         '201':
-          $ref: '#/components/responses/RequestResource'
+          $ref: '#/components/responses/PersonalRequestResource'
           description: The created personal request.
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -2068,11 +2068,11 @@ paths:
           description: Optional structured filters on request status.
       responses:
         '200':
-          description: A bounded page of authorized requests.
+          description: A bounded page of the caller's requests.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestListResponse'
+                $ref: '#/components/schemas/PersonalRequestListResponse'
                 description: Authorized request page and continuation state.
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -2124,7 +2124,7 @@ paths:
         Requires usage.limit_increase_requests:read and the current user's request. Authorization precedes resource disclosure. Missing and inaccessible records return the same 404. Supported token issuance, experimental opt-in, and request-more enablement are required. Missing opt-in or a disabled flag also returns 404.
       responses:
         '200':
-          $ref: '#/components/responses/RequestResource'
+          $ref: '#/components/responses/PersonalRequestResource'
           description: The authorized request in its current stored state.
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -2183,8 +2183,9 @@ paths:
               client_id: glean
       responses:
         '201':
-          $ref: '#/components/responses/RequestResource'
-          description: The created editable-agent request.
+          $ref: '#/components/responses/PersonalRequestResource'
+          description: |
+            The created editable-agent request, in the personal view because creation does not require billing read.
         '400':
           $ref: '#/components/responses/BadRequest'
           description: Invalid input, with field-level validation details when available.
@@ -2244,11 +2245,11 @@ paths:
           description: Optional structured filters on request status.
       responses:
         '200':
-          description: A bounded page of authorized requests.
+          description: A bounded page of the billing request queue.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RequestListResponse'
+                $ref: '#/components/schemas/AdministrativeRequestListResponse'
                 description: Authorized request page and continuation state.
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -2300,7 +2301,7 @@ paths:
         Requires admin.usage.limit_increase_requests:read and current workspace billing read permission. Authorization precedes resource disclosure. Owner-only agent reads are not supported. Supported token issuance, experimental opt-in, and request-more enablement are required. Missing opt-in or a disabled flag returns 404.
       responses:
         '200':
-          $ref: '#/components/responses/RequestResource'
+          $ref: '#/components/responses/AdministrativeRequestResource'
           description: The authorized request in its current stored state.
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -2359,7 +2360,7 @@ paths:
               scope: PERIOD
       responses:
         '200':
-          $ref: '#/components/responses/RequestResource'
+          $ref: '#/components/responses/AdministrativeRequestResource'
           description: The resolved request in its current stored state.
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -7297,6 +7298,189 @@ components:
             - EQUALS
           default: EQUALS
           description: Only EQUALS is supported; defaults to EQUALS when omitted.
+    RequestListContinuation:
+      type: object
+      description: Continuation availability must agree with the cursor.
+      allOf:
+        - description: A page either continues with a usable cursor or ends without one.
+          oneOf:
+            - description: A further page requires a usable continuation cursor.
+              required:
+                - next_cursor
+              properties:
+                has_more:
+                  type: boolean
+                  description: Further-page discriminator.
+                  enum:
+                    - true
+                next_cursor:
+                  type: string
+                  description: Opaque nonempty cursor for the next authorized page.
+                  minLength: 1
+            - description: The last page has no continuation cursor.
+              properties:
+                has_more:
+                  type: boolean
+                  description: Last-page discriminator.
+                  enum:
+                    - false
+                next_cursor:
+                  type: 'null'
+                  description: If present on the last page, the cursor must be null.
+    RequestEntityType:
+      type: string
+      enum:
+        - USER
+        - AGENT
+      description: Whether the request concerns a user or an agent.
+    RequestPeriod:
+      type: string
+      pattern: ^[0-9]{4}-(0[1-9]|1[0-2])$
+      description: UTC calendar month in YYYY-MM format, assigned by the server at creation.
+    RecordedApprovedAmount:
+      type: string
+      pattern: ^-?([1-9][0-9]*(\.[0-9]+)?|0\.[0-9]*[1-9][0-9]*)$
+      description: |
+        Recorded additive amount in the applicable rule's denomination, encoded as a plain decimal string. Positive for approved increases; negative for an administrator's PERIOD decrease of the current period's approved increases. The backend stores float32 values, not arbitrary-precision decimals.
+    PersonalLimitIncreaseRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - request_id
+        - entity_type
+        - entity_id
+        - client_id
+        - requester_user_id
+        - period
+        - status
+        - created_at
+      description: |
+        A request as its requester or agent editor sees it: the outcome, approved amount, and note, but not who resolved it or how broadly. The Glean app shows those details only to billing readers, through AdministrativeLimitIncreaseRequest.
+      properties:
+        request_id:
+          type: string
+          description: Server-assigned resource identifier, distinct from the response's trace request_id.
+        entity_type:
+          $ref: '#/components/schemas/RequestEntityType'
+          description: Whether the request concerns a user or an agent.
+        entity_id:
+          type: string
+          description: Canonical user ID or agent ID whose limit the request concerns.
+        client_id:
+          type: string
+          description: Spend client for this user or agent request.
+        requester_user_id:
+          type: string
+          description: Authenticated user who created the request.
+        business_justification:
+          type: string
+          description: Stored explanation of why the increase is needed, when supplied.
+        period:
+          $ref: '#/components/schemas/RequestPeriod'
+          description: Stored request month; resolution does not change this month.
+        status:
+          $ref: '#/components/schemas/RequestStatus'
+          description: Current stored request state.
+        approved_increase_amount:
+          $ref: '#/components/schemas/RecordedApprovedAmount'
+          description: Stored additive approval amount; present exactly when status is APPROVED.
+        resolution_note:
+          type: string
+          description: Stored resolution note, when supplied.
+        created_at:
+          type: string
+          format: date-time
+          description: Request creation time.
+        updated_at:
+          type: string
+          format: date-time
+          description: Last stored update time; this is the resolution time for resolved requests.
+      allOf:
+        - description: Status determines whether an approved amount is present.
+          oneOf:
+            - description: An approval always records its amount.
+              required:
+                - approved_increase_amount
+              properties:
+                status:
+                  description: Approved request.
+                  enum:
+                    - APPROVED
+            - description: Pending and denied requests have no approved amount.
+              properties:
+                status:
+                  description: Pending or denied request.
+                  enum:
+                    - PENDING
+                    - DENIED
+              not:
+                required:
+                  - approved_increase_amount
+                description: Detect an approved amount.
+    PersonalRequestListResponse:
+      type: object
+      additionalProperties: false
+      description: Bounded page of the caller's own requests with opaque continuation state.
+      required:
+        - results
+        - has_more
+        - request_id
+      properties:
+        results:
+          type: array
+          description: Requests visible to the caller under the current filters and authorization.
+          items:
+            $ref: '#/components/schemas/PersonalLimitIncreaseRequest'
+            description: One authorized request in the page.
+        has_more:
+          type: boolean
+          description: Whether a further page is available through next_cursor.
+        next_cursor:
+          type:
+            - string
+            - 'null'
+          description: Opaque nonempty continuation when has_more is true; null or omitted otherwise.
+        request_id:
+          type: string
+          description: Trace identifier for this list response, not a request resource ID.
+      allOf:
+        - $ref: '#/components/schemas/RequestListContinuation'
+          description: Continuation availability must agree with the cursor.
+    PersonalRequestCreate:
+      type: object
+      additionalProperties: false
+      required:
+        - client_id
+      description: New request for the authenticated canonical user in the server's current UTC month.
+      properties:
+        client_id:
+          type: string
+          minLength: 1
+          maxLength: 256
+          pattern: ^[^\x00-\x1f\x7f]+$
+          not:
+            enum:
+              - __deleted_clients__
+          description: |
+            Explicit opaque spend-client ID, retained without normalization and not inferred from the authenticating OAuth application. Control characters and the synthetic __deleted_clients__ aggregation ID are not valid spend-client IDs.
+        business_justification:
+          type: string
+          maxLength: 4096
+          description: Optional explanation of why the increase is needed.
+    PersonalRequestResponse:
+      type: object
+      additionalProperties: false
+      description: Single request in the personal view, with the response's trace identifier.
+      required:
+        - request
+        - request_id
+      properties:
+        request:
+          $ref: '#/components/schemas/PersonalLimitIncreaseRequest'
+          description: Authorized request at its current stored state.
+        request_id:
+          type: string
+          description: Trace identifier, distinct from the resource ID.
     RequestResolutionFields:
       type: object
       description: |
@@ -7342,15 +7526,6 @@ components:
                 resolution_target_id:
                   description: The idp_group_id of an IdP group, or an explicit department name.
                   minLength: 1
-    RequestPeriod:
-      type: string
-      pattern: ^[0-9]{4}-(0[1-9]|1[0-2])$
-      description: UTC calendar month in YYYY-MM format, assigned by the server at creation.
-    RecordedApprovedAmount:
-      type: string
-      pattern: ^-?([1-9][0-9]*(\.[0-9]+)?|0\.[0-9]*[1-9][0-9]*)$
-      description: |
-        Recorded additive amount in the applicable rule's denomination, encoded as a plain decimal string. Positive for approved increases; negative for an administrator's PERIOD decrease of the current period's approved increases. The backend stores float32 values, not arbitrary-precision decimals.
     RequestScope:
       type: string
       enum:
@@ -7366,7 +7541,7 @@ components:
         - DEPARTMENT
         - GROUP
       description: Breadth of the approved increase; GROUP identifies an IdP group.
-    LimitIncreaseRequest:
+    AdministrativeLimitIncreaseRequest:
       type: object
       additionalProperties: false
       required:
@@ -7378,16 +7553,14 @@ components:
         - period
         - status
         - created_at
-      description: Stored user or agent request, with optional resolution fields when available.
+      description: |
+        A request as a billing reader sees it: every PersonalLimitIncreaseRequest field, plus who resolved it and the approval's scope and breadth.
       properties:
         request_id:
           type: string
           description: Server-assigned resource identifier, distinct from the response's trace request_id.
         entity_type:
-          type: string
-          enum:
-            - USER
-            - AGENT
+          $ref: '#/components/schemas/RequestEntityType'
           description: Whether the request concerns a user or an agent.
         entity_id:
           type: string
@@ -7409,23 +7582,25 @@ components:
           description: Current stored request state.
         resolved_by_user_id:
           type: string
-          description: User who resolved the request, when available.
+          description: User who resolved the request, when recorded; older records may omit it.
         approved_increase_amount:
           $ref: '#/components/schemas/RecordedApprovedAmount'
-          description: Stored additive approval amount, when available.
+          description: Stored additive approval amount; present exactly when status is APPROVED.
         scope:
           $ref: '#/components/schemas/RequestScope'
-          description: Approval scope derived from the stored ongoing flag, when available.
+          description: |
+            Approval scope derived from the stored ongoing flag; present exactly when status is APPROVED.
         resolution_target:
           $ref: '#/components/schemas/RequestResolutionTarget'
-          description: Stored approval breadth, when available.
+          description: |
+            Stored approval breadth, only on approvals; older PERIOD approvals may omit it.
         resolution_target_id:
           type: string
           description: |
-            Stored department name, or the idp_group_id of the IdP group, when available. The idp_group_id is the same ID that the IdP groups API returns.
+            Stored department name, or the idp_group_id of the IdP group, for GROUP and DEPARTMENT approvals. The idp_group_id is the same ID that the IdP groups API returns.
         resolution_note:
           type: string
-          description: Stored denial note, when supplied.
+          description: Stored resolution note, when supplied.
         created_at:
           type: string
           format: date-time
@@ -7437,10 +7612,42 @@ components:
       allOf:
         - $ref: '#/components/schemas/RequestResolutionFields'
           description: Shared resolution target and identifier pairings.
-    RequestListResponse:
+        - description: Status determines which approval fields are present.
+          oneOf:
+            - description: An approval always records its amount and scope.
+              required:
+                - approved_increase_amount
+                - scope
+              properties:
+                status:
+                  description: Approved request.
+                  enum:
+                    - APPROVED
+            - description: Pending and denied requests have no approval fields.
+              properties:
+                status:
+                  description: Pending or denied request.
+                  enum:
+                    - PENDING
+                    - DENIED
+              not:
+                anyOf:
+                  - required:
+                      - approved_increase_amount
+                    description: Detect an approved amount.
+                  - required:
+                      - scope
+                    description: Detect an approval scope.
+                  - required:
+                      - resolution_target
+                    description: Detect a resolution target.
+                  - required:
+                      - resolution_target_id
+                    description: Detect a resolution target identifier.
+    AdministrativeRequestListResponse:
       type: object
       additionalProperties: false
-      description: Bounded page of authorized requests with opaque continuation state.
+      description: Bounded page of the billing request queue with opaque continuation state.
       required:
         - results
         - has_more
@@ -7450,7 +7657,7 @@ components:
           type: array
           description: Requests visible to the caller under the current filters and authorization.
           items:
-            $ref: '#/components/schemas/LimitIncreaseRequest'
+            $ref: '#/components/schemas/AdministrativeLimitIncreaseRequest'
             description: One authorized request in the page.
         has_more:
           type: boolean
@@ -7464,66 +7671,8 @@ components:
           type: string
           description: Trace identifier for this list response, not a request resource ID.
       allOf:
-        - description: Continuation availability must agree with the cursor.
-          oneOf:
-            - description: A further page requires a usable continuation cursor.
-              required:
-                - next_cursor
-              properties:
-                has_more:
-                  type: boolean
-                  description: Further-page discriminator.
-                  enum:
-                    - true
-                next_cursor:
-                  type: string
-                  description: Opaque nonempty cursor for the next authorized page.
-                  minLength: 1
-            - description: The last page has no continuation cursor.
-              properties:
-                has_more:
-                  type: boolean
-                  description: Last-page discriminator.
-                  enum:
-                    - false
-                next_cursor:
-                  type: 'null'
-                  description: If present on the last page, the cursor must be null.
-    PersonalRequestCreate:
-      type: object
-      additionalProperties: false
-      required:
-        - client_id
-      description: New request for the authenticated canonical user in the server's current UTC month.
-      properties:
-        client_id:
-          type: string
-          minLength: 1
-          maxLength: 256
-          pattern: ^[^\x00-\x1f\x7f]+$
-          not:
-            enum:
-              - __deleted_clients__
-          description: |
-            Explicit opaque spend-client ID, retained without normalization and not inferred from the authenticating OAuth application. Control characters and the synthetic __deleted_clients__ aggregation ID are not valid spend-client IDs.
-        business_justification:
-          type: string
-          maxLength: 4096
-          description: Optional explanation of why the increase is needed.
-    RequestResponse:
-      type: object
-      additionalProperties: false
-      description: Single authorized request with the enclosing response's trace identifier.
-      required:
-        - request
-        - request_id
-      properties:
-        request:
-          $ref: '#/components/schemas/LimitIncreaseRequest'
-          description: Authorized request at its current stored state.
-        request_id:
-          type: string
-          description: Trace identifier, distinct from the resource ID.
+        - $ref: '#/components/schemas/RequestListContinuation'
+          description: Continuation availability must agree with the cursor.
     AgentRequestCreate:
       type: object
       additionalProperties: false
@@ -7551,6 +7700,20 @@ components:
           type: string
           maxLength: 4096
           description: Optional explanation of why the increase is needed.
+    AdministrativeRequestResponse:
+      type: object
+      additionalProperties: false
+      description: Single request in the billing view, with the response's trace identifier.
+      required:
+        - request
+        - request_id
+      properties:
+        request:
+          $ref: '#/components/schemas/AdministrativeLimitIncreaseRequest'
+          description: Authorized request at its current stored state.
+        request_id:
+          type: string
+          description: Trace identifier, distinct from the resource ID.
     ApprovedIncreaseAmount:
       type: string
       pattern: ^([1-9][0-9]*(\.[0-9]+)?|0\.[0-9]*[1-9][0-9]*)$
@@ -7592,7 +7755,7 @@ components:
           type: string
           maxLength: 256
           description: |
-            Not accepted for new approvals. Stored GROUP and DEPARTMENT records retain their identifiers in request responses.
+            Not accepted for new approvals. Stored GROUP and DEPARTMENT records retain their identifiers in administrative request responses.
         resolution_note:
           type: string
           maxLength: 4096
@@ -9168,12 +9331,19 @@ components:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/ProblemDetail'
-    RequestResource:
-      description: The authorized request in its current stored state.
+    PersonalRequestResource:
+      description: The authorized request in its current stored state, in the personal view.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/RequestResponse'
+            $ref: '#/components/schemas/PersonalRequestResponse'
+            description: Current authorized request with a response trace identifier.
+    AdministrativeRequestResource:
+      description: The authorized request in its current stored state, in the billing view.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AdministrativeRequestResponse'
             description: Current authorized request with a response trace identifier.
   parameters:
     PageSize:
