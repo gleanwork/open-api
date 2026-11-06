@@ -243,8 +243,7 @@ describe('writeGeneratedSpecs', () => {
     const output = yaml.load(
       fs.readFileSync(path.join(dirs.outputDir, 'platform.yaml'), 'utf8'),
     );
-    const unreleased = loadUnreleasedOperations()['platform.yaml'];
-    expect(unreleased.length).toBeGreaterThan(0);
+    const unreleased = loadUnreleasedOperations()['platform.yaml'] ?? [];
     expect(
       operationIdsOf(output).filter((id) =>
         unreleased.some((op) => id === op || id?.startsWith(`${op}-`)),
@@ -321,7 +320,6 @@ describe('unreleased Platform operations', () => {
       Object.values(pathItem).map((operation) => operation?.operationId),
     );
 
-    expect(unreleased.length).toBeGreaterThan(0);
     for (const id of unreleased) {
       expect(
         operationIds.some((op) => op === id || op?.startsWith(`${id}-`)),
@@ -329,14 +327,14 @@ describe('unreleased Platform operations', () => {
     }
   });
 
-  test('take the Documents tag group entry and schemas with them', () => {
+  test('publish the released Documents operations and schemas', () => {
     const spec = yaml.load(transformSourceSpec(sourceSpec, 'platform.yaml'));
     const groupedTags = spec[PLATFORM_TAG_GROUPS_KEY].flatMap(
       (group) => group.tags,
     );
 
-    expect(groupedTags).not.toContain('Documents');
-    expect(Object.keys(spec.components.schemas)).not.toContain(
+    expect(groupedTags).toContain('Documents');
+    expect(Object.keys(spec.components.schemas)).toContain(
       'PlatformDocumentsBatchRequest',
     );
   });
