@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean API
-  x-source-commit-sha: a867a686a6645ed82261417da199dab121c93738
+  x-source-commit-sha: 97fbe10915397b754d4188eca1d52eac13041ca7
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -22,7 +22,7 @@ info:
     These API clients provide type-safe, idiomatic interfaces for working with Glean IndexingAPIs in your language of choice.
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: fe88ab139b3676484d0c44cc0b1c5043e8340915
+  x-open-api-commit-sha: 616457cfa89ca50ad2d22c872f818cdf9b69849d
   x-speakeasy-name: Glean API
 servers:
   - url: https://{instance}-be.glean.com
@@ -79,8 +79,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.documents.add_or_update(document=models.DocumentDefinition(
@@ -179,8 +178,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.documents.index(datasource="<value>", documents=[])
@@ -273,8 +271,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.documents.bulk_index(upload_id="<id>", datasource="<value>", documents=[])
@@ -371,8 +368,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.permissions.update_permissions(datasource="<value>", permissions={})
@@ -476,8 +472,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.documents.process_all()
@@ -559,8 +554,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.documents.delete(datasource="<value>", object_type="<value>", id="<id>")
@@ -654,8 +648,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.permissions.index_user(datasource="<value>", user={
@@ -759,8 +752,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.permissions.bulk_index_users(upload_id="<id>", datasource="<value>", users=[
@@ -886,8 +878,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.permissions.index_group(datasource="<value>", group={
@@ -988,8 +979,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.permissions.bulk_index_groups(upload_id="<id>", datasource="<value>", groups=[
@@ -1102,8 +1092,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.permissions.index_membership(datasource="<value>", membership={
@@ -1202,8 +1191,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.permissions.bulk_index_memberships(upload_id="<id>", datasource="<value>", memberships=[
@@ -1309,8 +1297,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.permissions.process_memberships()
@@ -1394,8 +1381,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.permissions.delete_user(datasource="<value>", email="Ed.Johnston@gmail.com")
@@ -1489,8 +1475,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.permissions.delete_group(datasource="<value>", group_name="<value>")
@@ -1582,8 +1567,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.permissions.delete_membership(datasource="<value>", membership={
@@ -1689,8 +1673,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 res = glean.indexing.datasource.status(datasource="<value>")
@@ -1790,8 +1773,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 res = glean.indexing.documents.debug(datasource="<value>", object_type="Article", doc_id="art123")
@@ -1899,8 +1881,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 res = glean.indexing.documents.debug_many(datasource="<value>", debug_documents=[])
@@ -2017,8 +1998,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 res = glean.indexing.people.debug(datasource="<value>", email="u1@foo.com")
@@ -2117,8 +2097,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 res = glean.indexing.documents.check_access(datasource="<value>", object_type="<value>", doc_id="<id>", user_email="<value>")
@@ -2331,8 +2310,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.permissions.authorize_beta_users(datasource="<value>", emails=[
@@ -2434,8 +2412,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.datasources.add(name="<value>", datasource_category=models.DatasourceCategory.UNCATEGORIZED, url_regex="https://example-company.datasource.com/.*", quicklinks=[
@@ -2560,8 +2537,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 res = glean.indexing.datasources.retrieve_config(datasource="<value>")
@@ -2649,8 +2625,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 res = glean.indexing.authentication.rotate_token()
@@ -2735,8 +2710,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.people.index(employee={
@@ -2846,9 +2820,9 @@ paths:
         id: ce596f49-55c4-465e-bf3c-5a3a33906e1f
         introduced: "2026-02-03"
         message: Endpoint is deprecated
-        removal: "2027-01-15"
+        removal: "2027-04-15"
       deprecated: true
-      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2027-01-15: Endpoint is deprecated"
+      x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2027-04-15: Endpoint is deprecated"
       x-speakeasy-name-override: bulkIndex
       x-speakeasy-group: indexing.people
   /api/index/v1/indexemployeelist: {}
@@ -2879,8 +2853,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.people.process_all_employees_and_teams()
@@ -2962,8 +2935,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.people.delete(employee_email="<value>")
@@ -3053,8 +3025,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.people.index_team(team={
@@ -3201,8 +3172,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.people.delete_team(id="<id>")
@@ -3292,8 +3262,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.people.bulk_index_teams(upload_id="<id>", teams=[
@@ -3490,8 +3459,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.shortcuts.bulk_index(upload_id="<id>", shortcuts=[
@@ -3617,8 +3585,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 glean.indexing.shortcuts.upload(upload_id="<id>", shortcuts=[
@@ -3763,8 +3730,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 res = glean.indexing.documents.debug_events(datasource="<value>", object_type="Article", doc_id="art123", start_date="2025-05-01", max_events=50)
@@ -3899,8 +3865,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 res = glean.indexing.datasources.submit(datasource_instance="<value>", type_="<value>", request_body={
@@ -4024,8 +3989,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 res = glean.indexing.custom_metadata.upsert(doc_id="<id>", group_name="<value>", custom_metadata=[])
@@ -4116,8 +4080,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 res = glean.indexing.custom_metadata.delete(doc_id="<id>", group_name="<value>")
@@ -4217,8 +4180,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 res = glean.indexing.custom_metadata.get_schema(group_name="<value>")
@@ -4312,8 +4274,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 res = glean.indexing.custom_metadata.upsert_schema(group_name="<value>", metadata_keys=[])
@@ -4403,8 +4364,7 @@ paths:
 
 
             with Glean(
-                api_token=os.getenv("GLEAN_API_TOKEN", ""),
-                server_url="https://mycompany-be.glean.com",
+                api_token=os.getenv("GLEAN_API_TOKEN"),
             ) as glean:
 
                 res = glean.indexing.custom_metadata.delete_schema(group_name="<value>")
@@ -6068,6 +6028,7 @@ components:
             - AGENTS
             - AI_CONVERSATION
             - AI_ARTIFACT
+            - UGC_SKILL
           description: The document category of this object type.
         propertyDefinitions:
           type: array
