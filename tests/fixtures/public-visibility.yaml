@@ -1,0 +1,48 @@
+openapi: 3.0.0
+info:
+  title: Visibility fixture
+  version: 7.8.9
+paths:
+  /api/index/v1/documents/{id}:
+    servers:
+      - url: https://{instance}-be.glean.com
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      operationId: legacyIndexing
+      x-speakeasy-group: indexing.documents
+      responses:
+        '200':
+          description: OK
+    put:
+      operationId: internalIndexing
+      x-speakeasy-group: indexing.documents
+      x-visibility: Internal
+      responses:
+        '200':
+          description: OK
+    get:
+      operationId: publicClient
+      x-speakeasy-group: client.documents
+      x-visibility: Public
+      responses:
+        '200':
+          description: OK
+    delete:
+      operationId: unannotatedClient
+      x-speakeasy-group: client.documents
+      responses:
+        '204':
+          description: Deleted
+  /rest/api/v1/internal-only:
+    post:
+      operationId: internalClient
+      x-speakeasy-group: client.internal
+      x-visibility: Internal
+      responses:
+        '200':
+          description: OK
