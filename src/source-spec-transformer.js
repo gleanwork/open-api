@@ -1,5 +1,10 @@
 import * as fs from 'fs';
 import yaml from 'js-yaml';
+import {
+  getDeprecation,
+  getEnumValueDeprecations,
+  hasDeprecationAnnotation,
+} from './release.js';
 
 /**
  * Repairs `example` values that contradict the schema they are attached to.
@@ -1361,11 +1366,14 @@ export function transformEnumDescriptions(spec) {
 }
 
 /**
- * Transforms x-glean-deprecated annotations to Speakeasy-compatible deprecation format.
+ * Transforms deprecations to Speakeasy-compatible deprecation format.
+ *
+ * Reads `x-glean-release` with `stage: deprecated`, and falls back to
+ * `x-glean-deprecated` on nodes without `x-glean-release` (see release.js).
  *
  * For property-level deprecations: sets `deprecated: true` and `x-speakeasy-deprecation-message`.
  * For enum-value deprecations: merges per-value `@deprecated` text into `x-speakeasy-enum-descriptions`.
- * Preserves the original `x-glean-deprecated` annotation in all cases.
+ * Preserves the original annotations in all cases.
  *
  * More information about the deprecation format can be found at: https://www.speakeasy.com/docs/sdks/customize/deprecations
  *
@@ -1374,7 +1382,7 @@ export function transformEnumDescriptions(spec) {
  */
 export function transformGleanDeprecated(spec) {
   /**
-   * Builds a human-readable deprecation message from a single x-glean-deprecated entry.
+   * Builds a human-readable deprecation message from a single deprecation entry.
    * Handles missing fields gracefully to avoid "Deprecated on undefined" in SDK output.
    *
    * @param {Object|null} src A single deprecation object with optional introduced, removal, message
@@ -1462,26 +1470,18 @@ export function transformGleanDeprecated(spec) {
   };
 
   /**
-   * Processes kind: enum-value entries from an array-form x-glean-deprecated and merges
-   * their deprecation text into x-speakeasy-enum-descriptions. This is how Speakeasy
-   * surfaces per-value deprecation info in generated SDK code.
+   * Merges the deprecation text of each deprecated enum value into
+   * x-speakeasy-enum-descriptions. This is how Speakeasy surfaces per-value
+   * deprecation info in generated SDK code.
    *
    * @param {Object} obj The schema node (must have an enum array)
-   * @param {Array} deprecation The array-form x-glean-deprecated value
    */
-  const addEnumValueDeprecationsToDescriptions = (obj, deprecation) => {
-    if (!Array.isArray(deprecation) || !Array.isArray(obj.enum)) {
+  const addEnumValueDeprecationsToDescriptions = (obj) => {
+    if (!Array.isArray(obj.enum)) {
       return;
     }
 
-    const enumValueDeprecations = deprecation.filter(
-      (item) =>
-        item &&
-        typeof item === 'object' &&
-        !Array.isArray(item) &&
-        item.kind === 'enum-value' &&
-        typeof item['enum-value'] === 'string',
-    );
+    const enumValueDeprecations = getEnumValueDeprecations(obj);
 
     if (enumValueDeprecations.length === 0) {
       return;
@@ -1497,16 +1497,15 @@ export function transformGleanDeprecated(spec) {
       enumValues,
     );
 
-    for (const item of enumValueDeprecations) {
-      const value = item['enum-value'];
+    for (const { enumValue: value, deprecation } of enumValueDeprecations) {
       if (!enumValues.includes(value)) {
         continue;
       }
-      const text = buildMessageFrom(item);
+      const text = buildMessageFrom(deprecation);
       if (!text) {
         continue;
       }
-      const deprecationText = `@deprecated ${text}${item.docs ? ` See ${item.docs}` : ''}`;
+      const deprecationText = `@deprecated ${text}${deprecation.docs ? ` See ${deprecation.docs}` : ''}`;
       descriptions[value] = mergeEnumDescription(
         descriptions[value],
         deprecationText,
@@ -1518,50 +1517,6 @@ export function transformGleanDeprecated(spec) {
     }
   };
 
-  /**
-   * Determines whether a property-level deprecation should be set, and returns the
-   * source object to build the message from (or null to skip).
-   *
-   * x-glean-deprecated has two forms (see DEPRECATIONS.md in glean-developer-site):
-   *   - Object form: simple property/endpoint deprecation (no kind field)
-   *   - Array form: used on enum fields, entries have kind: property | enum-value
-   *
-   * Returns null (skip property deprecation) when:
-   *   - Single object is an enum-value-only deprecation
-   *   - Array form on a non-enum field (array form is only valid on enums per spec)
-   *   - Array has no kind: property entry (only enum values are deprecated, not the property)
-   *
-   * @param {Object|Array} deprecation Raw x-glean-deprecated value
-   * @param {boolean} hasEnum Whether the schema node has an enum array
-   * @returns {Object|null} Source object for buildMessageFrom, or null to skip
-   */
-  const selectDeprecationSource = (deprecation, hasEnum) => {
-    if (!deprecation || typeof deprecation !== 'object') {
-      return null;
-    }
-
-    if (!Array.isArray(deprecation)) {
-      if (deprecation.kind === 'enum-value' || 'enum-value' in deprecation) {
-        return null;
-      }
-      return deprecation;
-    }
-
-    if (!hasEnum) {
-      return null;
-    }
-
-    return (
-      deprecation.find(
-        (item) =>
-          item &&
-          typeof item === 'object' &&
-          !Array.isArray(item) &&
-          item.kind === 'property',
-      ) || null
-    );
-  };
-
   const processObject = (obj) => {
     if (!obj || typeof obj !== 'object') return;
 
@@ -1570,15 +1525,10 @@ export function transformGleanDeprecated(spec) {
       return;
     }
 
-    if (obj['x-glean-deprecated']) {
-      const raw = obj['x-glean-deprecated'];
+    if (hasDeprecationAnnotation(obj)) {
+      addEnumValueDeprecationsToDescriptions(obj);
 
-      if (Array.isArray(raw) && Array.isArray(obj.enum)) {
-        addEnumValueDeprecationsToDescriptions(obj, raw);
-      }
-
-      const source = selectDeprecationSource(raw, Array.isArray(obj.enum));
-      const message = buildMessageFrom(source);
+      const message = buildMessageFrom(getDeprecation(obj));
 
       if (message) {
         obj.deprecated = true;
@@ -1724,7 +1674,7 @@ export function transform(
   // Apply x-enumDescriptions -> x-speakeasy-enum-descriptions transformation for all files
   transformEnumDescriptions(spec);
 
-  // Apply x-glean-deprecated -> Speakeasy deprecation format transformation for all files
+  // Apply x-glean-release / x-glean-deprecated -> Speakeasy deprecation format transformation for all files
   transformGleanDeprecated(spec);
 
   // Apply admin duplicate operationId fix
