@@ -17,6 +17,7 @@ sources:
             - location: overlays/agent-modifications-overlay.yaml
             - location: overlays/admin-modifications-overlay.yaml
             - location: overlays/oauth-client-security-overlay.yaml
+            - location: overlays/public-visibility-overlay.yaml
         output: overlayed_specs/glean-merged-spec.yaml
         registry:
             location: registry.speakeasyapi.dev/glean-el2/sdk/glean-api-specs
@@ -32,6 +33,7 @@ sources:
             - location: overlays/agent-modifications-overlay.yaml
             - location: overlays/admin-modifications-overlay.yaml
             - location: overlays/oauth-client-security-overlay.yaml
+            - location: overlays/public-visibility-overlay.yaml
         output: overlayed_specs/glean-client-api-specs.yaml
         registry:
             location: registry.speakeasyapi.dev/glean-el2/sdk/glean-client-api-specs
@@ -65,12 +67,14 @@ sources:
             - location: overlays/strip-headers-overlay.yaml
             - location: overlays/indexing-modifications-overlay.yaml
             - location: overlays/custom-metadata-modifications-overlay.yaml
+            - location: overlays/public-visibility-overlay.yaml
         output: overlayed_specs/glean-indexing-api-specs.yaml
     glean-platform-api-specs:
         inputs:
             - location: generated_specs/platform.yaml
         overlays:
             - location: overlays/strip-headers-overlay.yaml
+            - location: overlays/public-visibility-overlay.yaml
         output: overlayed_specs/glean-platform-api-specs.yaml
     glean-platform-merged-code-samples-spec:
         inputs:
