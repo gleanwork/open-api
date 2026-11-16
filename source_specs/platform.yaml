@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: df53a18aa488306aeae3cf7dba3f7a8ca757c612
+  x-source-commit-sha: 74225def94ec0e1d0281e9ed827c93f85ccb2152
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -9150,6 +9150,8 @@ components:
         - CONVERTED_TO_DRAFT
         - WEBHOOK_UPDATED
         - WEBHOOK_CREATED
+        - CLOSED
+        - COMMENT_ADDED
       x-enumDescriptions:
         CREATED: The document was created.
         UPDATED: The document was updated.
@@ -9165,6 +9167,8 @@ components:
         CONVERTED_TO_DRAFT: The item was converted back to a draft.
         WEBHOOK_UPDATED: The source system sent a webhook update.
         WEBHOOK_CREATED: The source system sent a webhook creation event.
+        CLOSED: The item was closed.
+        COMMENT_ADDED: A comment was added to the item.
     TriggerEvent:
       type: object
       required:
