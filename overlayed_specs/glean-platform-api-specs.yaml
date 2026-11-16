@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: ebeed5e1e8101b1f0f797dea4d3f32cabe2b60c8
-  x-open-api-commit-sha: 12d8608aaabf41194a92c38bc27d84e9e76a2f23
+  x-source-commit-sha: 74225def94ec0e1d0281e9ed827c93f85ccb2152
+  x-open-api-commit-sha: d781217a7cfce20ac740646c1b7242f059d850cb
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -9260,6 +9260,8 @@ components:
         - CONVERTED_TO_DRAFT
         - WEBHOOK_UPDATED
         - WEBHOOK_CREATED
+        - CLOSED
+        - COMMENT_ADDED
       x-enumDescriptions:
         CREATED: The document was created.
         UPDATED: The document was updated.
@@ -9275,6 +9277,8 @@ components:
         CONVERTED_TO_DRAFT: The item was converted back to a draft.
         WEBHOOK_UPDATED: The source system sent a webhook update.
         WEBHOOK_CREATED: The source system sent a webhook creation event.
+        CLOSED: The item was closed.
+        COMMENT_ADDED: A comment was added to the item.
       x-speakeasy-enum-descriptions:
         CREATED: The document was created.
         UPDATED: The document was updated.
@@ -9290,6 +9294,8 @@ components:
         CONVERTED_TO_DRAFT: The item was converted back to a draft.
         WEBHOOK_UPDATED: The source system sent a webhook update.
         WEBHOOK_CREATED: The source system sent a webhook creation event.
+        CLOSED: The item was closed.
+        COMMENT_ADDED: A comment was added to the item.
     PlatformTriggerEvent:
       type: object
       required:
