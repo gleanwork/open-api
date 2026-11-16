@@ -1,5 +1,6 @@
 import yaml from 'js-yaml';
 import { PLATFORM_TAG_GROUPS_KEY } from './source-spec-transformer.js';
+import { requiresOptIn } from './release.js';
 
 /**
  * Generator that yields language and code sample pairs from pathSpec
@@ -19,23 +20,20 @@ export function* codeSnippets(pathSpec) {
 
 /**
  * Generator that yields language and code sample pairs from pathSpec, but only
- * for operations that are marked as experimental via `x-glean-experimental`.
+ * for operations that need the SDK's opt-in flag: `x-glean-release` with
+ * `stage: beta`, or the older `x-glean-experimental` (see release.js).
  *
- * Experimental endpoints are gated behind an opt-in flag in the SDKs (surfaced
- * as the `X-Glean-Include-Experimental` request header). Without it, the SDK
- * will refuse to call the endpoint, so the generated samples for these
- * operations need the flag to actually run.
+ * These endpoints are gated behind an opt-in flag in the SDKs (surfaced as the
+ * `X-Glean-Include-Experimental` request header). Without it, the SDK will
+ * refuse to call the endpoint, so the generated samples for these operations
+ * need the flag to actually run.
  *
  * @param {Object} pathSpec The OpenAPI spec object for the specific path being processed
  * @yields {[string, Object]} A tuple containing the language and code sample object
  */
 export function* experimentalCodeSnippets(pathSpec) {
   for (const [_, methodSpec] of Object.entries(pathSpec)) {
-    if (
-      methodSpec &&
-      methodSpec['x-glean-experimental'] &&
-      methodSpec['x-codeSamples']
-    ) {
+    if (requiresOptIn(methodSpec) && methodSpec['x-codeSamples']) {
       const codeSamples = methodSpec['x-codeSamples'];
       for (const sample of codeSamples) {
         yield [sample.lang, sample];
@@ -168,9 +166,9 @@ export function addServerURLToCodeSamples(spec) {
 }
 
 /**
- * Transforms code samples for experimental endpoints (those marked with
- * `x-glean-experimental`) so they include the SDK option needed to opt into
- * experimental features. Without this option the SDKs will not call the
+ * Transforms code samples for beta endpoints (`x-glean-release` with
+ * `stage: beta`, or the older `x-glean-experimental`) so they include the SDK
+ * option needed to opt into experimental features. Without this option the SDKs will not call the
  * endpoint, so the samples would not actually run as-is.
  *
  * This must run *after* {@link addServerURLToCodeSamples} so that the
