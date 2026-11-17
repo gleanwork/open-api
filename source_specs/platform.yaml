@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 638ae9b29582c8a33240943e466c320cf47090ba
+  x-source-commit-sha: 2f6fc4fe9fed01ad76ee9aa694041c743bd74875
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -6991,6 +6991,38 @@ components:
         source:
           $ref: '#/components/schemas/UsagePolicySourceTarget'
           description: Configured policy supplying this restriction.
+    UsageUsedValue:
+      type: object
+      additionalProperties: false
+      description: Accrued usage in one unit, without combining or converting units.
+      required:
+        - used
+        - unit
+      properties:
+        used:
+          type: string
+          minLength: 1
+          maxLength: 24
+          pattern: ^(0|[1-9][0-9]*)(\.[0-9]{1,6})?$
+          description: Nonnegative decimal usage with at most six fractional digits.
+        unit:
+          $ref: '#/components/schemas/UsageUnit'
+          description: Unit of accrued usage.
+    UsageAggregateUsage:
+      type: object
+      additionalProperties: false
+      description: |
+        Existing clientless AGENT counter usage in the current UTC calendar month, independent of agent/default policies and the selected spend client. This records aggregate attribution, not certified run lineage or exact app usage. Counter failures omit aggregate_usage, never fabricate zero amounts.
+      required:
+        - used_by_unit
+      properties:
+        used_by_unit:
+          type: array
+          minItems: 2
+          maxItems: 2
+          description: Existing aggregate counters in USD then CREDITS, including zero amounts.
+          items:
+            $ref: '#/components/schemas/UsageUsedValue'
     UsageLimitDecision:
       type: string
       description: Configured-budget status for the target, independent of runtime admission switches.
@@ -7123,6 +7155,7 @@ components:
         - period
         - value
         - used
+        - used_unit
         - decision
         - active_actions
       properties:
@@ -7149,7 +7182,13 @@ components:
           description: Configured cap before approved one-period grants; value.amount is not remaining headroom.
         used:
           type: string
-          description: Decimal amount of accrued usage for this limit.
+          description: Decimal amount of accrued usage for this limit in used_unit.
+        used_unit:
+          $ref: '#/components/schemas/UsageUnit'
+          x-glean-experimental:
+            id: 5c21ff70-7182-49f9-89c7-9c8f4929695f
+            introduced: '2026-11-16'
+          description: Resolved counter denomination, including when value.mode is UNLIMITED.
         current_period_amount:
           type: string
           minLength: 1
@@ -7210,7 +7249,7 @@ components:
       type: object
       additionalProperties: false
       description: |
-        Configured-budget evaluation for a concrete target and period, not runtime admission, model eligibility, or agent-run preflight. AVAILABLE can mean that no configured policy applies; inspect applicable_policy_count and the normalized target and exact period echo. Configured caps are evaluated_limits[].value.amount, accrued usage is evaluated_limits[].used, the cap enforced this period is evaluated_limits[].current_period_amount, per-rule headroom is evaluated_limits[].remaining, and tightest headroom is effective_limits[].remaining. Approved one-period grants raise the current-period amount and headroom without changing the configured cap. Units are never combined or converted. Non-admin evaluation omits shared budgets from applicable_policy_count, evaluated_limits, and effective_limits; decision can be BLOCKED by a shared budget even when the target's own limits show remaining headroom. decision_causes explains every non-AVAILABLE decision, including one caused by a budget that is not listed.
+        Configured-budget evaluation for a concrete target and period, not runtime admission, model eligibility, or agent-run preflight. AVAILABLE can mean that no configured policy applies; inspect applicable_policy_count and the normalized target and exact period echo. Optional used_by_unit reports exact subject and app usage for USER and ORGANIZATION, independent of policies; AGENT omits it and instead returns clientless aggregate_usage independent of configured policies. Both are omitted, as unknown, when their counters are unavailable; a counter failure returns 503 only when an applicable policy needs a counter. Non-admin evaluation omits shared budgets regardless of the caller's permissions. Hidden shared budgets can block the decision but never contribute counts or soft warnings. Configured caps are evaluated_limits[].value.amount, policy counter usage is evaluated_limits[].used, the cap enforced this period is evaluated_limits[].current_period_amount, per-rule headroom is evaluated_limits[].remaining, and tightest headroom is effective_limits[].remaining. Approved one-period grants raise the current-period amount and headroom without changing the configured cap. Units are never combined or converted. Non-admin evaluation omits shared budgets from applicable_policy_count, evaluated_limits, and effective_limits; decision can be BLOCKED by a shared budget even when the target's own limits show remaining headroom. decision_causes explains every non-AVAILABLE decision, including one caused by a budget that is not listed.
       example:
         target:
           type: USER
@@ -7219,6 +7258,11 @@ components:
         period:
           type: RECURRING_CALENDAR_MONTH
         applicable_policy_count: 1
+        used_by_unit:
+          - used: '20'
+            unit: USD
+          - used: '0'
+            unit: CREDITS
         decision: BLOCKED
         decision_causes:
           - decision: BLOCKED
@@ -7241,6 +7285,7 @@ components:
               unit: USD
               enforcement: HARD
             used: '20'
+            used_unit: USD
             current_period_amount: '80'
             remaining: '60'
             decision: AVAILABLE
@@ -7300,6 +7345,25 @@ components:
           minimum: 0
           description: |
             Number of applicable configured policies returned in evaluated_limits, including UNLIMITED policies. Zero explicitly means no returned policy matched, not an unlimited configured rule. Non-admin evaluation excludes shared budgets. Included even when zero.
+        aggregate_usage:
+          $ref: '#/components/schemas/UsageAggregateUsage'
+          x-glean-experimental:
+            id: 3a6dcfc9-9429-45da-ba71-945c43c1dfd7
+            introduced: '2026-11-16'
+          description: |
+            Present only for AGENT, including without configured policies. Existing clientless AGENT counters, never relabeled as selected-client usage. Omitted, as unknown, when the counters are unavailable.
+        used_by_unit:
+          type: array
+          x-go-type-skip-optional-pointer: true
+          x-glean-experimental:
+            id: 9d805f36-84ee-43de-a21a-a41426dce590
+            introduced: '2026-11-16'
+          minItems: 2
+          maxItems: 2
+          items:
+            $ref: '#/components/schemas/UsageUsedValue'
+          description: |
+            Live accrued usage for exactly the normalized USER or ORGANIZATION and selected app in the current UTC calendar month. When present, contains USD then CREDITS, including zero amounts and when no policy applies. AGENT omits this field until exact per-app counters are ready; existing agent policy evaluation, usage, headroom and decisions remain available. Also omitted when the counters are unavailable. Absence is unknown, not zero or relabeled aggregate usage. This field is not a sum of policy counters or workspace constraints.
         decision:
           $ref: '#/components/schemas/UsageLimitDecision'
           description: |
@@ -7317,7 +7381,7 @@ components:
           items:
             $ref: '#/components/schemas/UsageHeadroomValue'
           description: |
-            Tightest remaining budget per finite unit, ordered USD then CREDITS. remaining is headroom after accrued usage and approved one-period grants, not a configured cap. Units are never combined or converted. When no finite policy applies, contains a single UNLIMITED entry without remaining, unit, or enforcement, including when applicable_policy_count is zero. Covers only returned evaluated_limits, so non-admin headroom excludes shared budgets. This configured-budget result is not a runtime admission guarantee.
+            Tightest visible remaining budget per finite unit, ordered USD then CREDITS. remaining is headroom after accrued usage and approved one-period grants, not a configured cap. Units are never combined or converted. When no visible finite policy applies, contains a single UNLIMITED entry without remaining, unit, or enforcement, including when applicable_policy_count is zero. Covers only returned evaluated_limits, so non-admin headroom excludes shared budgets and is not evidence that they are unlimited or available. This configured-budget result is not a runtime admission guarantee.
         evaluated_limits:
           type: array
           items:
