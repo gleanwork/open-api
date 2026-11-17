@@ -9,3 +9,7 @@
 # so a typo or a rename cannot publish an operation by accident.
 #
 # Remove an entry when the operation is released in every deployment.
+
+platform.yaml:
+  - operationId: platform-search-enumeration
+    reason: 'Handler (askscio/scio#324439) is in no release branch; gated off by platform.searchEnumerationEnabled. Remove when it ships.'
