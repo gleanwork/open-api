@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 2f6fc4fe9fed01ad76ee9aa694041c743bd74875
+  x-source-commit-sha: 29216f521aff65d5a90dd20f588055ceedaf1a19
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -31,7 +31,7 @@ info:
     Determine the host you need to connect to. This will be the URL of the backend for your Glean deployment, for example, customer-be.glean.com
   x-logo:
     url: https://app.glean.com/images/glean-text2.svg
-  x-open-api-commit-sha: 241062eca12866ea62b6e58d504ef481935fcf48
+  x-open-api-commit-sha: 9a6f5f0858e32b396f97aa70f948017a1a9f45ab
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -8572,7 +8572,8 @@ components:
               description: Unix timestamp of the last update for the insights data in the response.
             totalSignupsWeekAgo:
               type: integer
-              description: Number of current employees in the specified departments who had signed up 7 days before the latest day of insights data. Compare with totalSignups for week-over-week signup change.
+              x-includeEmpty: true
+              description: Number of current employees in the specified departments who had signed up 7 days before the latest day of insights data. Compare with totalSignups for week-over-week signup change. Included even when zero.
             searchSessionSatisfaction:
               type: number
               format: float
