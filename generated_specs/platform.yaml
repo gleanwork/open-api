@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: e96b294619fb14990060d9e65d6c74d3adae48d8
-  x-open-api-commit-sha: 6ad0f402a3c1e00386cf86a3f158ae6ead319184
+  x-source-commit-sha: 92084e408d64f4792098b2dcd1013e0af7abe611
+  x-open-api-commit-sha: fee2a7ed1565ad90159fb31b1a05283058c83f3f
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -7233,14 +7233,67 @@ components:
         used:
           type: string
           description: Decimal amount of accrued usage for this limit.
+        current_period_amount:
+          type: string
+          minLength: 1
+          maxLength: 24
+          pattern: ^(0|[1-9][0-9]*)(\.[0-9]{1,6})?$
+          x-glean-experimental:
+            id: 3ad9a7ba-123c-4ee5-b6c9-b4dc59ec7ebc
+            introduced: "2026-11-16"
+          description: |
+            The cap this rule enforces in the current period: configured cap plus approved current-period grants. Present for FINITE rules and omitted for UNLIMITED rules. Show usage as used against current_period_amount; used can exceed it once a rule is over its limit.
+        remaining:
+          type: string
+          minLength: 1
+          maxLength: 24
+          pattern: ^(0|[1-9][0-9]*)(\.[0-9]{1,6})?$
+          x-glean-experimental:
+            id: 003db27d-ea53-4ec4-a147-8012a1b0cb7c
+            introduced: "2026-11-16"
+          description: |
+            This rule's nonnegative headroom: current_period_amount minus used, floored at zero. Present for FINITE rules and omitted for UNLIMITED rules. Over the limit, used + remaining exceeds current_period_amount. This is independent of the tightest effective_limits[].remaining and is not runtime admission.
         decision:
           $ref: "#/components/schemas/PlatformUsageLimitDecision"
           description: Decision for this limit.
+      allOf:
+        - oneOf:
+            - required:
+                - current_period_amount
+                - remaining
+              properties:
+                value:
+                  description: Finite configured cap.
+                  properties:
+                    mode:
+                      description: Whether the limit has a finite cap or is unlimited.
+                      enum:
+                        - FINITE
+            - properties:
+                value:
+                  description: Unlimited configured cap.
+                  properties:
+                    mode:
+                      description: Whether the limit has a finite cap or is unlimited.
+                      enum:
+                        - UNLIMITED
+              not:
+                anyOf:
+                  - required:
+                      - current_period_amount
+                    properties:
+                      current_period_amount:
+                        description: Forbidden for unlimited rules.
+                  - required:
+                      - remaining
+                    properties:
+                      remaining:
+                        description: Forbidden for unlimited rules.
     PlatformEvaluateUsageLimitResponse:
       type: object
       additionalProperties: false
       description: |
-        Configured-budget evaluation for a concrete target and period, not runtime admission, model eligibility, or agent-run preflight. AVAILABLE can mean that no configured policy applies; inspect applicable_policy_count and the normalized target and exact period echo. Configured caps are evaluated_limits[].value.amount, accrued usage is evaluated_limits[].used, and remaining budget is effective_limits[].remaining. Approved one-period grants raise headroom without changing the configured cap. Units are never combined or converted. Non-admin evaluation omits shared budgets from applicable_policy_count, evaluated_limits, and effective_limits; decision can be BLOCKED by a shared budget even when the target's own limits show remaining headroom. decision_causes explains every non-AVAILABLE decision, including one caused by a budget that is not listed.
+        Configured-budget evaluation for a concrete target and period, not runtime admission, model eligibility, or agent-run preflight. AVAILABLE can mean that no configured policy applies; inspect applicable_policy_count and the normalized target and exact period echo. Configured caps are evaluated_limits[].value.amount, accrued usage is evaluated_limits[].used, the cap enforced this period is evaluated_limits[].current_period_amount, per-rule headroom is evaluated_limits[].remaining, and tightest headroom is effective_limits[].remaining. Approved one-period grants raise the current-period amount and headroom without changing the configured cap. Units are never combined or converted. Non-admin evaluation omits shared budgets from applicable_policy_count, evaluated_limits, and effective_limits; decision can be BLOCKED by a shared budget even when the target's own limits show remaining headroom. decision_causes explains every non-AVAILABLE decision, including one caused by a budget that is not listed.
       example:
         target:
           type: USER
@@ -7271,6 +7324,8 @@ components:
               unit: USD
               enforcement: HARD
             used: "20"
+            current_period_amount: "80"
+            remaining: "60"
             decision: AVAILABLE
             active_actions:
               - type: RESTRICT_MODELS
