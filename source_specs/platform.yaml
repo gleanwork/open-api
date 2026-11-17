@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: a7ed653f0bd8a75349d2b73157e098a7d7daf21e
+  x-source-commit-sha: 638ae9b29582c8a33240943e466c320cf47090ba
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -7511,6 +7511,11 @@ components:
                 next_cursor:
                   type: 'null'
                   description: If present on the last page, the cursor must be null.
+    DesiredLimitAmount:
+      type: string
+      pattern: ^([1-9][0-9]*(\.[0-9]+)?|0\.[0-9]*[1-9][0-9]*)$
+      description: |
+        Desired new total monthly limit in the applicable limit's denomination, encoded as a positive plain decimal string, not an additive increase. Required on creation when the workspace requires an amount and business justification; otherwise optional. The backend stores float32 values, not arbitrary-precision decimals. This is a request, not an approval.
     RequestEntityType:
       type: string
       enum:
@@ -7541,6 +7546,9 @@ components:
       description: |
         A request as its requester or agent editor sees it: the outcome, approved amount, and note, but not who resolved it or how broadly. The Glean app shows those details only to billing readers, through AdministrativeLimitIncreaseRequest.
       properties:
+        desired_limit_amount:
+          $ref: '#/components/schemas/DesiredLimitAmount'
+          description: Stored desired total monthly limit, when supplied; older requests may omit it.
         request_id:
           type: string
           description: Server-assigned resource identifier, distinct from the response's trace request_id.
@@ -7651,7 +7659,11 @@ components:
           type: string
           maxLength: 4096
           description: |
-            Explanation of why the increase is needed. Required, and nonblank, when the workspace's request-more configuration requires a business justification.
+            Explanation of why the increase is needed. Required, and nonblank, when the workspace's request-more configuration requires an amount and business justification.
+        desired_limit_amount:
+          $ref: '#/components/schemas/DesiredLimitAmount'
+          description: |
+            Desired total limit for the current UTC month. Required when the workspace requires an amount and justification.
     PersonalRequestResponse:
       type: object
       additionalProperties: false
@@ -7741,6 +7753,9 @@ components:
       description: |
         A request as a billing reader sees it: every PersonalLimitIncreaseRequest field, plus who resolved it and the approval's scope and breadth.
       properties:
+        desired_limit_amount:
+          $ref: '#/components/schemas/DesiredLimitAmount'
+          description: Stored desired total monthly limit, when supplied; older requests may omit it.
         request_id:
           type: string
           description: Server-assigned resource identifier, distinct from the response's trace request_id.
@@ -7885,7 +7900,11 @@ components:
           type: string
           maxLength: 4096
           description: |
-            Explanation of why the increase is needed. Required, and nonblank, when the workspace's request-more configuration requires a business justification.
+            Explanation of why the increase is needed. Required, and nonblank, when the workspace's request-more configuration requires an amount and business justification.
+        desired_limit_amount:
+          $ref: '#/components/schemas/DesiredLimitAmount'
+          description: |
+            Desired total agent limit for the current UTC month. Required when the workspace requires an amount and justification.
     AdministrativeRequestResponse:
       type: object
       additionalProperties: false
