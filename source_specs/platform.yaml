@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 502946825ff1213e41f8c268595f1190aa756a6b
+  x-source-commit-sha: f21d6f213bf0b0ec491a437d7ecfa0faaf644497
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -1471,9 +1471,9 @@ paths:
         - Search
       summary: Enumerate matching documents
       description: |
-        Walk every indexed document that matches a selection and that the caller is permitted to see. Returns document references with minimal metadata and never bodies; request `SNIPPETS` via `include` for query-relevant excerpts, and hydrate full documents with `POST /api/documents/batch`. Unlike `POST /api/search`, `query` is optional: omit it to enumerate by `datasources`, `filters`, and `time_range` alone. Results are ordered for completeness, not relevance.
+        Walk every indexed document that matches a selection and that the caller is permitted to see. Returns document references with minimal metadata and never bodies; request `SNIPPETS` via `include` for query-relevant excerpts, and hydrate full documents with `POST /api/documents/batch`. Unlike `POST /api/search`, `query` is optional, but at least one of `query`, `datasources`, or `filters` is required; a request with none returns HTTP 400. `time_range` only narrows the selection and does not satisfy that requirement. Results are ordered for completeness, not relevance.
         Follow `next_cursor` until `has_more` is `false`, regardless of page size. This is a live scan, not a snapshot: concurrent index changes can cause duplicates or omissions. Deduplicate by `document_id`.
-        A page is either complete at its cursor position or an error. A shard or datasource failure returns HTTP 503 and the same cursor stays valid for retry; this endpoint never returns a partial page. A cursor reused with a different selection returns HTTP 400 `invalid_cursor`.
+        A page is either complete at its cursor position or an error. A shard or datasource failure returns HTTP 503 and the same cursor stays valid for retry with backoff; this endpoint never returns a partial page. Long scans should expect an occasional 503. A cursor reused with a different selection returns HTTP 400 `invalid_cursor`.
       operationId: platform-search-enumeration
       x-glean-scopes:
         legacy:
@@ -1486,7 +1486,7 @@ paths:
         method: enumerate
       x-glean-experimental:
         id: 9ce7bb73-1e30-460a-a917-cae09ac3a3ea
-        introduced: '2026-11-02'
+        introduced: '2026-11-13'
       x-codegen-request-body-name: payload
       requestBody:
         required: true
