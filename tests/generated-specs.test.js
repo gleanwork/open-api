@@ -50,12 +50,11 @@ describe('source specs', () => {
   });
 
   test.each(sourceSpecFiles)('%s names no feature flags', (file) => {
+    // findNodes also visits x-glean-release, in both its object and list
+    // forms, so this finds gated-by wherever it is.
     expect(
-      findNodes(
-        loadSourceSpec(file),
-        (node) =>
-          Object.hasOwn(node, 'gated-by') ||
-          Object.hasOwn(node['x-glean-release'] ?? {}, 'gated-by'),
+      findNodes(loadSourceSpec(file), (node) =>
+        Object.hasOwn(node, 'gated-by'),
       ),
     ).toEqual([]);
   });
@@ -63,26 +62,30 @@ describe('source specs', () => {
 
 describe('writeGeneratedSpecs', () => {
   test('writes every source spec and keeps every operation', async () => {
-    const outputDir = path.join(
-      fs.mkdtempSync(path.join(os.tmpdir(), 'generated-specs-')),
-      'generated_specs',
-    );
+    const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'generated-specs-'));
+    const outputDir = path.join(tmpRoot, 'generated_specs');
 
-    await writeGeneratedSpecs({ sourceDir, outputDir, commitSha: 'abc123' });
+    try {
+      await writeGeneratedSpecs({ sourceDir, outputDir, commitSha: 'abc123' });
 
-    expect(fs.readdirSync(outputDir).sort()).toEqual(
-      [...sourceSpecFiles].sort(),
-    );
-    for (const file of sourceSpecFiles) {
-      const output = yaml.load(
-        fs.readFileSync(path.join(outputDir, file), 'utf8'),
+      expect(fs.readdirSync(outputDir).sort()).toEqual(
+        [...sourceSpecFiles].sort(),
       );
-      const outputIds = new Set(operationIdsOf(output));
+      for (const file of sourceSpecFiles) {
+        const output = yaml.load(
+          fs.readFileSync(path.join(outputDir, file), 'utf8'),
+        );
+        const outputIds = new Set(operationIdsOf(output));
 
-      expect(output.info['x-open-api-commit-sha']).toBe('abc123');
-      expect(
-        operationIdsOf(loadSourceSpec(file)).filter((id) => !outputIds.has(id)),
-      ).toEqual([]);
+        expect(output.info['x-open-api-commit-sha']).toBe('abc123');
+        expect(
+          operationIdsOf(loadSourceSpec(file)).filter(
+            (id) => !outputIds.has(id),
+          ),
+        ).toEqual([]);
+      }
+    } finally {
+      fs.rmSync(tmpRoot, { recursive: true, force: true });
     }
   });
 });

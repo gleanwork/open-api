@@ -146,7 +146,7 @@ The transformation script processes OpenAPI YAML specification files by:
 2. Applying various transformations to prepare specs for Speakeasy SDK generation
 3. Writing the transformed files to the `generated_specs/` directory
 
-The source specs arrive with unreleased content already removed: the upstream bundle drops operations, properties and parameters with `x-glean-release` `stage: unreleased`. The transform strips nothing for release reasons. It only adds stage labels, the deprecation format and code samples.
+The source specs arrive with unreleased content already removed: the upstream bundle drops operations, properties and parameters with `x-glean-release` `stage: unreleased`, and removes `gated-by`. The transform strips nothing for release reasons. It keeps `x-glean-release` as is and converts deprecations to the Speakeasy format. `code-sample-transformer.js` later adds the SDK opt-in flag to the code samples of beta operations.
 
 This script performs the following transformations:
 

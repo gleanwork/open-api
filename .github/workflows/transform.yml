@@ -8,6 +8,7 @@ on:
       - 'source_specs/**'
       - 'overlays/**'
       - 'tests/post_transform_smoke.test.js'
+      - 'tests/generated-specs.test.js'
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
@@ -40,6 +41,12 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
+
+      # open-api has no strip step of its own, so fail before anything is
+      # transformed or uploaded if the upstream bundle leaks a
+      # `stage: unreleased` node or a `gated-by` key.
+      - name: Check source specs for unreleased content
+        run: pnpm exec vitest run tests/generated-specs.test.js
 
       - name: Transform OpenAPI spec paths
         run: pnpm run transform:source_specs
