@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: eb1331fd54b6cb9ad0e961d4ce2716c6f96ba05a
-  x-open-api-commit-sha: 81516913d557cc20123aeec87d245444e142f3ca
+  x-source-commit-sha: 3ebea7b8114f85547c66a0737b84007e222fee82
+  x-open-api-commit-sha: 6909567ccd3811c29da9c367c57bb14e22890a63
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -18219,6 +18219,25 @@ components:
         key: person_icon
         iconType: GLYPH
         name: user
+    ChatStatus:
+      type: string
+      enum:
+        - SUCCESS
+        - ERROR
+        - IN_PROGRESS
+        - CANCELLED
+      description: The status of the Chat.
+      x-include-enum-class-prefix: true
+      x-enumDescriptions:
+        SUCCESS: The Chat has completed executing successfully.
+        ERROR: The Chat has completed executing unsuccessfully.
+        IN_PROGRESS: The Chat is still completing execution in the background.
+        CANCELLED: The user cancelled the Chat execution.
+      x-speakeasy-enum-descriptions:
+        SUCCESS: The Chat has completed executing successfully.
+        ERROR: The Chat has completed executing unsuccessfully.
+        IN_PROGRESS: The Chat is still completing execution in the background.
+        CANCELLED: The user cancelled the Chat execution.
     ChatMetadata:
       properties:
         id:
@@ -18244,6 +18263,8 @@ components:
           description: The display name of the AI App that this Chat is associated to.
         icon:
           $ref: '#/components/schemas/IconConfig'
+        status:
+          $ref: '#/components/schemas/ChatStatus'
       description: Metadata of a Chat a user had with Glean Assistant. This contains no actual conversational content.
     RelatedDocuments:
       properties:
