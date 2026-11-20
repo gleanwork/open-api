@@ -32,49 +32,21 @@ function getYamlFiles(directory) {
 }
 
 /**
- * Transforms one source spec and strips the operations that
- * config/unreleased-operations.yaml lists for it.
- */
-export function transformSourceSpec(
-  yamlContent,
-  specFile,
-  commitSha,
-  unreleasedOperations = sourceSpecTransformer.loadUnreleasedOperations(),
-) {
-  return sourceSpecTransformer.transform(
-    yamlContent,
-    specFile,
-    commitSha,
-    unreleasedOperations[specFile],
-  );
-}
-
-/**
- * Transforms every source spec into the output directory. Throws when
- * config/unreleased-operations.yaml names a source spec that does not exist,
- * so a typo or a renamed file cannot publish the operations it lists.
+ * Transforms every source spec into the output directory. The source specs
+ * arrive from the upstream bundle, which already removes unreleased
+ * operations, so this strips nothing for release reasons.
  */
 export async function writeGeneratedSpecs({
   sourceDir = 'source_specs',
   outputDir = 'generated_specs',
   // Set by GitHub Actions
   commitSha = process.env.GITHUB_SHA || process.env.OPEN_API_COMMIT_SHA,
-  unreleasedOperations = sourceSpecTransformer.loadUnreleasedOperations(),
 } = {}) {
   const specFiles = getYamlFiles(sourceDir);
 
   if (specFiles.length === 0) {
     console.log(`No YAML files found in ${sourceDir}`);
     return;
-  }
-
-  const unknownFiles = Object.keys(unreleasedOperations).filter(
-    (file) => !specFiles.includes(file),
-  );
-  if (unknownFiles.length > 0) {
-    throw new Error(
-      `config/unreleased-operations.yaml names source specs that ${sourceDir} does not have: ${unknownFiles.join(', ')}`,
-    );
   }
 
   await ensureDirectoryExists(outputDir);
@@ -95,11 +67,10 @@ export async function writeGeneratedSpecs({
 
     const yamlContent = await readYamlFromFile(sourceFilePath);
 
-    const transformedYaml = transformSourceSpec(
+    const transformedYaml = sourceSpecTransformer.transform(
       yamlContent,
       specFile,
       commitSha,
-      unreleasedOperations,
     );
 
     fs.writeFileSync(outputFilePath, transformedYaml, 'utf8');
