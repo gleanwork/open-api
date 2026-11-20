@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: 88a6c970bc2595551d275a7c0f6c482f7dc74bf3
-  x-open-api-commit-sha: 552255087a44252dc86e22aa5b09093cdb4a9a29
+  x-source-commit-sha: eb1331fd54b6cb9ad0e961d4ce2716c6f96ba05a
+  x-open-api-commit-sha: 81516913d557cc20123aeec87d245444e142f3ca
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -7082,6 +7082,8 @@ paths:
           description: Conflict
         "429":
           description: Too Many Requests
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: addOrUpdate
       x-speakeasy-group: indexing.documents
   /api/index/v1/indexdocuments:
@@ -7110,6 +7112,8 @@ paths:
           description: Conflict
         "429":
           description: Too Many Requests
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: index
       x-speakeasy-group: indexing.documents
   /api/index/v1/bulkindexdocuments:
@@ -7136,6 +7140,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: bulkIndex
       x-speakeasy-group: indexing.documents
   /api/index/v1/updatepermissions:
@@ -7164,6 +7170,8 @@ paths:
           description: Conflict
         "429":
           description: Too Many Requests
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: updatePermissions
       x-speakeasy-group: indexing.permissions
   /api/index/v1/processalldocuments:
@@ -7200,6 +7208,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: processAll
       x-speakeasy-group: indexing.documents
   /api/index/v1/deletedocument:
@@ -7226,6 +7236,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: delete
       x-speakeasy-group: indexing.documents
   /api/index/v1/indexuser:
@@ -7252,6 +7264,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: indexUser
       x-speakeasy-group: indexing.permissions
   /api/index/v1/bulkindexusers:
@@ -7280,6 +7294,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: bulkIndexUsers
       x-speakeasy-group: indexing.permissions
   /api/index/v1/indexgroup:
@@ -7306,6 +7322,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: indexGroup
       x-speakeasy-group: indexing.permissions
   /api/index/v1/bulkindexgroups:
@@ -7334,6 +7352,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: bulkIndexGroups
       x-speakeasy-group: indexing.permissions
   /api/index/v1/indexmembership:
@@ -7360,6 +7380,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: indexMembership
       x-speakeasy-group: indexing.permissions
   /api/index/v1/bulkindexmemberships:
@@ -7386,6 +7408,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: bulkIndexMemberships
       x-speakeasy-group: indexing.permissions
   /api/index/v1/processallmemberships:
@@ -7410,6 +7434,8 @@ paths:
           description: Bad Request
         "401":
           description: Not Authorized
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: processMemberships
       x-speakeasy-group: indexing.permissions
   /api/index/v1/deleteuser:
@@ -7438,6 +7464,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: deleteUser
       x-speakeasy-group: indexing.permissions
   /api/index/v1/deletegroup:
@@ -7466,6 +7494,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: deleteGroup
       x-speakeasy-group: indexing.permissions
   /api/index/v1/deletemembership:
@@ -7492,14 +7522,16 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: deleteMembership
       x-speakeasy-group: indexing.permissions
   /api/index/v1/debug/{datasource}/status:
     post:
       summary: |
-        Beta: Get datasource status
+        Get datasource status
       description: |
-        Gather information about the datasource's overall status. Currently in beta, might undergo breaking changes without prior notice.
+        Gather information about the datasource's overall status.
 
         Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/indexing/debugging/datasource-config) for more information.
       tags:
@@ -7524,15 +7556,16 @@ paths:
           description: Bad Request
         "401":
           description: Not Authorized
-      x-beta: true
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: status
       x-speakeasy-group: indexing.datasource
   /api/index/v1/debug/{datasource}/document:
     post:
       summary: |
-        Beta: Get document information
+        Get document information
       description: |
-        Gives various information that would help in debugging related to a particular document. Currently in beta, might undergo breaking changes without prior notice.
+        Gives various information that would help in debugging related to a particular document.
 
         Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/indexing/debugging/datasource-config) for more information.
       tags:
@@ -7564,15 +7597,16 @@ paths:
           description: Bad Request
         "401":
           description: Not Authorized
-      x-beta: true
+      x-glean-release:
+        stage: ga
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: debug
   /api/index/v1/debug/{datasource}/documents:
     post:
       summary: |
-        Beta: Get information of a batch of documents
+        Get information of a batch of documents
       description: |
-        Gives various information that would help in debugging related to a batch of documents. Currently in beta, might undergo breaking changes without prior notice.
+        Gives various information that would help in debugging related to a batch of documents.
 
         Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/indexing/debugging/datasource-config) for more information.
       tags:
@@ -7604,15 +7638,16 @@ paths:
           description: Bad Request
         "401":
           description: Not Authorized
-      x-beta: true
+      x-glean-release:
+        stage: ga
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: debugMany
   /api/index/v1/debug/{datasource}/user:
     post:
       summary: |
-        Beta: Get user information
+        Get user information
       description: |
-        Gives various information that would help in debugging related to a particular user. Currently in beta, might undergo breaking changes without prior notice.
+        Gives various information that would help in debugging related to a particular user.
 
         Tip: Refer to the [Troubleshooting tutorial](https://developers.glean.com/indexing/debugging/datasource-config) for more information.
       tags:
@@ -7644,7 +7679,8 @@ paths:
           description: Bad Request
         "401":
           description: Not Authorized
-      x-beta: true
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: debug
       x-speakeasy-group: indexing.people
   /api/index/v1/checkdocumentaccess:
@@ -7678,6 +7714,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-glean-release:
+        stage: ga
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: checkAccess
   /api/index/v1/getdocumentstatus:
@@ -7712,11 +7750,12 @@ paths:
         "429":
           description: Too Many Requests
       deprecated: true
-      x-glean-deprecated:
-        id: 7eec0433-78fd-49f9-a34f-cca83640ec24
-        introduced: "2026-02-03"
-        message: Endpoint is deprecated
-        removal: "2027-01-15"
+      x-glean-release:
+        stage: deprecated
+        deprecation:
+          introduced: "2026-02-03"
+          message: Endpoint is deprecated
+          removal: "2027-01-15"
       x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2027-01-15: Endpoint is deprecated"
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: status
@@ -7752,11 +7791,12 @@ paths:
         "409":
           description: Conflict
       deprecated: true
-      x-glean-deprecated:
-        id: c164089c-9412-4724-acf6-caf3b0d2a527
-        introduced: "2026-02-03"
-        message: Endpoint is deprecated
-        removal: "2027-01-15"
+      x-glean-release:
+        stage: deprecated
+        deprecation:
+          introduced: "2026-02-03"
+          message: Endpoint is deprecated
+          removal: "2027-01-15"
       x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2027-01-15: Endpoint is deprecated"
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: count
@@ -7792,11 +7832,12 @@ paths:
         "409":
           description: Conflict
       deprecated: true
-      x-glean-deprecated:
-        id: 4f5df873-385e-4539-8183-cb764b0f06b9
-        introduced: "2026-02-03"
-        message: Endpoint is deprecated
-        removal: "2027-01-15"
+      x-glean-release:
+        stage: deprecated
+        deprecation:
+          introduced: "2026-02-03"
+          message: Endpoint is deprecated
+          removal: "2027-01-15"
       x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2027-01-15: Endpoint is deprecated"
       x-speakeasy-name-override: count
       x-speakeasy-group: indexing.people
@@ -7824,6 +7865,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: authorizeBetaUsers
       x-speakeasy-group: indexing.permissions
   /api/index/v1/adddatasource:
@@ -7848,6 +7891,8 @@ paths:
           description: Bad Request
         "401":
           description: Not Authorized
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: add
       x-speakeasy-group: indexing.datasources
   /api/index/v1/getdatasourceconfig:
@@ -7878,6 +7923,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: retrieveConfig
       x-speakeasy-group: indexing.datasources
   /api/index/v1/rotatetoken:
@@ -7899,6 +7946,8 @@ paths:
           description: Bad Request
         "401":
           description: Not Authorized
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: rotateToken
       x-speakeasy-group: indexing.authentication
   /api/index/v1/indexemployee:
@@ -7925,6 +7974,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: index
       x-speakeasy-group: indexing.people
   /api/index/v1/bulkindexemployees:
@@ -7952,11 +8003,12 @@ paths:
         "409":
           description: Conflict
       deprecated: true
-      x-glean-deprecated:
-        id: ce596f49-55c4-465e-bf3c-5a3a33906e1f
-        introduced: "2026-02-03"
-        message: Endpoint is deprecated
-        removal: "2027-04-15"
+      x-glean-release:
+        stage: deprecated
+        deprecation:
+          introduced: "2026-02-03"
+          message: Endpoint is deprecated
+          removal: "2027-04-15"
       x-speakeasy-deprecation-message: "Deprecated on 2026-02-03, removal scheduled for 2027-04-15: Endpoint is deprecated"
       x-speakeasy-name-override: bulkIndex
       x-speakeasy-group: indexing.people
@@ -7979,6 +8031,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: processAllEmployeesAndTeams
       x-speakeasy-group: indexing.people
   /api/index/v1/deleteemployee:
@@ -8005,6 +8059,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: delete
       x-speakeasy-group: indexing.people
   /api/index/v1/indexteam:
@@ -8031,6 +8087,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: indexTeam
       x-speakeasy-group: indexing.people
   /api/index/v1/deleteteam:
@@ -8057,6 +8115,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: deleteTeam
       x-speakeasy-group: indexing.people
   /api/index/v1/bulkindexteams:
@@ -8083,6 +8143,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: bulkIndexTeams
       x-speakeasy-group: indexing.people
   /api/index/v1/bulkindexshortcuts:
@@ -8109,6 +8171,8 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: bulkIndex
       x-speakeasy-group: indexing.shortcuts
   /api/index/v1/uploadshortcuts:
@@ -8135,14 +8199,16 @@ paths:
           description: Not Authorized
         "409":
           description: Conflict
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: upload
       x-speakeasy-group: indexing.shortcuts
   /api/index/v1/debug/{datasource}/document/events:
     post:
       summary: |
-        Beta: Get document lifecycle events
+        Get document lifecycle events
       description: |
-        Retrieves lifecycle events for a specific document including upload time, index times and deletions. Rate limited to 1 request per minute per datasource. Currently in beta, might undergo breaking changes without prior notice.
+        Retrieves lifecycle events for a specific document including upload time, index times and deletions. Rate limited to 1 request per minute per datasource.
       tags:
         - Troubleshooting
       security:
@@ -8174,7 +8240,8 @@ paths:
           description: Not Authorized
         "429":
           description: Too Many Requests
-      x-beta: true
+      x-glean-release:
+        stage: ga
       x-speakeasy-group: indexing.documents
       x-speakeasy-name-override: debugEvents
   /rest/api/index/submissions/{datasourceInstance}/{type}:
@@ -8219,6 +8286,8 @@ paths:
           $ref: '#/components/responses/InternalServerError'
         "503":
           description: Service Unavailable
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: submit
       x-speakeasy-group: indexing.datasources
     servers:
@@ -8268,6 +8337,8 @@ paths:
           $ref: '#/components/responses/TooManyRequestsError'
         "500":
           $ref: '#/components/responses/InternalServerError'
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: upsert
       x-speakeasy-group: indexing.customMetadata
     delete:
@@ -8290,6 +8361,8 @@ paths:
           $ref: '#/components/responses/TooManyRequestsError'
         "500":
           $ref: '#/components/responses/InternalServerError'
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: delete
       x-speakeasy-group: indexing.customMetadata
     servers:
@@ -8334,6 +8407,8 @@ paths:
           $ref: '#/components/responses/TooManyRequestsError'
         "500":
           $ref: '#/components/responses/InternalServerError'
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: getSchema
       x-speakeasy-group: indexing.customMetadata
     put:
@@ -8367,6 +8442,8 @@ paths:
           $ref: '#/components/responses/TooManyRequestsError'
         "500":
           $ref: '#/components/responses/InternalServerError'
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: upsertSchema
       x-speakeasy-group: indexing.customMetadata
     delete:
@@ -8389,6 +8466,8 @@ paths:
           $ref: '#/components/responses/TooManyRequestsError'
         "500":
           $ref: '#/components/responses/InternalServerError'
+      x-glean-release:
+        stage: ga
       x-speakeasy-name-override: deleteSchema
       x-speakeasy-group: indexing.customMetadata
     servers:
@@ -25035,11 +25114,12 @@ components:
           type: string
           description: The employee's location (city/office name etc).
           deprecated: true
-          x-glean-deprecated:
-            id: a7f6fbaa-0eaf-4c0c-a4f5-ab90347f73fd
-            introduced: "2026-02-05"
-            message: Field is deprecated
-            removal: "2027-01-15"
+          x-glean-release:
+            stage: deprecated
+            deprecation:
+              introduced: "2026-02-05"
+              message: Field is deprecated
+              removal: "2027-01-15"
           x-speakeasy-deprecation-message: "Deprecated on 2026-02-05, removal scheduled for 2027-01-15: Field is deprecated"
         structuredLocation:
           $ref: '#/components/schemas/StructuredLocation'
