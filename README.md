@@ -123,13 +123,13 @@ flowchart TD
 
 This repository uses several GitHub Actions workflows to process the OpenAPI specifications:
 
-| Workflow                        | Purpose                                                                                        | Trigger                                                                   |
-| ------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `transform.yml`                 | Transforms source specs and runs the `glean-api-specs` Speakeasy source to generate API specs. | Push to main (source_specs, overlays or config changes), schedule, manual |
-| `trigger-client-generation.yml` | Triggers SDK generation workflows in all 4 API client repos.                                   | After transform.yml completes, manual                                     |
-| `auto-trigger-code-samples.yml` | Checks if all client releases are ready and triggers code sample generation.                   | Every 4 hours, repository_dispatch, manual                                |
-| `generate-code-samples.yml`     | Runs Speakeasy to generate merged code samples specs.                                          | Triggered by auto-trigger-code-samples, manual                            |
-| `deploy-pages.yml`              | Deploys specs to GitHub Pages.                                                                 | After generate-code-samples completes, manual                             |
+| Workflow                        | Purpose                                                                                        | Trigger                                                           |
+| ------------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `transform.yml`                 | Transforms source specs and runs the `glean-api-specs` Speakeasy source to generate API specs. | Push to main (source_specs or overlays changes), schedule, manual |
+| `trigger-client-generation.yml` | Triggers SDK generation workflows in all 4 API client repos.                                   | After transform.yml completes, manual                             |
+| `auto-trigger-code-samples.yml` | Checks if all client releases are ready and triggers code sample generation.                   | Every 4 hours, repository_dispatch, manual                        |
+| `generate-code-samples.yml`     | Runs Speakeasy to generate merged code samples specs.                                          | Triggered by auto-trigger-code-samples, manual                    |
+| `deploy-pages.yml`              | Deploys specs to GitHub Pages.                                                                 | After generate-code-samples completes, manual                     |
 
 The processing follows this sequence:
 
@@ -146,9 +146,9 @@ The transformation script processes OpenAPI YAML specification files by:
 2. Applying various transformations to prepare specs for Speakeasy SDK generation
 3. Writing the transformed files to the `generated_specs/` directory
 
-This script performs the following transformations:
+The source specs arrive with unreleased content already removed: the upstream bundle drops operations, properties and parameters with `x-glean-release` `stage: unreleased`. The transform strips nothing for release reasons. It only adds stage labels, the deprecation format and code samples.
 
-- **Unreleased operations**: Removes the operations that `config/unreleased-operations.yaml` lists, so the SDKs and developers.glean.com leave them out. The list is keyed by source spec file name. Each entry names an `operationId` and gives a reason. Tags, tag groups and components that only those operations used are removed too. The transform fails when a listed file or operation is not in `source_specs/`, so a typo or a rename cannot publish an operation by accident. Remove an entry when the operation is released in every deployment.
+This script performs the following transformations:
 
 - **Path normalization**: Moves server URL subpaths to individual API paths
   - **Before**: `servers.url = "https://{domain}-be.glean.com/rest/api/v1"`, `path = "/activity"`
