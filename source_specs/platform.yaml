@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: c8e5832679de26a856fa8110e0b8301ffd01eb88
+  x-source-commit-sha: 3ab2deb33b6b8d6b8ed7245ee6889a087ef5e71c
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -5484,6 +5484,15 @@ components:
           minLength: 1
           description: |
             Verbatim concatenated fragment text from an assistant UPDATE wire message. Display-oriented passthrough only; not part of the final answer and not present on terminal response snapshots.
+        conversation_id:
+          type: string
+          minLength: 1
+          description: The ID of the chat the event belongs to, when the chat is stored.
+        sequence_id:
+          type: integer
+          minimum: 1
+          description: |
+            Position of this event's source message in the chat stream. Pass the last one you received as `last_seen_sequence_id` when resuming.
     ChatStreamOutputTextDelta:
       type: object
       additionalProperties: false
@@ -5500,6 +5509,15 @@ components:
           $ref: '#/components/schemas/ChatStreamResponseId'
         delta:
           type: string
+        conversation_id:
+          type: string
+          minLength: 1
+          description: The ID of the chat the event belongs to, when the chat is stored.
+        sequence_id:
+          type: integer
+          minimum: 1
+          description: |
+            Position of this event's source message in the chat stream. Pass the last one you received as `last_seen_sequence_id` when resuming.
     ChatStreamOutputTextDone:
       type: object
       additionalProperties: false
