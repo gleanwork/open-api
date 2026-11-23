@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "0.9.0"
   title: Glean API
-  x-source-commit-sha: 888ec9b79a1e41b4d6e9644d84aedc65e164a0da
-  x-open-api-commit-sha: 702d00c6f8dc945468d024d6d0e4663c5636a0fd
+  x-source-commit-sha: 3ab2deb33b6b8d6b8ed7245ee6889a087ef5e71c
+  x-open-api-commit-sha: 48991ac862dfd36ff01d70b22f07ab3ae58194f8
   description: |
     # Introduction
     In addition to the data sources that Glean has built-in support for, Glean also provides a REST API that enables customers to put arbitrary content in the search index. This is useful, for example, for doing permissions-aware search over content in internal tools that reside on-prem as well as for searching over applications that Glean does not currently support first class. In addition these APIs allow the customer to push organization data (people info, organization structure etc) into Glean.
@@ -10980,6 +10980,15 @@ components:
           minLength: 1
           description: |
             Verbatim concatenated fragment text from an assistant UPDATE wire message. Display-oriented passthrough only; not part of the final answer and not present on terminal response snapshots.
+        conversation_id:
+          type: string
+          minLength: 1
+          description: The ID of the chat the event belongs to, when the chat is stored.
+        sequence_id:
+          type: integer
+          minimum: 1
+          description: |
+            Position of this event's source message in the chat stream. Pass the last one you received as `last_seen_sequence_id` when resuming.
     PlatformChatStreamOutputTextDelta:
       type: object
       additionalProperties: false
@@ -10996,6 +11005,15 @@ components:
           $ref: "#/components/schemas/PlatformChatStreamResponseId"
         delta:
           type: string
+        conversation_id:
+          type: string
+          minLength: 1
+          description: The ID of the chat the event belongs to, when the chat is stored.
+        sequence_id:
+          type: integer
+          minimum: 1
+          description: |
+            Position of this event's source message in the chat stream. Pass the last one you received as `last_seen_sequence_id` when resuming.
     PlatformChatStreamOutputTextDone:
       type: object
       additionalProperties: false
