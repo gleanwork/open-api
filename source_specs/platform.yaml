@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 3b37bd3ede47e4e10b637d42f9baa542ff2665e4
+  x-source-commit-sha: c5bdbdc06b66ec7d6db6cdcaa4e44dfb712524f4
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -12,6 +12,65 @@ servers:
 security:
   - ApiToken: []
 paths:
+  /agents:
+    post:
+      tags:
+        - Agents
+      summary: Create agent
+      description: |
+        Create and publish an agent from its complete definition.
+      operationId: platform-agents-create
+      x-glean-scopes:
+        legacy:
+          - AGENTS
+        platform:
+          - agents:write
+      x-visibility: Public
+      x-glean-sdk:
+        group: agents
+        method: create
+      x-glean-release:
+        stage: beta
+        introduced: '2026-11-18'
+      x-codegen-request-body-name: payload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: HR Policy Agent
+              instructions: Answer employee questions about HR policies and benefits.
+            schema:
+              $ref: '#/components/schemas/AgentCreateRequest'
+      responses:
+        '201':
+          description: Agent created and published.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
   /agents/search:
     post:
       tags:
@@ -4004,16 +4063,6 @@ components:
       description: |
         Glean API token. Obtain via Admin Console -> Platform -> API Tokens, or via OAuth 2.0 client credentials flow.
   schemas:
-    AgentsSearchRequest:
-      type: object
-      additionalProperties: false
-      example:
-        name: HR Policy Agent
-      properties:
-        name:
-          type: string
-          description: Case-insensitive substring to match against agent names. If omitted or empty, no name filter is applied.
-          example: HR Policy Agent
     SkillSourcePreviewFile:
       type: object
       description: A supporting file bundled with a skill.
@@ -4192,16 +4241,6 @@ components:
           description: Service credentials the agent uses to call tools.
           items:
             $ref: '#/components/schemas/AgentServiceCredential'
-    AgentCapabilities:
-      type: object
-      additionalProperties: true
-      properties:
-        ap.io.messages:
-          type: boolean
-          description: Whether the agent supports messages as input.
-        ap.io.streaming:
-          type: boolean
-          description: Whether the agent supports streaming output.
     AgentSlackChannelMapping:
       type: object
       description: A Slack channel the agent is mapped to.
@@ -4438,6 +4477,39 @@ components:
               description: Event subscriptions. The agent runs when any entry matches.
               items:
                 $ref: '#/components/schemas/AgentContentTrigger'
+    AgentCreateRequest:
+      description: Complete agent definition.
+      example:
+        name: HR Policy Agent
+        instructions: Answer employee questions about HR policies and benefits.
+      allOf:
+        - $ref: '#/components/schemas/AgentBase'
+        - type: object
+          properties:
+            use_agent_identity:
+              type: boolean
+              description: |
+                Whether the agent acts with its own identity instead of the invoking user's. Cannot be changed after the agent is created.
+            channels:
+              $ref: '#/components/schemas/AgentChannels'
+            subagents:
+              type: array
+              description: |
+                Subagents the agent dispatches work to. Subagents cannot contain subagents, and their dependencies may only reference published skills.
+              items:
+                $ref: '#/components/schemas/Subagent'
+            trigger:
+              $ref: '#/components/schemas/AgentTrigger'
+    AgentCapabilities:
+      type: object
+      additionalProperties: true
+      properties:
+        ap.io.messages:
+          type: boolean
+          description: Whether the agent supports messages as input.
+        ap.io.streaming:
+          type: boolean
+          description: Whether the agent supports streaming output.
     PersonReference:
       type: object
       description: A lightweight reference to a person, used where a payload merely points at someone.
@@ -4498,17 +4570,14 @@ components:
               type: string
               format: date-time
               description: Time the agent was last updated.
-    AgentsSearchResponse:
+    AgentGetResponse:
       type: object
       required:
-        - agents
+        - agent
         - request_id
       properties:
-        agents:
-          type: array
-          description: Agents matching the search request.
-          items:
-            $ref: '#/components/schemas/Agent'
+        agent:
+          $ref: '#/components/schemas/Agent'
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
@@ -4677,14 +4746,27 @@ components:
           description: Field-level validation problems, one entry per offending field.
           items:
             $ref: '#/components/schemas/ProblemDetailError'
-    AgentGetResponse:
+    AgentsSearchRequest:
+      type: object
+      additionalProperties: false
+      example:
+        name: HR Policy Agent
+      properties:
+        name:
+          type: string
+          description: Case-insensitive substring to match against agent names. If omitted or empty, no name filter is applied.
+          example: HR Policy Agent
+    AgentsSearchResponse:
       type: object
       required:
-        - agent
+        - agents
         - request_id
       properties:
-        agent:
-          $ref: '#/components/schemas/Agent'
+        agents:
+          type: array
+          description: Agents matching the search request.
+          items:
+            $ref: '#/components/schemas/Agent'
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
@@ -10372,8 +10454,20 @@ components:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/ProblemDetail'
+    Conflict:
+      description: Request conflicts with current state of the resource.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
     RequestTooLarge:
       description: Request body exceeds the maximum allowed size.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+    UnprocessableEntity:
+      description: Syntactically valid but semantically incorrect request.
       content:
         application/problem+json:
           schema:
@@ -10392,18 +10486,6 @@ components:
             $ref: '#/components/schemas/ProblemDetail'
     ServiceUnavailable:
       description: Backend temporarily unavailable.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/ProblemDetail'
-    Conflict:
-      description: Request conflicts with current state of the resource.
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/ProblemDetail'
-    UnprocessableEntity:
-      description: Syntactically valid but semantically incorrect request.
       content:
         application/problem+json:
           schema:
