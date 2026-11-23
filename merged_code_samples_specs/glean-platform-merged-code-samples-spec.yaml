@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   version: "2026-04-01"
   title: Glean Platform API
-  x-source-commit-sha: 3a789c362aa7d590ff675240cb08ba590ecfde90
-  x-open-api-commit-sha: e47a5ad84be2e3bb41efea5936357f2f1ca4aa64
+  x-source-commit-sha: 888ec9b79a1e41b4d6e9644d84aedc65e164a0da
+  x-open-api-commit-sha: 702d00c6f8dc945468d024d6d0e4663c5636a0fd
 servers:
   - url: https://{instance}-be.glean.com
     variables:
@@ -13,6 +13,167 @@ servers:
 security:
   - APIToken: []
 paths:
+  /api/agents:
+    post:
+      tags:
+        - Agents
+      summary: Create agent
+      description: |
+        Create and publish an agent from its complete definition.
+      operationId: platform-agents-create
+      x-glean-scopes:
+        legacy:
+          - AGENTS
+        platform:
+          - agents:write
+      x-visibility: Public
+      x-glean-release:
+        stage: beta
+        introduced: "2026-11-18"
+      x-codegen-request-body-name: payload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: HR Policy Agent
+              instructions: Answer employee questions about HR policies and benefits.
+            schema:
+              $ref: "#/components/schemas/PlatformAgentCreateRequest"
+      responses:
+        "201":
+          description: Agent created and published.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformAgentGetResponse"
+        "400":
+          $ref: "#/components/responses/PlatformBadRequest"
+        "401":
+          $ref: "#/components/responses/PlatformUnauthorized"
+        "403":
+          $ref: "#/components/responses/PlatformForbidden"
+        "404":
+          $ref: "#/components/responses/PlatformNotFound"
+        "408":
+          $ref: "#/components/responses/PlatformRequestTimeout"
+        "409":
+          $ref: "#/components/responses/PlatformConflict"
+        "413":
+          $ref: "#/components/responses/PlatformRequestTooLarge"
+        "422":
+          $ref: "#/components/responses/PlatformUnprocessableEntity"
+        "429":
+          $ref: "#/components/responses/PlatformTooManyRequests"
+        "500":
+          $ref: "#/components/responses/PlatformInternalServerError"
+        "503":
+          $ref: "#/components/responses/PlatformServiceUnavailable"
+      x-speakeasy-group: agents
+      x-speakeasy-name-override: create
+      x-codeSamples:
+        - lang: python
+          label: Python (API Client)
+          source: |-
+            from glean.api_client import Glean
+            import os
+
+
+            with Glean(
+                api_token=os.getenv("GLEAN_API_TOKEN"),
+            ) as glean:
+
+                res = glean.agents.create(name="HR Policy Agent", instructions="Answer employee questions about HR policies and benefits.", subagents=[
+                    {
+                        "name": "HR Policy Agent",
+                    },
+                ])
+
+                # Handle response
+                print(res)
+        - lang: typescript
+          label: Typescript (API Client)
+          source: |-
+            import { Glean } from "@gleanwork/api-client";
+
+            const glean = new Glean({
+              apiToken: process.env["GLEAN_API_TOKEN"] ?? "",
+            });
+
+            async function run() {
+              const result = await glean.agents.create({
+                name: "HR Policy Agent",
+                instructions: "Answer employee questions about HR policies and benefits.",
+              });
+
+              console.log(result);
+            }
+
+            run();
+        - lang: go
+          label: Go (API Client)
+          source: |-
+            package main
+
+            import(
+            	"context"
+            	"os"
+            	apiclientgo "github.com/gleanwork/api-client-go"
+            	"github.com/gleanwork/api-client-go/models/components"
+            	"log"
+            )
+
+            func main() {
+                ctx := context.Background()
+
+                s := apiclientgo.New(
+                    apiclientgo.WithSecurity(os.Getenv("GLEAN_API_TOKEN")),
+                )
+
+                res, err := s.Agents.Create(ctx, components.PlatformAgentCreateRequest{
+                    Name: "HR Policy Agent",
+                    Instructions: apiclientgo.Pointer("Answer employee questions about HR policies and benefits."),
+                })
+                if err != nil {
+                    log.Fatal(err)
+                }
+                if res.PlatformAgentGetResponse != nil {
+                    // handle response
+                }
+            }
+        - lang: java
+          label: Java (API Client)
+          source: |-
+            package hello.world;
+
+            import com.glean.api_client.glean_api_client.Glean;
+            import com.glean.api_client.glean_api_client.models.components.PlatformAgentCreateRequest;
+            import com.glean.api_client.glean_api_client.models.errors.PlatformProblemDetailException;
+            import com.glean.api_client.glean_api_client.models.operations.PlatformAgentsCreateResponse;
+            import java.lang.Exception;
+
+            public class Application {
+
+                public static void main(String[] args) throws PlatformProblemDetailException, Exception {
+
+                    Glean sdk = Glean.builder()
+                            .apiToken(System.getenv().getOrDefault("GLEAN_API_TOKEN", ""))
+                        .build();
+
+                    PlatformAgentCreateRequest req = PlatformAgentCreateRequest.builder()
+                            .name("HR Policy Agent")
+                            .instructions("Answer employee questions about HR policies and benefits.")
+                            .build();
+
+                    PlatformAgentsCreateResponse res = sdk.agents().create()
+                            .request(req)
+                            .call();
+
+                    if (res.platformAgentGetResponse().isPresent()) {
+                        System.out.println(res.platformAgentGetResponse().get());
+                    }
+                }
+            }
   /api/agents/search:
     post:
       tags:
@@ -8727,16 +8888,6 @@ components:
           type: string
           minLength: 1
           description: Human-readable warning message.
-    PlatformAgentsSearchRequest:
-      type: object
-      additionalProperties: false
-      example:
-        name: HR Policy Agent
-      properties:
-        name:
-          type: string
-          description: Case-insensitive substring to match against agent names. If omitted or empty, no name filter is applied.
-          example: HR Policy Agent
     PlatformSkillSourcePreviewFile:
       type: object
       description: A supporting file bundled with a skill.
@@ -8921,16 +9072,6 @@ components:
           description: Service credentials the agent uses to call tools.
           items:
             $ref: "#/components/schemas/PlatformAgentServiceCredential"
-    PlatformAgentCapabilities:
-      type: object
-      additionalProperties: true
-      properties:
-        ap.io.messages:
-          type: boolean
-          description: Whether the agent supports messages as input.
-        ap.io.streaming:
-          type: boolean
-          description: Whether the agent supports streaming output.
     PlatformAgentSlackChannelMapping:
       type: object
       description: A Slack channel the agent is mapped to.
@@ -9181,6 +9322,39 @@ components:
               description: Event subscriptions. The agent runs when any entry matches.
               items:
                 $ref: "#/components/schemas/PlatformAgentContentTrigger"
+    PlatformAgentCreateRequest:
+      description: Complete agent definition.
+      example:
+        name: HR Policy Agent
+        instructions: Answer employee questions about HR policies and benefits.
+      allOf:
+        - $ref: "#/components/schemas/PlatformAgentBase"
+        - type: object
+          properties:
+            use_agent_identity:
+              type: boolean
+              description: |
+                Whether the agent acts with its own identity instead of the invoking user's. Cannot be changed after the agent is created.
+            channels:
+              $ref: "#/components/schemas/PlatformAgentChannels"
+            subagents:
+              type: array
+              description: |
+                Subagents the agent dispatches work to. Subagents cannot contain subagents, and their dependencies may only reference published skills.
+              items:
+                $ref: "#/components/schemas/PlatformSubagent"
+            trigger:
+              $ref: "#/components/schemas/PlatformAgentTrigger"
+    PlatformAgentCapabilities:
+      type: object
+      additionalProperties: true
+      properties:
+        ap.io.messages:
+          type: boolean
+          description: Whether the agent supports messages as input.
+        ap.io.streaming:
+          type: boolean
+          description: Whether the agent supports streaming output.
     PlatformPersonReference:
       type: object
       description: A lightweight reference to a person, used where a payload merely points at someone.
@@ -9241,17 +9415,14 @@ components:
               type: string
               format: date-time
               description: Time the agent was last updated.
-    PlatformAgentsSearchResponse:
+    PlatformAgentGetResponse:
       type: object
       required:
-        - agents
+        - agent
         - request_id
       properties:
-        agents:
-          type: array
-          description: Agents matching the search request.
-          items:
-            $ref: "#/components/schemas/PlatformAgent"
+        agent:
+          $ref: "#/components/schemas/PlatformAgent"
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
@@ -9420,14 +9591,27 @@ components:
           description: Field-level validation problems, one entry per offending field.
           items:
             $ref: "#/components/schemas/PlatformProblemDetailError"
-    PlatformAgentGetResponse:
+    PlatformAgentsSearchRequest:
+      type: object
+      additionalProperties: false
+      example:
+        name: HR Policy Agent
+      properties:
+        name:
+          type: string
+          description: Case-insensitive substring to match against agent names. If omitted or empty, no name filter is applied.
+          example: HR Policy Agent
+    PlatformAgentsSearchResponse:
       type: object
       required:
-        - agent
+        - agents
         - request_id
       properties:
-        agent:
-          $ref: "#/components/schemas/PlatformAgent"
+        agents:
+          type: array
+          description: Agents matching the search request.
+          items:
+            $ref: "#/components/schemas/PlatformAgent"
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
@@ -14889,6 +15073,7 @@ components:
         - WEBHOOK_CREATED
         - CLOSED
         - COMMENT_ADDED
+        - COMMENT_RESOLVED
       x-enumDescriptions:
         CREATED: The document was created.
         UPDATED: The document was updated.
@@ -14906,6 +15091,7 @@ components:
         WEBHOOK_CREATED: The source system sent a webhook creation event.
         CLOSED: The item was closed.
         COMMENT_ADDED: A comment was added to the item.
+        COMMENT_RESOLVED: A comment thread on the item was resolved.
       x-speakeasy-enum-descriptions:
         CREATED: The document was created.
         UPDATED: The document was updated.
@@ -14923,6 +15109,7 @@ components:
         WEBHOOK_CREATED: The source system sent a webhook creation event.
         CLOSED: The item was closed.
         COMMENT_ADDED: A comment was added to the item.
+        COMMENT_RESOLVED: A comment thread on the item was resolved.
     PlatformTriggerEvent:
       type: object
       required:
@@ -15353,8 +15540,20 @@ components:
         application/problem+json:
           schema:
             $ref: "#/components/schemas/PlatformProblemDetail"
+    PlatformConflict:
+      description: Request conflicts with current state of the resource.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/PlatformProblemDetail"
     PlatformRequestTooLarge:
       description: Request body exceeds the maximum allowed size.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/PlatformProblemDetail"
+    PlatformUnprocessableEntity:
+      description: Syntactically valid but semantically incorrect request.
       content:
         application/problem+json:
           schema:
@@ -15373,18 +15572,6 @@ components:
             $ref: "#/components/schemas/PlatformProblemDetail"
     PlatformServiceUnavailable:
       description: Backend temporarily unavailable.
-      content:
-        application/problem+json:
-          schema:
-            $ref: "#/components/schemas/PlatformProblemDetail"
-    PlatformConflict:
-      description: Request conflicts with current state of the resource.
-      content:
-        application/problem+json:
-          schema:
-            $ref: "#/components/schemas/PlatformProblemDetail"
-    PlatformUnprocessableEntity:
-      description: Syntactically valid but semantically incorrect request.
       content:
         application/problem+json:
           schema:
