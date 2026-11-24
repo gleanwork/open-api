@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: e87fb1c8368fc055626ff49441e2351779101cd9
+  x-source-commit-sha: a55d67072d57790279ac6db7ef4390182c829302
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -361,6 +361,18 @@ paths:
       x-glean-sdk:
         group: agents
         method: createRun
+        response-media-type: application/json
+        request-body-overrides:
+          stream: false
+        variants:
+          - fragment: stream
+            method: createRunStream
+            summary: Create a streaming agent run
+            description: |
+              Execute an agent run as server-sent events. HTTP clients request this mode by setting `stream` to true in the JSON body. Streaming is not supported in DURABLE mode.
+            response-media-type: text/event-stream
+            request-body-overrides:
+              stream: true
       x-glean-release:
         stage: ga
       x-codegen-request-body-name: payload
@@ -388,20 +400,7 @@ paths:
                 $ref: '#/components/schemas/AgentRunWaitResponse'
             text/event-stream:
               schema:
-                type: string
-                description: |
-                  Server-sent events emitted by the running agent. Successful runs emit `message` events. A terminal failure after the stream has started emits exactly one `run.failed` event whose `data` is an `AgentRunFailedEventData` payload, then closes.
-                example: |
-                  id: 1
-                  event: message
-                  data: {"messages":[{"role":"GLEAN_AI","content":[{"text":"Hello","type":"text"}]}]}
-                  id: 2
-                  event: message
-                  data: {"messages":[{"role":"GLEAN_AI","content":[{"text":", I can help with HR policy questions.","type":"text"}]}]}
-
-                  id: 3
-                  event: run.failed
-                  data: {"error":{"type":"https://developers.glean.com/errors/spend-limit-exceeded","title":"Spend Limit Exceeded","status":403,"detail":"You've reached the monthly limit set by your admin.","code":"spend_limit_exceeded","request_id":"req_123","documentation_url":"https://developers.glean.com/errors/spend-limit-exceeded"}}
+                $ref: '#/components/schemas/AgentRunStreamEvent'
         '201':
           description: |
             Durable run persisted and started. The snapshot is immediately retrievable through GET /api/agents/{agent_id}/runs/{run_id}. Execution failures appear in the run state.
@@ -5395,6 +5394,103 @@ components:
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
+    AgentRunStreamMessage:
+      type: object
+      description: |
+        A message emitted during a streaming agent run. Unlike `Message`, `content` is optional: the server omits it when an event has no text and no citation annotations.
+      required:
+        - role
+      properties:
+        role:
+          description: Role of the message author.
+          $ref: '#/components/schemas/MessageRole'
+        content:
+          type: array
+          description: Content blocks in the message. Omitted when the event has no text and no citation annotations.
+          items:
+            $ref: '#/components/schemas/MessageTextBlock'
+    AgentRunMessageEventData:
+      type: object
+      description: Payload for the Agents SSE event `message`.
+      required:
+        - messages
+      properties:
+        messages:
+          type: array
+          description: Messages emitted by the running agent in this event.
+          items:
+            $ref: '#/components/schemas/AgentRunStreamMessage'
+    AgentRunMessageEvent:
+      type: object
+      description: A `message` event that carries agent output.
+      required:
+        - event
+        - data
+      properties:
+        id:
+          type: string
+          description: Event ID. IDs increase by one across the stream.
+        event:
+          type: string
+          description: SSE event name. Always `message` for this event.
+          const: message
+        data:
+          $ref: '#/components/schemas/AgentRunMessageEventData'
+          description: Payload of the `message` event.
+    AgentRunFailedEventData:
+      type: object
+      additionalProperties: false
+      description: |
+        Payload for the terminal Agents SSE event `run.failed`. Emitted after HTTP 200 when a run fails mid-stream. The event name is `run.failed` (not `error`) to avoid colliding with the browser EventSource `error` event.
+      required:
+        - error
+      properties:
+        error:
+          $ref: '#/components/schemas/ProblemDetail'
+    AgentRunFailedEvent:
+      type: object
+      description: The terminal `run.failed` event, sent when a run fails after the stream starts.
+      required:
+        - event
+        - data
+      properties:
+        id:
+          type: string
+          description: Event ID. IDs increase by one across the stream.
+        event:
+          type: string
+          description: SSE event name. Always `run.failed` for this event.
+          const: run.failed
+        data:
+          $ref: '#/components/schemas/AgentRunFailedEventData'
+          description: Payload of the `run.failed` event.
+    AgentRunStreamEvent:
+      description: |
+        One server-sent event from a streaming agent run. The SSE `event` field selects the payload. Successful runs emit `message` events. A terminal failure after the stream has started emits exactly one `run.failed` event, then the stream closes. This schema describes a parsed event, not the raw HTTP body. A typical stream is:
+        id: 1
+        event: message
+        data: {"messages":[{"role":"GLEAN_AI","content":[{"text":"Hello","type":"text"}]}]}
+
+        id: 2
+        event: run.failed
+        data: {"error":{"type":"https://developers.glean.com/errors/spend-limit-exceeded","title":"Spend Limit Exceeded","status":403,"detail":"You've reached the monthly limit set by your admin.","code":"spend_limit_exceeded","request_id":"req_123","documentation_url":"https://developers.glean.com/errors/spend-limit-exceeded"}}
+      example:
+        id: '1'
+        event: message
+        data:
+          messages:
+            - role: GLEAN_AI
+              content:
+                - text: Hello
+                  type: text
+      oneOf:
+        - $ref: '#/components/schemas/AgentRunMessageEvent'
+        - $ref: '#/components/schemas/AgentRunFailedEvent'
+      discriminator:
+        propertyName: event
+        mapping:
+          message: '#/components/schemas/AgentRunMessageEvent'
+          run.failed: '#/components/schemas/AgentRunFailedEvent'
     AgentRunState:
       type: string
       enum:
