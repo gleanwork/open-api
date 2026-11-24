@@ -520,8 +520,12 @@ describe('OpenAPI YAML Transformer', () => {
     });
     expect(
       transformedSpec.paths['/api/agents/{agent_id}/runs'].post.responses[200]
-        .content['text/event-stream'].schema.$ref,
-    ).toBe('#/components/schemas/PlatformRunEvent');
+        .content['text/event-stream'].schema,
+    ).toEqual({
+      type: 'object',
+      required: ['data'],
+      properties: { data: { $ref: '#/components/schemas/PlatformRunEvent' } },
+    });
     expect(
       transformedSpec.paths['/api/agents/{agent_id}/runs'].post,
     ).not.toHaveProperty('x-glean-sdk');
@@ -1030,6 +1034,69 @@ describe('OpenAPI YAML Transformer', () => {
       Object.keys(spec.paths['/api/chat'].post.responses[200].content),
     ).toEqual(['application/json', 'text/event-stream']);
     expect(spec.paths['/api/chat#stream']).toBeUndefined();
+  });
+
+  test('transformPlatformSpec wraps SSE payloads for operations without variants', () => {
+    const spec = {
+      components: {
+        schemas: {
+          ChatEvent: {
+            oneOf: [{ $ref: '#/components/schemas/ChatCreated' }],
+            discriminator: {
+              propertyName: 'type',
+              mapping: { RESPONSE_CREATED: '#/components/schemas/ChatCreated' },
+            },
+          },
+          ChatCreated: {
+            type: 'object',
+            properties: {
+              type: { type: 'string', const: 'RESPONSE_CREATED' },
+            },
+          },
+        },
+      },
+      paths: {
+        '/api/chats/{chat_id}/resume': {
+          get: {
+            operationId: 'platform-chat-resume',
+            'x-glean-sdk': {
+              group: 'chat',
+              method: 'resume',
+              'response-media-type': 'text/event-stream',
+            },
+            responses: {
+              200: {
+                content: {
+                  'text/event-stream': {
+                    schema: { $ref: '#/components/schemas/ChatEvent' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    transformPlatformSpec(spec);
+
+    const resume = spec.paths['/api/chats/{chat_id}/resume'].get;
+    expect(resume).toMatchObject({
+      'x-speakeasy-group': 'chat',
+      'x-speakeasy-name-override': 'resume',
+    });
+    expect(resume.responses[200].content['text/event-stream'].schema.$ref).toBe(
+      '#/components/schemas/PlatformChatEventServerSentEvent',
+    );
+    expect(spec.components.schemas.PlatformChatCreatedServerSentEvent).toEqual({
+      type: 'object',
+      required: ['event', 'data'],
+      properties: {
+        id: { type: 'string' },
+        event: { type: 'string', const: 'RESPONSE_CREATED' },
+        data: { $ref: '#/components/schemas/PlatformChatCreated' },
+      },
+    });
   });
 
   test('transformPlatformSpec rejects string override on boolean request property', () => {

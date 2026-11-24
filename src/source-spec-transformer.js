@@ -935,6 +935,9 @@ function transformPlatformOperations(spec) {
 
   for (const { path, pathItem, method, operation, sdk, variants } of plans) {
     if (variants.length === 0) {
+      // A stream-only operation (for example chat resume) still needs its SSE
+      // payload wrapped in the id/event/data envelope Speakeasy expects.
+      wrapServerSentEventSchema(spec, operation);
       setPlatformSdkName(operation, sdk.group, sdk.method);
       continue;
     }
