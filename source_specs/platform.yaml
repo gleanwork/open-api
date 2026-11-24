@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 3447467cbc7b1688794e7fbcc1a558c96931fe60
+  x-source-commit-sha: 4efd2dc2a63f67af606cba609a59ada098a21d3c
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -634,6 +634,67 @@ paths:
           $ref: '#/components/responses/TooManyRequests'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /chats/{chat_id}/resume:
+    get:
+      tags:
+        - Chat
+      summary: Resume a chat stream
+      description: |
+        Reconnect to a chat that is still running, or replay one that just finished. The response is server-sent events in the same format as the streaming response of the create endpoint. Pass the `sequence_id` of the last event you received as `last_seen_sequence_id`, or omit it to start from the beginning of the stream. The final event is `RESPONSE_COMPLETED` or `RESPONSE_FAILED`, and its text covers only the events sent on this connection. Streams are kept for a limited time, so a chat that finished long ago returns 404.
+      operationId: platform-chat-resume
+      x-glean-scopes:
+        legacy:
+          - CHAT
+        platform:
+          - chat:read
+      x-visibility: Public
+      x-glean-release:
+        stage: beta
+        introduced: '2026-11-20'
+      x-glean-sdk:
+        group: chat
+        method: resume
+        response-media-type: text/event-stream
+      parameters:
+        - name: chat_id
+          in: path
+          required: true
+          description: The ID of the chat to resume.
+          example: '{chat_id}'
+          schema:
+            type: string
+            minLength: 1
+        - name: last_seen_sequence_id
+          in: query
+          required: false
+          description: |
+            The `sequence_id` of the last event already received. The stream continues with the next event. Defaults to 0, which starts from the beginning.
+          example: 0
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Server-sent events for the chat.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ChatStreamEvent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
   /skills:
     post:
       tags:
