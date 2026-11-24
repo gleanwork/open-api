@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 0.9.0
   title: Glean Client API
-  x-source-commit-sha: 4efd2dc2a63f67af606cba609a59ada098a21d3c
+  x-source-commit-sha: 24117345e24997125cb83f16c0c4d4cfaae186e0
   description: |
     # Introduction
     These are the public APIs to enable implementing a custom client interface to the Glean system.
@@ -10126,6 +10126,9 @@ components:
         cta:
           type: string
           description: Button text to show for the suggestion action.
+        shortTitle:
+          type: string
+          description: A shorter version of the suggestion's title for one-line lists. Fall back to the entry's title when empty.
         feature:
           type: string
           description: Targeted Glean Chat feature for the suggestion.
