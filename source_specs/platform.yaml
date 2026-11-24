@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 14b61b8428549aa66642895ffc6fef2c04c80abe
+  x-source-commit-sha: 372cc75fd870eb9ae34667ced0630143c656f9ed
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -681,6 +681,56 @@ paths:
             text/event-stream:
               schema:
                 $ref: '#/components/schemas/ChatStreamEvent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+  /chats/{chat_id}/cancellations:
+    post:
+      tags:
+        - Chat
+      summary: Cancel a chat
+      description: |
+        Stop a running chat. Only users who can edit the chat can cancel it. Cancelling a chat that is not running succeeds without effect.
+      operationId: platform-chat-cancel
+      x-glean-scopes:
+        legacy:
+          - CHAT
+        platform:
+          - chat:write
+      x-visibility: Public
+      x-glean-release:
+        stage: beta
+        introduced: '2026-11-20'
+      x-glean-sdk:
+        group: chat
+        method: cancel
+      parameters:
+        - name: chat_id
+          in: path
+          required: true
+          description: The ID of the chat to cancel.
+          example: '{chat_id}'
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        '200':
+          description: The chat was cancelled, or was not running.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCancelResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -5753,6 +5803,17 @@ components:
         chat:
           description: The updated chat.
           $ref: '#/components/schemas/Chat'
+        request_id:
+          type: string
+          minLength: 1
+          description: An identifier for this request.
+    ChatCancelResponse:
+      type: object
+      additionalProperties: false
+      description: Confirmation that the cancel request was handled.
+      required:
+        - request_id
+      properties:
         request_id:
           type: string
           minLength: 1
