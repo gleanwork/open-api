@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   version: '2026-04-01'
   title: Glean Platform API
-  x-source-commit-sha: 372cc75fd870eb9ae34667ced0630143c656f9ed
+  x-source-commit-sha: d3c93ea4a78a5ff1a83a961a6c006cd4e44a32c6
 servers:
   - url: https://{domain}-be.glean.com/api
     variables:
@@ -157,6 +157,119 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AgentGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    patch:
+      tags:
+        - Agents
+      summary: Update agent
+      description: |
+        Update and publish an agent. Supplied fields replace their saved values and omitted fields are kept.
+      operationId: platform-agents-update
+      x-glean-scopes:
+        legacy:
+          - AGENTS
+        platform:
+          - agents:write
+      x-visibility: Public
+      x-glean-sdk:
+        group: agents
+        method: update
+      x-glean-release:
+        stage: beta
+        introduced: '2026-11-18'
+      x-codegen-request-body-name: payload
+      parameters:
+        - in: path
+          name: agent_id
+          required: true
+          description: The ID of the agent to update.
+          example: '{agent_id}'
+          schema:
+            type: string
+            minLength: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              instructions: Answer questions using the latest HR policies.
+            schema:
+              $ref: '#/components/schemas/AgentUpdateRequest'
+      responses:
+        '200':
+          description: Agent updated and published.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentGetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '408':
+          $ref: '#/components/responses/RequestTimeout'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '413':
+          $ref: '#/components/responses/RequestTooLarge'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+    delete:
+      tags:
+        - Agents
+      summary: Delete agent
+      description: |
+        Delete an agent.
+      operationId: platform-agents-delete
+      x-glean-scopes:
+        legacy:
+          - AGENTS
+        platform:
+          - agents:write
+      x-visibility: Public
+      x-glean-sdk:
+        group: agents
+        method: delete
+      x-glean-release:
+        stage: beta
+        introduced: '2026-11-18'
+      parameters:
+        - in: path
+          name: agent_id
+          required: true
+          description: The ID of the agent to delete.
+          example: '{agent_id}'
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        '204':
+          description: Agent deleted.
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -4881,6 +4994,62 @@ components:
         request_id:
           type: string
           description: Platform-generated request ID for support correlation.
+    AgentUpdateRequest:
+      type: object
+      additionalProperties: false
+      description: |
+        Agent fields to change. At least one field is required. Each supplied field replaces its saved value, and arrays and objects are replaced whole. Omitted fields keep their saved values. Send an empty string or array to clear a field, `{}` to clear `channels` or reset `model` to defaults, and `null` to turn off Glean Search. `use_agent_identity` is set at creation and cannot be changed.
+      example:
+        instructions: Answer questions using the latest HR policies.
+      properties:
+        name:
+          type: string
+          description: Human-readable name.
+        description:
+          type: string
+          description: Description of the agent's purpose and behavior.
+        instructions:
+          type: string
+          description: System prompt the agent follows.
+        skills:
+          type: array
+          description: Skills defined inline.
+          items:
+            $ref: '#/components/schemas/AgentSkill'
+        dependencies:
+          type: array
+          description: |
+            Published artifacts referenced by platform ID. Their content is not inlined in `skills` or `subagents`.
+          items:
+            $ref: '#/components/schemas/AgentDependency'
+        tools:
+          type: array
+          description: Tool providers and the subset of their tools available to the agent.
+          items:
+            $ref: '#/components/schemas/AgentToolset'
+        glean_search_config:
+          description: Glean Search configuration. Send `null` to turn off Glean Search.
+          x-go-type: AgentGleanSearchConfig
+          anyOf:
+            - $ref: '#/components/schemas/AgentGleanSearchConfig'
+            - type: 'null'
+        model:
+          $ref: '#/components/schemas/AgentLlmModel'
+        service_credentials:
+          type: array
+          description: Service credentials the agent uses to call tools.
+          items:
+            $ref: '#/components/schemas/AgentServiceCredential'
+        channels:
+          $ref: '#/components/schemas/AgentChannels'
+        subagents:
+          type: array
+          description: |
+            Subagents the agent dispatches work to. Subagents cannot contain subagents. Keep a saved subagent's `subagent_id` to preserve it, and omit `subagent_id` to add a subagent.
+          items:
+            $ref: '#/components/schemas/Subagent'
+        trigger:
+          $ref: '#/components/schemas/AgentTrigger'
     ActionSummary:
       type: object
       required:
