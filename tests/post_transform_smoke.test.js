@@ -213,16 +213,22 @@ describe('Post-transformation smoke tests', () => {
     }
   });
 
-  test('Platform merged spec retains streaming run response', () => {
+  test('Platform merged spec splits agent run into JSON and stream variants', () => {
     if (!hasMergedPlatformSpec(spec)) {
       return;
     }
 
-    const operation = spec.paths?.['/api/agents/{agent_id}/runs']?.post;
+    const createRun = spec.paths?.['/api/agents/{agent_id}/runs']?.post;
+    const createRunStream =
+      spec.paths?.['/api/agents/{agent_id}/runs#stream']?.post;
 
-    expect(operation?.responses?.['200']?.content).toHaveProperty(
+    expect(createRun?.responses?.['200']?.content).not.toHaveProperty(
       'text/event-stream',
     );
+    expect(
+      createRunStream?.responses?.['200']?.content?.['text/event-stream']
+        ?.schema?.$ref,
+    ).toBe('#/components/schemas/PlatformAgentRunStreamEvent');
   });
 
   test('Platform private runtime gates do not reach merged spec', () => {
